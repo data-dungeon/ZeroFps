@@ -38,8 +38,6 @@ public:
 	bool SetSkin(ZGuiSkin* pkSkin);
 	bool SetDisplay(int w, int h);
 	void GetScreenSize(int& cx, int& cy);
-	void GetScaleMode(GUIScaleMode& eGUIScaleMode) { eGUIScaleMode = m_eGUIScaleMode; } 
-	void SetScaleMode(GUIScaleMode eGUIScaleMode);
 	void SetClipperArea(Rect rc);
 
 	bool SetFont(ZGuiFont* pkFont);
@@ -92,8 +90,6 @@ private:
 
 	bool m_bSearchForSytax;
 	string m_strSyntax;
-
-	GUIScaleMode m_eGUIScaleMode;
 
 	bool m_bDrawList;
 };

@@ -271,13 +271,16 @@ void MistClient::LoadInGameGui()
 void MistClient::PositionActionButtons()
 {
 	int x = 0, y = 0;
-	const int BUTTON_SIZE = 64;
+	const int BUTTON_SIZE = 32 * GetScaleX();
 	const int NUM_BUTTONS = 4;
 
 	ZGuiWnd* pkOpenMenuBn = GetWnd("IngameBackBn");
 	ZGuiWnd* pkOpenInventoryBn = GetWnd("OpenInventoryBn");
 	ZGuiWnd* pkOpenEquipWndBn = GetWnd("OpenEquipWndBn");
 	ZGuiWnd* pkOpenChatButton = GetWnd("OpenChatButton");
+
+	if(pkOpenMenuBn == NULL)
+		return;
 
 	x = BUTTON_SIZE * (NUM_BUTTONS-1);
 

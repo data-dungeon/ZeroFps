@@ -747,6 +747,8 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 
 					SendDlgItemMessage(g_kOpenScriptDlg, IDC_SELECTFILE_LIST, LB_RESETCONTENT, 0, 0);
 
+
+
 					for(int i=0; i<kFiles.size(); i++) 
 					{		
 						bool bAdd = false;
@@ -764,8 +766,23 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 						}
 
 						if(bAdd)
+						{
 							SendDlgItemMessage(g_kOpenScriptDlg, IDC_SELECTFILE_LIST, LB_ADDSTRING,  
-								0, (LPARAM) (LPCSTR) kFiles[i].c_str() );
+								0, (LPARAM) (LPCSTR) kFiles[i].c_str() );							
+						}
+					}
+
+					if(iCtrlID == IDC_SAVE_SCRIPT)
+					{
+						int p = m_strOpenFile.find_last_of("\\");
+						if(p == string::npos)
+							p = m_strOpenFile.find_last_of("/");
+
+						string strCurrentFile = m_strOpenFile;
+						strCurrentFile.erase(0,p+1);
+
+						SetDlgItemText(g_kOpenScriptDlg, IDC_SAVEFILE_NAME_EB, 
+							strCurrentFile.c_str());
 					}
 				}
 

@@ -72,7 +72,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 11)
+	if(iNumArgs < 8)
 	{
 		char szWindowName[50];
 		g_pkScript->GetArg(pkLua, 1, szWindowName);
@@ -89,14 +89,14 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 2, szParentName);
 	g_pkScript->GetArgString(pkLua, 3, szText);
 
-	double x, y, w, h, f, wndalignent, wndresizetype;
+	double x, y, w, h, f=0, wndalignent=0, wndresizetype=0;
 	g_pkScript->GetArg(pkLua, 4, &x);
 	g_pkScript->GetArg(pkLua, 5, &y);
 	g_pkScript->GetArg(pkLua, 6, &w);
 	g_pkScript->GetArg(pkLua, 7, &h);
-	g_pkScript->GetArg(pkLua, 8, &f);
-	g_pkScript->GetArg(pkLua, 9, &wndalignent);
-	g_pkScript->GetArg(pkLua, 10, &wndresizetype);
+	if(iNumArgs > 7) g_pkScript->GetArg(pkLua, 8, &f);
+	if(iNumArgs > 8) g_pkScript->GetArg(pkLua, 9, &wndalignent);
+	if(iNumArgs > 9) g_pkScript->GetArg(pkLua, 10, &wndresizetype);
 
 	GuiType eType = GuiType_Error;
 	WndAlignent eWndAlignent = TopLeft;

@@ -79,7 +79,8 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 void MistClient::SetupGUI()
 {
 	// initialize gui system with default skins, font etc
-	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, false, true); 
+	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
+		NULL, false, AUTO_SCALE); 
 
    char szFontData[512], szFontTex[512];
    sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "book_antiqua_10_bold_outlined");

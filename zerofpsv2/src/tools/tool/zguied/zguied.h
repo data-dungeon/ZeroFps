@@ -85,6 +85,7 @@ private:
 	vector< pair<ZGuiSkin, string> > m_kSkinTable; // used while saving
 
 	string m_strNewFileToLoad;
+	string m_strOpenFile;
 	string m_strCurrTexDir;
 	
 	ZGuiWnd* GetWndFromPoint(int x, int y);

@@ -346,7 +346,8 @@ void ZeroEd::Init()
 	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
 
 	// Load default texture and create default font and menu (NULL = No menu).
-	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", "data/script/gui/menu.txt", true, true); 
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
+		"data/script/gui/menu.txt", true, MANUALLY_SCALE); 
 
 	//setup caption
 	SetTitle("ZeroEd");
@@ -1578,8 +1579,10 @@ void ZeroEd::ToogleLight()
 string ZeroEd::GetZoneEnviroment()
 {
 	string env;
+
+	const Vector3 pos = m_kZoneMarkerPos;
 	
-	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,m_iCurrentMarkedZone,false);
+	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(pos,m_iCurrentMarkedZone,false);
 	ZoneData* z = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
 		
 	if(z)

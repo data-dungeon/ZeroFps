@@ -17,7 +17,10 @@ void ZGuiEd::OnIdle()
 			if(NewGUI(size > 1))
 			{
 				if(LoadGUI(m_strNewFileToLoad.c_str()))
+				{
 					SetTitle(string("ZeroFps GUI Editor - ") + m_strNewFileToLoad);
+					m_strOpenFile = m_strNewFileToLoad;
+				}
 			}
 
 			m_strNewFileToLoad = "";

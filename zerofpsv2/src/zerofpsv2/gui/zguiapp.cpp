@@ -17,14 +17,14 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
+ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc) : DESIGN_RESOLUTION(800,600)
 {
 	m_bGuiHaveFocus = false;
 	m_uiWindowIDCounter = 1;
 	m_pkScriptResHandle = NULL;
 	m_oMainWndProc = oMainWndProc;
 	m_szLastRadioBGroup = NULL;
-   m_bDisableGuiScaleMode = false;
+   m_iScaleMode = false;
 	CreateNewRadiobuttonGroup("DefGUIRadioGroup", 1);
 }
 
@@ -79,9 +79,9 @@ ZGuiSkin* ZGuiApp::GetSkin(string strName)
 	return res->second;
 }
 
-ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiWnd* pkParent, 
-								int x, int y, int w, int h, int iFlags,
-								WndAlignent eAlignment, WndResizeType eResizeType)
+ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, 
+									 ZGuiWnd* pkParent, int x, int y, int w, int h, int iFlags,
+									 WndAlignent eAlignment, WndResizeType eResizeType)
 {
 	
 	int iID = m_uiWindowIDCounter;
@@ -105,24 +105,21 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	const int LISTBOX_ITEM_HEIGHT = 20;
 	const int COMBOBOX_ITEM_HEIGHT = 20;
 
-	GUIScaleMode eScaleMode;
-	m_pkRenderer->GetScaleMode(eScaleMode);
-
-	if(eScaleMode == GUIScaleManually && m_bDisableGuiScaleMode == false)
+	if(m_iScaleMode == MANUALLY_SCALE)
 	{
 		float width_mod, height_mod;
 		int iNewWidth = -1, iNewHeight = -1;
 
 		if(eResizeType == ResizeWidth || eResizeType == Resize)
 		{
-			width_mod = (float) GetWidth() / 800.0f;
-			iNewWidth = (int) (800.0f*width_mod);
+			width_mod = (float) GetWidth() / (float)DESIGN_RESOLUTION.x;
+			iNewWidth = (int) ((float)DESIGN_RESOLUTION.x*width_mod);
 		}
 
 		if(eResizeType == ResizeHeight || eResizeType == Resize)
 		{
-			height_mod = (float) GetHeight() / 600.0f;
-			iNewHeight = (int) (600.0f*height_mod);
+			height_mod = (float) GetHeight() / (float)DESIGN_RESOLUTION.y;
+			iNewHeight = (int) ((float)DESIGN_RESOLUTION.y*height_mod);
 		}
 
 		//if(iNewWidth != -1) w = iNewWidth;
@@ -130,6 +127,28 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 		if(iNewWidth != -1) w = (int) (width_mod * (float) w);
 		if(iNewHeight != -1) h = (int) (height_mod * (float) h);
+	}
+	else
+	if(m_iScaleMode == AUTO_SCALE)
+	{
+		float dx = x, dy = y, dw = w, dh = h;
+
+		int iResX, iResY;
+		m_pkRenderer->GetScreenSize(iResX, iResY);
+
+		float fResModX =  (float)iResX / DESIGN_RESOLUTION.x;
+		float fResModY =  (float)iResY / DESIGN_RESOLUTION.y;
+
+		dx = x*fResModX;
+		dy = y*fResModY;
+
+		dw = w*fResModX;
+		dh = h*fResModY;
+
+		x = dx;
+		y = dy;
+		w = dw;
+		h = dh;
 	}
 
 	// Om parent fönstret är en TabControl så är iFlags = sidnummret och parent fönstret
@@ -351,9 +370,9 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	if(iFlags & CREATE_WND_HIDDEN) 
 		pkWnd->Hide();
 
-	if(eScaleMode == GUIScaleManually && m_bDisableGuiScaleMode == false)
+	if(m_iScaleMode == MANUALLY_SCALE)
 	{
-		float parent_width = 800, parent_height = 600;
+		float parent_width = DESIGN_RESOLUTION.x, parent_height = DESIGN_RESOLUTION.y;
 
 		if(pkWnd->GetParent() != NULL)
 		{
@@ -369,31 +388,31 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 			switch(eAlignment)
 			{
 			case BottomRight:
-				new_x = GetWidth() - (800-rc.Right) - rc.Width();
-				new_y = GetHeight() - (600-rc.Bottom) - rc.Height();
+				new_x = GetWidth() - (DESIGN_RESOLUTION.x-rc.Right) - rc.Width();
+				new_y = GetHeight() - (DESIGN_RESOLUTION.y-rc.Bottom) - rc.Height();
 				break;
 			case TopRight:
-				new_x = GetWidth() - (800-rc.Right) - rc.Width();
+				new_x = GetWidth() - (DESIGN_RESOLUTION.x-rc.Right) - rc.Width();
 				new_y = rc.Top;
 				break;
 			case BottomLeft:
 				new_x = rc.Left;
-				new_y = GetHeight() - (600-rc.Bottom) - rc.Height();
+				new_y = GetHeight() - (DESIGN_RESOLUTION.y-rc.Bottom) - rc.Height();
 				break;
 			case CenterHorz:
-				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / 800.0f) * 
+				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float) DESIGN_RESOLUTION.x) * 
 					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
 				new_y = rc.Top;
 				break;
 			case CenterVert:
 				new_x = rc.Left;
-				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / 600.0f) * 
+				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float) DESIGN_RESOLUTION.x) * 
 					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
 				break;
 			case Center:
-				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / 800.0f) * 
+				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float)DESIGN_RESOLUTION.x) * 
 					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
-				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / 600.0f) * 
+				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float)DESIGN_RESOLUTION.y) * 
 					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
 				break;
 			}
@@ -402,7 +421,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 				pkWnd->SetPos(new_x, new_y, true, true); 
 		}
 	}
-	
+
 	return pkWnd;
 }
 
@@ -629,7 +648,7 @@ void ZGuiApp::InitDefaultSkins(/*ZFScriptSystem* pkScript*/)
 
 void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName, 
 							 char* szScriptFile, char* szMenuFile,
-							 bool bUseHardwareMouse, bool bScaleGUIManually)
+							 bool bUseHardwareMouse, int iScaleMode)
 {
 	// Spara undan viktiga pekare till system.
 	m_pkGuiSys = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
@@ -638,10 +657,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 	m_pkScriptSystem = pkScriptSys;
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 
-   if(bScaleGUIManually)
-	   m_pkRenderer->SetScaleMode(GUIScaleManually);
-   else
-      m_pkRenderer->SetScaleMode(GUIScaleProjMatBeforeRendering);
+	m_iScaleMode = iScaleMode;
 
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
@@ -1487,4 +1503,20 @@ bool ZGuiApp::SetFont(string strWnd, string strFont, int r, int g, int b, int gl
 	pkWnd->SetTextColor(r,g,b);
 
 	return true;	
+}
+
+float ZGuiApp::GetScaleX()
+{
+	if(m_iScaleMode == MANUALLY_SCALE || m_iScaleMode == DISABLE_SCALE)
+		return 1;
+
+	return ( (float) GetWidth() / (float) DESIGN_RESOLUTION.x );
+}
+
+float ZGuiApp::GetScaleY()
+{
+	if(m_iScaleMode == MANUALLY_SCALE || m_iScaleMode == DISABLE_SCALE)
+		return 1;
+
+	return ( (float) GetHeight() / (float) DESIGN_RESOLUTION.y );
 }

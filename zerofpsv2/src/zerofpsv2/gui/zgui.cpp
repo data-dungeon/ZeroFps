@@ -1296,12 +1296,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		return true;
 	}
 
-	GUIScaleMode eScaleMode;
-	m_pkRenderer->GetScaleMode(eScaleMode);
-
-	if(eScaleMode == GUIScaleProjMatBeforeRendering)
-		TranslateMousePos(x,y);
-
 	// Register public variables needed by the editbox.
 	m_iMouseX = x; m_iMouseY = y;
 	m_bMouseLeftPressed = bLBnPressed;

@@ -91,9 +91,13 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 
 }
 
-InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVENTORY(27,87),
-										 SLOTTS_HORZ_INVENTORY(6), SLOTTS_VERT_INVENTORY(12), 
-										 UPPER_LEFT_CONTAINER(0,0), BD_R(1), BD_G(1), BD_B(1)
+InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6), 
+										 SLOTTS_VERT_INVENTORY(12), 
+										 BD_R(1), BD_G(1), BD_B(1),
+										 ICON_WIDTH(32), // in pixels
+										 ICON_HEIGHT(32), // in pixels
+										 UPPERLEFT_INVENTORY(27, 87), // in pixels
+										 UPPERLEFT_CONTAINER( 0,  0) // in pixels
 {
 	m_pkInventoryWnd = NULL;
 	m_pkContainerWnd = NULL;
@@ -109,6 +113,8 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVEN
 	m_fPickUpTimer = 0;
 
 	m_iSplitShareMax = 0;
+
+
 }
 
 InventoryDlg::~InventoryDlg()
@@ -420,7 +426,9 @@ void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int m
 	int id = (*pkVector)[iSlotIndex].pkWnd->GetSkin()->m_iBkTexID;
 
 	int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
-	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
+	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, 
+		g_kMistClient.GetScaleX()*(float)(size.x*ICON_WIDTH), 
+		g_kMistClient.GetScaleY()*(float)(size.y*ICON_HEIGHT));	
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 
 	printf("Item id = %i\n", (*pkVector)[iSlotIndex].iItemID);
@@ -460,7 +468,7 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 	m_iSlotsVertContainer = slots_y;
 	m_iActiveContainerID = id;
 
-	RebuidContainerGrid(slots_x, slots_y);
+	RebuidContainerGrid(8,8);//slots_x, slots_y);
 
 	m_pkContainerWnd->SetZValue(22);
 	
@@ -481,21 +489,25 @@ void InventoryDlg::CreateContainerGrid()
 	if(pkSlotBkSkin == NULL)
 	{
 		pkSlotBkSkin = new ZGuiSkin();
-		pkSlotBkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/inventory/slots_3x3.tga", 0);
-		pkSlotBkSkin->m_bTileBkSkin = true;
+		pkSlotBkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/inventory/slots_1x1.tga", 0);
+		pkSlotBkSkin->m_bTileBkSkin = false;
+		pkSlotBkSkin->m_afBorderColor[0] = 237.0f / 255.0f;
+		pkSlotBkSkin->m_afBorderColor[1] = 190.0f / 255.0f;
+		pkSlotBkSkin->m_afBorderColor[2] = 107.0f / 255.0f;
+		pkSlotBkSkin->m_unBorderSize = 1;
 	}
 
 	ZGuiWnd* pkLabel;
 
-	const int iNumOfLabelsNeeded = (MAX_SLOTS_X / 3 ) * (MAX_SLOTS_Y / 3 ) + 
-		(((MAX_SLOTS_X+MAX_SLOTS_Y)/2+1) / 3);
+	const int iNumOfLabelsNeeded = 8*8;//(MAX_SLOTS_X / 3 ) * (MAX_SLOTS_Y / 3 ) + 
+		//(((MAX_SLOTS_X+MAX_SLOTS_Y)/2+1) / 3);
 
 	for(int i=0; i<iNumOfLabelsNeeded; i++)
 	{
 		char szSlotBkLabelName[50];
 		sprintf(szSlotBkLabelName, "CSlotBkLabel_%i", i);
 		pkLabel = g_kMistClient.CreateWnd(Label, szSlotBkLabelName, "ContainerWnd", 
-			"", 0, 0, 100, 100, 0, TopLeft, eNone);
+			"", 0, 0, 32, 32, 0, TopLeft, eNone);
 		pkLabel->SetSkin(pkSlotBkSkin);
 		m_vkContainerGridSlots.push_back(pkLabel);
 	}	
@@ -504,60 +516,65 @@ void InventoryDlg::CreateContainerGrid()
 // Skapa bakgrundsbilden genom att klistra samman massa labels som har skapats från skript.
 void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 {
-	const int MAX_WIDTH = slots_horz*33+1;
-	const int MAX_HEIGHT = slots_vert*33+1;
+	//const int MAX_WIDTH = (float)(slots_horz-1)*g_kMistClient.GetScaleX() + 
+	//	(int)(((float)slots_horz*(float)(ICON_WIDTH))*g_kMistClient.GetScaleX());
 
-	m_pkContainerWnd->Resize(MAX_WIDTH, MAX_HEIGHT);
+	//const int MAX_HEIGHT = (float)(slots_vert-1)*g_kMistClient.GetScaleY() + 
+	//	(int)(((float)slots_vert*(float)(ICON_HEIGHT))*g_kMistClient.GetScaleY());
 
-	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
-	
-	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
-	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize + 16, 
-		rcInventory.Bottom - MAX_HEIGHT - bdsize  /*no all is opaque*/, true, true);
 
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -16, false, true);
-
+	int max_width = 0, max_height = 0;
 	int current_slot_x=0, current_slot_y=0;
-	int dx=0, dy=0;
+	/*float dx=0, dy=0, xmod = ((float)(ICON_WIDTH)*g_kMistClient.GetScaleX());
+	float ymod = ((float)(ICON_HEIGHT+1)*g_kMistClient.GetScaleY());*/
+
+	int dx = 0, dy = 0;
+	int iSlotWidth = m_vkContainerGridSlots[0]->GetScreenRect().Width();
+	int iSlotHeight = m_vkContainerGridSlots[0]->GetScreenRect().Width();
 		
 	for(int i=0; i<m_vkContainerGridSlots.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkContainerGridSlots[i];
 
 		pkWnd->SetPos(dx, dy, false, true);
-		pkWnd->Resize(99, 100);
 
-		current_slot_x += 3;
-		dx += 99;
+		current_slot_x += 1;
+		dx += iSlotWidth;
 
-		if(current_slot_y > slots_vert)
-		{
-			pkWnd->Hide();				
+		if(current_slot_y >= slots_vert)
+		{			
+			pkWnd->Hide();		
+			break;
 		}
 		else
 		{
 			pkWnd->Show();
 			pkWnd->SetZValue(1);
-
-			Rect rc = pkWnd->GetWndRect();
-
-			int w = rc.Width();
-			int h = rc.Height();
-
-			if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left;
-			if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top;
-
-			pkWnd->Resize(w, h);
 		}
 
-		if(current_slot_x > slots_horz)
+		if(current_slot_x >= slots_horz)
 		{
+			max_width = dx;
+
 			current_slot_x = 0;
-			current_slot_y += 3;
+			current_slot_y += 1;
 			dx = 0;
-			dy += 99;
+			dy += iSlotHeight;
 		}		
+
+		
+		max_height = dy;
 	}
+
+	m_pkContainerWnd->Resize(max_width, max_height);
+
+	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
+	
+	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
+	m_pkContainerWnd->SetPos(rcInventory.Left - max_width - bdsize + 16, 
+		rcInventory.Bottom - max_height - bdsize  /*no all is opaque*/, true, true);
+
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(max_width, -16, false, true);
 }
 
 void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
@@ -585,8 +602,8 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<vkItemList.size(); i++)
 	{
 		sprintf(szItemName, "InventoryItemLabel%i", i);
-		x = UPPER_LEFT_INVENTORY.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
-		y = UPPER_LEFT_INVENTORY.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		x = UPPERLEFT_INVENTORY.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = UPPERLEFT_INVENTORY.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
 		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
 		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
@@ -651,8 +668,8 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<vkItemList.size(); i++)
 	{
 		sprintf(szItemName, "ContainerItemLabel%i", i);
-		x = 1+ UPPER_LEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
-		y = 1+ UPPER_LEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		x = 1+ UPPERLEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = 1+ UPPERLEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
 		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
 		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
 
@@ -847,10 +864,11 @@ int InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInven
 
 Point InventoryDlg::SlotSizeFromWnd(ZGuiWnd* pkWnd)
 {
-	float dx = (float) ICON_WIDTH * (float)((float)g_kMistClient.GetWidth()/1024.0f);
-	float dy = (float) ICON_WIDTH * (float)((float)g_kMistClient.GetHeight()/768.0f);
+	int fSlotWidth = (int)((float)(ICON_WIDTH)*g_kMistClient.GetScaleX());
+	int fSlotHeight = (int)((float)(ICON_WIDTH)*g_kMistClient.GetScaleX());
+
 	Rect rcTest = pkWnd->GetScreenRect();
-	return Point(rcTest.Width()/dx, rcTest.Height()/dy);
+	return Point(rcTest.Width()/fSlotWidth, rcTest.Height()/fSlotHeight);
 }
 
 Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)
@@ -861,27 +879,27 @@ Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)
 
 Point InventoryDlg::SlotFromScreenPos(int x, int y, bool bInventory)
 {
-
-	float dx = (float) ICON_WIDTH * (float)((float)g_kMistClient.GetWidth()/1024.0f);
-	float dy = (float) ICON_HEIGHT * (float)((float)g_kMistClient.GetHeight()/768.0f);
-
 	int slot_x, slot_y;
 
 	if(bInventory)
 	{
-		float ulx = (float) UPPER_LEFT_INVENTORY.x * (float)((float)g_kMistClient.GetWidth()/1024.0f);
-		float uly = (float) UPPER_LEFT_INVENTORY.y * (float)((float)g_kMistClient.GetHeight()/768.0f);
+		slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - 
+			(g_kMistClient.GetScaleX()*(float)UPPERLEFT_INVENTORY.x) ) / 
+			(g_kMistClient.GetScaleX() * (float) ICON_WIDTH); 
 
-		slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - ulx) / dx; 
-		slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - uly) / dy;
+		slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - 
+			(g_kMistClient.GetScaleY()*(float)UPPERLEFT_INVENTORY.y) ) / 
+			(g_kMistClient.GetScaleY() * (float) ICON_HEIGHT);
 	}
 	else
 	{
-		float ulx = (float) UPPER_LEFT_CONTAINER.x * (float)((float)g_kMistClient.GetWidth()/1024.0f);
-		float uly = (float) UPPER_LEFT_CONTAINER.y * (float)((float)g_kMistClient.GetHeight()/768.0f);
+		slot_x = (x - m_pkContainerWnd->GetScreenRect().Left - 
+			(g_kMistClient.GetScaleX()*(float)UPPERLEFT_CONTAINER.x) ) / 
+			(g_kMistClient.GetScaleX() * (float) ICON_WIDTH); 
 
-		slot_x = (x - m_pkContainerWnd->GetScreenRect().Left - ulx) / dx; 
-		slot_y = (y - m_pkContainerWnd->GetScreenRect().Top - uly) / dy;
+		slot_y = (y - m_pkContainerWnd->GetScreenRect().Top - 
+			(g_kMistClient.GetScaleY()*(float)UPPERLEFT_CONTAINER.y) ) / 
+			(g_kMistClient.GetScaleY() * (float) ICON_HEIGHT);
 	}
 
 	return Point(slot_x, slot_y);

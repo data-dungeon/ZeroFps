@@ -69,6 +69,13 @@ enum WndResizeType
 	//MaxHeight,    // 3. Skala om så att fönstret blir lika högt som skärmen/parent fönstret.
 };
 
+enum GuiScaleMode
+{
+	AUTO_SCALE		= 0,
+	MANUALLY_SCALE = 1,
+	DISABLE_SCALE	= -1
+};
+
 /** \brief	ZGuiApp
 	 \ingroup Gui
 */
@@ -118,7 +125,7 @@ public:
 	bool CreateNewRadiobuttonGroup(const char *szName, int id=-1);
 	
 	void InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, 
-		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse, bool bScaleGUIManually);
+		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse, int iScaleMode);
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, int iFlags,
@@ -150,7 +157,12 @@ public:
 
 	bool m_bGuiHaveFocus;
 
-   bool m_bDisableGuiScaleMode;
+   int m_iScaleMode; // 0 = automaticly, 1 = manually, -1 = none
+
+	const Point DESIGN_RESOLUTION;
+
+	float GetScaleX();
+	float GetScaleY();
 
 private:
 

@@ -76,7 +76,7 @@ void MadView::Init()
 	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
 
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
-		"data/script/gui/menu_madview.txt", true, true); 
+		"data/script/gui/menu_madview.txt", true, AUTO_SCALE); 
 
 	SetupGuiEnviroment();
 	SetTitle("MadView");

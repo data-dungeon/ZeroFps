@@ -45,7 +45,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_iCharacterID = 		-1;
 	m_bFrontView = 		false;
-	m_bShowMenulevel = 	true;
+	m_bShowMenulevel = 	false;
 	m_bQuickStart = 		false;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 

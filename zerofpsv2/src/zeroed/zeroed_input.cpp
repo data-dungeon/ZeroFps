@@ -420,7 +420,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 
 	float fSpeedScale = m_pkZeroFps->GetFrameTime()*m_CamMoveSpeed;
 
-	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
+	if(1)//m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) // zeb - krashar för mig här
 	{
 
 		Vector3 newpos = m_pkActiveCameraObject->GetLocalPosV();

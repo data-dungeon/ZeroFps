@@ -127,7 +127,7 @@ void DarkMetropolis::GUI_Init()
 	// Create gui script.
 	GuiAppLua::Init(&g_kDM, m_pkScript);
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua",
-      NULL, bJagVillHellreHaHWCursorMenWTF, true);
+      NULL, bJagVillHellreHaHWCursorMenWTF, MANUALLY_SCALE);
 
 	// Load start sceen.
 	LoadGuiFromScript(/*m_pkScript, */"data/script/gui/dm_start.lua");

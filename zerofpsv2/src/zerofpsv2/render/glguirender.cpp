@@ -23,7 +23,6 @@ GLGuiRender::GLGuiRender()
 	m_bClipperEnabled = false;
 	m_afTextColor[0] = m_afTextColor[1] = m_afTextColor[2] = 0.0f;
 	m_bSearchForSytax = false;
-	m_eGUIScaleMode = GUIScaleProjMatBeforeRendering;
 }
 
 bool GLGuiRender::StartUp()	
@@ -61,11 +60,6 @@ bool GLGuiRender::SetDisplay(int w, int h)
 	return true;
 }
 
-void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
-{
-	m_eGUIScaleMode = eGUIScaleMode;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // Name: StartRender
 //
@@ -85,8 +79,6 @@ bool GLGuiRender::StartRender(bool bClear)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_FOG);
 
-
-
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	
@@ -102,38 +94,7 @@ bool GLGuiRender::StartRender(bool bClear)
 	if(bClear)
 		glClear(GL_COLOR_BUFFER_BIT);	
 
-		glDisable(GL_COLOR_MATERIAL);	 // lade till 19 okt 2004
-
-
-	//
-	// Skala om projektions matrisen.
-	//
-	if(m_eGUIScaleMode == GUIScaleProjMatBeforeRendering)
-	{
-		if(m_iScreenWidth == 1024 && m_iScreenHeight == 768)
-		{
-			glScalef(1.28f, 1.28f, 1.0f);
-			glTranslatef(0,-169, 0);
-		}
-		else
-		if(m_iScreenWidth == 1280 && m_iScreenHeight == 960)
-		{
-			glScalef(1.6f, 1.6f, 1.0f);
-			glTranslatef(0,-360, 0);
-		}
-		else
-		if(m_iScreenWidth == 1280 && m_iScreenHeight == 1024)
-		{
-			glScalef(1.6f, 1.706667f, 1.0f);
-			glTranslatef(0,-430, 0);
-		}
-		else
-		if(m_iScreenWidth == 1600 && m_iScreenHeight == 1200)
-		{
-			glScalef(2.0f, 2.0f, 1.0f);
-			glTranslatef(0,-600, 0);
-		}
-	}
+	glDisable(GL_COLOR_MATERIAL);	 // lade till 19 okt 2004
 
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

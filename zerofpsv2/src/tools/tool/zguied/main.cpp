@@ -498,14 +498,12 @@ void ZGuiEd::OnInit()
 	// get basicfs pointer
 	m_pkBasicFS = m_pkZeroFps->m_pkBasicFS;
 
-	m_bDisableGuiScaleMode = true;
-
 	m_bAlphaTextureMode = false;
 
 	// create gui script
-	GuiAppLua::
-		Init(&g_kZGuiEd, m_pkScript);
-	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, true, true);
+	GuiAppLua::Init(&g_kZGuiEd, m_pkScript);
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
+		NULL, true, MANUALLY_SCALE);
 
 	SetTitle("ZeroFps GUI Editor");
 

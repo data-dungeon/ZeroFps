@@ -165,15 +165,12 @@ void MistServer::Init()
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkEntityManager,m_pkScript);
-
-	//ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
-	//pkRenderer->SetScaleMode(GUIScaleManually);
 	
 	// create gui script funktions
 	GuiAppLua::Init(&g_kMistServer, m_pkScript);
 
 	// Load default texture and create default font and menu (NULL = No menu).
-	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, true, true); 
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, true, AUTO_SCALE); 
 
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
@@ -1357,8 +1354,7 @@ namespace SI_MistServer
 			g_kMistServer.SayToClients(acMessage,"Server",-1,pkData->m_iConnectionID);
 		else
 			cout<<"WARNING: could not find character ID:"<<id<<endl;
-		
-				
+						
 		return 0;
 	}
 

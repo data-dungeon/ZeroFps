@@ -18,12 +18,6 @@ const int ZG_CENTER_TEXT_HORZ = -2;
 typedef pair<Point,color_rgb> tRGBPoint;
 typedef pair<Rect,color_rgb> tRGBRect;
 
-enum GUIScaleMode
-{
-	GUIScaleProjMatBeforeRendering,
-	GUIScaleManually,
-};
-
 //struct MULTI_LINE_TEXT_INFO
 //{
 //	int m_iRenderDistFromTop; // [in]
@@ -69,8 +63,6 @@ public:
 	virtual bool RenderLines(vector<Point>& akLines,
 		unsigned char r,unsigned char g,unsigned char b,
 		float width=1.0f) = 0;
-	virtual void GetScaleMode(GUIScaleMode& eGUIScaleMode) = 0; 
-	virtual void SetScaleMode(GUIScaleMode eGUIScaleMode) = 0;
 };
 
 #endif 

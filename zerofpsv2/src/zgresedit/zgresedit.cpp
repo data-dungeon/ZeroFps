@@ -213,9 +213,9 @@ void ZGResEdit::OnInit()
 	// create gui script
 	GuiAppLua::Init(&g_kResEdit, m_pkScript);
 
-	InitGui(m_pkScript, "defguifont", "data/script/gui/gui_res_edit.lua", NULL, true, true);
+	InitGui(m_pkScript, "defguifont", "data/script/gui/gui_res_edit.lua", NULL, true, DISABLE_SCALE);
 
-   m_bDisableGuiScaleMode = true;
+   m_bScaleMode = true;
 
 	SetTitle("ZeroFps GUI Editor");
 	m_pkInput->ShowCursor(true);

@@ -117,14 +117,14 @@ private:
 	
 	Point m_kItemWndPosBeforeMove; // fönster koordinater
 	
-	const int ICON_WIDTH;
-	const int ICON_HEIGHT;
+	const int ICON_WIDTH; // in pixels
+	const int ICON_HEIGHT; // in pixels
 
-	const int SLOTTS_HORZ_INVENTORY;
-	const int SLOTTS_VERT_INVENTORY;
+	const int SLOTTS_HORZ_INVENTORY; // in pixels
+	const int SLOTTS_VERT_INVENTORY; // in pixels
 
-	const Point UPPER_LEFT_INVENTORY;
-	const Point UPPER_LEFT_CONTAINER;
+	const Point UPPERLEFT_INVENTORY; // in pixels
+	const Point UPPERLEFT_CONTAINER; // in pixels
 
 	const float BD_R;
 	const float BD_G;

@@ -3,6 +3,7 @@
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/basic/zfbasicfs.h"
+#include "../zerofpsv2/engine/entitymanager.h"
 
 void ZeroEd::SetupGuiEnviroment()
 {
