@@ -1,4 +1,4 @@
-// dark_metropolis_main.cpp
+	// dark_metropolis_main.cpp
 
 #ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
 	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
@@ -33,6 +33,7 @@ void DarkMetropolis::OnInit()
 {
 	SetTitle("Dark Metropolis");
 	
+	//initiate variables
 	m_pkCameraProp	= NULL;	
 	m_pkCameraEntity = NULL;
 	m_pkFps->m_bClientMode = true;
@@ -42,15 +43,21 @@ void DarkMetropolis::OnInit()
 	m_fAngle = 0;
 	m_strSaveDirectory = "clans/";
 	
+	//register commands
 	Register_Cmd("load",FID_LOAD);			
 	Register_Cmd("save",FID_SAVE);	
 
-
+	
+	//enable light
 	m_pkLight->SetLighting(true);
+	
+	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkFps->SetRenderTarget(m_pkCamera);
 	m_pkCamera->m_bRender = true;
 
+	//register propertys
+	RegisterPropertys();
 
 	// create gui script
 	GuiAppLua::Init(&g_kDM, m_pkScript);
@@ -64,7 +71,6 @@ void DarkMetropolis::OnInit()
 	StartSong("data/music/dm_menu.ogg");
 
 	m_pkInput->ShowCursor(true);
-	m_pkLight->SetLighting(true);
 	
 	
 	//setup default lightsource
@@ -168,9 +174,11 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
-	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+//	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
+//	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
+	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
+	
 }
 
 void DarkMetropolis::Input()

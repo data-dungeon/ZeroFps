@@ -13,9 +13,10 @@ using namespace std;
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 
-#include "../mcommon/p_clientcontrol.h"
-#include "../mcommon/p_serverinfo.h"
+//#include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_event.h"
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../mcommon/p_dmhq.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 

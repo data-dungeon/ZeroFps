@@ -271,6 +271,7 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
 	m_pkPropertyFactory->Register("P_Spawn", Create_P_Spawn);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
