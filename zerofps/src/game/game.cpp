@@ -71,7 +71,7 @@ void Game::OnIdle(void) {
 			pkFps->GetCam()->ClearViewPort();	
 			
 			pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
-			pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
+			pkFps->DevPrintf("common", "Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	
 			break;
 		}
@@ -82,7 +82,7 @@ void Game::OnIdle(void) {
 			pkFps->GetCam()->ClearViewPort();	
 			
 			pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
-			pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());			
+			pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());			
 			
 			break;
 		}
@@ -104,7 +104,7 @@ void Game::OnHud(void)
 	glPushAttrib(GL_LIGHTING_BIT);	
 	glDisable(GL_LIGHTING);
 	
-	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);	
+	pkFps->DevPrintf("common", "Fps: %d",pkFps->m_iFps);	
 			
 			
 	switch(m_iGameState)

@@ -4,7 +4,8 @@
 #include "zfobjectmanger.h"
 #include "zfvfs.h"
 #include "basicconsole.h"
-
+#include "globals.h"
+ 
 using namespace std;
 
 extern ZFObjectManger g_ZFObjSys;
@@ -100,15 +101,13 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	else
 		szOptions = "rb";
 	
-	cout << "=) =) =)";
-
 	// Try to open file directly.
 	pkFp = fopen(strFileName.c_str(), szOptions);
 	if(pkFp)
 		return pkFp;
 
 	// Try to open from all active RootPaths.
-	for(int i=0; i <m_kstrRootPath.size(); i++) {
+	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
 		strRootMerge = m_kstrRootPath[i] + strFileName;
 		pkFp = fopen(strRootMerge.c_str(), szOptions);
 		if(pkFp) {
@@ -125,8 +124,7 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
-	cout << "Adding '" << strRootPath.c_str();
-	cout << "' to VFS root table.\n";
+	Logf("Adding %s to VFS root table\n", strRootPath.c_str());
 	m_kstrRootPath.push_back(strRootPath);
 }
 
@@ -166,7 +164,7 @@ bool ZFVFileSystem::DirExist(string strName)
 void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));		
-	int i;
+	unsigned int i;
 	vector<string> kFiles;
 
 	switch(cmdid) {

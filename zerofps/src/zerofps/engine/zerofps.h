@@ -46,7 +46,18 @@ enum enginestates
 #define	ZFGP_PRINT			4
 #define	ZFGP_ENDOFPACKET	128
 
+class DevStringPage
+{
+private:
+public:
+	bool			m_bVisible;
+	string			m_kName;
+	vector<string>	m_akDevString;
 
+
+
+
+};
 
 /// Main class for the ZeroFps engine. 
 class ENGINE_API ZeroFps : public ZFObject {
@@ -69,6 +80,10 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_GLDUMP,
 		
 			FID_SENDMESSAGE,
+
+			// DevStrings
+			FID_DEV_SHOWPAGE,	
+			FID_DEV_HIDEPAGE,
 		};
 		
 		SDL_Surface* m_pkScreen;		
@@ -169,9 +184,11 @@ class ENGINE_API ZeroFps : public ZFObject {
 		int	NumberOfArgs(void);	// Return num of arg to app.
 		string GetArg(int iArgIndex);
 	
-		vector<string>	akDevString;
+		//vector<string>	akDevString;
+		vector<DevStringPage>	m_DevStringPage;
+		DevStringPage*	DevPrint_FindPage(const char* szName);
 		void DrawDevStrings();
-		void DevPrintf(const char *fmt, ...);
+		void DevPrintf(const char* szName, const char *fmt, ...);
 
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
 		

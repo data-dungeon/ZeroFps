@@ -1,42 +1,41 @@
 #include "zerofps.h"
 #include "network.h"
 
-//	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
-int	g_iNumOfFrames;
-int g_iNumOfMadSurfaces;
+int		g_iNumOfFrames;
+int		g_iNumOfMadSurfaces;
+float	g_fMadLODScale;
+int		g_iMadLODLock;
 
-float g_fMadLODScale;
-int g_iMadLODLock;
+static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
 
-	m_pkFile			=	new FileIo;
-	m_pkBasicFS			=	new ZFBasicFS;
-	m_pkZFVFileSystem	=	new ZFVFileSystem;
-	m_pkTexMan			=	new TextureManager(m_pkFile);
-	m_pkInput			=	new Input();		
-	m_pkPropertyFactory	=	new PropertyFactory();
-	m_pkFrustum			=	new Frustum;	
-	m_pkLight			=	new Light();	
-	m_pkRender			=	new Render();
-	m_pkConsole			=	new Console();
-	
-	m_pkCmd				= new CmdSystem;
-	m_pkAudioMan		= new AudioManager(this);
-	m_pkObjectMan		= new ObjectManager();
-	m_pkCollisionMan	= new CollisionManager();	
-	m_pkSBM				= new SoundBufferManager(m_pkFile);	
-	m_pkOpenAlSystem	= new OpenAlSystem();
-	m_pkNetWork			= new NetWork;
-	m_pkGuiRenderer		= new GLGuiRender();
-	m_pkGuiMan			= new ZGuiResourceManager();
-	m_pkGui				= new ZGui();
-	m_pkIni				= new ZFIni();
-	m_pkLevelMan		= new LevelManager();
-	m_pkPhysEngine		= new PhysicsEngine();
-	m_pkResourceDB		= new ZFResourceDB();
-	m_pkScript			= new ZFScript();
+	m_pkFile					= new FileIo;
+	m_pkBasicFS					= new ZFBasicFS;
+	m_pkZFVFileSystem			= new ZFVFileSystem;
+	m_pkTexMan					= new TextureManager(m_pkFile);
+	m_pkInput					= new Input();		
+	m_pkPropertyFactory			= new PropertyFactory();
+	m_pkFrustum					= new Frustum;	
+	m_pkLight					= new Light();	
+	m_pkRender					= new Render();
+	m_pkConsole					= new Console();
+	m_pkCmd						= new CmdSystem;
+	m_pkAudioMan				= new AudioManager(this);
+	m_pkObjectMan				= new ObjectManager();
+	m_pkCollisionMan			= new CollisionManager();	
+	m_pkSBM						= new SoundBufferManager(m_pkFile);	
+	m_pkOpenAlSystem			= new OpenAlSystem();
+	m_pkNetWork					= new NetWork;
+	m_pkGuiRenderer				= new GLGuiRender();
+	m_pkGuiMan					= new ZGuiResourceManager();
+	m_pkGui						= new ZGui();
+	m_pkIni						= new ZFIni();
+	m_pkLevelMan				= new LevelManager();
+	m_pkPhysEngine				= new PhysicsEngine();
+	m_pkResourceDB				= new ZFResourceDB();
+//	m_pkEngineScriptInterface	= new EngineScriptInterface();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -55,20 +54,37 @@ ZeroFps::ZeroFps(void)
 
 	//add some nice variables =)
 //	m_pkCmd->Add(&m_iState,"G_State",type_int);
-	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
+
+
+	g_ZFObjSys.RegisterVariable("m_Sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
+	g_ZFObjSys.RegisterVariable("r_LandLod", &m_pkRender->m_iDetail,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_ViewDistance", &m_pkRender->m_iViewDistance,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_AutoLod", &m_pkRender->m_iAutoLod,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_FpsLock", &m_pkRender->m_iFpsLock,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_MaxLights", &m_pkLight->m_iNrOfLights,CSYS_INT);
+
+	
+	g_ZFObjSys.RegisterVariable("r_Width", &m_iWidth,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_Height", &m_iHeight,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_Depth", &m_iDepth,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_FullScreen", &m_iFullScreen,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
+	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
+
+/*	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
 	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
 	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	
 	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
 	m_pkCmd->Add(&m_pkRender->m_iFpsLock,"r_FpsLock",type_int);		
 	m_pkCmd->Add(&m_pkLight->m_iNrOfLights,"r_MaxLights",type_int);		
-
 	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
 	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
 	m_pkCmd->Add(&m_iMadDraw,"r_maddraw",type_int);
 	m_pkCmd->Add(&g_fMadLODScale,"r_madlod",type_float);
-	m_pkCmd->Add(&g_iMadLODLock,"r_madlodlock",type_float);
+	m_pkCmd->Add(&g_iMadLODLock,"r_madlodlock",type_float);*/
 	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
@@ -84,7 +100,10 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
 	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
 
-	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this);	
+
+	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
+	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
+	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this,	 "sendmsg name id",2);	
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
 	
@@ -107,18 +126,31 @@ ZeroFps::~ZeroFps()
 {
 	m_pkNetWork->ServerEnd();
 
-	delete m_pkFile;
-	delete m_pkCmd;
-	delete m_pkTexMan;
-	delete m_pkRender;
-	delete m_pkConsole;
-	delete m_pkInput;
-	delete m_pkAudioMan;
-	delete m_pkLight;
-	delete m_pkObjectMan;
-	delete m_pkCollisionMan;
-	delete m_pkNetWork;
+//	delete m_pkEngineScriptInterface;
+	delete m_pkResourceDB;
+	delete m_pkPhysEngine;
+	delete m_pkLevelMan;
 	delete m_pkIni;
+	delete m_pkGui;
+	delete m_pkGuiMan;
+	delete m_pkGuiRenderer;
+	delete m_pkNetWork;
+	delete m_pkOpenAlSystem;
+	delete m_pkSBM;
+	delete m_pkCollisionMan;
+	delete m_pkObjectMan;
+	delete m_pkAudioMan;
+	delete m_pkCmd;
+	delete m_pkConsole;
+	delete m_pkRender;
+	delete m_pkLight;
+	delete m_pkFrustum;
+	delete m_pkPropertyFactory;
+	delete m_pkInput;
+	delete m_pkTexMan;
+	delete m_pkZFVFileSystem;
+	delete m_pkBasicFS;
+	delete m_pkFile;
 }
 
 void ZeroFps::SetApp() {
@@ -181,8 +213,8 @@ void ZeroFps::MainLoop(void) {
 		Swap();											//swap buffers n calculate fps
 		m_pkNetWork->Run();
 		m_pkObjectMan->PackToClients();
-		DevPrintf("Num of Clients: %d", m_pkNetWork->GetNumOfClients());
-		DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
+		DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
+		DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
 		//handle input
 		m_pkInput->Update();
@@ -236,7 +268,7 @@ void ZeroFps::MainLoop(void) {
 
 			// Describe Active Cam.
 			string strCamDesc = GetCam()->GetCameraDesc();
-			DevPrintf(strCamDesc.c_str());
+			DevPrintf("common",strCamDesc.c_str());
 
 			//run application Head On Display 
 			SetCamera(m_pkConsoleCamera);
@@ -443,10 +475,35 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	
 	
 }
-static char Devformat_text[4096];	//
 
-void ZeroFps::DevPrintf(const char *fmt, ...)
+DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
 {
+	for(int i=0; i<m_DevStringPage.size(); i++) {
+		if(string(szName) == m_DevStringPage[i].m_kName) {
+			return &m_DevStringPage[i];
+			}
+		}
+
+	return NULL;
+}
+
+void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
+{
+	// Find the page to print to.
+	DevStringPage* page = DevPrint_FindPage(szName);
+	if(!page) {
+		DevStringPage kNewPage;
+		kNewPage.m_kName = szName;
+		kNewPage.m_bVisible = false;
+		m_DevStringPage.push_back(kNewPage);
+		page = DevPrint_FindPage(szName);
+		if(!page)
+			return;
+		}
+
+	if(page->m_bVisible == false)
+		return;
+	
 	va_list		ap;								// Pointer To List Of Arguments
 
 	// Make sure we got something to work with.
@@ -457,11 +514,13 @@ void ZeroFps::DevPrintf(const char *fmt, ...)
 	va_end(ap);									// 
 
 	// Now call our print function.
-	akDevString.push_back(string(Devformat_text));
+	page->m_akDevString.push_back(string(Devformat_text));
 }
 
 void ZeroFps::DrawDevStrings()
 {
+	string strPageName;
+
 	glPushAttrib(GL_LIGHTING_BIT);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_ALPHA_TEST);
@@ -469,14 +528,26 @@ void ZeroFps::DrawDevStrings()
 	m_pkRender->SetFont("file:../data/textures/text/devstr.bmp");
 
 	float fYOffset = 0.75;
-	for(int i=0; i<akDevString.size(); i++) 
-	{
-		m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
-			const_cast<char*>(akDevString[i].c_str()));	
-		fYOffset -= 0.02;
+
+	for(int page = 0; page <m_DevStringPage.size(); page++ ) {
+		if(m_DevStringPage[page].m_bVisible == true) {
+			strPageName = "[" + m_DevStringPage[page].m_kName + "]";
+
+			m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
+				const_cast<char*>(strPageName.c_str()));	
+			fYOffset -= 0.02;
+
+			for(int i=0; i<m_DevStringPage[page].m_akDevString.size(); i++) 
+			{
+				m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
+					const_cast<char*>(m_DevStringPage[page].m_akDevString[i].c_str()));	
+				fYOffset -= 0.02;
+			}
+		}
+
+		m_DevStringPage[page].m_akDevString.clear();
 	}
 
-	akDevString.clear();
 	glPopAttrib();
 }
 
@@ -488,6 +559,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
+	DevStringPage* page;
 	
 	GameMessage gm;
 
@@ -613,11 +685,25 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkRender->DumpGLState();
 			break;
 
+		case FID_DEV_SHOWPAGE:
+			page = DevPrint_FindPage(kCommand->m_kSplitCommand[1].c_str());
+			if(page)
+				page->m_bVisible = true;
+			break;
+
+		case FID_DEV_HIDEPAGE:
+			page = DevPrint_FindPage(kCommand->m_kSplitCommand[1].c_str());
+			if(page)
+				page->m_bVisible = false;
+			break;
+
+			
 		case FID_SENDMESSAGE:
+			/* Vim
 			if(kCommand->m_kSplitCommand.size() <= 2) {
 				m_pkConsole->Printf("sendmsg name id");
 				return;
-			}
+			}*/
 
 			gm.m_FromObject = -1;
 			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());

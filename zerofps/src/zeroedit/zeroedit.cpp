@@ -74,25 +74,32 @@ void ZeroEdit::OnInit(void)
 	m_fPointerHeight=1;
 		
 	m_kCurentTemplate="null";
-	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
+	g_ZFObjSys.RegisterVariable("g_template", &m_kCurentTemplate,CSYS_STRING);
+//	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
 	
 	m_iPencilSize=4;
-	pkFps->m_pkCmd->Add(&m_iPencilSize,"g_PencilSize",type_int);		
+	g_ZFObjSys.RegisterVariable("g_PencilSize", &m_iPencilSize,CSYS_INT);
+//	pkFps->m_pkCmd->Add(&m_iPencilSize,"g_PencilSize",type_int);		
 	
 	m_iLandType=1;
-	pkFps->m_pkCmd->Add(&m_iLandType,"g_landtype",type_int);		
+	g_ZFObjSys.RegisterVariable("g_landtype", &m_iLandType,CSYS_INT);
+//	pkFps->m_pkCmd->Add(&m_iLandType,"g_landtype",type_int);		
 	
 	m_iRandom=1;
-	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
+	g_ZFObjSys.RegisterVariable("g_Random", &m_iRandom,CSYS_INT);
+//	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
 	
 	m_fDrawRate=0.1;
-	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
+	g_ZFObjSys.RegisterVariable("g_DrawRate", &m_fDrawRate,CSYS_INT);
+//	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
 	
 	m_iMode=ADDOBJECT;		
-	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
+	g_ZFObjSys.RegisterVariable("g_mode", &m_iMode,CSYS_INT);
+//	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
 		
 	m_fPointDistance=10;
-	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
+	g_ZFObjSys.RegisterVariable("g_PointDistance", &m_fPointDistance,CSYS_INT);
+//	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
 	
 	
 	//create a default small world
@@ -163,13 +170,13 @@ void ZeroEdit::OnHud(void)
 	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
 	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
-	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
-	pkFps->DevPrintf("Mode: %d",m_iMode);
-	pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
-	pkFps->DevPrintf("Pointer Altidude: %f",m_fPointerHeight);
+	pkFps->DevPrintf("common","Fps: %d",pkFps->m_iFps);
+	pkFps->DevPrintf("common","Mode: %d",m_iMode);
+	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
+	pkFps->DevPrintf("common","Pointer Altidude: %f",m_fPointerHeight);
 
 	if(m_pkCurentChild) {
-		pkFps->DevPrintf("Object: %i: %s selected.",m_pkCurentChild->iNetWorkID, m_pkCurentChild->GetName().c_str());
+		pkFps->DevPrintf("common","Object: %i: %s selected.",m_pkCurentChild->iNetWorkID, m_pkCurentChild->GetName().c_str());
 
 		}
 

@@ -83,7 +83,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy   $(ProjDir)\debug\*.lib   ..\..\bin\ 
+PostBuild_Cmds=copy    $(ProjDir)\debug\*.lib    ..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -110,6 +110,14 @@ SOURCE=.\bunnyaiproperty.cpp
 # Begin Source File
 
 SOURCE=.\bunnyobject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\container.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\containerproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -178,6 +186,14 @@ SOURCE=.\common.pkg
 # Begin Source File
 
 SOURCE=.\common_x.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\container.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\containerproperty.h
 # End Source File
 # Begin Source File
 

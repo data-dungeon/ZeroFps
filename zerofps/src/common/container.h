@@ -13,7 +13,7 @@
 
 using namespace std;
 
-class Container 
+class COMMON_API Container 
 {
 	private:
 		vector<Object*> 	m_kObjects;

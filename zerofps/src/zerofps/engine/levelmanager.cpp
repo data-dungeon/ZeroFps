@@ -22,9 +22,13 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_fZoneDistance		=	64;
 	m_kMapBaseDir			=	"../data/maps";
 	
-	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
-	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
-	m_pkCmd->Add(&m_iDecorationStep,"l_decorationstep",type_int);			
+	g_ZFObjSys.RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT);
+
+//	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
+//	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
+//	m_pkCmd->Add(&m_iDecorationStep,"l_decorationstep",type_int);			
 	
 	
 	

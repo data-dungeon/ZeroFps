@@ -30,4 +30,3 @@ class EngineScriptInterface;
 #include "levelmanager.h"
 #include "lightproperty.h"
 #include "physicsengine.h"
-#include "enginescriptinterface.h"

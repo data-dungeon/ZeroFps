@@ -36,6 +36,8 @@ enum ZFCmdDataType
 	CSYS_FUNCTION,					// Function ptr.
 	CSYS_INT,						// int.
 	CSYS_FLOAT,						// float.
+	CSYS_DOUBLE,					// float.
+	CSYS_LONG,						// float.
 	CSYS_BOOL,						// bool.
 	CSYS_STRING,					// /0 terminated string.
 };
@@ -57,6 +59,9 @@ public:
 	void*			m_vValue;				// Pekare till data.
 	ZFObject*		m_pkObject;				// Ptr to zfps object that owns this data (if any).
 	int				m_iCmdID;				// ID.
+
+	int				m_iMinNumOfArgs;		// Minimum num of arguments this func need.
+	string			m_strHelpText;			// Text printed if some args are missing.
 };
 
 
@@ -98,17 +103,30 @@ public:
 
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);
-	bool Register_Cmd(char* szName, int iCmdID, ZFObject* kObject);			///< Register a Cmd and object that will handle it.
+	bool Register_Cmd(char* szName, int iCmdID, ZFObject* kObject, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd and object that will handle it.
 	bool UnRegister_Cmd(ZFObject* kObject);									///< UnRegister all cmd's bound to a object.
 	bool RunCommand(const char* szCmdArg);									///< Run a cmd by passing it along to the correct object
 
-	void Log(const char* szMessage);
+// Variables
+	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType);
+	bool SetVariable(const char* szName, const char* szValue);
 
+	void SetValue(ZFCmdData* pkArea, const char* szValue);
+	void SetString(ZFCmdData* pkArea, const char* szValue);
+
+	void PrintVariables();
+	void* GetVar(ZFCmdData* pkArea);
+	string GetVarValue(ZFCmdData* pkArea);
+
+// Log Files
+	void Log(const char* szMessage);
 	bool Log_Create(const char* szName);
 	void Log_Destory(const char* szName);
 	ZFLogFile*	Log_Find(const char* szName);
 	void Log_DestroyAll();
 	void Log(const char* szName, const char* szMessage);
+
+
 };
 
 extern BASIC_API ZFObjectManger g_ZFObjSys;

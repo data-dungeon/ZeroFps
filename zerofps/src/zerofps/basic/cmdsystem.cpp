@@ -6,16 +6,30 @@
 
 CmdSystem::CmdSystem()
 : ZFObject("CmdSystem") {
-	g_ZFObjSys.Register_Cmd("set",FID_SET,this);
+	g_ZFObjSys.Register_Cmd("set",FID_SET,this, "set name value", 2);
 	g_ZFObjSys.Register_Cmd("varlist",FID_VARLIST,this);
 
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 
 }
 
-
+/*
 void CmdSystem::Add(void* pAddress,const char* aName,int iType) {
-//	cout<<"adding "<<aName<<" "<<iType<<" : "<<pAddress<<endl;
+	ZFCmdDataType eType = CSYS_NONE;
+	switch(iType) {
+		case type_int:		eType = CSYS_INT;		break;
+		case type_float:	eType = CSYS_FLOAT;		break;
+		case type_double:	eType = CSYS_DOUBLE;	break;
+		case type_long:		eType = CSYS_LONG;		break;
+		case type_string:	eType = CSYS_STRING;	break;
+		};
+
+
+	g_ZFObjSys.RegisterVariable(const_cast<char*>(aName), pAddress,eType);
+}
+*/
+	/*	
+	//	cout<<"adding "<<aName<<" "<<iType<<" : "<<pAddress<<endl;
 	char* aVarName=new char[256];				//create space to store variable name
 	strcpy(aVarName,aName);							//Copy aName to the alocated space
 	Gemens(aVarName);										//convert variable name to only lowercases
@@ -28,7 +42,8 @@ void CmdSystem::Add(void* pAddress,const char* aName,int iType) {
 	kNy->pAddress=pAddress;							//set varialbe data pointer
 
 	kVars.push_back(kNy);								//push in to variable vector
-}
+	*/
+//}
 
 /*
 void CmdSystem::Get(const char* aName) {
@@ -45,17 +60,19 @@ void CmdSystem::Get(const char* aName) {
 }
 */
 
+/*
 void CmdSystem::List() {
 	for(unsigned int i=0;i<kVars.size();i++) {		//loop trough variable vector
 		cout<<kVars[i]->aName<<" = "<<GetVar(i)<<endl;	//print all elements
 	}
-}
+}*/
 
+/*
 void* CmdSystem::GetVar(int i) {
 //	double pdData;
 	string pkData;
 	
-	/*
+	
 	//check what type and convert the void pointer depending on that type
 	switch(kVars[i]->iType) {
 		case type_int:
@@ -69,15 +86,17 @@ void* CmdSystem::GetVar(int i) {
 		case type_string:
 			return (void*)kVars[i]->pAddress;
 	}	
-	*/
+	
 	
 	return (void*)kVars[i]->pAddress;
 //	return (void*)&pdData;
 }
-
+*/
 bool CmdSystem::Set(const char* acName,const char* acData)
 {
-	char aName[50];
+	return g_ZFObjSys.SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
+
+/*	char aName[50];
 	strcpy(aName,acName);
 	Gemens(aName);
 	
@@ -92,11 +111,13 @@ bool CmdSystem::Set(const char* acName,const char* acData)
 			
 			return true;
 		}
-	}
+	}*/
 	
 	return false;
 }
 
+
+/*
 
 void CmdSystem::SetValue(int i,const char* acData) {
 	
@@ -118,29 +139,11 @@ void CmdSystem::SetValue(int i,const char* acData) {
 void CmdSystem::SetString(int i,const char* acData) {
 	(*(string*)kVars[i]->pAddress)=acData;
 }
-
+*/
 void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-//		Need to move console to basic.
-//	char name[256]="";
-//	char value[20]="";
-//	int i=4;		
-//	char text[255]="";
-
 	switch(cmdid) {
 		case FID_SET:
-
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-				m_pkCon->Printf("Please Supply a varible name");
-				return;
-			}
-
-			if(kCommand->m_kSplitCommand.size() <= 2) {
-				m_pkCon->Printf("Please Supply a value");
-				return;
-			}
-			
-//			if(!Set(name,atof(kCommand->m_kSplitCommand[2].c_str()))){
 			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
 				m_pkCon->Printf("Variable not found");
 				return;
@@ -153,8 +156,21 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_VARLIST:
 			m_pkCon->Printf("### variable list ###");
+			g_ZFObjSys.PrintVariables();
+			break;
+	}
+}
 
-			for(unsigned int i=0;i<kVars.size();i++)
+
+
+
+
+
+
+
+
+
+/*			for(unsigned int i=0;i<kVars.size();i++)
 			{
 				switch(kVars[i]->iType)
 				{
@@ -169,18 +185,5 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 					case type_long:
 						m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
 				}
-			}
-
-			break;
-	}
-}
-
-
-
-
-
-
-
-
-
+			}*/
 

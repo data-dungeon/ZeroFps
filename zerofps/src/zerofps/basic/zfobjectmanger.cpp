@@ -3,6 +3,8 @@
 using namespace std;
 
 #include "zfobjectmanger.h"
+#include "basicconsole.h"
+#include "globals.h"
 
 ZFObjectManger* ZFObjectManger::pkInstance;
 
@@ -73,20 +75,27 @@ ZFObjectManger::ZFObjectManger()
 {
 	ZFObjectManger::pkInstance = this;
 
-#ifdef _DEBUG
-	cout << "Starting Object System" << endl;
-#endif
-
 	m_pkLogFile = fopen("zerofps.txt", "wt");	// Open Master Log File.
 	setvbuf(m_pkLogFile, NULL, _IONBF, 0);		// Set Non buffer mode.
+
+#ifdef _DEBUG
+	Logf("Starting Object System\n");
+#endif
+
 
 }
 
 ZFObjectManger::~ZFObjectManger()
 {
 #ifdef _DEBUG
-	cout << "Closing Object System" << endl;
+	Logf("Closing Object System\n");
 #endif
+
+	// Check that we don't have any objects left.
+	if(kObjectNames.size() > 0) {
+		Logf("WARNING: Some Engine Systems have not been closed down\n");
+		PrintObjects();
+		}
 
 	Log_DestroyAll();
 	fclose(m_pkLogFile);						// Close Log Fil
@@ -102,13 +111,13 @@ ZFObjectManger* ZFObjectManger::GetInstance()
 void ZFObjectManger::Register(ZFObject* pkObject, char* acName, ZFObject* pkParent)
 {
 #ifdef _DEBUG
-	cout << "Register '" << acName << "': ";
+	Logf("Register '%s'", acName);
 #endif
 
 	// Make sure that there is no other object with the same name.
 	ZFObject* pkCheck = GetObjectPtr(acName);
 	if(pkCheck) {
-		cout << "There is already a object with name " << acName << endl;
+		Logf("There is already a object with name '%s'\n", acName);
 		return;
 		}
 
@@ -123,14 +132,14 @@ void ZFObjectManger::Register(ZFObject* pkObject, char* acName, ZFObject* pkPare
 	
 
 #ifdef _DEBUG
-	cout << "Ok" << endl;
+	Logf("ok\n");
 #endif
 }
 
 void ZFObjectManger::UnRegister(ZFObject* pkObject)
 {
 #ifdef _DEBUG
-	cout << "UnRegister '" << pkObject->m_strZFpsName << "': ";
+	Logf("UnRegister '%s' ", pkObject->m_strZFpsName.c_str());
 #endif
 
 	vector<NameObject>::iterator itNames;
@@ -139,7 +148,7 @@ void ZFObjectManger::UnRegister(ZFObject* pkObject)
 		if(itNames->pkObject == pkObject) {
 			itNames = kObjectNames.erase(itNames);
 #ifdef _DEBUG
-			cout << ".";
+			Logf(".");
 #endif
 			}
 		else
@@ -147,7 +156,7 @@ void ZFObjectManger::UnRegister(ZFObject* pkObject)
 	}
 
 #ifdef _DEBUG
-	cout << "Ok" << endl;
+	Logf("Ok\n");
 #endif
 
 	UnRegister_Cmd(pkObject);
@@ -186,17 +195,15 @@ void ZFObjectManger::UnLink(ZFObject* pkObject)
 
 void ZFObjectManger::PrintObjects(void)
 {
-	cout << "OBJECTS: "<< endl;
-
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		cout << kObjectNames[i].m_strName << " , " << kObjectNames[i].m_iNumOfRequests <<  endl;
+		Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
 	}
 
 }
 
 void ZFObjectManger::PrintObjectsHer(void)
 {
-	cout << "OBJECTS: "<< endl;
+	Logf("ZFObjectManger::PrintObjectsHer\n");
 
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(kObjectNames[i].pkObject->m_pkParent == NULL) {
@@ -217,7 +224,7 @@ ZFCmdData* ZFObjectManger::FindArea(const char* szName)
 }
 
 
-bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject)
+bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject,char* szHelp, int iNumOfArg)
 {
 	// Validate parameters
 	if(szName == NULL)	return false;
@@ -234,14 +241,27 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject)
 	kNewCmd.m_vValue	= NULL;
 	kNewCmd.m_pkObject	= kObject;
 	kNewCmd.m_iCmdID	= iCmdID;
+	kNewCmd.m_iMinNumOfArgs = iNumOfArg;
+
+	if(szHelp)
+		kNewCmd.m_strHelpText = string(szHelp);
+	else
+		kNewCmd.m_strHelpText = string("");
 
 	m_kCmdDataList.push_back(kNewCmd);
+
+	
+#ifdef _DEBUG
+	Logf("Command '%s' registred to be handled by '%s'\n", szName, kObject->m_strZFpsName);
+#endif
 	return true;
 }
 
 bool ZFObjectManger::UnRegister_Cmd(ZFObject* kObject)
 {
-	cout << "ZFObjectManger::UnRegister: " << kObject->m_strZFpsName << endl;
+#ifdef _DEBUG
+	Logf("'%s' will no longer handle any commands\n", kObject->m_strZFpsName);
+#endif
 	return true;
 }
 
@@ -256,7 +276,13 @@ bool ZFObjectManger::RunCommand(const char* szCmdArg)
 
 	switch(kCmdData->m_eType) {
 		case CSYS_FUNCTION:	
-			kCmdData->m_pkObject->RunCommand(kCmdData->m_iCmdID, &kcmdargs);
+			if(kcmdargs.m_kSplitCommand.size() <= kCmdData->m_iMinNumOfArgs) {
+				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+				con->Printf(kCmdData->m_strHelpText.c_str());
+				}
+			else {
+				kCmdData->m_pkObject->RunCommand(kCmdData->m_iCmdID, &kcmdargs);
+				}
 			break;
 	}
 
@@ -308,6 +334,9 @@ void ZFObjectManger::Log_DestroyAll()
 
 void ZFObjectManger::Log(const char* szMessage)
 {
+	if(!m_pkLogFile)
+		return;
+
 	fprintf(m_pkLogFile, szMessage);
 }
 
@@ -320,3 +349,127 @@ void ZFObjectManger::Log(const char* szName, const char* szMessage)
 	fprintf(pkLog->m_pkFilePointer, szMessage);
 }
 
+
+
+bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType)
+{
+	// Validate parameters
+	if(szName == NULL)		return false;
+	if(pvAddress == NULL)	return false;
+
+	// Check if there is already something with this name.
+	if(FindArea(szName)) 
+		return false;
+
+	ZFCmdData kNewCmd;
+	kNewCmd.m_strName		= string(szName);
+	kNewCmd.m_eType			= eType;
+	kNewCmd.m_iFlags		= 0;
+	kNewCmd.m_vValue		= pvAddress;
+	kNewCmd.m_pkObject		= NULL;
+	kNewCmd.m_iCmdID		= 0;
+	kNewCmd.m_iMinNumOfArgs = 0;
+
+	m_kCmdDataList.push_back(kNewCmd);
+
+#ifdef _DEBUG
+	Logf("Variable '%s' registred.\n", szName);
+#endif
+	return true;
+	
+}
+
+bool ZFObjectManger::SetVariable(const char* szName, const char* szValue)
+{
+	ZFCmdData* pkArea = FindArea(szName);
+	if(!pkArea)
+		return false;
+
+	if(pkArea->m_eType == CSYS_STRING)
+		SetString (pkArea, szValue);											
+	else 
+		SetValue  (pkArea, szValue);											
+
+	return true;
+}
+
+
+void ZFObjectManger::SetValue(ZFCmdData* pkArea, const char* szValue) 
+{
+	
+	float dData = float(atof(szValue));
+	
+	switch(pkArea->m_eType) {
+		case CSYS_INT:
+			*(int*)pkArea->m_vValue = (int)dData;break;
+		case CSYS_FLOAT:
+			*(float*)pkArea->m_vValue=(float)dData;break;
+		case CSYS_DOUBLE:
+			*(double*)pkArea->m_vValue=(double)dData;break;
+		case CSYS_LONG:
+			*(long*)pkArea->m_vValue=(long)dData;break;
+	
+	}
+}	
+
+void ZFObjectManger::SetString(ZFCmdData* pkArea, const char* szValue) 
+{
+	(*(string*)pkArea->m_vValue)=szValue;
+}
+
+void* ZFObjectManger::GetVar(ZFCmdData* pkArea)
+ {
+	return (void*)pkArea->m_vValue;
+}
+
+string ZFObjectManger::GetVarValue(ZFCmdData* pkArea)
+{
+	char szValue[256];
+	strcpy(szValue, "");
+	string strValue;
+
+	switch(pkArea->m_eType) {
+		case CSYS_FUNCTION:
+			sprintf(szValue, "(%s)", pkArea->m_strHelpText);
+			break;
+		case CSYS_FLOAT:
+			sprintf(szValue, "%.3f", *(float*)pkArea->m_vValue);
+			//m_pkCon->Printf(" %s = [%.3f]",kVars[i]->aName,*(float*)GetVar(i));break;
+			break;
+		case CSYS_DOUBLE:
+			sprintf(szValue, "%.3d", *(double*)pkArea->m_vValue);
+			//	m_pkCon->Printf(" %s = [%.3d]",kVars[i]->aName,*(double*)GetVar(i));break;
+			break;
+		case CSYS_LONG:
+			sprintf(szValue, "%l", *(long*)pkArea->m_vValue);
+			//m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
+			break;
+		case CSYS_BOOL:
+			break;
+		case CSYS_INT:
+			sprintf(szValue, "%d", *(int*)pkArea->m_vValue);
+			break;
+		case CSYS_STRING:
+			sprintf(szValue, "%s", (string*)pkArea->m_vValue);
+			//m_pkCon->Printf(" %s = [%s]",kVars[i]->aName,((string*)GetVar(i))->c_str());break;
+			break;
+		}
+
+	strValue = szValue;
+	return strValue;
+}
+
+
+
+void ZFObjectManger::PrintVariables()
+{
+	BasicConsole*		m_pkCon;
+	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	string strValue;
+
+	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+			strValue = GetVarValue(&m_kCmdDataList[i]);
+			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
+	}
+	
+}

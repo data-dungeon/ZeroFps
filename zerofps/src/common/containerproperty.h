@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class ContainerProperty: public Property {
+class COMMON_API ContainerProperty: public Property {
 	private:
 		Container	m_kContainer;
 		
@@ -30,7 +30,7 @@ class ContainerProperty: public Property {
 		void Load(ZFMemPackage* pkPackage);
 };
 
-Property* Create_ContainerProperty();
+COMMON_API Property* Create_ContainerProperty();
 
 
 #endif
