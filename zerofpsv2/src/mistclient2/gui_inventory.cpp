@@ -528,7 +528,7 @@ void InventoryDlg::OnDropItem()
 
 	if(!rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Top))
 	{
-		if(m_kMoveSlot.bIsInventoryItem)
+		if(m_kMoveSlot.bIsInventoryItem) // flyttar på ett inventoryitem till containern
 		{
 			if(m_pkContainerWnd && m_pkContainerWnd->IsVisible() && 
 				m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
@@ -536,9 +536,14 @@ void InventoryDlg::OnDropItem()
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
 				{
 					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
-					{
+					{												
+						Point p = SlotFromWnd(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd, false);
+						Point s = SlotSizeFromWnd(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd);
+						if(TestForCollision(p, s, false))
+							p = Point(-1,-1);
+
 						g_kMistClient.SendMoveItem(
-							m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID,m_iActiveContainerID,-1,-1);
+							m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID,m_iActiveContainerID,p.x,p.y);
 						m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
 						m_kMoveSlot.m_iIndex = -1;
 						return;
@@ -558,15 +563,21 @@ void InventoryDlg::OnDropItem()
 					}
 			}
 		}
-		else
+		else // flyttar på ett containeritem till inventoryt
 		{
 			if(m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
 			{
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
 					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
 					{
+
+						Point p = SlotFromWnd(m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd, true);
+						Point s = SlotSizeFromWnd(m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd);
+						if(TestForCollision(p, s, true))
+							p = Point(-1,-1);
+
 						g_kMistClient.SendMoveItem(
-							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID,pkCharProp->m_iInventory,-1,-1);
+							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID,pkCharProp->m_iInventory,p.x,p.y);
 						m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
 						m_kMoveSlot.m_iIndex = -1;
 						return;
@@ -670,33 +681,89 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 		test_size = SlotSizeFromWnd(m_vkContainerItemList[iTestSlot].pkWnd);
 	}
 
+	//vector<Point> kSlotsTaken;
+
+	//if(bInventory)
+	//{
+	//	for(int i=0; i<m_vkInventoryItemList.size(); i++)
+	//		if( i != iTestSlot)
+	//		{
+	//			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
+	//			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+
+	//			for(int y=0; y<kSlotSize.y; y++)
+	//				for(int x=0; x<kSlotSize.x; x++)
+	//					kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+	//		}
+	//}
+	//else
+	//{
+	//	for(int i=0; i<m_vkContainerItemList.size(); i++)
+	//		if( i != iTestSlot)
+	//		{
+	//			Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
+	//			Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
+
+	//			for(int y=0; y<kSlotSize.y; y++)
+	//				for(int x=0; x<kSlotSize.x; x++)
+	//					kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+	//		}
+	//}
+
+	//for(int i=0; i<kSlotsTaken.size(); i++)
+	//	for(int y=0; y<test_size.y; y++)
+	//		for(int x=0; x<test_size.x; x++)
+	//		{
+	//			Point t(test_slot.x + x, test_slot.y + y);
+
+	//			if(t == kSlotsTaken[i])
+	//				return true;
+	//		}
+
+	return TestForCollision(test_slot, test_size, bInventory);
+
+}
+
+
+
+
+
+
+
+
+bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInventory)
+{
 	vector<Point> kSlotsTaken;
 
 	if(bInventory)
 	{
 		for(int i=0; i<m_vkInventoryItemList.size(); i++)
-			if( i != iTestSlot)
-			{
-				Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
-				Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+		{
+			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
+			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 
+			if(!(kSlot == test_slot && kSlotSize == test_size))
+			{
 				for(int y=0; y<kSlotSize.y; y++)
 					for(int x=0; x<kSlotSize.x; x++)
 						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
 			}
+		}
 	}
 	else
 	{
 		for(int i=0; i<m_vkContainerItemList.size(); i++)
-			if( i != iTestSlot)
-			{
-				Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
-				Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
+		{
+			Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
+			Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
 
+			if(!(kSlot == test_slot && kSlotSize == test_size))
+			{
 				for(int y=0; y<kSlotSize.y; y++)
 					for(int x=0; x<kSlotSize.x; x++)
 						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
 			}
+		}
 	}
 
 	for(int i=0; i<kSlotsTaken.size(); i++)
@@ -712,6 +779,9 @@ bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 	return false;
 
 }
+
+
+
 
 Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)
 {
