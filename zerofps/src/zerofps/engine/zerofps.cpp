@@ -1021,6 +1021,8 @@ void ZeroFps::Connect(int iConnectionID)
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 
 	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);
+
+	m_pkApp->OnServerClientJoin();
 }
 
 void ZeroFps::Disconnect(int iConnectionID)

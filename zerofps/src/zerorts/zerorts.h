@@ -134,6 +134,9 @@ class ZeroRTS :public Application {
 		//order handler
 		void HandleOrders();
 
+		//on client join, server runs this
+		void OnServerClientJoin();
+
 	//Palls (friends) =)
 	friend class UserPanel;
 };

@@ -24,8 +24,6 @@ void P_ServerInfo::PackFrom(NetPacket* pkNetPacket)
 {
 	pkNetPacket->Read(&m_kSInfo, sizeof(m_kSInfo));
 	
-	cout<<"client got info"<<endl;
-
 }
 
 COMMON_API Property* Create_P_ServerInfo()

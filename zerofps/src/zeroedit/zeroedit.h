@@ -179,6 +179,9 @@ class ZeroEdit :public Application {
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		Gui* m_pkGui;
 		
+		//on client join, server runs this
+		void OnServerClientJoin();
+		
 	friend class Gui;
 	friend class WorkPanelDlg;
 };

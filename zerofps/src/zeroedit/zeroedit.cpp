@@ -1415,3 +1415,9 @@ bool ZeroEdit::RotateCamera(int relMouseX, int relMouseY)
 
 	return false;
 }
+
+void ZeroEdit::OnServerClientJoin()
+{
+	cout<<"client connected"<<endl;
+
+}

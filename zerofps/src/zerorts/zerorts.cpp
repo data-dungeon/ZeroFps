@@ -706,9 +706,17 @@ void ZeroRTS::ClientInit()
 	//Set fog size
 	m_pkFogRender->SetScale(mapwidth);
 	
+	//setup minimap
+	m_pkMiniMap = new MiniMap(m_pkGuiBuilder, pkTexMan);
+	m_pkMiniMap->Create(/*pkTexMan,*/ pkLevelMan); 
 	
 	
 	
 	cout<<"Join Complete"<<endl;
 }
 
+void ZeroRTS::OnServerClientJoin()
+{
+	cout<<"client connected"<<endl;
+
+}

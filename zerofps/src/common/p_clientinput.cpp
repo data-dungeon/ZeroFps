@@ -40,6 +40,7 @@ void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 {	
 	int nrofcommands = m_kCommands.size();
 
+	pkNetPacket->Write(&m_iPlayerID,sizeof(m_iPlayerID));	
 	pkNetPacket->Write(&nrofcommands,sizeof(nrofcommands));
 	
 	for(int i=0;i<nrofcommands;i++)
@@ -53,8 +54,8 @@ void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
 	int nrofcommands;
 	UnitCommand tempcommand;
 		
-	pkNetPacket->Read(&nrofcommands,sizeof(nrofcommands));
-	
+	pkNetPacket->Read(&m_iPlayerID,sizeof(m_iPlayerID));				
+	pkNetPacket->Read(&nrofcommands,sizeof(nrofcommands));	
 	
 	for(int i=0;i<nrofcommands;i++)
 	{
