@@ -112,8 +112,10 @@ class MistServer :public Application , public ZGuiApp {
 		void ClientInit();
 		
 		int CreatePlayer(const char* csName,const char* csLocation,int iConID);
+		void DeletePlayer(int iConID);
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();
+		
 		
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);

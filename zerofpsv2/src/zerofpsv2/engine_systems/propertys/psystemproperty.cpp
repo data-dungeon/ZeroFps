@@ -120,7 +120,7 @@ void PSystemProperty::Load(ZFIoInterface* pkPackage)
 
 void PSystemProperty::PackTo( NetPacket* pkNetPacket ) 
 {
-   pkNetPacket->Write_Str( m_kPSType.c_str() );
+   pkNetPacket->Write_NetStr( m_kPSType.c_str() );
 //	pkNetPacket->Write( m_pkPSystem->m_fAge );
 }
 
@@ -129,7 +129,7 @@ void PSystemProperty::PackTo( NetPacket* pkNetPacket )
 void PSystemProperty::PackFrom( NetPacket* pkNetPacket ) 
 {
 	char temp[128];
-	pkNetPacket->Read_Str(temp);
+	pkNetPacket->Read_NetStr(temp);
 	m_kPSType = temp;	
 	
 	if(!m_pkPSystem)

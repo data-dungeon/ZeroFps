@@ -17,6 +17,13 @@ struct MCOMMON_API PlayerInfo
 	vector<pair<int,int> >	kControl;
 };
 
+enum PlayerRights
+{
+	PR_OWNER=1,
+	PR_CONTROLS=8,
+	PR_LOOKAT=16,
+};
+
 class MCOMMON_API P_ServerInfo: public Property {
 	private:
 		ZeroFps* m_pkFps;

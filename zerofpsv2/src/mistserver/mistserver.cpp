@@ -546,17 +546,23 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	kNames.push_back("kuk");	
 	kNames.push_back("hora");	
 	
+	//create player object
 	int iPlayerID  = CreatePlayer(kNames[iConID].c_str(),"Start",iConID);
 	
 	if(m_pkServerInfoP)
 	{	
+		//wich rights shuld a client have on its player caracter
+		int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
+		
 		m_pkServerInfoP->AddPlayer(iConID,kNames[iConID].c_str());
-		m_pkServerInfoP->AddObject(iConID,iPlayerID,1);
+		m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
 	}
 }
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
+	DeletePlayer(iConID);
+
 	if(m_pkServerInfoP)
 		m_pkServerInfoP->RemovePlayer(iConID);	
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
@@ -900,6 +906,30 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	return pkObject->iNetWorkID;
 }
 
+void MistServer::DeletePlayer(int iConID)
+{
+	if(m_pkServerInfoP)
+	{
+		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(iConID);
+		if(pi)
+		{
+			for(int i = 0;i<pi->kControl.size();i++)
+			{
+				if(pi->kControl[i].second & PR_OWNER)
+				{
+					Object* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
+					
+					//save object here
+					
+					//delete it
+					if(pkObj)
+						pkObjectMan->Delete(pkObj);
+				}
+			}		
+		}
+	}
+}
+
 void MistServer::PathTest() 
 {
 	return;
@@ -942,8 +972,7 @@ void MistServer::HandleOrders()
 		}
 		
 		P_ClientControl::PopOrder();
-	}
-
-
+	} 
 }
+
 
