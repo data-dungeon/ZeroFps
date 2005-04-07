@@ -367,6 +367,8 @@ void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunDiffuseColor);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunAmbientColor);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunPos);	
+	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_bSunFlare);	
 		
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_fFogStart);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_fFogStop);	
@@ -408,6 +410,8 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunAmbientColor);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunPos);	
 		
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_bSunFlare);	
+	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_fFogStart);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_fFogStop);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kFogColor[0]);		
