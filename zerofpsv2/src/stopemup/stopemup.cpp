@@ -71,7 +71,7 @@ void StopEmUp::OnInit()
 	
 	
 	//add vfs root
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");	
+// 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");	
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/stopemup") ,"/data");
 
