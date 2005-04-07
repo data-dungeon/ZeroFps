@@ -163,6 +163,10 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 				//check rotation
 				Vector3 kOwnerDir = pkOwner->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 				Vector3 kDir = (pkTarget->GetWorldPosV() - pkOwner->GetWorldPosV()).Unit();		
+				
+				kOwnerDir.y = 0;
+				kDir.y = 0;
+				
 				if(RadToDeg(kOwnerDir.Angle(kDir)) > 30)
 					return 4;				
 			}
