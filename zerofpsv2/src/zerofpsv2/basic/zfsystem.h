@@ -7,6 +7,7 @@
 #include <vector>
 #include "zfsubsystem.h"
 #include "cstdio"
+#include <hash_map> 
 #include <map> 
 
 

@@ -19,6 +19,18 @@ struct v2 {
 
 struct PSystemTypeData
 {
+	float m_fLightStartColorR,
+			m_fLightStartColorG,
+			m_fLightStartColorB,
+			m_fLightEndColorR,
+			m_fLightEndColorG,
+			m_fLightEndColorB,
+			m_fLightStartQuadAtt,
+			m_fLightEndQuadAtt,
+			m_fLightStartConstAtt,
+			m_fLightEndConstAtt,
+			m_fLightStartLinAtt,
+			m_fLightEndLinAtt;
 
 	Vector3 
 		m_kStart_OuterStartArea,
@@ -127,7 +139,7 @@ private:
 	ZFIni m_kIniLoader;
 
 public:
-	PSystem* GetPSSystem ( string kPSName );
+	PSystem* GetPSystem ( string kPSName );
 	PSystemManager();
 	static inline PSystemManager* GetInstance()				{ return m_pkInstance; }
 

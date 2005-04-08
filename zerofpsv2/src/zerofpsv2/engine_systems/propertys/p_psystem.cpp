@@ -14,36 +14,38 @@ void P_PSystem::Update()
 	StartProfileTimer("r___PSystem");
 
 	//m_pkZShaderSystem->Push("P_PSystem::Update");
+
+	Matrix4 kMat;
+	kMat = m_pkEntity->GetWorldRotM();
 	
-	if ( m_pkPSystem )
+	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
-		Matrix4 kMat;
-		kMat = m_pkEntity->GetWorldRotM();
-		
-      // returns true if the PSystem is finished
-		if ( !m_pkPSystem->Update( m_pkEntity->GetIWorldPosV(), kMat ) )
+		if ( m_kPSystems[i].m_pkPSystem )
 		{
- 		   if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
- 		   {
-				m_pkPSystem->m_pkLight->Update(&m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
-	 		   m_pkPSystem->Draw();
+			// returns true if the PSystem is finished
+			if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV(), kMat ) )
+			{
+ 				if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
+ 				{
+					m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
+	 				m_kPSystems[i].m_pkPSystem->Draw();
+				}
+ 			}
+			else
+			{
+				if ( m_kPSystems[i].m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
+					m_pkEntity->m_eRole == NETROLE_AUTHORITY )
+				{
+					m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
+				}
+
+				delete m_kPSystems[i].m_pkPSystem;
+
+				m_kPSystems[i].m_pkPSystem = 0;
+
 			}
- 		}
-      else
-      {
-         if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
-				m_pkEntity->m_eRole == NETROLE_AUTHORITY )
-         {
-            m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
-			}
-
-         delete m_pkPSystem;
-
-         m_pkPSystem = 0;
-
-      }
+		}
 	}
-
 	//m_pkZShaderSystem->Pop();
 	
 	StopProfileTimer("r___PSystem");	
@@ -53,11 +55,14 @@ void P_PSystem::Update()
 
 vector<PropertyValues> P_PSystem::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(m_kPSystems.size());
 		
-	kReturn[0].kValueName = "PSType";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_kPSType;
+	for (int i = 0; i < m_kPSystems.size(); i++)
+	{
+		kReturn[i].kValueName = "PSType";
+		kReturn[i].iValueType = VALUETYPE_STRING;
+		kReturn[i].pkValue    = (void*)&m_kPSystems[i].m_strPSName;
+	}
 
 	return kReturn;
 }
@@ -71,12 +76,9 @@ P_PSystem::P_PSystem()
 	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	m_iSortPlace =	9;
-	m_iVersion = 2;
+	m_iVersion = 3;
 	
 	strcpy(m_acName,"P_PSystem");
-	m_pkPSystem = NULL;
-	
-
 	
 	m_pkZShaderSystem =  static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 }
@@ -89,8 +91,6 @@ P_PSystem::P_PSystem( string kPSType )
 
 	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;	
-// m_iType = PROPERTY_TYPE_RENDER_NOSHADOW;
-//	m_iSide = PROPERTY_SIDE_CLIENT;
 	m_iSortPlace =	9;
 
 	strcpy(m_acName,"P_PSystem");
@@ -101,12 +101,9 @@ P_PSystem::P_PSystem( string kPSType )
 
 bool P_PSystem::HandleSetValue( string kValueName, string kValue )
 {
-	if( strcmp(kValueName.c_str(), "PSType") == 0 ) 
+	if( strcmp(kValueName.c_str(), "PSType") == 0) 
 	{
-		//cout << "Setting ParticleSystem:" << kValue.c_str() << endl;
-
 		SetPSType( kValue.c_str() );
-
 		return true;
 	}
 
@@ -117,11 +114,21 @@ bool P_PSystem::HandleSetValue( string kValueName, string kValue )
 
 void P_PSystem::SetPSType( string kName )
 {
+	PSystem* pkNewSystem = PSystemManager::GetInstance()->GetPSystem ( kName );
 
-	m_pkPSystem = PSystemManager::GetInstance()->GetPSSystem ( kName );
-   m_kPSType = kName;
-   
-   SetNetUpdateFlag(true);
+	if (pkNewSystem)
+	{
+		ActiveSystem kNewSystem;
+
+		kNewSystem.m_strPSName = kName;
+		kNewSystem.m_pkPSystem = pkNewSystem;
+
+		m_kPSystems.push_back(kNewSystem);   
+	   
+		SetNetUpdateFlag(true);
+	}
+	else
+		cout << "Warning! Failed to load PSystem " << kName << endl;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -129,16 +136,15 @@ void P_PSystem::SetPSType( string kName )
 void P_PSystem::Save(ZFIoInterface* pkPackage)
 {
 
-   // PSType
-	pkPackage->Write_Str(m_kPSType);
-
+	// number of PSystems
+	pkPackage->Write(m_kPSystems.size());
    
-   // PSAge
-   float fAge = 0;
-	if(m_pkPSystem)
-		fAge = m_pkPSystem->Age();
-		
-   pkPackage->Write (fAge);
+	for (int i = 0; i < m_kPSystems.size(); i++)
+	{
+		// PSType
+		pkPackage->Write_Str(m_kPSystems[i].m_strPSName);
+	   pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
+	}
 
 }
 
@@ -152,37 +158,56 @@ void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 		{
 				char temp[128];
 				pkPackage->Read((void*)&temp,128,1);
-				m_kPSType=temp;
 			
 				// Load PSType data and init PSystem
-				SetPSType( m_kPSType );
+				SetPSType( string(temp) );
 				
 				// Read PSAge
 				float fAge;
 				pkPackage->Read ( fAge);
-				m_pkPSystem->SetAge (fAge);		
+//				m_pkPSystem->SetAge (fAge);		
 		
 			break;		
 		}
 		
 		case 2:
 		{
-			pkPackage->Read_Str(m_kPSType);
+			string kPSname;
+			pkPackage->Read_Str(kPSname);
 		
 			// Load PSType data and init PSystem
-			SetPSType( m_kPSType );
+			SetPSType( kPSname );
 			
 			// Read PSAge
 			float fAge;
 			pkPackage->Read ( fAge);
 			
-			if(m_pkPSystem)
-				m_pkPSystem->SetAge (fAge);
-		
+			if(m_kPSystems.size())
+				m_kPSystems[0].m_pkPSystem->SetAge (fAge);
 		
 			break;
 		}
-	
+
+		case 3:
+		{
+			int iNumOfPSystems;
+			float fAge;
+			string strPSName;
+
+			// number of PSystems
+			pkPackage->Read(iNumOfPSystems);
+			
+			for (int i = 0; i < iNumOfPSystems; i++)
+			{
+				pkPackage->Read_Str(strPSName);
+				pkPackage->Read(fAge);
+
+				SetPSType( strPSName );
+
+				if (m_kPSystems.size())
+               m_kPSystems[i].m_pkPSystem->SetAge(fAge);
+			}
+		}
 	}	
 
 }
@@ -191,7 +216,9 @@ void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 
 void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 {	
-	pkNetPacket->Write_Str( m_kPSType);
+	pkNetPacket->Write(m_kPSystems.size());
+	for (int i = 0; i < m_kPSystems.size(); i++)
+		pkNetPacket->Write_Str( m_kPSystems[i].m_strPSName );
 	
 	SetNetUpdateFlag(iConnectionID,false);   
 }
@@ -200,16 +227,20 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 
 void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	pkNetPacket->Read_Str(m_kPSType);
+	int iSize;
+	string strPSName;
+	pkNetPacket->Read(iSize);
+
+
+	for (int i = 0; i < iSize; i++)
+	{
+		pkNetPacket->Read_Str(strPSName);
+		
+		if(strPSName == "nons")
+			continue;
 	
-	if(m_kPSType == "nons")
-		return;
-	
-	if(!m_pkPSystem)
-		SetPSType( m_kPSType );
-	else	
-		if(m_pkPSystem->m_pkPSystemType->m_kName != m_kPSType)
-			SetPSType( m_kPSType );		
+		SetPSType( strPSName );
+	}
 
 }
 
@@ -217,7 +248,8 @@ void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 
 P_PSystem::~P_PSystem()
 {
-   delete m_pkPSystem;
+	for (int i = 0; i < m_kPSystems.size(); i++)
+		delete m_kPSystems[i].m_pkPSystem;
 }
 
 // ------------------------------------------------------------------------------------------

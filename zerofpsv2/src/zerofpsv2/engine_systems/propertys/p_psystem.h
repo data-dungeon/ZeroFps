@@ -5,14 +5,18 @@
 #include "../engine_systems_x.h"
 #include "../common/psystem.h"
 #include "../../render/zshadersystem.h"
+#include <vector>
+	using namespace std;
 
 /// Property for a particle system.
-class ENGINE_SYSTEMS_API P_PSystem : public Property {
+class ENGINE_SYSTEMS_API P_PSystem : public Property 
+{
 
 	private:
-		PSystem 			*m_pkPSystem;
+		struct ActiveSystem { PSystem* m_pkPSystem; string m_strPSName; };
+
+		vector<ActiveSystem> 			m_kPSystems;
 		ZShaderSystem*	m_pkZShaderSystem;
-		string m_kPSType;
 
 	public:
 		void Update();
@@ -24,7 +28,7 @@ class ENGINE_SYSTEMS_API P_PSystem : public Property {
 		
 		bool HandleSetValue( string kValueName, string kValue );
 
-      PSystem* GetPSystem()                                 { return m_pkPSystem; }
+      //PSystem* GetPSystem()                                 { return m_pkPSystem; }
 
 		void SetPSType ( string kName );
 

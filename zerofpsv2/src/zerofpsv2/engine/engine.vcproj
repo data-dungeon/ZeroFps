@@ -508,6 +508,12 @@
 					RelativePath="..\engine_systems\propertys\psproperties\colorpsprop.h">
 				</File>
 				<File
+					RelativePath="..\engine_systems\propertys\psproperties\lightpsprop.cpp">
+				</File>
+				<File
+					RelativePath="..\engine_systems\propertys\psproperties\lightpsprop.h">
+				</File>
+				<File
 					RelativePath="..\engine_systems\propertys\psproperties\movepsprop.cpp">
 				</File>
 				<File

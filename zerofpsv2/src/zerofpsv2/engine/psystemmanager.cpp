@@ -20,7 +20,7 @@ PSystemManager::PSystemManager()
 
 // ------------------------------------------------------------------------------------------
 
-PSystem* PSystemManager::GetPSSystem ( string kPSName )
+PSystem* PSystemManager::GetPSystem ( string kPSName )
 {
 	// Look for the wanted PSystem
 	map<string, PSystemType>::iterator kIterator = m_kPSystemTypes.find ( kPSName );
@@ -537,6 +537,67 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
    pkPSType->m_kPSystemBehaviour.m_kPosOffset.x -= pkPSType->m_kParticleBehaviour.m_kStartSize.x;
    pkPSType->m_kPSystemBehaviour.m_kPosOffset.y -= pkPSType->m_kParticleBehaviour.m_kStartSize.y;
    pkPSType->m_kPSystemBehaviour.m_kPosOffset.z -= pkPSType->m_kParticleBehaviour.m_kStartSize.x;
+
+
+	// Light Stuff
+		// lightcolor start
+	if ( m_kIniLoader.KeyExist("light_start_color", "r") )
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorR = m_kIniLoader.GetFloatValue("LightStartColor", "r");
+	else 
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorR = -1;
+	if ( m_kIniLoader.KeyExist("light_start_color", "g") )
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorG = m_kIniLoader.GetFloatValue("LightStartColor", "g");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorG = -1;
+	if ( m_kIniLoader.KeyExist("light_start_color", "b") )
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorB = m_kIniLoader.GetFloatValue("LightStartColor", "b");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorB = -1;
+		
+		// lightcolor end
+	if ( m_kIniLoader.KeyExist("light_end_color", "r") )
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorR = m_kIniLoader.GetFloatValue("LightEndColor", "r");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorR = -1;
+	if ( m_kIniLoader.KeyExist("light_end_color", "g") )
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorG = m_kIniLoader.GetFloatValue("LightEndColor", "g");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorG = -1;
+	if ( m_kIniLoader.KeyExist("light_end_color", "b") )
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorB = m_kIniLoader.GetFloatValue("LightEndColor", "b");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorB = -1;
+
+	// quad atten
+	if ( m_kIniLoader.KeyExist("light_atten", "start_quad_att") )
+		pkPSType->m_kPSystemBehaviour.m_fLightStartQuadAtt = m_kIniLoader.GetFloatValue("light_atten", "start_quad_att");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightStartQuadAtt = -1;
+	if ( m_kIniLoader.KeyExist("light_atten", "end_quad_att") )
+		pkPSType->m_kPSystemBehaviour.m_fLightEndQuadAtt = m_kIniLoader.GetFloatValue("light_atten", "end_quad_att");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightEndQuadAtt = -1;
+
+		// lin atten
+	if ( m_kIniLoader.KeyExist("light_atten", "start_lin_att") )
+		pkPSType->m_kPSystemBehaviour.m_fLightStartLinAtt = m_kIniLoader.GetFloatValue("light_atten", "start_lin_att");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightStartLinAtt = -1;
+	if ( m_kIniLoader.KeyExist("light_atten", "end_lin_att") )
+		pkPSType->m_kPSystemBehaviour.m_fLightEndLinAtt = m_kIniLoader.GetFloatValue("light_atten", "end_lin_att");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightEndLinAtt = -1;
+
+		// const atten
+	if ( m_kIniLoader.KeyExist("light_atten", "start_const_att") )
+		pkPSType->m_kPSystemBehaviour.m_fLightStartConstAtt = m_kIniLoader.GetFloatValue("light_atten", "start_const_att");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightStartConstAtt = -1;
+	if ( m_kIniLoader.KeyExist("light_atten", "end_const_att") )
+		pkPSType->m_kPSystemBehaviour.m_fLightEndConstAtt = m_kIniLoader.GetFloatValue("light_atten", "end_const_att");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fLightEndConstAtt = -1;
+
 
 	// close the file
 	//m_kIniLoader.Close();

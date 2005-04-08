@@ -2828,4 +2828,5 @@ int MistLandLua::SetAIStateLua(lua_State* pkLua)
       return 0;
 	}
 
+	return 0;
 }
