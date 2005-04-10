@@ -747,6 +747,13 @@ void MistClient::Input()
 		if(!DelayCommand() )
 			SendUseSkill("skill-basic_attack.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 						
+	if(m_pkInputHandle->Pressed(KEY_5))
+		if(!DelayCommand() )
+			SendUseSkill("skill-bow.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+
+	if(m_pkInputHandle->Pressed(KEY_6))
+		if(!DelayCommand() )
+			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
@@ -757,8 +764,7 @@ void MistClient::Input()
 			{					
 				//remove current target
 				m_iTargetID = -1;
-			
-						
+
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
