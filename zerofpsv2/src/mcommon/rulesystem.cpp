@@ -65,7 +65,7 @@ void RuleSystem::Damage(int iCharacter,float fDamage)
 	}
 }
 
-void RuleSystem::Attack(int iAttacker,int iDefender)
+bool RuleSystem::Attack(int iAttacker,int iDefender)
 {
 	P_CharacterProperty* pkAttacker = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iAttacker,"P_CharacterProperty");
 	P_CharacterProperty* pkDefender = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iDefender,"P_CharacterProperty");
@@ -83,7 +83,9 @@ void RuleSystem::Attack(int iAttacker,int iDefender)
 		if(fRandA <= fRandD)
 		{
 			cout<<"MISS"<<endl;
-			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV(),1);			
+			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV(),1);
+			
+			return false;			
 		}
 		else
 		{
@@ -133,6 +135,8 @@ void RuleSystem::Attack(int iAttacker,int iDefender)
 			
 			pkStatsD->ChangeStat("Health",-iTotal);		
 			SendPointText(IntToString(iTotal),pkDefender->GetEntity()->GetWorldPosV(),0);			
+		
+			return true;
 		} 			
 	}
 }
@@ -168,9 +172,14 @@ namespace SI_RuleSystem
 		g_pkScript->GetArgInt(pkLua, 0, &iAttacker);		
 		g_pkScript->GetArgInt(pkLua, 1, &iDefender);		
 
-		if(RuleSystem* pkRuleSystem = static_cast<RuleSystem*>(g_ZFObjSys.GetObjectPtr("RuleSystem")))		
-			pkRuleSystem->Attack(iAttacker,iDefender);
-
-		return 0;
+		if(RuleSystem* pkRuleSystem = static_cast<RuleSystem*>(g_ZFObjSys.GetObjectPtr("RuleSystem")))
+			if(pkRuleSystem->Attack(iAttacker,iDefender))
+			{
+				g_pkScript->AddReturnValue(pkLua, 1);
+				return 1;
+			}
+	
+		g_pkScript->AddReturnValue(pkLua, 0);			
+		return 1;
 	}		
 }

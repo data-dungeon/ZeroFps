@@ -28,7 +28,7 @@ class MCOMMON_API RuleSystem : public ZFSubSystem
 		bool IsValid()		{	return true;	};		
 		
 		void Damage(int iCharacter,float fDamage);
-		void Attack(int iAttacker,int iDefender);
+		bool Attack(int iAttacker,int iDefender);
 };
 
 
