@@ -217,7 +217,7 @@ void MistClient::AddStringToChatBox(string strMsg)
 
 	pkChatEb->ScrollRowIntoView(pkChatEb->GetRowCount());
 
-	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D);	
+ 	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D,0.3);	
 }
 
 /*void MistClient::ResizeChatDlg(bool	bMakeBigger)
