@@ -84,7 +84,7 @@ void P_AI::Update()
 	switch(m_iState)
 	{
 		//guard
-		case 4:
+		case eAI_STATE_GUARD:
 		{	
 			//look for enemy
 			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
@@ -105,7 +105,7 @@ void P_AI::Update()
 		}
 	
 		//random walk
-		case 1:
+		case eAI_STATE_RANDOMWALK:
 		{			
 			if(m_bWalk)
 			{
@@ -154,7 +154,7 @@ void P_AI::Update()
 		}
 	
 		//look at
-		case 2:
+		case eAI_STATE_LOOKAT:
 		{
 			if(!ValidTarget(m_iTarget))
 			{
@@ -191,7 +191,7 @@ void P_AI::Update()
 		}
 			
 		//chase
-		case 3:
+		case eAI_STATE_CHASE:
 		{
 			if(!ValidTarget(m_iTarget))
 			{
@@ -230,7 +230,7 @@ void P_AI::Update()
 		}
 		
 		//attack
-		case 5:
+		case eAI_STATE_ATTACK:
 		{
 			if(!ValidTarget(m_iTarget))
 			{
@@ -258,7 +258,7 @@ void P_AI::Update()
 			break;							
 		}	
 		//dead	
-		case 6:
+		case eAI_STATE_DEAD:
 		{
 			// hello, I'm dead, not much too do..not much AI
 			//cout << "im so dead" << endl;

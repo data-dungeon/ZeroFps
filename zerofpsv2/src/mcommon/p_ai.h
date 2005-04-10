@@ -10,6 +10,18 @@ class P_CharacterProperty;
 
 using namespace std;
 
+enum MCOMMON_API AI_STATES
+{
+	eAI_STATE_RANDOMWALK =	1,
+	eAI_STATE_LOOKAT		=	2,
+	eAI_STATE_CHASE		=	3,
+	eAI_STATE_ATTACK 		=	5,
+	eAI_STATE_GUARD 		=	4,
+	eAI_STATE_DEAD			=	6,
+
+
+};
+
 
 /**	\brief	Da P_AI
 		\ingroup Common

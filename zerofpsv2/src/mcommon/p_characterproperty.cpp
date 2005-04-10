@@ -7,6 +7,7 @@
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
+#include "p_ai.h"
 
 
 //--------SKILL----------------
@@ -717,8 +718,22 @@ void P_CharacterProperty::MakeAlive()
 		pkTcs->SetTestType(E_SPHERE);
 	}	
 	
-	//send im alive info to client, if any
-	SendAliveInfo();
+	
+	//not a player character
+	if(m_iConID == -1)
+	{
+		//enable AI
+		if(P_AI* pkAI = (P_AI*)m_pkEntity->GetProperty("P_AI"))
+		{
+			pkAI->SetState(eAI_STATE_GUARD);
+		}				
+	}
+	else
+	{
+	
+		//send im alive info to client, if any
+		SendAliveInfo();	
+	}	
 }
 
 
@@ -754,6 +769,11 @@ void P_CharacterProperty::OnDeath()
 	{
 		m_fDeadTimer = m_pkEntityManager->GetSimTime();
 	
+		//disable AI
+		if(P_AI* pkAI = (P_AI*)m_pkEntity->GetProperty("P_AI"))
+		{
+			pkAI->SetState(eAI_STATE_DEAD);
+		}				
 	}
 	else
 	{	
