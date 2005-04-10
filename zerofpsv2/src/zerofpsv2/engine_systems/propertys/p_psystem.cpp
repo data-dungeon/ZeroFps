@@ -123,6 +123,8 @@ void P_PSystem::SetPSType( string kName )
 		kNewSystem.m_strPSName = kName;
 		kNewSystem.m_pkPSystem = pkNewSystem;
 
+		pkNewSystem->SetParent(this);
+
 		m_kPSystems.push_back(kNewSystem);   
 	   
 		SetNetUpdateFlag(true);
@@ -164,7 +166,7 @@ void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 				
 				// Read PSAge
 				float fAge;
-				pkPackage->Read ( fAge);
+				pkPackage->Read (fAge);
 //				m_pkPSystem->SetAge (fAge);		
 		
 			break;		
@@ -180,7 +182,7 @@ void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 			
 			// Read PSAge
 			float fAge;
-			pkPackage->Read ( fAge);
+			pkPackage->Read (fAge);
 			
 			if(m_kPSystems.size())
 				m_kPSystems[0].m_pkPSystem->SetAge (fAge);

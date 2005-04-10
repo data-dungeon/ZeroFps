@@ -13,7 +13,7 @@
 
 using namespace std;
 
-
+class P_PSystem;
 class Render;
 
 struct PSystemType;
@@ -47,6 +47,8 @@ private:
 	
 	ZeroFps* m_pkFps;
 	Render* m_pkRender;
+
+	P_PSystem* m_pkParent;
 
 	Vector3 
 		m_kPosition;
@@ -112,6 +114,8 @@ public:
 
 	void SetParticles (unsigned int uiNrOf)	{ m_uiParticles = uiNrOf;		 }
 
+	void SetParent(P_PSystem* pkP_PSystem)		{ m_pkParent = pkP_PSystem; }
+
 	void ResetParticle (int iParticleIndex, float fTimeOffset);
 	void DisableParticle ( int iParticleIndex );
 
@@ -124,11 +128,13 @@ public:
 	friend class MovePSProp;
 	friend class ColorPSProp;
 	friend class SizePSProp;
+   friend class TexturePSProp;
+	friend class LightPSProp;
 
 	PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
 
    friend class P_PSystem;
-   friend class TexturePSProp;
+
 };
 
 #endif

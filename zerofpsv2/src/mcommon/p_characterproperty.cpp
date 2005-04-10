@@ -1907,6 +1907,23 @@ namespace SI_P_CharacterProperty
 		return 0;				
 	}
 	
+	int MakeAliveLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 1)
+		{
+			cout<<"WARNING: MakeAliveLua - wrong number of arguments"<<endl;
+			return 0;		
+		}
+
+		int iCharcterID;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			pkCP->MakeAlive();
+
+		return 0;
+	}
 
 	//faction
 	int SetFactionLua(lua_State* pkLua)
@@ -2136,7 +2153,9 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("ChangeStat",		SI_P_CharacterProperty::ChangeStatLua);
 	g_pkScript->ExposeFunction("ChangeStatMod",	SI_P_CharacterProperty::ChangeStatModLua);
 	
-	
+	// life
+	g_pkScript->ExposeFunction("MakeAlive",	SI_P_CharacterProperty::MakeAliveLua);
+
 	//buffs
 	g_pkScript->ExposeFunction("AddBuff",			SI_P_CharacterProperty::AddBuffLua);
 	g_pkScript->ExposeFunction("RemoveBuff",		SI_P_CharacterProperty::RemoveBuffLua);

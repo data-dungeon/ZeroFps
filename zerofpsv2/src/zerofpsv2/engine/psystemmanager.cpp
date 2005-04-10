@@ -2,6 +2,7 @@
 #include "../engine_systems/propertys/psproperties/colorpsprop.h"
 #include "../engine_systems/propertys/psproperties/movepsprop.h"
 #include "../engine_systems/propertys/psproperties/sizepsprop.h"
+#include "../engine_systems/propertys/psproperties/lightpsprop.h"
 
 #include "../basic/zfsystem.h"
 #include "../basic/zfini.h"
@@ -55,6 +56,11 @@ PSystem* PSystemManager::GetPSystem ( string kPSName )
 		// Change Size property
 		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "Size" )
 			pkPS->AddPSProperty ( new SizePSProp ( pkPS ) );
+
+		// Light property
+		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "Light" )
+			pkPS->AddPSProperty ( new LightPSProp ( pkPS ) );
+
 	}
 
 	// Add texture coordinates
@@ -542,29 +548,29 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	// Light Stuff
 		// lightcolor start
 	if ( m_kIniLoader.KeyExist("light_start_color", "r") )
-		pkPSType->m_kPSystemBehaviour.m_fLightStartColorR = m_kIniLoader.GetFloatValue("LightStartColor", "r");
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorR = m_kIniLoader.GetFloatValue("light_start_color", "r");
 	else 
 		pkPSType->m_kPSystemBehaviour.m_fLightStartColorR = -1;
 	if ( m_kIniLoader.KeyExist("light_start_color", "g") )
-		pkPSType->m_kPSystemBehaviour.m_fLightStartColorG = m_kIniLoader.GetFloatValue("LightStartColor", "g");
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorG = m_kIniLoader.GetFloatValue("light_start_color", "g");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLightStartColorG = -1;
 	if ( m_kIniLoader.KeyExist("light_start_color", "b") )
-		pkPSType->m_kPSystemBehaviour.m_fLightStartColorB = m_kIniLoader.GetFloatValue("LightStartColor", "b");
+		pkPSType->m_kPSystemBehaviour.m_fLightStartColorB = m_kIniLoader.GetFloatValue("light_start_color", "b");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLightStartColorB = -1;
 		
 		// lightcolor end
 	if ( m_kIniLoader.KeyExist("light_end_color", "r") )
-		pkPSType->m_kPSystemBehaviour.m_fLightEndColorR = m_kIniLoader.GetFloatValue("LightEndColor", "r");
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorR = m_kIniLoader.GetFloatValue("light_end_color", "r");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLightEndColorR = -1;
 	if ( m_kIniLoader.KeyExist("light_end_color", "g") )
-		pkPSType->m_kPSystemBehaviour.m_fLightEndColorG = m_kIniLoader.GetFloatValue("LightEndColor", "g");
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorG = m_kIniLoader.GetFloatValue("light_end_color", "g");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLightEndColorG = -1;
 	if ( m_kIniLoader.KeyExist("light_end_color", "b") )
-		pkPSType->m_kPSystemBehaviour.m_fLightEndColorB = m_kIniLoader.GetFloatValue("LightEndColor", "b");
+		pkPSType->m_kPSystemBehaviour.m_fLightEndColorB = m_kIniLoader.GetFloatValue("light_end_color", "b");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLightEndColorB = -1;
 
@@ -636,6 +642,8 @@ void PSystemManager::SetProperties ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_kStartSize.y !=
 		pkPSType->m_kParticleBehaviour.m_kEndSize.y )
 		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Size");
+
+	pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Light");
 }
 
 // ------------------------------------------------------------------------------------------
