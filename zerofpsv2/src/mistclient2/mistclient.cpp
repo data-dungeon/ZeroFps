@@ -669,7 +669,10 @@ void MistClient::Input()
 		bool bSet = !m_bGuiCapture;
 		SetGuiCapture(bSet);
 	}
+	
+	SetGuiCapture(!m_pkInputHandle->Pressed(MOUSERIGHT));
 
+	
 	//get relative mouse
 	float x=0;
 	float z=0;		
@@ -1690,19 +1693,39 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 
 void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 {
-	m_bGuiCapture = bCapture;
+	if(m_bGuiCapture == bCapture)
+		return;
+
+	static float fMouseX,fMouseY;
 	
-	if(m_bGuiCapture == true)
+	if(bCapture == true)
 	{
-		//g_kMistClient.m_pkGui->m_bHandledMouse = false;
-		if(bMoveCursorToCenter)
-			m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);
+		m_pkInputHandle->SetCursorInputPos(fMouseX,fMouseY);
 		m_pkGui->ShowCursor(true);
 	}
 	else
 	{
+		m_pkInputHandle->MouseXY(fMouseX,fMouseY);
 		m_pkGui->ShowCursor(false);
-	}
+	}	
+	
+	m_bGuiCapture = bCapture;
+	
+	
+// 	m_bGuiCapture = bCapture;
+// 	
+// 	if(m_bGuiCapture == true)
+// 	{
+// 		//g_kMistClient.m_pkGui->m_bHandledMouse = false;
+//  		if(bMoveCursorToCenter)
+//  			m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);				
+// 
+// 		m_pkGui->ShowCursor(true);
+// 	}
+// 	else
+// 	{
+// 		m_pkGui->ShowCursor(false);
+// 	}
 }
 
 void MistClient::SendAction(int iEntityID,const string& strAction)
