@@ -20,6 +20,8 @@ class MCOMMON_API RuleSystem : public ZFSubSystem
 		
 		void SendPointText(const string& strText,const Vector3& kPos,int iType);
 		
+		void CharacterAttacked(Entity* pkCharacter,int iAttacker);
+		
 	public:
 		RuleSystem();
 		
@@ -28,6 +30,7 @@ class MCOMMON_API RuleSystem : public ZFSubSystem
 		bool IsValid()		{	return true;	};		
 		
 		void Damage(int iCharacter,float fDamage);
+		void Damage(int iAttacker,int iDefender,float fDamage);
 		bool Attack(int iAttacker,int iDefender);
 };
 

@@ -62,8 +62,9 @@ class MCOMMON_API P_AI: public Property
 		P_AI();
       ~P_AI();
 
-		void SetState (int iNewState)		{ m_iState = iNewState; }
-      
+		void SetState (int iNewState)			{ m_iState = iNewState; }
+      void SetTarget (int iNewTarget)		{ m_iTarget = iNewTarget; }
+		
 		void Init();
 	   void Update();
 		void Touch(int iID);		

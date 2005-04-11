@@ -5,6 +5,8 @@
 #include "../zerofpsv2/engine/zerofps.h"
 #include <iostream>
 
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
+
 #include "p_charactercontrol.h"
 #include "p_characterproperty.h"
 
@@ -95,7 +97,7 @@ void P_AI::Update()
 				if(iEnemy != -1)
 				{
 					//set look att state
-					m_iState = 2;
+					m_iState = eAI_STATE_LOOKAT;
 					m_iTarget = iEnemy;
 				}	
 			
@@ -143,7 +145,7 @@ void P_AI::Update()
 				if(iEnemy != -1)
 				{
 					//set attack state
-					m_iState = 3;
+					m_iState = eAI_STATE_CHASE;
 					m_iTarget = iEnemy;
 					
 				}
@@ -169,7 +171,7 @@ void P_AI::Update()
 				if(fDistance > m_fSeeDistance)
 				{
 					cout<<"target went out of sight"<<endl;
-					m_iState = 1;
+					m_iState = eAI_STATE_RANDOMWALK;
 					break;
 				}
 			
@@ -180,7 +182,7 @@ void P_AI::Update()
 				
 				if(fDistance < m_fAttackDistance)
 				{
-					m_iState = 3;
+					m_iState = eAI_STATE_CHASE;
 					break;
 				}
 				
@@ -195,7 +197,7 @@ void P_AI::Update()
 		{
 			if(!ValidTarget(m_iTarget))
 			{
-				m_iState = 1;
+				m_iState = eAI_STATE_RANDOMWALK;
 				break;
 			}		
 		
@@ -206,14 +208,14 @@ void P_AI::Update()
 				if(fDistance > m_fSeeDistance)
 				{
 					cout<<"target went out of attack/see distance"<<endl;
-					m_iState = 1; //return to random walk
+					m_iState = eAI_STATE_RANDOMWALK; //return to random walk
 					break;
 				}
 			
 				
 				if(fDistance < m_fStrikeRange )
 				{
-					m_iState = 5;
+					m_iState = eAI_STATE_ATTACK;
 					break;				
 				}
 				
@@ -234,7 +236,7 @@ void P_AI::Update()
 		{
 			if(!ValidTarget(m_iTarget))
 			{
-				m_iState = 1;
+				m_iState = eAI_STATE_RANDOMWALK;
 				break;
 			}
 			
@@ -244,7 +246,7 @@ void P_AI::Update()
 			
 				if(fDistance > m_fStrikeRange && m_fStrikeRange != -1)
 				{
-					m_iState = 3;
+					m_iState = eAI_STATE_CHASE;
 					break;
 				}
 						
@@ -257,6 +259,7 @@ void P_AI::Update()
 			
 			break;							
 		}	
+		
 		//dead	
 		case eAI_STATE_DEAD:
 		{
@@ -441,6 +444,57 @@ void P_AI::Load(ZFIoInterface* pkPackage,int iVersion)
 
 
 
+
+// SCRIPT INTERFACE FOR P_AI
+using namespace ObjectManagerLua;
+
+namespace SI_P_AI
+{
+	int SetAITargetLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+			return 0;		
+
+			
+		int iCharcterID;
+		int iTargetID;
+		
+		g_pkScript->GetArgInt(pkLua, 0,&iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 1,&iTargetID);
+		
+		if(P_AI* pkAI = (P_AI*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_AI"))
+			pkAI->SetTarget(iTargetID);
+	
+		return 0;			
+	}
+
+	int SetAIStateLua(lua_State* pkLua)
+	{
+		if( g_pkScript->GetNumArgs(pkLua) == 2 )
+		{
+			double dEntID, dAIState;
+			char	acType[128];
+			g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
+			g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
+	
+			Entity* pkObj = g_pkObjMan->GetEntityByID(dEntID);
+	
+			if ( !pkObj )
+				return 0;
+	
+			// Get P_AI
+			if(P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI"))
+				pkAI->SetState(int(dAIState));
+	
+			return 0;
+		}
+	
+		return 0;
+	}	
+}
+
+
+
 Property* Create_P_AI()
 {
 	return new P_AI;
@@ -452,9 +506,8 @@ void Register_P_AI(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_AI", Create_P_AI);					
 
 	// Register Property Script Interface
-// 	g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
-// 	g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
-
+ 	g_pkScript->ExposeFunction("SetAITarget",	SI_P_AI::SetAITargetLua);
+	g_pkScript->ExposeFunction("SetAIState",	SI_P_AI::SetAIStateLua);
 }
 
 
