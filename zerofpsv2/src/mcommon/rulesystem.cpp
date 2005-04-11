@@ -195,8 +195,8 @@ namespace SI_RuleSystem
 			double dDamage;
 	
 			g_pkScript->GetArgInt(pkLua, 0, &iAttacker);		
-			g_pkScript->GetArgInt(pkLua, 0, &iDefender);		
-			g_pkScript->GetArgNumber(pkLua, 1, &dDamage);
+			g_pkScript->GetArgInt(pkLua, 1, &iDefender);		
+			g_pkScript->GetArgNumber(pkLua, 2, &dDamage);
 		
 			if(RuleSystem* pkRuleSystem = static_cast<RuleSystem*>(g_ZFObjSys.GetObjectPtr("RuleSystem")))		
 				pkRuleSystem->Damage(iAttacker,iDefender,float(dDamage));
