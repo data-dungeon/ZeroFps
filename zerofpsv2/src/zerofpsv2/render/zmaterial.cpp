@@ -210,7 +210,7 @@ bool ZMaterial::LoadGlobalSection()
 	else
 		m_faTextureOffset[1] = 0;
 
-	if( (m_faTextureOffset[0] + m_faTextureOffset[1]) != 0 )
+	if( m_faTextureOffset[0] != 0 || m_faTextureOffset[1] != 0)
 	{
 		m_bTextureOffset = true;
 	}
