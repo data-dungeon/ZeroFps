@@ -6,6 +6,7 @@
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 #include "p_charactercontrol.h"
 
+#include "../zerofpsv2/script/zfscript.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ enum MCOMMON_API TargetType
 	eGROUND_TARGET 	=	2,
 	eDIRECTION 			=	3,						
 	eITEM_TARGET		=	4,
-	eSELF					=	5,
+	eSELF					=	5
 };
 
 enum MCOMMON_API SkillType
@@ -26,7 +27,7 @@ enum MCOMMON_API SkillType
 	eMISC			=	0,
 	eOFFENSIVE	=	1,
 	eDEFENSIVE	=	2,
-	eTRADE		=	3,
+	eTRADE		=	3
 };	
 
 class MCOMMON_API Skill
@@ -45,6 +46,9 @@ class MCOMMON_API Skill
 		//skill data
 		int		m_iLevel;
 		string	m_strParentSkill;
+		
+		//wat base item types needs to be eqiped to use this skill?
+		vector<string>	m_kBaseTypes;
 		
 		void UpdateFromScript();			
 
@@ -272,6 +276,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);
+		
+		//inventory
+		bool HaveEqipedBaseType(const string& strBaseName);
 		
 				
 		void Save(ZFIoInterface* pkPackage);

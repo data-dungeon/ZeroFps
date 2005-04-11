@@ -44,7 +44,7 @@ PointText::PointText()
 
 void PointText::AddText(const string& strText,const Vector3& kPos,const Vector3& kVel,float fTTL,int iType)
 {
-	cout<<"adding new text "<<strText<<endl;
+// 	cout<<"adding new text "<<strText<<endl;
 
 	PText kNew;
 	

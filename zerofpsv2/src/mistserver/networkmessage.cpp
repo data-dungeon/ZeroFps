@@ -248,6 +248,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							SayToClients("You need to target an item","Server",-1,PkNetMessage->m_iClientID);break;										
 						case 6:
 							SayToClients("You are to faar away","Server",-1,PkNetMessage->m_iClientID);break;										
+						case 7:
+							SayToClients("You need to equip a sertain item","Server",-1,PkNetMessage->m_iClientID);break;										
 							
 							
 					}

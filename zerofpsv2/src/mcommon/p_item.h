@@ -37,8 +37,6 @@ public:
 	//weapon
 	string		m_strWeaponType;
 
-
-	
 	
 	MLItemStats()
 	{
@@ -51,6 +49,7 @@ class MCOMMON_API P_Item: public Property
 {
 	private:
 		
+		string	m_strBaseName;
 		string	m_strName;
 		string	m_strIcon;
 		int		m_iSizeX;	
@@ -95,6 +94,7 @@ class MCOMMON_API P_Item: public Property
 		string 	GetIcon() 				{ return m_strIcon; 				}
 		int 		GetType() 				{ return m_iType;					}
 		string 	GetName() 				{ return m_strName; 				}
+		string	GetBaseName()			{ return m_strBaseName;			}
 		int		GetInContainerID()	{ return m_iInContainerID;		}
 		
 		string	GetInfo()				{ return m_strInfo;				}

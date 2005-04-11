@@ -91,14 +91,51 @@ void Skill::UpdateFromScript()
 	args[1].m_kType.m_eType = tINT;
 	args[1].m_pData = &m_iLevel;				//skill level
 	
+
 	
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Update",args))
 	{
 		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
 		return;
 	}
+	
+	
+	//get variables
+	ZFScript* pkScript = (ZFScript*)m_pkScriptFileHandle->GetResourcePtr();
 
-/*	
+	double dtemp;
+	char ctemp[128];
+		
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"ingamename",ctemp))
+		m_strInGameName = ctemp;
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"school",ctemp))
+		m_strSchool = ctemp;
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"icon",ctemp))
+		m_strIcon = ctemp;
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"reloadtime",dtemp))
+		m_fReloadTime = float(dtemp);
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"targettype",dtemp))
+		m_iTargetType = int(dtemp);
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"skilltype",dtemp))
+		m_iSkillType = int(dtemp);
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"range",dtemp))
+		m_fRange = float(dtemp);
+
+	m_kBaseTypes.clear();
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype0",ctemp))
+		m_kBaseTypes.push_back(string(ctemp));
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype1",ctemp))
+		m_kBaseTypes.push_back(string(ctemp));
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype2",ctemp))
+		m_kBaseTypes.push_back(string(ctemp));
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype3",ctemp))
+		m_kBaseTypes.push_back(string(ctemp));
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype4",ctemp))
+		m_kBaseTypes.push_back(string(ctemp));
+
+
+		
+/*
 	//print some nice info
 	cout<<"UPDATED FROM SCRIPT"<<endl;
 	cout<<"script:    "<<m_pkScriptFileHandle->GetRes()<<endl;
@@ -145,6 +182,31 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 		return 2;	
 	}
 	
+	//check baseitems
+	if(!m_kBaseTypes.empty())
+	{
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
+		{
+			bool bOk = false;
+			for(int i = 0;i<m_kBaseTypes.size();i++)
+			{
+				if(pkCP->HaveEqipedBaseType(m_kBaseTypes[i]))
+				{
+					bOk = true;
+					break;
+				}
+			}
+			
+			if(bOk == false)
+			{
+				cout<<"ned one of the folowing items:";
+				for(int i = 0;i<m_kBaseTypes.size();i++)
+					cout<< m_kBaseTypes[i]<<endl;
+				
+				return 7;			
+			}
+		}	
+	}
 	
 	//character target  check if a character is targeted
 	if(m_iTargetType == eCHARACTER_TARGET)
@@ -786,6 +848,8 @@ void P_CharacterProperty::OnDeath()
 	}
 }
 
+
+
 void P_CharacterProperty::UpdateSkills()
 {
 	float fTime = m_pkZeroFps->GetEngineTime();
@@ -1093,6 +1157,20 @@ void P_CharacterProperty::SetupContainers()
 	SetNetUpdateFlag(true);
 }
 
+bool P_CharacterProperty::HaveEqipedBaseType(const string& strBaseName)
+{
+	if(P_Container* pkContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iLeftHand,"P_Container"))
+		if(P_Item* pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(*pkContainer->GetItem(0,0),"P_Item"))
+			if(pkItem->GetBaseName() == strBaseName)
+				return true;
+	
+	if(P_Container* pkContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iRightHand,"P_Container"))
+		if(P_Item* pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(*pkContainer->GetItem(0,0),"P_Item"))
+			if(pkItem->GetBaseName() == strBaseName)
+				return true;				
+				
+	return false;
+}
 
 P_CharacterProperty::~P_CharacterProperty()
 {
@@ -2187,6 +2265,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("AddSkill",			SI_P_CharacterProperty::AddSkillLua);
 	g_pkScript->ExposeFunction("ChangeSkill",		SI_P_CharacterProperty::ChangeSkillLua);
 	g_pkScript->ExposeFunction("SetupSkill",		SI_P_CharacterProperty::SetupSkillLua);
+// 	g_pkScript->ExposeFunction("Needs",		SI_P_CharacterProperty::SetupSkillLua);
 	
 	//faction
 	g_pkScript->ExposeFunction("SetFaction",		SI_P_CharacterProperty::SetFactionLua);

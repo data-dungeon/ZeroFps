@@ -12,9 +12,10 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_bNetwork = true;
-	m_iVersion = 7;
+	m_iVersion = 8;
 
 	// ITEM STUFF
+	m_strBaseName=	"misc";
 	m_strName = 	"Unnamed Item";
 	m_strIcon = 	"default.bmp";
 	m_iSizeX = 		1;	
@@ -117,6 +118,7 @@ void P_Item::UnEquip()
 
 void P_Item::Save(ZFIoInterface* pkPackage)
 {
+	pkPackage->Write_Str(m_strBaseName);
 	pkPackage->Write_Str(m_strName);
 	pkPackage->Write_Str(m_strIcon);
 	
@@ -281,13 +283,43 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_kItemStats.Load(pkPackage);
 			
 			break;
+		}		
+		
+		case 8:
+		{
+			pkPackage->Read_Str(m_strBaseName);
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);	
+		
+			pkPackage->Read_Str(m_strBuffName);			
+		
+			pkPackage->Read_Str(m_strInfo);
+			pkPackage->Read_Str(m_strImage);			
+			
+			pkPackage->Read(m_fWeight);
+			pkPackage->Read(m_iValue);			
+			
+			m_kItemStats.Load(pkPackage);
+			
+			break;
 		}							
 	}
 }
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(12);
+	vector<PropertyValues> kReturn(13);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -337,7 +369,13 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[11].kValueName = "value";
 	kReturn[11].iValueType = VALUETYPE_INT;
 	kReturn[11].pkValue    = &m_iValue;			
-			
+	
+	kReturn[12].kValueName = "basename";
+	kReturn[12].iValueType = VALUETYPE_STRING;
+	kReturn[12].pkValue    = &m_strBaseName;			
+				
+	
+	
 	return kReturn;
 }
 
