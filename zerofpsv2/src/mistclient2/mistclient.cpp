@@ -581,7 +581,7 @@ void MistClient::DrawTargetMarker()
 		pkEnemyMarker->GetPass(0)->m_bDepthMask = false;
 		pkEnemyMarker->GetPass(0)->m_bBlend = true;
 		pkEnemyMarker->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
-		pkEnemyMarker->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
+		pkEnemyMarker->GetPass(0)->m_iBlendDst = ONE_BLEND_DST;//ONE_MINUS_SRC_ALPHA_BLEND_DST;
 	}
 
 	static ZMaterial* pkFriendMarker = NULL;
@@ -637,10 +637,13 @@ void MistClient::DrawTargetMarker()
 			
 			m_pkZShaderSystem->MatrixTranslate(kPos + Vector3(0,-pkCP->GetLegLength()+0.2,0));
 			m_pkZShaderSystem->MatrixScale(pkCP->GetMarkerSize());
-			m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetEngineTime()*100,0));
+			m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetEngineTime()*10,0));
+			
 			//draw pointer			
 			m_pkZShaderSystem->DrawGeometry(QUADS_MODE);											
 			
+ 			m_pkZShaderSystem->MatrixRotate(Vector3(0,-m_pkZeroFps->GetEngineTime()*10 * 2,0));
+ 			m_pkZShaderSystem->DrawGeometry(QUADS_MODE);											
 			
 			m_pkZShaderSystem->MatrixPop();
 		}

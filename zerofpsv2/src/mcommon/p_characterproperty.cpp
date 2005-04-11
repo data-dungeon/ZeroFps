@@ -1824,9 +1824,10 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_fLegLength);
 	pkNetPacket->Write(m_iFaction);
 	pkNetPacket->Write(m_fMarkerSize);
-
-	pkNetPacket->Write(m_bWalkSound);
+		
+	pkNetPacket->Write(m_bCombatMode);
 	
+	pkNetPacket->Write(m_bWalkSound);
 		
 	pkNetPacket->Write_Str(m_strWalkSound);
 	pkNetPacket->Write_Str(m_strRunSound);
@@ -1862,6 +1863,8 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_fLegLength);
 	pkNetPacket->Read(m_iFaction);
 	pkNetPacket->Read(m_fMarkerSize);
+	
+	pkNetPacket->Read(m_bCombatMode);	
 	
 	pkNetPacket->Read(m_bWalkSound);
 	
