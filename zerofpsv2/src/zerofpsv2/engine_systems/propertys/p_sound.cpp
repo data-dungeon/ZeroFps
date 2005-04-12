@@ -160,6 +160,10 @@ vector<PropertyValues> P_Sound::GetPropertyValues()
 
 void P_Sound::Save(ZFIoInterface* pkFile)
 {
+ 	//liten snabbfix så inte ljud som inte loopar sparas, (blev fel när man joina med en karaktär som t.ex dött innan man gick ut, då hördes döds ljudet en gång när man joina)
+	if(!m_bLoop)
+ 		m_strFileName = "";
+
 	pkFile->Write_Str( m_strFileName );
 	pkFile->Write( &m_bLoop, sizeof(m_bLoop), 1 ); 
 	pkFile->Write( &m_fGain, sizeof(m_fGain), 1 ); 

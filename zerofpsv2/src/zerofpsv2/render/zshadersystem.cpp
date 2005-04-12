@@ -926,6 +926,9 @@ void ZShaderSystem::DrawArray()
 		return;
 	}
 
+	if(m_pkCurrentMaterial->m_bTextureOffset)
+		cout<<"weppe"<<endl;
+	
 	//do software vertex transformations
 	VertexTransform();
 	
@@ -1101,7 +1104,10 @@ void ZShaderSystem::VertexTransform()
 		Waves();
 		
 	if(m_pkCurrentMaterial->m_bTextureOffset)
+	{
+		cout<<"apa"<<endl;
 		TextureOffset();		
+	}
 }
 
 void ZShaderSystem::CopyData(void** pkData,int iSize)
