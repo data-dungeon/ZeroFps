@@ -386,9 +386,11 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 				(*pSlot).m_pkWnd->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes( "items/" + vkItemList[0].m_strIcon);
 				(*pSlot).m_pkWnd->GetSkin()->m_bTransparent = false; 
 				(*pSlot).m_pkWnd->Show();
+			
+				RescaleSlotIcon((*pSlot), (*pSlot).m_iSlotsW, (*pSlot).m_iSlotsH);
+			
 			}
 			
-			RescaleSlotIcon((*pSlot), (*pSlot).m_iSlotsW, (*pSlot).m_iSlotsH);
 		}
 	}
 }
