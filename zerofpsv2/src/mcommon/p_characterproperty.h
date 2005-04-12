@@ -148,11 +148,16 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fLegLength;
 		float			m_fMarkerSize;
 		
+		//death
 		bool			m_bDead;
 		float			m_fDeadTimer;
 		
 		//combat		
-		bool			m_bCombatMode;
+		bool								m_bCombatMode;
+		int								m_iTarget;
+		queue<pair<string,int> >	m_kSkillQueue;
+		string							m_strDefaultAttackSkill;
+		float								m_fCombatTimer;
 		
 		//what skills do we have		
 		vector<Skill*>	m_kSkills;
@@ -197,8 +202,12 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendDeathInfo();
 		void SendAliveInfo();
 		
-		void UpdateStats();		
-		void SetupCharacterStats();
+		void UpdateStats();					//updates character stats
+		void UpdateCombat();					//updates combat, updates and performs combat queue
+		void UpdateSkills();					//updates skill reloads and so on
+
+		void SetupCharacterStats();		//first tim character stat setup
+		
 		
 		void OnDeath();
 		
@@ -236,9 +245,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void MakeAlive();
 		bool IsDead()													{	return m_bDead;					}
 		
-		//combat mode
-		void SetCombatMode(bool bCombat)							{	m_bCombatMode = bCombat;		}
-		bool GetCombatMode()											{	return m_bCombatMode;			}
 		
 		
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
@@ -273,8 +279,14 @@ class MCOMMON_API P_CharacterProperty: public Property
 		Skill* GetSkillPointer(const string& strSkillName);
 		int	UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
 		void	RemoveAllSkills();		
-		void	UpdateSkills();
-		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;	};
+		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
+		
+		//combat
+		void SetTarget(int iTargetID)									{	m_iTarget = iTargetID;			};
+		void SetCombatMode(bool bCombat)								{	m_bCombatMode = bCombat;		}
+		bool GetCombatMode()												{	return m_bCombatMode;			}
+		void AddSkillToCombatQueue(const string& strSkill,int iTargetID);
+		
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);

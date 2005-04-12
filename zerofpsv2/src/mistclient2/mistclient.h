@@ -61,6 +61,7 @@ class MistClient :public Application, public ZGuiApp {
 		int			m_iPickedEntityID;			// Selected entity for use.								
 		bitset<6>	m_kCharacterControls;
 		bool			m_bDead;
+		bool			m_bCombatMode;
 		
 		//game
 		vector<string>	m_kEmotes;					//emote list
@@ -123,6 +124,9 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);
 		
 		//general network sends
+		void SendAddSkillToCombatQueue(const string& strSkill,int iTargetID);
+		void SendSetTarget(int iTargetID);
+		void SendCombatMode(bool bCombatMode);
 		void SendAction(int iEntityID,const string& strAction);
 		void SendRequestContainer(int iContainerID);		
 		void SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY,int iCount = -1);	

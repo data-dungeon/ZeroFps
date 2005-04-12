@@ -80,7 +80,50 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		}
 		
 		// -------------------------------------------
+		case MLNM_CS_ADDSKILLTOCOMBATQUEUE:
+		{		
+			string strSkill;
+			int iTargetID;
+			PkNetMessage->Read_Str(strSkill);
+			PkNetMessage->Read(iTargetID);
+			
+			cout<<"got add skill to combat queue "<<strSkill<<"  target "<<iTargetID<<endl;
+			
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->AddSkillToCombatQueue(strSkill,iTargetID);
+					
+			break;
+		}		
 		
+		case MLNM_CS_COMBATMODE:
+		{		
+			bool bCombatMode;
+			PkNetMessage->Read(bCombatMode);
+			
+			cout<<"go combat mode "<<bCombatMode<<endl;
+			
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->SetCombatMode(bCombatMode);
+					
+			break;
+		}				
+		
+		case MLNM_CS_SET_TARGET:
+		{		
+			int iTarget;
+			PkNetMessage->Read(iTarget);
+			
+			cout<<"go ttarget "<<iTarget<<endl;
+			
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->SetTarget(iTarget);
+					
+			break;
+		}
+				
 		case MLNM_CS_RESPAWN_IN_TOWN:
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))

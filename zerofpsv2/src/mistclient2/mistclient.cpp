@@ -692,15 +692,6 @@ bool MistClient::DelayCommand()
 
 void MistClient::Input()
 {
-	if(m_pkInputHandle->VKIsDown("togglegui") && !DelayCommand())
-	{
-		bool bSet = !m_bGuiCapture;
-		SetGuiCapture(bSet);
-	}
-	
-	SetGuiCapture(!m_pkInputHandle->Pressed(MOUSERIGHT));
-
-	
 	//get relative mouse
 	float x=0;
 	float z=0;		
@@ -718,6 +709,17 @@ void MistClient::Input()
 	} else if(!m_pkInputHandle->Pressed(KEY_ESCAPE))
 		s_bEscPressed = false;
 
+	//gui capture toggle
+	if(m_pkInputHandle->VKIsDown("togglegui") && !DelayCommand())
+		SetGuiCapture(!m_bGuiCapture);
+	
+	SetGuiCapture(!m_pkInputHandle->Pressed(MOUSERIGHT));
+		
+	//toggle combat mode
+	if(m_pkInputHandle->VKIsDown("togglecombatmode") && !DelayCommand())
+		SendCombatMode(!m_bCombatMode);
+			
+	//toggle inventory
 	if(m_pkInputHandle->VKIsDown("inventory") && !DelayCommand())
 	{			
 		if(m_pkInventoryDlg->IsVisible())
@@ -726,6 +728,7 @@ void MistClient::Input()
 			RequestOpenInventory();
 	}
 
+	//toggle eqipment
 	if(m_pkInputHandle->VKIsDown("eqipment") && !DelayCommand())
 	{			
 		if(m_pkEquipmentDlg->IsVisible())
@@ -736,6 +739,7 @@ void MistClient::Input()
 		}
 	}
 
+	//toggle chat
 	if(m_pkInputHandle->VKIsDown("chat") && !DelayCommand())
 	{			
 		bool bOpen = !IsWndVisible("ChatDlgMainWnd");
@@ -767,23 +771,28 @@ void MistClient::Input()
 	//fireball test
 	if(m_pkInputHandle->Pressed(KEY_1))
 		if(!DelayCommand() )
-			SendUseSkill("skill-fireball.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
+// 			SendUseSkill("skill-fireball.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 	// speed	
 	if(m_pkInputHandle->Pressed(KEY_2))
 		if(!DelayCommand() )
-			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+// 			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
+ 			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 	if(m_pkInputHandle->Pressed(KEY_3))
 		if(!DelayCommand() )
+// 			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
 			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 	if(m_pkInputHandle->Pressed(KEY_4))
 		if(!DelayCommand() )
-			SendUseSkill("skill-basic_attack.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-						
+// 			SendUseSkill("skill-basic_attack.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToCombatQueue("skill-basic_attack.lua",m_iTargetID);		
+				
 	if(m_pkInputHandle->Pressed(KEY_5))
 		if(!DelayCommand() )
-			SendUseSkill("skill-bow.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+// 			SendUseSkill("skill-bow.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToCombatQueue("skill-bow.lua",m_iTargetID);		
 
 	if(m_pkInputHandle->Pressed(KEY_6))
 		if(!DelayCommand() )
@@ -797,6 +806,7 @@ void MistClient::Input()
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
 				//remove current target
+				int iOldTarget = m_iTargetID;
 				m_iTargetID = -1;
 
 				//if its an item , pick it up
@@ -822,8 +832,17 @@ void MistClient::Input()
 				//is it a character?
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 				{
-					m_iTargetID = m_iPickedEntityID;				
+					if(m_iPickedEntityID != m_iTargetID)
+					{
+						m_iTargetID = m_iPickedEntityID;
+						SendSetTarget(	m_iTargetID );
+					}
 				}
+				
+				
+				//send new target if it has changed
+				if(m_iTargetID != iOldTarget)
+					SendSetTarget(	m_iTargetID );
 			}
 			else
 			{
@@ -1431,6 +1450,7 @@ void MistClient::OnClientStart(void)
 	m_iTargetID 		=	-1;
 	m_bFrontView		=	false;
 	m_bDead				=	false;
+	m_bCombatMode		=	false;
 }
 
 void MistClient::OnClientConnected() 
@@ -1754,6 +1774,43 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 // 	{
 // 		m_pkGui->ShowCursor(false);
 // 	}
+}
+
+void MistClient::SendAddSkillToCombatQueue(const string& strSkill,int iTargetID)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_ADDSKILLTOCOMBATQUEUE);
+	
+	kNp.Write_Str(strSkill);
+	kNp.Write(iTargetID);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
+}
+
+void MistClient::SendCombatMode(bool bCombatMode)
+{
+	m_bCombatMode = bCombatMode;
+	
+
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_COMBATMODE);
+	
+	kNp.Write(bCombatMode);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
+}
+
+void MistClient::SendSetTarget(int iTargetID)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_SET_TARGET);
+	
+	kNp.Write(iTargetID);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
 }
 
 void MistClient::SendAction(int iEntityID,const string& strAction)

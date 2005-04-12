@@ -172,7 +172,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	//check reload
 	if(m_fTimeLeft != 0)
 	{
-		cout<<"skill not reloaded yet"<<endl;
+		//cout<<"skill not reloaded yet"<<endl;
 		return 1;	
 	}
 	
@@ -529,8 +529,12 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fLegLength			=	0;
 	m_fMarkerSize			=	1;
 	m_bDead					=	false;
-	m_bCombatMode			=	false;
 	m_fDeadTimer			=	0;	
+	
+	m_fCombatTimer			=	0;
+	m_strDefaultAttackSkill = "skill-basic_attack.lua";
+	m_iTarget				=	-1;
+	m_bCombatMode			=	false;
 	
 	//container id's
 	m_iInventory	= -1;		
@@ -657,6 +661,46 @@ void P_CharacterProperty::SetupCharacterStats()
 
 	m_kCharacterStats.AddStat("Attack"			,0,0);	
 	m_kCharacterStats.AddStat("Defense"			,0,0);
+}
+
+void P_CharacterProperty::AddSkillToCombatQueue(const string& strSkill,int iTargetID)
+{
+	//not in combat mode
+	if(!m_bCombatMode)
+		return;
+
+	if(m_kSkillQueue.size() > 4)
+		return;
+		
+	m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
+}
+
+void P_CharacterProperty::UpdateCombat()
+{
+	//not in combat mode
+	if(!m_bCombatMode)
+		return;
+
+	float fTime = m_pkZeroFps->GetEngineTime();
+		
+	if(fTime > m_fCombatTimer + 0.5)
+	{
+		m_fCombatTimer = fTime;
+		
+		//no skills in queue
+		if(!m_kSkillQueue.empty())
+		{
+			//use skill and dont pop queue if skill is still reloading
+			if(UseSkill(m_kSkillQueue.front().first,m_kSkillQueue.front().second,Vector3(0,0,0),Vector3(0,0,0)) != 1)
+				m_kSkillQueue.pop();
+		}
+		else
+		{
+			if(m_iTarget != -1 && !m_strDefaultAttackSkill.empty())
+				UseSkill(m_strDefaultAttackSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
+		}
+	}
+
 }
 
 void P_CharacterProperty::UpdateStats()
@@ -1214,6 +1258,9 @@ void P_CharacterProperty::Update()
 			
 				//update skills
 				UpdateSkills();				
+			
+				//update combat
+				UpdateCombat();							
 			}
 			else
 			{
