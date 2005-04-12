@@ -149,10 +149,12 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fMarkerSize;
 		
 		bool			m_bDead;
-		bool			m_bCombatMode;
-		
 		float			m_fDeadTimer;
 		
+		//combat		
+		bool			m_bCombatMode;
+		
+		//what skills do we have		
 		vector<Skill*>	m_kSkills;
 		float				m_fSkillTimer;
 			

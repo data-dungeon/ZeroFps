@@ -165,6 +165,7 @@ class MistClient :public Application, public ZGuiApp {
 		//draw
 		void DrawCrossHair();
 		void DrawTargetMarker();
+		void DrawMouseOverMarker(const Vector3& kPos,float fSize);
 		void DrawHUDEffect(int iHUDEffect);
 		
 		//picking

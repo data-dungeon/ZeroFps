@@ -333,9 +333,15 @@ void MistClient::RegisterPropertys()
 
 void MistClient::RenderInterface(void)
 {
+	//draw current target marker
 	if(m_iTargetID != -1)
 		DrawTargetMarker();
-		
+
+	//draw under cursor marker
+	if(m_iPickedEntityID != -1)
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item") ) 		
+				DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
 		
 	m_pkPointText->Draw();
 		
@@ -564,6 +570,28 @@ void MistClient::DrawCrossHair()
 		
 	//draw pointer
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+}
+
+void MistClient::DrawMouseOverMarker(const Vector3& kPos,float fSize)
+{
+	static ZMaterial* pkMarker = NULL;
+	if(!pkMarker)
+	{
+		pkMarker = new ZMaterial;
+		pkMarker->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enemymarker.tga");	
+		pkMarker->GetPass(0)->m_bLighting = 	false;
+		pkMarker->GetPass(0)->m_bFog = 			false;	
+		pkMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+				
+		//blending is much nicer thou =)
+		pkMarker->GetPass(0)->m_bDepthMask = false;
+		pkMarker->GetPass(0)->m_bBlend = true;
+		pkMarker->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkMarker->GetPass(0)->m_iBlendDst = ONE_BLEND_DST;//ONE_MINUS_SRC_ALPHA_BLEND_DST;
+	}
+
+	m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kPos,fSize*2.0,pkMarker);
+
 }
 
 void MistClient::DrawTargetMarker()

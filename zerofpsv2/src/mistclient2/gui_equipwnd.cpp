@@ -353,18 +353,24 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 {
 	EQUIPMENT_SLOT* pSlot;
 	GetEquipmentSlotFromContainerType(iContainerType, pSlot);
-
+	
 	if(pSlot != NULL)
 	{
 		if(vkItemList.empty())
-		{			
+		{		
 			(*pSlot).m_iItemID = -1;
 			(*pSlot).m_iStackSize = -1;
 			(*pSlot).m_iSlotsW = -1;
 			(*pSlot).m_iSlotsH = -1;
-			(*pSlot).m_pkWnd->GetSkin()->m_bTransparent = true;
-			(*pSlot).m_pkWnd->Hide();
 			(*pSlot).m_iContainerID = iContainerID;
+			
+			
+			if((*pSlot).m_pkWnd) //dvoid fix, krasha här ibland om man inte tagit upp inventory fönstret någon gång , mysko
+			{
+				(*pSlot).m_pkWnd->GetSkin();
+				(*pSlot).m_pkWnd->GetSkin()->m_bTransparent = true;
+				(*pSlot).m_pkWnd->Hide();
+			}
 		}
 		else
 		{
@@ -374,14 +380,17 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 			(*pSlot).m_iStackSize = vkItemList[0].m_iStackSize;
 			(*pSlot).m_iSlotsW = vkItemList[0].m_cItemW;
 			(*pSlot).m_iSlotsH = vkItemList[0].m_cItemH;
-
-			(*pSlot).m_pkWnd->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes( "items/" + vkItemList[0].m_strIcon);
-			(*pSlot).m_pkWnd->GetSkin()->m_bTransparent = false; 
-			(*pSlot).m_pkWnd->Show();
+			
+			if((*pSlot).m_pkWnd)
+			{
+				(*pSlot).m_pkWnd->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes( "items/" + vkItemList[0].m_strIcon);
+				(*pSlot).m_pkWnd->GetSkin()->m_bTransparent = false; 
+				(*pSlot).m_pkWnd->Show();
+			}
+			
 			RescaleSlotIcon((*pSlot), (*pSlot).m_iSlotsW, (*pSlot).m_iSlotsH);
 		}
 	}
-
 }
 
 void EquipmentDlg::RescaleSlotIcon(EQUIPMENT_SLOT& r_kSlot, int iSlotsX, int iSlotsY)

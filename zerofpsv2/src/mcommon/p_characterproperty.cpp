@@ -1922,55 +1922,55 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 	
-	int SetupSkillLua(lua_State* pkLua)
-	{
-		if(g_pkScript->GetNumArgs(pkLua) != 9)
-			return 0;		
-
-			
-		int iCharcterID;
-		string strSkill;
-		string strInGameName;
-		string strSchool;
-		string strIcon;
-		double dReloadTime;
-		int	iTargetType;
-		int	iSkillType;
-		double dRange;
-		
-		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);		
-		
-		g_pkScript->GetArgString(pkLua, 1, strSkill);				
-		g_pkScript->GetArgString(pkLua, 2, strInGameName);		
-		g_pkScript->GetArgString(pkLua, 3, strSchool);		
-		g_pkScript->GetArgString(pkLua, 4, strIcon);		
-		g_pkScript->GetArgNumber(pkLua, 5, &dReloadTime);		
-		g_pkScript->GetArgInt(pkLua, 6, &iTargetType);		
-		g_pkScript->GetArgInt(pkLua, 7, &iSkillType);		
-		g_pkScript->GetArgNumber(pkLua, 8, &dRange);		
-		
-		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
-		{
-			if(Skill* pkSkill = pkCP->GetSkillPointer(strSkill))
-			{
-				pkSkill->m_strInGameName = strInGameName;
-				pkSkill->m_strSchool = 		strSchool;
-				pkSkill->m_strIcon = 		strIcon;
-				pkSkill->m_fReloadTime = 	float(dReloadTime);
-				pkSkill->m_iTargetType =	iTargetType;
-				pkSkill->m_iSkillType =		iSkillType;
-				pkSkill->m_fRange =			float(dRange);
-				
-				//cout<<"skill setup complete"<<endl;
-			}
-			else
-			{
-				cout<<"ERROR: setupskill called , but character does not have the skill "<<strSkill<<endl;			
-			}
-		}
-	
-		return 0;			
-	}	
+// 	int SetupSkillLua(lua_State* pkLua)
+// 	{
+// 		if(g_pkScript->GetNumArgs(pkLua) != 9)
+// 			return 0;		
+// 
+// 			
+// 		int iCharcterID;
+// 		string strSkill;
+// 		string strInGameName;
+// 		string strSchool;
+// 		string strIcon;
+// 		double dReloadTime;
+// 		int	iTargetType;
+// 		int	iSkillType;
+// 		double dRange;
+// 		
+// 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);		
+// 		
+// 		g_pkScript->GetArgString(pkLua, 1, strSkill);				
+// 		g_pkScript->GetArgString(pkLua, 2, strInGameName);		
+// 		g_pkScript->GetArgString(pkLua, 3, strSchool);		
+// 		g_pkScript->GetArgString(pkLua, 4, strIcon);		
+// 		g_pkScript->GetArgNumber(pkLua, 5, &dReloadTime);		
+// 		g_pkScript->GetArgInt(pkLua, 6, &iTargetType);		
+// 		g_pkScript->GetArgInt(pkLua, 7, &iSkillType);		
+// 		g_pkScript->GetArgNumber(pkLua, 8, &dRange);		
+// 		
+// 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+// 		{
+// 			if(Skill* pkSkill = pkCP->GetSkillPointer(strSkill))
+// 			{
+// 				pkSkill->m_strInGameName = strInGameName;
+// 				pkSkill->m_strSchool = 		strSchool;
+// 				pkSkill->m_strIcon = 		strIcon;
+// 				pkSkill->m_fReloadTime = 	float(dReloadTime);
+// 				pkSkill->m_iTargetType =	iTargetType;
+// 				pkSkill->m_iSkillType =		iSkillType;
+// 				pkSkill->m_fRange =			float(dRange);
+// 				
+// 				//cout<<"skill setup complete"<<endl;
+// 			}
+// 			else
+// 			{
+// 				cout<<"ERROR: setupskill called , but character does not have the skill "<<strSkill<<endl;			
+// 			}
+// 		}
+// 	
+// 		return 0;			
+// 	}	
 	
 	//eqipment
 	int GetCharacterContainerIDLua(lua_State* pkLua)
@@ -2267,7 +2267,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	//skills
 	g_pkScript->ExposeFunction("AddSkill",			SI_P_CharacterProperty::AddSkillLua);
 	g_pkScript->ExposeFunction("ChangeSkill",		SI_P_CharacterProperty::ChangeSkillLua);
-	g_pkScript->ExposeFunction("SetupSkill",		SI_P_CharacterProperty::SetupSkillLua);
+// 	g_pkScript->ExposeFunction("SetupSkill",		SI_P_CharacterProperty::SetupSkillLua);
 // 	g_pkScript->ExposeFunction("Needs",		SI_P_CharacterProperty::SetupSkillLua);
 	
 	//faction
