@@ -293,6 +293,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							SayToClients("You are to faar away","Server",-1,PkNetMessage->m_iClientID);break;										
 						case 7:
 							SayToClients("You need to equip a sertain item","Server",-1,PkNetMessage->m_iClientID);break;										
+// 						case 8:
+// 							SayToClients("Still using another skill","Server",-1,PkNetMessage->m_iClientID);break;										
 							
 							
 					}

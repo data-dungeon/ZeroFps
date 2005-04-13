@@ -58,7 +58,7 @@ class MCOMMON_API Skill
 		string	m_strSchool;
 		string	m_strIcon;
 		
-		
+		float		m_fCastTime;
 		float		m_fReloadTime;
 		float		m_fTimeLeft;
 		float		m_fLastUpdate;
@@ -159,10 +159,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string							m_strDefaultAttackSkill;
 		float								m_fCombatTimer;
 		
-		//what skills do we have		
-		vector<Skill*>	m_kSkills;
-		float				m_fSkillTimer;
-			
+		//skills
+		vector<Skill*>	m_kSkills;				//what skills do we have
+		float				m_fSkillTimer;			//last skill's update
+		float				m_fSkillLockTime;		//lock skill usage until
+		
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
 		ZGuiFont*	m_pkFont;		
@@ -238,28 +239,29 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		void Init();
 		void Update();
-		
-		void SetClient(int iConID)									{	m_iConID = iConID;				}	
+
+				
 		
 		//alive
 		void MakeAlive();
 		bool IsDead()													{	return m_bDead;					}
-		
-		
-		
-		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
-		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
-		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
-		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
-		
+			
 		//sound
 		void SetWalkSound(const string& strFile)				{	m_strWalkSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				ResetAllNetUpdateFlags();}
 		
-		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
+		//sets
+		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
+		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
+		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
+		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
 		
+		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
+		void SetClient(int iConID)									{	m_iConID = iConID;				}	
+		
+		//gets
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
@@ -280,6 +282,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		int	UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
 		void	RemoveAllSkills();		
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
+		void  LockSkillUsage(float fTime);
 		
 		//combat
 		void SetTarget(int iTargetID)									{	m_iTarget = iTargetID;			};

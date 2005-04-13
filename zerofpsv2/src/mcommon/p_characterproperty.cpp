@@ -34,6 +34,7 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_strIcon 			= 	"default.tga";	
 	m_iLevel 			= 	0;	
 	m_fReloadTime 		=	1;
+	m_fCastTime			=	1;
 	m_fTimeLeft 		=	1;
 	m_fLastUpdate 		= 	-1;
 	m_strSchool 		=	"UnkownSchool";
@@ -120,7 +121,10 @@ void Skill::UpdateFromScript()
 		m_iSkillType = int(dtemp);
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"range",dtemp))
 		m_fRange = float(dtemp);
-
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"casttime",dtemp))
+		m_fCastTime = float(dtemp);
+		
+		
 	m_kBaseTypes.clear();
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype0",ctemp))
 		m_kBaseTypes.push_back(string(ctemp));
@@ -273,7 +277,16 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	args[8].m_pData = &kDirCopy.z;		
 
 	
+	
+	//lock skill usage	
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
+		pkCP->LockSkillUsage(m_fCastTime);
+	
+	//lock character
+	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterControl"))
+		pkCC->Lock(m_fCastTime);
 		
+	//call use function
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
 	{
 		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
@@ -524,6 +537,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strChatMsg			=	"";
 	m_fStatTimer			=	0;
 	m_fSkillTimer			=	0;
+	m_fSkillLockTime		=	0;
 	m_iFaction				=	0;
 	m_bWalkSound			=	true;
 	m_fLegLength			=	0;
@@ -1487,15 +1501,30 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 	if(m_bDead)
 		return -2;
 
-	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
-	{
-		return pkSkill->Use(iTarget,kPos,kDir);	
+	//check if character is already using a skill
+	if(m_pkZeroFps->GetEngineTime() > m_fSkillLockTime )
+	{		
+		if(Skill* pkSkill = GetSkillPointer(strSkillScript))
+		{
+			return pkSkill->Use(iTarget,kPos,kDir);;
+		}
+		else
+		{
+			cout<<"WARNING: skill "<<strSkillScript<<" not found"<<endl;			
+			return -1;
+		}
 	}
 	else
 	{
-		cout<<"WARNING: skill "<<strSkillScript<<" not found"<<endl;			
-		return -1;
+		cout<<"still waiting for skill to complete"<<endl;
+		return 8;
 	}
+}
+
+void  P_CharacterProperty::LockSkillUsage(float fTime)
+{
+	//lock skill usage
+	m_fSkillLockTime = m_pkZeroFps->GetEngineTime() + fTime;
 }
 
 Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
