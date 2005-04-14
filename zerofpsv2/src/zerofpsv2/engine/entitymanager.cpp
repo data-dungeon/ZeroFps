@@ -898,6 +898,8 @@ void EntityManager::PackToClients()
 		
 		if(Entity* pkEnt = GetEntityByID(m_pkZeroFps->GetClientObjectID()))
 		{
+// 			cout<<"pos:"<<pkEnt->GetWorldPosV().x<<endl;
+		
 			m_OutNP.Clear();
 			m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 			m_OutNP.TargetSetClient(0);
@@ -909,7 +911,7 @@ void EntityManager::PackToClients()
 					
 			m_OutNP.Write(ZFGP_ENDOFPACKET);
 			m_pkNetWork->Send2(&m_OutNP);
-					
+			
 		}
 	
 /*		//denna koden är EEEEEEVIL , floddar servern med massa entitys,,, nåt fell nånstans men vet i fan vad :(

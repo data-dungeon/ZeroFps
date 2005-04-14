@@ -573,6 +573,14 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 		if(bHasNetPropertys)
 			return true;
 	
+		//check if this entity has any value to an editor, if so send it if client is an editor
+		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
+			return true;
+			
+		//this is a client, clients only sends its own client objects, and we always wants to send that. kind of
+		if(!m_pkZeroFps->m_bServerMode)
+			return true;
+	
 		//does any child want to send?  
 		if(m_bSendChilds)
 		{
@@ -584,11 +592,7 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 					return true;
 				}
 			}	
-		}		
-	
-		//check if this entity has any value to an editor, if so send it if client is an editor
-		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
-			return true;		
+		}			
 	}
 	
 return false;
@@ -765,7 +769,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 */
 void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
-	//cout<<"got entity "<<GetEntityID()<<"  "<<GetName()<<endl;
+ 	//cout<<"got entity "<<GetEntityID()<<"  "<<GetName()<<endl;
 
 	int iStart = pkNetPacket->m_iPos;
 
