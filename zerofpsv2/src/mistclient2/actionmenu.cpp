@@ -308,7 +308,8 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 
 	// Om höger musknapp har släpps skall vi sända valt action
-	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
+// 	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
+	if(g_kMistClient.m_pkGui->m_bMouseLeftPressed == false) 
 	{
 		if(pkWndButtonCursor != NULL)
 		{

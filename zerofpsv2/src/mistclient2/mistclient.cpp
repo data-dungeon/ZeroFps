@@ -392,10 +392,10 @@ void MistClient::OnIdle()
 
 void MistClient::OnHud(void) 
 {
-	if(m_iCharacterID != -1)
-		if(!m_bGuiCapture)
-			if(!m_bFrontView)
-				DrawCrossHair();
+// 	if(m_iCharacterID != -1)
+// 		if(!m_bGuiCapture)
+// 			if(!m_bFrontView)
+// 				DrawCrossHair();
 
  	if(m_bDead)
 	{
@@ -755,18 +755,7 @@ void MistClient::Input()
 		m_iPickedEntityID = -1;
 	
 		
-	//list actions
-	if ( m_pkInputHandle->VKIsDown("look") )
-	{
-		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-		{
-			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
-			{						
-				m_pkActionDlg->SetEntity(m_iPickedEntityID);							
-				m_pkActionDlg->Open();
-			}
-		}
-	}
+
 
 	//fireball test
 	if(m_pkInputHandle->Pressed(KEY_1))
@@ -798,10 +787,23 @@ void MistClient::Input()
 		if(!DelayCommand() )
 			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
+/*	//list actions
+	if ( m_pkInputHandle->VKIsDown("look") )
+	{
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+		{
+			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
+			{						
+				m_pkActionDlg->SetEntity(m_iPickedEntityID);							
+				m_pkActionDlg->Open();
+			}
+		}
+	}		*/	
+			
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
-		if(!DelayCommand() )
+		if(!DelayCommand() && m_bGuiCapture )
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
@@ -819,14 +821,24 @@ void MistClient::Input()
 				// if not an item do first action
 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 				{
-					cout<<"performing first action"<<endl;
 					vector<string>	kActions;
 					pkMl->GetActions(kActions);
-					
-					if(!kActions.empty())
+				
+					if(kActions.size() == 1)
 					{
+						cout<<"performing first action"<<endl;						
 						SendAction(m_iPickedEntityID,kActions[0]);
 					}
+					else if(kActions.size() > 1)
+					{
+						if(!m_pkActionDlg->IsOpen())
+						{
+							cout<<"opening action list"<<endl;			
+							m_pkActionDlg->SetEntity(m_iPickedEntityID);							
+							m_pkActionDlg->Open();
+						}
+					}
+
 				}
 				else
 				//is it a character?
