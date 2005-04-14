@@ -1790,6 +1790,11 @@ void MistClient::SendAddSkillToCombatQueue(const string& strSkill,int iTargetID)
 
 void MistClient::SendCombatMode(bool bCombatMode)
 {
+	if(bCombatMode)
+		AddStringToChatBox("Entering combat mode");
+	else
+		AddStringToChatBox("Leaving combat mode");
+
 	m_bCombatMode = bCombatMode;
 	
 
