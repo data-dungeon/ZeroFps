@@ -1,5 +1,0 @@
-The following docs have been moved to the Zpg Wiki.
-
- Install.txt
- Kodstd.txt
- /mistlands		-	All docs in this subdir moved.
