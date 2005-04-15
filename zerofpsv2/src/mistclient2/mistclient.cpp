@@ -341,7 +341,7 @@ void MistClient::RenderInterface(void)
 		DrawTargetMarker();
 
 	//draw under cursor marker
-	if(m_iPickedEntityID != -1)
+	if(m_iPickedEntityID != -1 && m_bGuiCapture)
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item") ) 		
 				DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
