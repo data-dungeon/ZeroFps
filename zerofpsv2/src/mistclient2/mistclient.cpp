@@ -92,6 +92,9 @@ void MistClient::OnInit()
 	//register resources
 	RegisterResources();
 	
+	//grab input
+	m_pkInput->ToggleGrab(true);
+	
 	//setup referense sound distance
 	//m_pkAudioSys->SetReferensDistance(0.25);
 	
