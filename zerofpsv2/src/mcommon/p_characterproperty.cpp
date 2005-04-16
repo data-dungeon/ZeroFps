@@ -816,7 +816,11 @@ void P_CharacterProperty::UpdateStats()
 	//jump
 	pkCC->SetJumpForce(iJump);		
 	
-	
+	//animation
+	if(m_bCombatMode)
+		pkCC->SetAnimationSet(1);
+	else
+		pkCC->SetAnimationSet(0);
 	
 	
 }

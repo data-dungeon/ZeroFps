@@ -2,13 +2,39 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_tcstrigger.h" 
 
+
+AnimationSet::AnimationSet()
+{
+	//animations
+	m_strWalkForward		=	"walk_foward";
+	m_strWalkBackward		=	"walk_backward";
+	m_strWalkLeft			=	"run_left";
+	m_strWalkRight			=	"run_right";
+	m_strRunForward		=	"run_foward";
+	m_strRunBackward		=	"run_backward";
+	m_strRunLeft			=	"run_left";
+	m_strRunRight			=	"run_right";
+	m_strSwimForward		=	"swim_foward";
+	m_strSwimBackward		=	"swim_backward";
+	m_strSwimLeft			=	"swim_left";
+	m_strSwimRight			=	"swim_rright";
+	m_strJump				=	"jump";
+	m_strIdleStanding		=	"idle";
+	m_strIdleSitting		=	"riding";
+	m_strIdleSwimming		=	"swim-idle";
+	m_strEmote				=	"taunt";		
+	m_strDie					=	"die";	
+	m_strDead				=	"dead";	
+
+}
+
 P_CharacterControl::P_CharacterControl()
 {
 	strcpy(m_acName,"P_CharacterControl");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = 			true;
-	m_iVersion = 			4;
+	m_iVersion = 			5;
 		
 	
 	m_fLockTime = 			-1;
@@ -29,29 +55,15 @@ P_CharacterControl::P_CharacterControl()
 	
 	m_kControls.reset();
 	
-	
-	
-	
 	//animations
-	m_strWalkForward		=	"walk_foward";
-	m_strWalkBackward		=	"walk_backward";
-	m_strWalkLeft			=	"run_left";
-	m_strWalkRight			=	"run_right";
-	m_strRunForward		=	"run_foward";
-	m_strRunBackward		=	"run_backward";
-	m_strRunLeft			=	"run_left";
-	m_strRunRight			=	"run_right";
-	m_strSwimForward		=	"swim_f";
-	m_strSwimBackward		=	"swim_b";
-	m_strSwimLeft			=	"swim_l";
-	m_strSwimRight			=	"swim_r";
-	m_strJump				=	"jump";
-	m_strIdleStanding		=	"idle";
-	m_strIdleSitting		=	"riding";
-	m_strIdleSwimming		=	"swim-idle";
-	m_strEmote				=	"taunt";		
-	m_strDie					=	"die";	
-	m_strDead				=	"dead";	
+	m_iCurrentSet = 0;	
+	AnimationSet kNormal;
+	m_kAnimationSets.push_back(kNormal);
+	
+	AnimationSet kCombatMode;
+	kCombatMode.m_strIdleStanding = "combat_idle";
+	m_kAnimationSets.push_back(kCombatMode);
+	
 }
 
 P_CharacterControl::~P_CharacterControl()
@@ -67,19 +79,19 @@ void P_CharacterControl::Init()
 
 vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
+	vector<PropertyValues> kReturn(1);
 	
-	kReturn[2].kValueName = "WalkForwardAnim";
-	kReturn[2].iValueType = VALUETYPE_STRING;
-	kReturn[2].pkValue    = (void*)&m_strWalkForward;		
+// 	kReturn[2].kValueName = "WalkForwardAnim";
+// 	kReturn[2].iValueType = VALUETYPE_STRING;
+// 	kReturn[2].pkValue    = (void*)&m_strWalkForward;		
+// 	
+	kReturn[0].kValueName = "speed";
+	kReturn[0].iValueType = VALUETYPE_FLOAT;
+	kReturn[0].pkValue    = &m_fSpeed;	
 	
-	kReturn[1].kValueName = "speed";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = &m_fSpeed;	
-	
-	kReturn[0].kValueName = "RunForwardAnim";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strRunForward;	
+// 	kReturn[0].kValueName = "RunForwardAnim";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_strRunForward;	
 
 	
 		
@@ -275,7 +287,7 @@ void P_CharacterControl::Lock(float fTime)
 	
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
 	{	
-		pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);
+		pkMad->SetAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str(), 0);
 	}
 }
 
@@ -307,10 +319,10 @@ void P_CharacterControl::DoEmote(int iEmoteID)
 	
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
 	{
-		if(pkMad->GetCurrentAnimationName() == m_strIdleStanding)
+		if(pkMad->GetCurrentAnimationName() == m_kAnimationSets[m_iCurrentSet].m_strIdleStanding)
 		{
-			pkMad->SetAnimation((m_strEmote + nr).c_str(), 0);
-			pkMad->SetNextAnimation(m_strIdleStanding.c_str());	
+			pkMad->SetAnimation((m_kAnimationSets[m_iCurrentSet].m_strEmote + nr).c_str(), 0);
+			pkMad->SetNextAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str());	
 		}
 	}
 }
@@ -319,14 +331,16 @@ void P_CharacterControl::UpdateAnimation()
 {
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
 	{
+		AnimationSet* pkAS = &m_kAnimationSets[m_iCurrentSet];
+		
 		int iState = GetCharacterState();
 	
 		//jumping
 		if(iState == eJUMPING)
 		{							
-			if(pkMad->GetCurrentAnimationName() != m_strJump)
+			if(pkMad->GetCurrentAnimationName() != pkAS->m_strJump)
 			{
-				pkMad->SetAnimation(m_strJump.c_str(), 0);
+				pkMad->SetAnimation(pkAS->m_strJump.c_str(), 0);
 				pkMad->SetNextAnimation(MAD_NOLOOP);
 			}			
 		}
@@ -336,20 +350,20 @@ void P_CharacterControl::UpdateAnimation()
 			switch(GetMovedirection())
 			{
 				case eMOVE_FORWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strRunForward)
-						pkMad->SetAnimation(m_strRunForward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strRunForward)
+						pkMad->SetAnimation(pkAS->m_strRunForward.c_str(), 0);
 					break;
 				case eMOVE_BACKWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strRunBackward)
-						pkMad->SetAnimation(m_strRunBackward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strRunBackward)
+						pkMad->SetAnimation(pkAS->m_strRunBackward.c_str(), 0);
 					break;
 				case eMOVE_LEFT:
-					if(pkMad->GetCurrentAnimationName() != m_strRunLeft)
-						pkMad->SetAnimation(m_strRunLeft.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strRunLeft)
+						pkMad->SetAnimation(pkAS->m_strRunLeft.c_str(), 0);
 					break;
 				case eMOVE_RIGHT:
-					if(pkMad->GetCurrentAnimationName() != m_strRunRight)
-						pkMad->SetAnimation(m_strRunRight.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strRunRight)
+						pkMad->SetAnimation(pkAS->m_strRunRight.c_str(), 0);
 					break;										
 			}			
 		}
@@ -359,20 +373,20 @@ void P_CharacterControl::UpdateAnimation()
 			switch(GetMovedirection())
 			{
 				case eMOVE_FORWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strWalkForward)
-						pkMad->SetAnimation(m_strWalkForward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strWalkForward)
+						pkMad->SetAnimation(pkAS->m_strWalkForward.c_str(), 0);
 					break;
 				case eMOVE_BACKWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strWalkBackward)
-						pkMad->SetAnimation(m_strWalkBackward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strWalkBackward)
+						pkMad->SetAnimation(pkAS->m_strWalkBackward.c_str(), 0);
 					break;
 				case eMOVE_LEFT:
-					if(pkMad->GetCurrentAnimationName() != m_strWalkLeft)
-						pkMad->SetAnimation(m_strWalkLeft.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strWalkLeft)
+						pkMad->SetAnimation(pkAS->m_strWalkLeft.c_str(), 0);
 					break;
 				case eMOVE_RIGHT:
-					if(pkMad->GetCurrentAnimationName() != m_strWalkRight)
-						pkMad->SetAnimation(m_strWalkRight.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strWalkRight)
+						pkMad->SetAnimation(pkAS->m_strWalkRight.c_str(), 0);
 					break;										
 			}						
 		}
@@ -382,20 +396,20 @@ void P_CharacterControl::UpdateAnimation()
 			switch(GetMovedirection())
 			{
 				case eMOVE_FORWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strSwimForward)
-						pkMad->SetAnimation(m_strSwimForward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strSwimForward)
+						pkMad->SetAnimation(pkAS->m_strSwimForward.c_str(), 0);
 					break;
 				case eMOVE_BACKWARD:
-					if(pkMad->GetCurrentAnimationName() != m_strSwimBackward)
-						pkMad->SetAnimation(m_strSwimBackward.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strSwimBackward)
+						pkMad->SetAnimation(pkAS->m_strSwimBackward.c_str(), 0);
 					break;
 				case eMOVE_LEFT:
-					if(pkMad->GetCurrentAnimationName() != m_strSwimLeft)
-						pkMad->SetAnimation(m_strSwimLeft.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strSwimLeft)
+						pkMad->SetAnimation(pkAS->m_strSwimLeft.c_str(), 0);
 					break;
 				case eMOVE_RIGHT:
-					if(pkMad->GetCurrentAnimationName() != m_strSwimRight)
-						pkMad->SetAnimation(m_strSwimRight.c_str(), 0);
+					if(pkMad->GetCurrentAnimationName() != pkAS->m_strSwimRight)
+						pkMad->SetAnimation(pkAS->m_strSwimRight.c_str(), 0);
 					break;										
 		
 			}					
@@ -405,20 +419,20 @@ void P_CharacterControl::UpdateAnimation()
 		//sitting
  		else if(iState == eSITTING)
 		{
-			if(pkMad->GetCurrentAnimationName() != m_strIdleSitting)
-				pkMad->SetAnimation(m_strIdleSitting.c_str(), 0);			
+			if(pkMad->GetCurrentAnimationName() != pkAS->m_strIdleSitting)
+				pkMad->SetAnimation(pkAS->m_strIdleSitting.c_str(), 0);			
 		}
 		//idle standing
 		else if(iState == eIDLE_STANDING)
 		{
-			if( pkMad->GetCurrentAnimationName() != m_strIdleStanding
-				&& pkMad->GetCurrentAnimationName().compare(0,5,m_strEmote) )
-				pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);			// walk_foward	 m_strIdleStanding "taunt1"
+			if( pkMad->GetCurrentAnimationName() != pkAS->m_strIdleStanding
+				&& pkMad->GetCurrentAnimationName().compare(0,5,pkAS->m_strEmote) )
+				pkMad->SetAnimation(pkAS->m_strIdleStanding.c_str(), 0);			// walk_foward	 m_strIdleStanding "taunt1"
 		}
 		else if(	iState == eIDLE_SWIMING)
 		{
-			if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
-				pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);		
+			if(pkMad->GetCurrentAnimationName() != pkAS->m_strIdleSwimming)
+				pkMad->SetAnimation(pkAS->m_strIdleSwimming.c_str(), 0);		
 		}	
 	}
 }
@@ -427,8 +441,6 @@ void P_CharacterControl::Save(ZFIoInterface* pkPackage)
 {
 	pkPackage->Write(m_fSpeed);
 	pkPackage->Write(m_fJumpForce);
-	pkPackage->Write_Str(m_strRunForward);
-	pkPackage->Write_Str(m_strWalkForward);
 	
 	pkPackage->Write(m_bEnabled);
 	
@@ -437,29 +449,40 @@ void P_CharacterControl::Save(ZFIoInterface* pkPackage)
 
 void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
 {
+		string old;
+
 	if(iVersion == 2)
 	{
 		pkPackage->Read(m_fSpeed);
 		pkPackage->Read(m_fJumpForce);
-		pkPackage->Read_Str(m_strRunForward);
+		pkPackage->Read_Str(old);
 	
 	}
 	if(iVersion == 3)
 	{
 		pkPackage->Read(m_fSpeed);
 		pkPackage->Read(m_fJumpForce);
-		pkPackage->Read_Str(m_strRunForward);
+		pkPackage->Read_Str(old);
 		pkPackage->Read(m_bEnabled);
 	}
 	
 	if(iVersion == 4)
 	{
+		string old;
+	
 		pkPackage->Read(m_fSpeed);
 		pkPackage->Read(m_fJumpForce);
-		pkPackage->Read_Str(m_strRunForward);
-		pkPackage->Read_Str(m_strWalkForward);
+		pkPackage->Read_Str(old);
+		pkPackage->Read_Str(old);
 		pkPackage->Read(m_bEnabled);
 	}	
+	
+	if(iVersion == 5)
+	{
+		pkPackage->Read(m_fSpeed);
+		pkPackage->Read(m_fJumpForce);
+		pkPackage->Read(m_bEnabled);
+	}		
 }
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 

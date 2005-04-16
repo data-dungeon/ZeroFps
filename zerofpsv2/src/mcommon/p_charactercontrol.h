@@ -38,7 +38,32 @@ enum CharacterMoveDirection
 	eMOVE_RIGHT		=4,
 };
 
-#define CHARACTER_STATES 6
+class MCOMMON_API AnimationSet
+{
+	public:
+		//basic animations
+		string	m_strWalkForward;
+		string	m_strWalkBackward;
+		string	m_strWalkLeft;
+		string	m_strWalkRight;
+		string	m_strRunForward;
+		string	m_strRunBackward;
+		string	m_strRunLeft;		
+		string	m_strRunRight;
+		string	m_strSwimForward;
+		string	m_strSwimBackward;
+		string	m_strSwimLeft;				
+		string	m_strSwimRight;						
+		string	m_strJump;
+		string	m_strIdleStanding;
+		string	m_strIdleSitting;
+		string	m_strIdleSwimming;
+		string	m_strEmote;			
+		string	m_strDead;			
+		string	m_strDie;			
+
+		AnimationSet();
+};
 
 class MCOMMON_API P_CharacterControl: public Property
 {
@@ -68,27 +93,9 @@ class MCOMMON_API P_CharacterControl: public Property
 
 		
 		//animation
-		
-		//basic animations
-		string	m_strWalkForward;
-		string	m_strWalkBackward;
-		string	m_strWalkLeft;
-		string	m_strWalkRight;
-		string	m_strRunForward;
-		string	m_strRunBackward;
-		string	m_strRunLeft;		
-		string	m_strRunRight;
-		string	m_strSwimForward;
-		string	m_strSwimBackward;
-		string	m_strSwimLeft;				
-		string	m_strSwimRight;						
-		string	m_strJump;
-		string	m_strIdleStanding;
-		string	m_strIdleSitting;
-		string	m_strIdleSwimming;
-		string	m_strEmote;			
-		string	m_strDead;			
-		string	m_strDie;	
+		int			m_iCurrentSet;
+		vector<AnimationSet>	m_kAnimationSets;
+
 		
 		void UpdateAnimation();			
 		vector<PropertyValues> GetPropertyValues();
@@ -104,7 +111,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);		
 		
-		
+		void SetAnimationSet(int iSet)						{	m_iCurrentSet= iSet;			}
+		int  GetAnimationSet()									{	return m_iCurrentSet;		}
 		void SetControl(int iControl,bool bState);
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
