@@ -1330,12 +1330,13 @@ void ZShaderSystem:: AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const V
 
 void ZShaderSystem::TextureOffset()
 {	
-	cout << "yep" << endl;
-	CopyPointerData(TEXTURE_POINTER0);
-	CopyPointerData(TEXTURE_POINTER1);
+	if(m_bTexturePointer0)
+		CopyPointerData(TEXTURE_POINTER0);
+	if(m_bTexturePointer1)
+		CopyPointerData(TEXTURE_POINTER1);
 
 	float fTicks = SDL_GetTicks() / 1000.0;
-	
+
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
 		if(m_bTexturePointer0)

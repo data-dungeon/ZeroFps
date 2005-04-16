@@ -125,7 +125,7 @@ private:
 	static PSystemManager *m_pkInstance;
 
 	// Creating PS
-	float* CreateTexCoords (int iParticles);
+	Vector2* CreateTexCoords (int iParticles);
 	float* CreateVertices ( PSystemType *kPSystemType );
 	float* CreateVerticeColors ( int iParticles );
 	unsigned int* CreateIndices ( int iParticles );

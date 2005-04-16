@@ -63,12 +63,13 @@ private:
 	float 
 		*m_pfVertices,
 		*m_pfColors,
-		*m_pfTexCoords,
 		m_fFrameTime,
 		m_fTimeSinceLastCreatedParticle,
 		m_fAge,
 		m_fAgePercent,
 		m_fLastTime;
+
+	Vector2* m_pkTexCoords;
 
 	vector<Particle> m_kParticles;
 
@@ -99,14 +100,14 @@ public:
 
 	float* GetVertices()								{ return m_pfVertices; }
 	float* GetColors()								{ return m_pfColors;   }
-	float* GetTexCoords()							{ return m_pfTexCoords;}
+	Vector2* GetTexCoords()							{ return m_pkTexCoords;}
 	unsigned int* GetIndices()						{ return m_pfIndices;  }
 
 	Vector3 GetPosition()							{ return m_kPosition;  }
 	Matrix4 GetRotation()							{ return m_kRotation;  }
 
 	void SetVertices (float *pfVertices)		{ m_pfVertices = pfVertices;   }
-	void SetTexCoords (float *pfTexCoords)		{ m_pfTexCoords = pfTexCoords; }
+	void SetTexCoords (Vector2 *pkTexCoords)	{ m_pkTexCoords = pkTexCoords; }
 	void SetColors	(float *pfColors)				{ m_pfColors = pfColors;       }
 	void SetIndices (unsigned int *pfIndices)	{ m_pfIndices = pfIndices;		 }
 

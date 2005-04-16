@@ -84,26 +84,26 @@ PSystem* PSystemManager::GetPSystem ( string kPSName )
 
 // ------------------------------------------------------------------------------------------
 
-float* PSystemManager::CreateTexCoords (int iParticles)
+Vector2* PSystemManager::CreateTexCoords (int iParticles)
 {
-	float* pfTexCoords = new float[8 + iParticles * 8];
+	Vector2* pkTexCoords = new Vector2[4 + iParticles * 4];
 
-	for ( int i = 0; i < iParticles * 8; i += 8 )
+	for ( int i = 0; i < iParticles * 4; i += 4 )
 	{
-		pfTexCoords[i] = 0;
-		pfTexCoords[i+1] = 0;
+		pkTexCoords[i].x = 0;
+		pkTexCoords[i].y = 0;
 
-		pfTexCoords[i+2] = 1;
-		pfTexCoords[i+3] = 0;
+		pkTexCoords[i+1].x = 1;
+		pkTexCoords[i+1].y = 0;
 
-		pfTexCoords[i+4] = 1;
-		pfTexCoords[i+5] = 1;
+		pkTexCoords[i+2].x = 1;
+		pkTexCoords[i+2].y = 1;
 
-		pfTexCoords[i+6] = 0;
-		pfTexCoords[i+7] = 1;
+		pkTexCoords[i+3].x = 0;
+		pkTexCoords[i+3].y = 1;
 	}
 
-	return pfTexCoords;
+	return pkTexCoords;
 }
 
 // ------------------------------------------------------------------------------------------

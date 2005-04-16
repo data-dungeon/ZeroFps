@@ -8,7 +8,7 @@ bool PSystem::Draw()
 	if ( m_bInsideFrustum )
 	{
 		m_pkShader->ResetPointers();
-		m_pkShader->SetPointer(TEXTURE_POINTER0, m_pfTexCoords + Start() * 8 );
+		m_pkShader->SetPointer(TEXTURE_POINTER0, m_pkTexCoords + Start() * sizeof(Vector2) * 4 );
 		m_pkShader->SetPointer(VERTEX_POINTER, m_pfVertices + Start() * 12);		
 		m_pkShader->SetPointer(COLOR_POINTER, m_pfColors + Start() * 16);		
 //		m_pkShader->SetPointer(NORMAL_POINTER, GetNormalsPtr());						
@@ -148,7 +148,7 @@ PSystem::~PSystem()
 	// Delete particles
 	delete[] m_pfVertices;
 	delete[] m_pfColors;
-	delete[] m_pfTexCoords;
+	delete[] m_pkTexCoords;
 	delete[] m_pfIndices;
 
 }
@@ -165,7 +165,7 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 	m_pfVertices = 0;
 	m_pfColors = 0;
-	m_pfTexCoords = 0;
+	m_pkTexCoords = 0;
 	m_fTimeSinceLastCreatedParticle = 0;
 
 	m_uiFirstParticle = 0,
