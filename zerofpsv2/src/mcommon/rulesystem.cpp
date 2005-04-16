@@ -166,6 +166,8 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 			return true;
 		} 			
 	}
+
+	return false;
 }
 
 

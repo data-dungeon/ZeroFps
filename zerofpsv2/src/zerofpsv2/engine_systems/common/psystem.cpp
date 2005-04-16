@@ -1,4 +1,3 @@
-#include "../../render/render.h"
 #include "../../engine/psystemmanager.h"
 #include "psystem.h"
 
@@ -7,7 +6,23 @@
 bool PSystem::Draw()
 {
 	if ( m_bInsideFrustum )
-		m_pkRender->DrawPSystem (this);
+	{
+		m_pkShader->ResetPointers();
+		m_pkShader->SetPointer(TEXTURE_POINTER0, m_pfTexCoords + Start() * 8 );
+		m_pkShader->SetPointer(VERTEX_POINTER, m_pfVertices + Start() * 12);		
+		m_pkShader->SetPointer(COLOR_POINTER, m_pfColors + Start() * 16);		
+//		m_pkShader->SetPointer(NORMAL_POINTER, GetNormalsPtr());						
+		m_pkShader->SetDrawMode(QUADS_MODE);
+		m_pkShader->SetNrOfVertexs(Particles() * 4);
+
+		ZMaterial* pkMaterial = (ZMaterial*)(GetPSystemType()->m_kParticleBehaviour.m_pkMaterial->GetResourcePtr());
+
+		m_pkShader->BindMaterial(pkMaterial);				
+		m_pkShader->SetPointer(INDEX_POINTER, m_pfIndices);				
+		m_pkShader->SetNrOfIndexes(Particles() * 4);
+
+		m_pkShader->DrawArray();
+	}
 
 	return m_bInsideFrustum;
 }
@@ -142,9 +157,10 @@ PSystem::~PSystem()
 
 PSystem::PSystem(PSystemType* pkPSystemType)
 {
-	m_pkRender = static_cast<Render*>( g_ZFObjSys.GetObjectPtr("Render") );		
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkLight= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
+	m_pkShader	= static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
+
 	m_pkPSystemType = pkPSystemType;
 
 	m_pfVertices = 0;

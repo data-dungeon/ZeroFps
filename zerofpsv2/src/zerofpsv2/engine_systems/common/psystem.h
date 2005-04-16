@@ -43,10 +43,12 @@ class PSystem {
 	
 private:
 
+
 	vector<ParticleProperty*> m_kPSProperties;
-	
+
+	ZShaderSystem *m_pkShader;
 	ZeroFps* m_pkFps;
-	Render* m_pkRender;
+//	Render* m_pkRender;
 
 	P_PSystem* m_pkParent;
 

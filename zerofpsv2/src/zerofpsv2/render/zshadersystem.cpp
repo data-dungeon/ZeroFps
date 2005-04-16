@@ -237,26 +237,13 @@ void ZShaderSystem::SetupPass(int iPass)
 	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,	&pkSettings->m_fShininess);
 	
 	//enable color material if wanted
-	if(pkSettings->m_bColorMaterial)
-	{
-		glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);		
-		glEnable(GL_COLOR_MATERIAL);	
-		glColor4fv(&(pkSettings->m_kVertexColor.x));		
-		glDisable(GL_COLOR_MATERIAL);	
-		
-	}
-	else
-	{
-		glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);		
-		glEnable(GL_COLOR_MATERIAL);	
-		//glColor4f(1,1,1,1);		
-		glColor4fv(&(pkSettings->m_kVertexColor.x));		
-		
-		glDisable(GL_COLOR_MATERIAL);	
-	}
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);		
+	glEnable(GL_COLOR_MATERIAL);	
+	glColor4fv(&(pkSettings->m_kVertexColor.x));		
+	glDisable(GL_COLOR_MATERIAL);	
 
-	
-		
+	if ( m_bColorPointer )
+		glEnable(GL_COLOR_MATERIAL);
 
 	//line width
 	glLineWidth(pkSettings->m_fLineWidth);
@@ -1096,10 +1083,9 @@ void ZShaderSystem::DrawGeometry()
 
 void ZShaderSystem::VertexTransform()
 {
-
 	if(m_pkCurrentMaterial->m_bWaves)
 		Waves();
-		
+
 	if(m_pkCurrentMaterial->m_bTextureOffset)
 		TextureOffset();		
 }
@@ -1344,7 +1330,7 @@ void ZShaderSystem:: AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const V
 
 void ZShaderSystem::TextureOffset()
 {	
-
+	cout << "yep" << endl;
 	CopyPointerData(TEXTURE_POINTER0);
 	CopyPointerData(TEXTURE_POINTER1);
 

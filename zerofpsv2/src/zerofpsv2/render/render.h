@@ -17,7 +17,6 @@
 #include "zshadersystem.h"
 #include "../basic/zguifont.h"
 
-class PSystem;
 class HeightMap;
 class Heightmap2;
 class BasicConsole;
@@ -199,8 +198,6 @@ class RENDER_API Render : public ZFSubSystem {
 		void Draw_AxisIcon(float scale = 1.0);													///< Draw axis lines.
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.
 
-
-		void DrawPSystem( PSystem *pkPSystem );
 
 		void     EditColor_Set(string strName, float f, float g, float b);
 		Vector3	GetEditColor(string strName);

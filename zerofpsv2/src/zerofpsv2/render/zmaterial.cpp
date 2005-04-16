@@ -217,9 +217,6 @@ bool ZMaterial::LoadGlobalSection()
 	else
 		m_bTextureOffset = false;
 
-
-
-
 	return true;
 }
 

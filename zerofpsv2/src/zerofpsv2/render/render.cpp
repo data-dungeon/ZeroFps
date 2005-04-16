@@ -2182,7 +2182,8 @@ void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 		}
 }
-
+// old way of drawing psystem
+/*
 void Render::DrawPSystem( PSystem *pkPSystem )
 {
 	glPushMatrix();
@@ -2226,7 +2227,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 
 
 	// For debugging cullingbox (without rotation)
-	/*
+	
 	Vector3 kScale = pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
 
 	Vector3 kPos = pkPSystem->GetPosition() + 
@@ -2240,11 +2241,11 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	glDepthMask(GL_FALSE);
 	DrawBox(kPos, pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset, 
 			  pkPSystem->GetRotation(), kScale, 1);
-	*/
+	
 	//glPopAttrib();
 	glPopMatrix();
 }
-
+*/
 /*	Set the colors that are used in the editor to display information.	*/
 /*void Render::Setup_EditColors()
 {
