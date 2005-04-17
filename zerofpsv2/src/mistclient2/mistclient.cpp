@@ -764,31 +764,36 @@ void MistClient::Input()
 	if(m_pkInputHandle->Pressed(KEY_1))
 		if(!DelayCommand() )
 			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
-// 			SendUseSkill("skill-fireball.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+
 	// speed	
 	if(m_pkInputHandle->Pressed(KEY_2))
 		if(!DelayCommand() )
-// 			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
  			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
+	// heal
 	if(m_pkInputHandle->Pressed(KEY_3))
 		if(!DelayCommand() )
-// 			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
 			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
+	// normal attack
 	if(m_pkInputHandle->Pressed(KEY_4))
 		if(!DelayCommand() )
-// 			SendUseSkill("skill-basic_attack.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 			SendAddSkillToCombatQueue("skill-basic_attack.lua",m_iTargetID);		
-				
+
+	// bow				
 	if(m_pkInputHandle->Pressed(KEY_5))
 		if(!DelayCommand() )
-// 			SendUseSkill("skill-bow.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 			SendAddSkillToCombatQueue("skill-bow.lua",m_iTargetID);		
 
+	// resurrect
 	if(m_pkInputHandle->Pressed(KEY_6))
 		if(!DelayCommand() )
 			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+
+	// bolt
+	if(m_pkInputHandle->Pressed(KEY_7))
+		if(!DelayCommand() )
+			SendUseSkill("skill-bolt.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 /*	//list actions
 	if ( m_pkInputHandle->VKIsDown("look") )
