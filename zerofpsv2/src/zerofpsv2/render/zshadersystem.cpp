@@ -1342,7 +1342,7 @@ void ZShaderSystem::TextureOffset()
 		if(m_bTexturePointer0)
 		{
 			m_pkTexturePointer0[i].x += fTicks * m_pkCurrentMaterial->m_faTextureOffset[0];
-			m_pkTexturePointer0[i].y += fTicks * m_pkCurrentMaterial->m_faTextureOffset[1];	
+			m_pkTexturePointer0[i].y += fTicks * m_pkCurrentMaterial->m_faTextureOffset[1];
 		}
 	
 		if(m_bTexturePointer1)

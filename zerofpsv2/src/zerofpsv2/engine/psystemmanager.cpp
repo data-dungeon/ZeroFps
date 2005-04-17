@@ -64,7 +64,8 @@ PSystem* PSystemManager::GetPSystem ( string kPSName )
 	}
 
 	// Add texture coordinates
-	pkPS->SetTexCoords( CreateTexCoords(m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles) );
+	pkPS->SetTexCoords( CreateTexCoords(m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles, 
+		m_kPSystemTypes[kPSName].m_kParticleBehaviour.m_bRandomUV_U, m_kPSystemTypes[kPSName].m_kParticleBehaviour.m_bRandomUV_V));
 
 	// Move property
 	pkPS->AddPSProperty ( new MovePSProp ( pkPS ) );	
@@ -84,23 +85,36 @@ PSystem* PSystemManager::GetPSystem ( string kPSName )
 
 // ------------------------------------------------------------------------------------------
 
-Vector2* PSystemManager::CreateTexCoords (int iParticles)
+Vector2* PSystemManager::CreateTexCoords (int iParticles, bool bRandU, bool bRandV)
 {
 	Vector2* pkTexCoords = new Vector2[4 + iParticles * 4];
 
+	float fU, fV;
+
 	for ( int i = 0; i < iParticles * 4; i += 4 )
 	{
-		pkTexCoords[i].x = 0;
-		pkTexCoords[i].y = 0;
+		// randomize UV coordinates
+		if ( bRandU )
+			fU = (rand()%10000)/10000.f;
+		else
+			fU = 0;
 
-		pkTexCoords[i+1].x = 1;
-		pkTexCoords[i+1].y = 0;
+		if ( bRandV )
+			fV = (rand()%10000)/10000.f;
+		else
+			fV = 0;
 
-		pkTexCoords[i+2].x = 1;
-		pkTexCoords[i+2].y = 1;
+		pkTexCoords[i].x = 1 + fU;
+		pkTexCoords[i].y = 1 + fV;
 
-		pkTexCoords[i+3].x = 0;
-		pkTexCoords[i+3].y = 1;
+		pkTexCoords[i+1].x = 0 + fU;
+		pkTexCoords[i+1].y = 1 + fV;
+
+		pkTexCoords[i+2].x = 0 + fU;
+		pkTexCoords[i+2].y = 0 + fV;
+
+		pkTexCoords[i+3].x = 1 + fU;
+		pkTexCoords[i+3].y = 0 + fV;
 	}
 
 	return pkTexCoords;
@@ -604,6 +618,17 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLightEndConstAtt = -1;
 
+
+	// Random UV
+	if ( m_kIniLoader.KeyExist("random_uv", "random_u") )
+		pkPSType->m_kParticleBehaviour.m_bRandomUV_U = m_kIniLoader.GetBoolValue("random_uv", "random_u");
+	else
+		pkPSType->m_kParticleBehaviour.m_bRandomUV_U = false;
+
+	if ( m_kIniLoader.KeyExist("random_uv", "random_v") )
+		pkPSType->m_kParticleBehaviour.m_bRandomUV_V = m_kIniLoader.GetBoolValue("random_uv", "random_v");
+	else
+		pkPSType->m_kParticleBehaviour.m_bRandomUV_V = false;
 
 	// close the file
 	//m_kIniLoader.Close();

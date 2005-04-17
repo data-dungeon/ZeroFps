@@ -92,7 +92,9 @@ struct ParticleTypeData
 		m_bBillBoardY,
 		m_bBillBoardZ,
 		m_bForceInheritDirection,
-		m_bStartSpeedInheritDirection;
+		m_bStartSpeedInheritDirection,
+		m_bRandomUV_U,
+		m_bRandomUV_V;
 
 	int
 		m_iLifeTimeRandom,
@@ -125,7 +127,7 @@ private:
 	static PSystemManager *m_pkInstance;
 
 	// Creating PS
-	Vector2* CreateTexCoords (int iParticles);
+	Vector2* CreateTexCoords (int iParticles, bool bRandU, bool bRandV);
 	float* CreateVertices ( PSystemType *kPSystemType );
 	float* CreateVerticeColors ( int iParticles );
 	unsigned int* CreateIndices ( int iParticles );

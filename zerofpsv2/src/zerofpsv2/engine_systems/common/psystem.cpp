@@ -8,10 +8,15 @@ bool PSystem::Draw()
 	if ( m_bInsideFrustum )
 	{
 		m_pkShader->ResetPointers();
-		m_pkShader->SetPointer(TEXTURE_POINTER0, m_pkTexCoords + Start() * sizeof(Vector2) * 4 );
-		m_pkShader->SetPointer(VERTEX_POINTER, m_pfVertices + Start() * 12);		
-		m_pkShader->SetPointer(COLOR_POINTER, m_pfColors + Start() * 16);		
-//		m_pkShader->SetPointer(NORMAL_POINTER, GetNormalsPtr());						
+
+		if (m_pkTexCoords)
+			m_pkShader->SetPointer(TEXTURE_POINTER0, &m_pkTexCoords[Start() * 4] );
+		
+		m_pkShader->SetPointer(VERTEX_POINTER, &m_pfVertices[Start() * 12] );
+
+		if (m_pfColors)
+			m_pkShader->SetPointer(COLOR_POINTER, &m_pfColors[Start() * 16] );
+
 		m_pkShader->SetDrawMode(QUADS_MODE);
 		m_pkShader->SetNrOfVertexs(Particles() * 4);
 

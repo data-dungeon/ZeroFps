@@ -48,7 +48,6 @@ private:
 
 	ZShaderSystem *m_pkShader;
 	ZeroFps* m_pkFps;
-//	Render* m_pkRender;
 
 	P_PSystem* m_pkParent;
 
