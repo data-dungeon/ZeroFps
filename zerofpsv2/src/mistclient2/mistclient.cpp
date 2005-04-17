@@ -809,10 +809,34 @@ void MistClient::Input()
 	}		*/	
 			
 	//perform the first action in the action list or pickup
-	if( m_pkInputHandle->VKIsDown("use") )
+	static float fUsePressed = -1;
+	if( m_pkInputHandle->VKIsDown("use") && m_bGuiCapture && !m_pkActionDlg->IsOpen())
+	{	
+		if(fUsePressed == -1)
+		{
+			fUsePressed = m_pkZeroFps->GetEngineTime() + 0.2;
+		}
+		else if(m_pkZeroFps->GetEngineTime() > fUsePressed)
+		{
+			//bring up action meny if thers any actions
+			if(P_Ml* pkMl = (P_Ml*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_Ml"))
+			{
+				vector<string>	kActions;
+				pkMl->GetActions(kActions);			
+			
+				if(!kActions.empty())
+				{
+					fUsePressed = -1;
+					m_pkActionDlg->SetEntity(m_iPickedEntityID);							
+					m_pkActionDlg->Open();
+				}
+			}
+		}
+	}
+	else
 	{
-		if(!DelayCommand() && m_bGuiCapture )
-		{			
+		if(fUsePressed != -1)
+		{
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
 				//remove current target
@@ -822,7 +846,7 @@ void MistClient::Input()
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
-					cout<<"trying pickup"<<endl;
+					//cout<<"trying pickup"<<endl;
 					RequestPickup(m_iPickedEntityID);
 				}
 				else 
@@ -832,21 +856,11 @@ void MistClient::Input()
 					vector<string>	kActions;
 					pkMl->GetActions(kActions);
 				
-					if(kActions.size() == 1)
+					if(!kActions.empty())
 					{
-						cout<<"performing first action"<<endl;						
+						//cout<<"performing first action"<<endl;						
 						SendAction(m_iPickedEntityID,kActions[0]);
 					}
-					else if(kActions.size() > 1)
-					{
-						if(!m_pkActionDlg->IsOpen())
-						{
-							cout<<"opening action list"<<endl;			
-							m_pkActionDlg->SetEntity(m_iPickedEntityID);							
-							m_pkActionDlg->Open();
-						}
-					}
-
 				}
 				else
 				//is it a character?
@@ -858,8 +872,7 @@ void MistClient::Input()
 						SendSetTarget(	m_iTargetID );
 					}
 				}
-				
-				
+								
 				//send new target if it has changed
 				if(m_iTargetID != iOldTarget)
 					SendSetTarget(	m_iTargetID );
@@ -869,8 +882,67 @@ void MistClient::Input()
 				//remove current traget if nothing was picked
 				m_iTargetID = -1;			
 			}
-		}	
-	}	
+		}
+					
+		fUsePressed = -1;
+	}
+// 		if(!DelayCommand() &&  m_bGuiCapture)
+// 		{			
+// 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+// 			{					
+// 				//remove current target
+// 				int iOldTarget = m_iTargetID;
+// 				m_iTargetID = -1;
+// 
+// 				//if its an item , pick it up
+// 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+// 				{
+// 					cout<<"trying pickup"<<endl;
+// 					RequestPickup(m_iPickedEntityID);
+// 				}
+// 				else 
+// 				// if not an item do first action
+// 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
+// 				{
+// 					vector<string>	kActions;
+// 					pkMl->GetActions(kActions);
+// 				
+// 					if(kActions.size() == 1)
+// 					{
+// 						cout<<"performing first action"<<endl;						
+// 						SendAction(m_iPickedEntityID,kActions[0]);
+// 					}
+// 					else if(kActions.size() > 1)
+// 					{
+
+
+
+// 					}
+// 
+// 				}
+// 				else
+// 				//is it a character?
+// 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+// 				{
+// 					if(m_iPickedEntityID != m_iTargetID)
+// 					{
+// 						m_iTargetID = m_iPickedEntityID;
+// 						SendSetTarget(	m_iTargetID );
+// 					}
+// 				}
+// 				
+// 				
+// 				//send new target if it has changed
+// 				if(m_iTargetID != iOldTarget)
+// 					SendSetTarget(	m_iTargetID );
+// 			}
+// 			else
+// 			{
+// 				//remove current traget if nothing was picked
+// 				m_iTargetID = -1;			
+// 			}
+// 		}	
+// 	}	
 		
 	
 	//respawn knapp, i brist på gui

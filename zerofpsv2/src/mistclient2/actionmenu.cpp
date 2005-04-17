@@ -105,7 +105,7 @@ void ActionMenu::Open()
 	if(pkEnt->GetProperty("P_Item"))
 		m_kActions.push_back("Pickup");
 
-	if(m_kActions.size() < 2)
+	if(m_kActions.empty())
 		return;
 
 	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
@@ -177,7 +177,8 @@ void ActionMenu::Open()
 		if(i==0)
 		{				
 			m_pkIconSelection->SetPos(x, y, false, true); 
-			m_pkIconSelection->Show();
+ 			//m_pkIconSelection->Show();
+ 			m_pkIconSelection->Hide();	//visa inte markören i början
 		}
 
 		ZGuiButton* pkButton;
@@ -290,6 +291,7 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	// Kolla vilken knapp som är vald.
 	list<ZGuiWnd*> kChilds;
 	m_pkMainWnd->GetChildrens(kChilds);
+	m_pkIconSelection->Hide();				//dvoid hax, dölj markören om ingen ikon är markerad
 	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
 	{
 		ZGuiWnd* pkChild = (*it);
@@ -301,12 +303,14 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			{
 				pkWndButtonCursor = pkChild;
 				m_pkIconSelection->SetPos(rc.Left,rc.Top,true,true);
+				m_pkIconSelection->Show();
 				break;
 			}
 		}
 	}
 
 
+	
 	// Om höger musknapp har släpps skall vi sända valt action
 // 	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
 	if(g_kMistClient.m_pkGui->m_bMouseLeftPressed == false) 
