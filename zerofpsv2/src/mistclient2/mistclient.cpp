@@ -51,6 +51,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bTargetRotate		=	false;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
+	m_strMenuMusic			=	"data/music/2nd_maintheme.ogg";
 
 	m_strLoginName			= "player";
    m_strLoginPW 			= "topsecret";
@@ -149,7 +150,12 @@ void MistClient::OnInit()
 // 		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
 // 	}
 
-	GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+// 	LoadStartScreenGui(true);
+
+ 	GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+
+	//start menu music
+	g_ZFObjSys.RunCommand(string(string("audioplay ")+m_strMenuMusic).c_str(),CSYS_SRC_SUBSYS);	
 	
 	
 	if(m_bQuickStart)
@@ -157,6 +163,7 @@ void MistClient::OnInit()
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
 	}
 
+	
 //  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
 //  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
 //  		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
@@ -1543,10 +1550,13 @@ void MistClient::OnClientStart(void)
 	m_bFrontView		=	false;
 	m_bDead				=	false;
 	m_bCombatMode		=	false;
+	
 }
 
 void MistClient::OnClientConnected() 
 {
+	g_ZFObjSys.RunCommand(string(string("audiostop ")+m_strMenuMusic).c_str(),CSYS_SRC_SUBSYS);
+
 	m_pkConsole->Printf("Successfully connected to server");
 
 	ShowWnd("CharGen_SelectCharWnd", true, true, true);
@@ -1554,12 +1564,6 @@ void MistClient::OnClientConnected()
 	m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
 	m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));	
 
-	//request character entityID
-// 	NetPacket kNp;				
-// 	kNp.Clear();
-// 	kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
-// 	kNp.TargetSetClient(0);
-// 	SendAppMessage(&kNp);	
 
 	//load ingame gui	
 	//LoadInGameGui();

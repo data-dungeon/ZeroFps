@@ -48,6 +48,9 @@ class MistClient :public Application, public ZGuiApp {
 			FID_KILLME,
 		};
 
+		//music
+		string		m_strMenuMusic;
+		
 		//point text handler
 		PointText*	m_pkPointText;
 		
