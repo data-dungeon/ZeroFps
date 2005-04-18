@@ -27,7 +27,7 @@ NetWork::NetWork()
 	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
 	m_iMaxNumberOfNodes	= 0;
 	m_iDefPort				= 4242;
-	m_strMasterServer    = "127.0.0.1";
+	m_strMasterServer    = "dvoid.no-ip.com";
 	m_bPublishServer		= true;
 	m_fMSNextPing			= 0;
 
@@ -66,6 +66,28 @@ bool NetWork::StartUp()
 	GetSystem().Log("netpac",	"NetWork Packet Log:\n");
 	g_ZFObjSys.Logf("net", "SDLNet_Init(): %d\n", iInitRes);
 #endif
+
+	int iMasterPort = 4343;
+
+	if(!IsValidIPAddress( m_strMasterServer.c_str() ))
+	{
+		if(DnsLookUp( m_strMasterServer.c_str(), m_kMasterServerIP ))
+		{
+			m_kMasterServerIP.port = 0;
+			m_kMasterServerIP.port = m_kMasterServerIP.port | ((iMasterPort >> 8) & 0xff);  
+			m_kMasterServerIP.port = m_kMasterServerIP.port | ((iMasterPort << 8) & 0xff00);  							
+		}
+		else
+		{
+			cout << "Failed to get IP to master server" << endl;
+		}
+	}
+	else
+	{
+		char szFinalTarget[256];
+		sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), iMasterPort);
+		StrToAddress(szFinalTarget,&m_kMasterServerIP); 		
+	}
 
 	return true; 
 }
@@ -459,15 +481,15 @@ void NetWork::MS_ServerIsActive()
 	if(!m_bPublishServer)
 		return;
 
-	IPaddress kTargetIP;
+/*	IPaddress kTargetIP;
 	char szFinalTarget[256];
 	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
-	StrToAddress(szFinalTarget,&kTargetIP); 		
+	StrToAddress(szFinalTarget,&kTargetIP); 		*/
 
 	NetPacket NetP;
 
 	NetP.Clear();
-	NetP.m_kAddress = kTargetIP;
+	NetP.m_kAddress = m_kMasterServerIP;
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((int) 0);
@@ -477,15 +499,15 @@ void NetWork::MS_ServerIsActive()
 
 void NetWork::MS_ServerDown()
 {
-	IPaddress kTargetIP;
+/*	IPaddress kTargetIP;
 	char szFinalTarget[256];
 	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
-	StrToAddress(szFinalTarget,&kTargetIP); 		
+	StrToAddress(szFinalTarget,&kTargetIP); 		*/
 
 	NetPacket NetP;
 
 	NetP.Clear();
-	NetP.m_kAddress = kTargetIP;
+	NetP.m_kAddress = m_kMasterServerIP;
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((int) 1);
@@ -494,15 +516,15 @@ void NetWork::MS_ServerDown()
 
 void NetWork::MS_RequestServers()
 {
-	IPaddress kTargetIP;
+/*	IPaddress kTargetIP;
 	char szFinalTarget[256];
 	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
-	StrToAddress(szFinalTarget,&kTargetIP); 		
+	StrToAddress(szFinalTarget,&kTargetIP); */		
 
 	NetPacket NetP;
 
 	NetP.Clear();
-	NetP.m_kAddress = kTargetIP;
+	NetP.m_kAddress = m_kMasterServerIP;
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((int) 2);

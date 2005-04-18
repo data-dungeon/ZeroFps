@@ -182,6 +182,7 @@ private:
 
 	// Master Server 
 	string					m_strMasterServer;					// DNS/Ip to master server.
+	IPaddress				m_kMasterServerIP;					// Ip to master server.
 	bool						m_bPublishServer;						// True if we should publish ourselfs to MS.
 	char						m_szGameName[ZF_MAX_GAMENAME];	// Gamename for this server.
 	float						m_fMSNextPing;							// Next engine time we ping the MS that we are still online.
