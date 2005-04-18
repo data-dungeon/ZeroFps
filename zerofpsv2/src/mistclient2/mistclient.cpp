@@ -160,6 +160,7 @@ void MistClient::OnInit()
 	g_ZFObjSys.RunCommand(string(string("audioplay ")+m_strMenuMusic).c_str(),CSYS_SRC_SUBSYS);	
 	
 	
+	
 	if(m_bQuickStart)
 	{
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		

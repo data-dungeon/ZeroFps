@@ -28,6 +28,10 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			{
 				g_kMistClient.ShowWnd("ConnectWnd",	true,	true,	true);
 				g_kMistClient.UpdateServerListbox();
+				
+				//ugly list server hack
+			 	g_ZFObjSys.RunCommand("msref",CSYS_SRC_SUBSYS);	
+
 			}
 			else
 			if(strController == "QuitBn")
