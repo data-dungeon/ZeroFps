@@ -223,6 +223,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 		{
 			if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(iTargetID))
 			{
+		
 				//check range
 				if(pkOwner->GetWorldPosV().DistanceTo(pkTarget->GetWorldPosV()) > m_fRange)
 					return 6;
@@ -711,7 +712,13 @@ void P_CharacterProperty::UpdateCombat()
 		else
 		{
 			if(m_iTarget != -1 && !m_strDefaultAttackSkill.empty())
+			{				
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iTarget,"P_CharacterProperty"))
+					if(pkCP->GetFaction() == GetFaction())
+						return;
+				
 				UseSkill(m_strDefaultAttackSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
+			}
 		}
 	}
 
@@ -1509,8 +1516,8 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 	if(m_pkZeroFps->GetEngineTime() > m_fSkillLockTime )
 	{		
 		if(Skill* pkSkill = GetSkillPointer(strSkillScript))
-		{
-			return pkSkill->Use(iTarget,kPos,kDir);;
+		{	
+			return pkSkill->Use(iTarget,kPos,kDir);
 		}
 		else
 		{
