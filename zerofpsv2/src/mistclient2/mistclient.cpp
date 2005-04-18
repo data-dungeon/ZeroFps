@@ -51,7 +51,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bTargetRotate		=	false;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
-	m_strMenuMusic			=	"data/music/2nd_maintheme.ogg";
+	m_strMenuMusic			=	"";//data/music/2nd_maintheme.ogg";
 
 	m_strLoginName			= "player";
    m_strLoginPW 			= "topsecret";

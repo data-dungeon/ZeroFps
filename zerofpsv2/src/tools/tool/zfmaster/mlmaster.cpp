@@ -55,11 +55,11 @@ bool ZFMasterServer::PurgeOldServers()
 	if(m_fNextPurgeTime > m_fTime)
 		return false;
 
-	for(int i=0; i<m_kServers.size(); i++)
+	for(vector<ZFServer>::iterator it = m_kServers.begin();it != m_kServers.end();it++)
 	{
-		if((m_kServers[i].m_fLastUpdate + MAX_SERVER_AGE) < m_fTime)
+		if(((*it).m_fLastUpdate + MAX_SERVER_AGE) < m_fTime)
 		{
-			m_kServers.erase(&m_kServers[i]);
+			m_kServers.erase(it);
 			return true;
 		}
 	}
@@ -92,11 +92,11 @@ void ZFMasterServer::AddServer(IPaddress kServerIp, char* szGameName)
 
 void ZFMasterServer::RemoveServer(IPaddress kServer)
 {
-	for(int i=0; i<m_kServers.size(); i++)
+	for(vector<ZFServer>::iterator it = m_kServers.begin();it != m_kServers.end();it++)
 	{
-		if(IsAddressEquals (&m_kServers[i].m_ServerIP, &kServer))
+ 		if(IsAddressEquals(&((*it).m_ServerIP), &kServer))
 		{
-			m_kServers.erase(&m_kServers[i]);
+			m_kServers.erase(it);
 			cout << "Server found, removing" << endl;
 			return;
 		}

@@ -15,6 +15,7 @@ all:
 	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 	cd tools/tool/zguiresed/; $(MAKE) $@
+	cd tools/tool/zfmaster/; $(MAKE) $@	
 	./gengdbinit.sh
 
 clean:
@@ -31,6 +32,7 @@ clean:
 	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 	cd tools/tool/zguiresed/; $(MAKE) $@
+	cd tools/tool/zfmaster/; $(MAKE) $@	
 	
 clean_engine:
 	cd zerofpsv2/; $(MAKE) clean	
@@ -42,6 +44,6 @@ clean_apps:
 	cd mistclient2/; $(MAKE) clean
 	cd tools/tool/madview/; $(MAKE) clean	
 	cd stopemup/; $(MAKE) clean
-
+	cd tools/tool/zfmaster/; $(MAKE) $@	
 		
 	
