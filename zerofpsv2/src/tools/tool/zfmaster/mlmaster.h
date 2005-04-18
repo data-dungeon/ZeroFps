@@ -19,17 +19,21 @@ class ZFMasterServer
 public:
 	ZFMasterServer();
 	~ZFMasterServer();
-	bool StartUp();
+	bool StartUp(bool bInterative);
 	bool Run();
 	bool ShutDown();
 
 private:
+	SDLNet_SocketSet	m_kSocketSet;
+
 	SDL_Surface*		screen;
 	UDPsocket			m_pkSocket;	
 	float					m_fTime;
 	float					m_fNextPurgeTime;
 	vector<ZFServer>	m_kServers;
 
+	bool					m_bInteractive;
+	
 	UDPpacket			m_kSDLNetPacket;
 	NetPacket			m_kPkNetPacket;
 

@@ -64,9 +64,14 @@ bool ZFMasterServer::PurgeOldServers()
 		}
 	}
 	
-	cout << "Num of Servers: " << (int)m_kServers.size() << endl;
 	m_fNextPurgeTime = m_fTime + PURGE_PERIOD;
-	cout << "Removing old servers..." << endl;
+	
+	if(m_bInteractive)
+	{
+		cout << "Num of Servers: " << (int)m_kServers.size() << endl;	
+		cout << "Removing old servers..." << endl;
+	}
+		
 	return false;
 }
 
@@ -158,6 +163,9 @@ bool ZFMasterServer::HandleNet()
 	m_kSDLNetPacket.maxlen	= MAX_PACKET_SIZE;
 	m_kPkNetPacket.Clear();
 	
+	//wait for socket activity	
+	int blub = SDLNet_CheckSockets(m_kSocketSet, 1000);
+	
 	while(SDLNet_UDP_Recv(m_pkSocket, &m_kSDLNetPacket))
 	{
 		m_kPkNetPacket.m_kAddress = m_kSDLNetPacket.address;
@@ -187,7 +195,7 @@ bool ZFMasterServer::HandleNet()
 
 ZFMasterServer::ZFMasterServer()
 {
-	
+
 }
 
 ZFMasterServer::~ZFMasterServer()
@@ -196,8 +204,10 @@ ZFMasterServer::~ZFMasterServer()
 }
 
 
-bool ZFMasterServer::StartUp()
+bool ZFMasterServer::StartUp(bool bInterative)
 {
+	m_bInteractive = bInterative;
+
   // Initialize SDL's subsystems - in this case, only video.
 	if ( SDL_Init(SDL_INIT_TIMER) < 0 ) 
 	{
@@ -209,15 +219,18 @@ bool ZFMasterServer::StartUp()
 	// cleaned up when we quit.
 	atexit(SDL_Quit);
 
-	// Attempt to create a 640x480 window with 32bit pixels.
-	screen = SDL_SetVideoMode(640, 480, 32, SDL_SWSURFACE);
-	SDL_WM_SetCaption("ZeroFps MasterServer", NULL);
-
-	// If we fail, return error.
-	if ( screen == NULL ) 
+	if(m_bInteractive)
 	{
-		fprintf(stderr, "Unable to set 640x480 video: %s\n", SDL_GetError());
-		exit(1);
+		// Attempt to create a 640x480 window with 32bit pixels.
+		screen = SDL_SetVideoMode(640, 480, 32, SDL_SWSURFACE);
+		SDL_WM_SetCaption("ZeroFps MasterServer", NULL);
+	
+		// If we fail, return error.
+		if ( screen == NULL ) 
+		{
+			fprintf(stderr, "Unable to set 640x480 video: %s\n", SDL_GetError());
+			exit(1);
+		}
 	}
 
 	SDLNet_Init();
@@ -225,6 +238,18 @@ bool ZFMasterServer::StartUp()
 	UpdateTime();
 	//RandomServers();
 
+	
+	//setup socket set
+	m_kSocketSet = SDLNet_AllocSocketSet(1);
+	
+	if(!m_kSocketSet)
+	{
+		cout<<"ERROR setting upp socket set"<<endl;
+		return false;
+	}
+		
+	 SDLNet_UDP_AddSocket(m_kSocketSet,m_pkSocket);
+	
 	return true;
 }
 
@@ -279,9 +304,18 @@ bool ZFMasterServer::ShutDown()
 	
 int main(int argc, char *argv[])
 {
+	bool bInteractive = false;
+	if(argc == 2)
+		if(strcmp(argv[1],"-i") == 0)
+			bInteractive = true;
+
+	if(!bInteractive)
+		cout<<"To run in interactive mode use -i"<<endl;
+			
+			
 	ZFMasterServer MasterServer;
 
-	if(!MasterServer.StartUp())
+	if(!MasterServer.StartUp(bInteractive))
 		return 0;
 
 	MasterServer.Run();
