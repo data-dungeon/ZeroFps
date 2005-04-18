@@ -56,6 +56,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strLoginName			= "player";
    m_strLoginPW 			= "topsecret";
 
+	Register_Cmd("msref", FID_MSREFRESH);
+
    RegisterVariable("ap_loginname", 		 	&m_strLoginName,				CSYS_STRING);
    RegisterVariable("ap_loginpw", 			 	&m_strLoginPW,					CSYS_STRING);
 	RegisterVariable("ap_showmenulevel", 	 	&m_bShowMenulevel,			CSYS_BOOL);
@@ -162,6 +164,7 @@ void MistClient::OnInit()
 	{
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
 	}
+	m_pkNetwork->ClientStart();
 
 	
 //  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
@@ -200,6 +203,12 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_KILLME:
 		{
 			SendRequestKillMe();
+			break;
+		}	
+
+		case FID_MSREFRESH:
+		{
+			m_pkNetwork->MS_RequestServers();
 			break;
 		}	
 	}
@@ -2052,4 +2061,22 @@ void MistClient::AddChar(string strChar, string strMod)
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);
 }
+
+void MistClient::OnSystemMessage(const string& strType,void* pkData)
+{
+	if(strType == "serverlist")
+	{
+		m_kServerList.clear();
+		vector<IPaddress> pkServerIp = m_pkNetwork->GetServers();
+		char szIp[128];
+		for(int i=0; i<pkServerIp.size(); i++)
+		{
+			m_pkNetwork->AddressToStr(&pkServerIp[i],szIp);
+			AddRemoveServer("smurfa", szIp,true);
+		}
+
+		UpdateServerListbox();
+	}
+}
+
 

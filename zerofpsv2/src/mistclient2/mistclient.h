@@ -46,6 +46,7 @@ class MistClient :public Application, public ZGuiApp {
 			FID_SAY,
 			FID_PLAYERLIST,
 			FID_KILLME,
+			FID_MSREFRESH,
 		};
 
 		//music
@@ -200,7 +201,8 @@ class MistClient :public Application, public ZGuiApp {
 		void OnNetworkMessage(NetPacket *PkNetMessage);
 		void OnDisconnect(int iConnectionID);
 
-		
+		void OnSystemMessage(const string& strType,void* pkData);
+
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
 		void AddStringToChatBox(string strMsg);

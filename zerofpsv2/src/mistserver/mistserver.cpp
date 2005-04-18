@@ -545,12 +545,16 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			SayToClients(strMsg);	
 		}			
 			
-		case FID_USERS:			
+		case FID_USERS:	
+			m_pkNetwork->MS_RequestServers();
+		
+
+			/*
 			m_pkPlayerDB->GetUsers(&kUsers);
 			for(i=0; i<kUsers.size(); i++) 
 			{
 				cout << "User: " << kUsers[i] << endl;
-			}
+			}*/
 			break;		
 
 		case FID_TEST_JIDDRA:
@@ -561,7 +565,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkEntity->SetWorldPosV(kStartPos);*/
 
 
-			m_pkConsole->Printf("Long Text: ");
+			/*m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
 			m_pkConsole->Printf("\n");
 			m_pkConsole->Printf("Long Text with no spaces: ");
@@ -571,12 +575,13 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)");
 			m_pkConsole->Printf("\n\n\n");
 			m_pkConsole->Printf("Mult rows with newline at the end.");
-			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");
+			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");*/
+			m_pkNetwork->MS_ServerIsActive();
 
 			break;
 
 		case FID_LIGHTMODE:
-
+			m_pkNetwork->MS_ServerDown();
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
 /*

@@ -35,6 +35,7 @@ using namespace std;
 #define ZF_NETCONTROL_NETSTRINGS		9	//
 #define ZF_NETCONTROL_REQNETSTRING	10	//
 #define ZF_NETCONTROL_ACKREL			15	// Ack that we got a rel pack.	
+#define ZF_NETCONTROL_SERVERLISTPAGE	16	// Ack that we got a rel pack.	
 
 #define MAX_NET_CLIENTS					4		// Max number of clients (nodes).
 #define ZF_NET_NOCLIENT					-1		// ID for a non client.
@@ -43,6 +44,10 @@ using namespace std;
 #define ZF_NET_CONNECTION_TIMEOUT	10	// Timeout connection if no message from a client after this time (sec).
 
 #define ZF_NET_MAXREL					1024
+
+/*	Gamename is the name used to register as a server on the masterserver. */
+#define ZF_MAX_GAMENAME						16
+
 
 // Status of a remote node.
 enum ClientConnectStatus
@@ -175,6 +180,17 @@ private:
 	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
 	int						m_iMaxClients;							// Num of max connected clients.
 
+	// Master Server 
+	string					m_strMasterServer;					// DNS/Ip to master server.
+	bool						m_bPublishServer;						// True if we should publish ourselfs to MS.
+	char						m_szGameName[ZF_MAX_GAMENAME];	// Gamename for this server.
+	float						m_fMSNextPing;							// Next engine time we ping the MS that we are still online.
+
+	// Server List
+	vector<IPaddress>		m_kServers;								// List of servers recv from master list.
+
+
+
 	void	ClearRemoteNode(RemoteNode* pkNode);				// Reset a node ***
 	bool Recv(NetPacket* pkNetPacket);							// Recv a packet if any is waiting.
 	bool IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2);
@@ -183,6 +199,7 @@ private:
 	void SendAckList(int iClient, vector<int>& kAckList);
 
 public:
+
 		enum FuncId_e
 		{
 			FID_NETGMAX,
@@ -208,7 +225,14 @@ public:
 	void ServerStart(int iPort);
 	void ServerEnd(void);
 	void ClientStart(const char* szIp, int iPort,const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed);
+	void ClientStart();
 	void ClientEnd(void);
+
+	void MS_ServerIsActive();
+	void MS_ServerDown();
+	void MS_RequestServers();
+	void MS_GotServers(NetPacket* pkNetPack);
+	vector<IPaddress> GetServers() { return m_kServers; }
 
 	void	SetMaxNodes(int iMaxNode);			
 	int GetNumOfClients(void);
@@ -250,6 +274,7 @@ public:
 	bool IsValidIPAddress( const char* szString );
 	bool DnsLookUp(const char* szHost,IPaddress& kIp);
 
+	void SetGameName(char* szGameName);
 
 	// Debug
 	void DrawConnectionGraphs();

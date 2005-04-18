@@ -17,6 +17,7 @@ NetWork::NetWork()
 	GetSystem().Log_Create("netpac");
 
 	strcpy(m_szServerName,"No Name");
+	strcpy(m_szGameName, "ZeroFps");
 	m_bAcceptClientConnections = false;
 	m_pkSocket						= NULL;
 	m_eNetStatus					= NET_NONE;
@@ -26,10 +27,17 @@ NetWork::NetWork()
 	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
 	m_iMaxNumberOfNodes	= 0;
 	m_iDefPort				= 4242;
+	m_strMasterServer    = "127.0.0.1";
+	m_bPublishServer		= true;
+	m_fMSNextPing			= 0;
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
+	RegisterVariable("n_mslink",	&m_strMasterServer,	CSYS_STRING);	
+	RegisterVariable("n_mspublish",	&m_bPublishServer,	CSYS_BOOL);	
 	
+
+
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);
 	Register_Cmd("n_dns", FID_DNS);
@@ -62,7 +70,11 @@ bool NetWork::StartUp()
 	return true; 
 }
 
-bool NetWork::ShutDown() {	return true;	}
+bool NetWork::ShutDown() 
+{	
+	
+	return true;	
+}
 bool NetWork::IsValid()	 { return true;	}
 
 NetWork::~NetWork()
@@ -361,9 +373,23 @@ void NetWork::ServerStart(int iPort)
 
 void NetWork::ServerEnd(void)
 {
+	if(m_eNetStatus == NET_SERVER)
+	{
+		MS_ServerDown();
+	}
+
 	DisconnectAll();
 	CloseSocket();
 	m_eNetStatus = NET_NONE;
+}
+
+void NetWork::ClientStart()
+{
+	if(m_eNetStatus == NET_SERVER)
+		return;
+
+	StartSocket(false);
+	m_eNetStatus = NET_CLIENT;
 }
 
 void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed)
@@ -427,6 +453,83 @@ void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const
 
 	m_kServerAddress = NetP.m_kAddress;
 }
+
+void NetWork::MS_ServerIsActive()
+{
+	if(!m_bPublishServer)
+		return;
+
+	IPaddress kTargetIP;
+	char szFinalTarget[256];
+	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
+	StrToAddress(szFinalTarget,&kTargetIP); 		
+
+	NetPacket NetP;
+
+	NetP.Clear();
+	NetP.m_kAddress = kTargetIP;
+	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetP.m_kData.m_kHeader.m_iOrder = 0;
+	NetP.Write((int) 0);
+	NetP.Write_Str(m_szGameName);
+	SendRaw(&NetP);
+}
+
+void NetWork::MS_ServerDown()
+{
+	IPaddress kTargetIP;
+	char szFinalTarget[256];
+	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
+	StrToAddress(szFinalTarget,&kTargetIP); 		
+
+	NetPacket NetP;
+
+	NetP.Clear();
+	NetP.m_kAddress = kTargetIP;
+	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetP.m_kData.m_kHeader.m_iOrder = 0;
+	NetP.Write((int) 1);
+	SendRaw(&NetP);
+}
+
+void NetWork::MS_RequestServers()
+{
+	IPaddress kTargetIP;
+	char szFinalTarget[256];
+	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
+	StrToAddress(szFinalTarget,&kTargetIP); 		
+
+	NetPacket NetP;
+
+	NetP.Clear();
+	NetP.m_kAddress = kTargetIP;
+	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetP.m_kData.m_kHeader.m_iOrder = 0;
+	NetP.Write((int) 2);
+	SendRaw(&NetP);
+}
+
+void NetWork::MS_GotServers(NetPacket* pkNetPack)
+{
+	m_kServers.clear();
+	char SzAdress[128];
+	IPaddress kIp;
+
+	int iNumOfServers;
+	pkNetPack->Read(iNumOfServers);
+	m_pkConsole->Printf("There are %d active servers\n",iNumOfServers );
+	for(int i=0; i<iNumOfServers; i++)
+	{
+		pkNetPack->Read(kIp);	
+		AddressToStr(&kIp, SzAdress);
+		m_pkConsole->Printf("[%d]: %s\n",i, SzAdress);
+		m_kServers.push_back(kIp);
+	}
+
+	GetSystem().SendSystemMessage(string("Application"),string("serverlist"),NULL);
+}
+
+
 
 /**	\brief	Checks for incoming packets and return them.
 	
@@ -770,6 +873,10 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			// 
 			break;
 
+		case ZF_NETCONTROL_SERVERLISTPAGE:
+			MS_GotServers(pkNetPacket);
+			break;
+
 		case ZF_NETCONTROL_NETSTRINGS:
 			{
 #ifdef NET_LOGALL
@@ -923,6 +1030,16 @@ void NetWork::Run()
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
 
 	if( m_eNetStatus == NET_NONE )	return;
+
+	// Ping MasterServer
+	if(m_eNetStatus == NET_SERVER)
+	{
+		if(m_bPublishServer && fEngineTime > m_fMSNextPing)
+		{
+			m_fMSNextPing = fEngineTime + 60;
+			MS_ServerIsActive();
+		}
+	}
 
 	//reset byte counters for all connections
 	unsigned int i;
@@ -1218,6 +1335,14 @@ bool NetWork::DnsLookUp(const char* szHost,IPaddress& kIp)
 		return false;
 
 	return true;
+}
+
+void NetWork::SetGameName(char* szGameName)
+{
+	if(strlen(szGameName) >= ZF_MAX_GAMENAME)
+		return;
+
+   strcpy(m_szGameName, szGameName);
 }
 
 
