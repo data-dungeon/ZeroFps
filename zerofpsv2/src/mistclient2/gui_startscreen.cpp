@@ -31,7 +31,6 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				
 				//ugly list server hack
 			 	g_ZFObjSys.RunCommand("msref",CSYS_SRC_SUBSYS);	
-
 			}
 			else
 			if(strController == "QuitBn")

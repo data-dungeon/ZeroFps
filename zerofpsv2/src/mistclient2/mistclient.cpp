@@ -2073,9 +2073,12 @@ void MistClient::OnSystemMessage(const string& strType,void* pkData)
 		for(int i=0; i<pkServerIp.size(); i++)
 		{
 			m_pkNetwork->AddressToStr(&pkServerIp[i],szIp);
-			AddRemoveServer("smurfa", szIp,true);
+			AddRemoveServer("remote", szIp,true);
 		}
 
+		//fulhaxos
+		AddRemoveServer("localhost","localhost:4242",true);
+		
 		UpdateServerListbox();
 	}
 }
