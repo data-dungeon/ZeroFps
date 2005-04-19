@@ -810,7 +810,8 @@ void MistClient::Input()
 	// bolt
 	if(m_pkInputHandle->Pressed(KEY_7))
 		if(!DelayCommand() )
-			SendUseSkill("skill-bolt.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToCombatQueue("skill-bolt.lua",m_iTargetID);
+// 			SendUseSkill("skill-bolt.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 /*	//list actions
 	if ( m_pkInputHandle->VKIsDown("look") )

@@ -134,7 +134,8 @@ class MCOMMON_API P_CharacterControl: public Property
 
 		
 			
-		void DoEmote(int iEmoteID);	
+		void DoEmote(int iEmoteID);
+		void DoAnimation(const string& strAnim);
 		void Lock(float fTime);
 		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		}
 };

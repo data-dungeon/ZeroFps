@@ -295,6 +295,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							SayToClients("You need to equip a sertain item","Server",-1,PkNetMessage->m_iClientID);break;										
 // 						case 8:
 // 							SayToClients("Still using another skill","Server",-1,PkNetMessage->m_iClientID);break;										
+ 						case 9:
+ 							SayToClients("You cant use that skill when not in combat mode","Server",-1,PkNetMessage->m_iClientID);break;										
 							
 							
 					}

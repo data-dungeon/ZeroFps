@@ -309,6 +309,16 @@ void P_CharacterControl::RotateTowards(const Vector3& kPos)
 	SetYAngle(fAngle);
 }
 
+void P_CharacterControl::DoAnimation(const string& strAnim)
+{
+	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	{
+ 		string strTemp = pkMad->GetCurrentAnimationName();
+		pkMad->SetAnimation(strAnim.c_str(), 0);		
+ 		pkMad->SetNextAnimation(strTemp.c_str());
+	}
+}
+
 void P_CharacterControl::DoEmote(int iEmoteID)
 {
 	if(iEmoteID <0 || iEmoteID > 99)
@@ -675,6 +685,24 @@ namespace SI_P_CharacterControl
 		
 		return 0;
 	}		
+	
+	int DoAnimationLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		string strAnim;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &id);
+		g_pkScript->GetArgString(pkLua, 1, strAnim);
+		
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->DoAnimation(strAnim);
+		
+		return 0;
+	}			
 }
 
 
@@ -695,8 +723,10 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
 	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);
 	
-	g_pkScript->ExposeFunction("LockCharacter",	SI_P_CharacterControl::LockCharacterLua);
-	g_pkScript->ExposeFunction("DoEmote",	SI_P_CharacterControl::DoEmoteLua);
+	g_pkScript->ExposeFunction("LockCharacter",		SI_P_CharacterControl::LockCharacterLua);
+	g_pkScript->ExposeFunction("DoEmote",				SI_P_CharacterControl::DoEmoteLua);
+	g_pkScript->ExposeFunction("DoAnimation",			SI_P_CharacterControl::DoAnimationLua);
+	
 		
 }
 

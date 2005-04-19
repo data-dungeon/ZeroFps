@@ -620,22 +620,22 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 void P_CharacterProperty::SetupCharacterStats()
 {
 	m_kCharacterStats.AddStat("Level"			,0,0);
-	m_kCharacterStats.AddStat("Experience"	,0,0);
+	m_kCharacterStats.AddStat("Experience"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
 	
 	m_kCharacterStats.AddStat("Speed"			,0,0);
-	m_kCharacterStats.AddStat("Jump"			,0,0);
+	m_kCharacterStats.AddStat("Jump"				,0,0);
 	
-	m_kCharacterStats.AddStat("Mana"			,0,0);
-	m_kCharacterStats.AddStat("ManaMax"		,0,0);
+	m_kCharacterStats.AddStat("Mana"				,0,0);
+	m_kCharacterStats.AddStat("ManaMax"			,0,0);
 	m_kCharacterStats.AddStat("ManaRegen"		,0,0);	
 	
 	m_kCharacterStats.AddStat("Health"			,0,0);
 	m_kCharacterStats.AddStat("HealthMax"		,0,0);
 	m_kCharacterStats.AddStat("HealthRegen"	,0,0);
 
-	m_kCharacterStats.AddStat("Stamina"		,0,0);
-	m_kCharacterStats.AddStat("StaminaMax"	,0,0);
+	m_kCharacterStats.AddStat("Stamina"			,0,0);
+	m_kCharacterStats.AddStat("StaminaMax"		,0,0);
 	m_kCharacterStats.AddStat("StaminaRegen"	,0,0);	
 		
 	m_kCharacterStats.AddStat("Strength"		,0,0);
@@ -645,8 +645,8 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("Wisdom"			,0,0);
 	m_kCharacterStats.AddStat("Charisma"		,0,0);
 			
-	m_kCharacterStats.AddStat("Load"			,0,0);
-	m_kCharacterStats.AddStat("LoadMax"		,0,0);
+	m_kCharacterStats.AddStat("Load"				,0,0);
+	m_kCharacterStats.AddStat("LoadMax"			,0,0);
 
 	m_kCharacterStats.AddStat("DamageSlashingMin"	,0,0);
 	m_kCharacterStats.AddStat("DamageSlashingMax"	,0,0);
@@ -1517,6 +1517,10 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 	{		
 		if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 		{	
+			//check if its a combat skill, if so are we in combat mode?
+			if(pkSkill->m_iSkillType == eOFFENSIVE && !m_bCombatMode)
+				return 9;
+		
 			return pkSkill->Use(iTarget,kPos,kDir);
 		}
 		else
