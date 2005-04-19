@@ -49,25 +49,28 @@ class MCOMMON_API Skill
 		
 		//wat base item types needs to be eqiped to use this skill?
 		vector<string>	m_kBaseTypes;
-		
-		void UpdateFromScript();			
 
-	public:
-			
 		string	m_strInGameName;
 		string	m_strSchool;
 		string	m_strIcon;
 		
 		float		m_fCastTime;
 		float		m_fReloadTime;
-		float		m_fTimeLeft;
 		float		m_fLastUpdate;
 		
 		int		m_iTargetType;
-		int		m_iSkillType;
 		
+		float		m_fStaminaUsage;
+		float		m_fManaUsage;
+				
+		void UpdateFromScript();			
+
+	public:			
+		int		m_iSkillType;		
+		float		m_fTimeLeft;
 		float		m_fRange;
 		
+	
 		Skill(const string& strScriptFile,const string& strParent, int iOwnerID);
 		~Skill();
 		
@@ -284,6 +287,10 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void	RemoveAllSkills();		
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
 		void  LockSkillUsage(float fTime);
+		
+		//mana and stamina
+		bool UseMana(float fMana);
+		bool UseStamina(float fStamina);
 		
 		//combat
 		void SetTarget(int iTargetID)									{	m_iTarget = iTargetID;			};

@@ -42,6 +42,9 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_iSkillType		=	0;
 	m_fRange				=	0;
 	
+	m_fStaminaUsage	=	0;
+	m_fManaUsage		=	0;
+	
 }
 
 Skill::~Skill()
@@ -122,7 +125,11 @@ void Skill::UpdateFromScript()
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"range",dtemp))
 		m_fRange = float(dtemp);
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"casttime",dtemp))
-		m_fCastTime = float(dtemp);
+		m_fCastTime = float(dtemp);	
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"staminausage",dtemp))
+		m_fStaminaUsage = float(dtemp);
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"manausage",dtemp))
+		m_fManaUsage = float(dtemp);
 		
 		
 	m_kBaseTypes.clear();
@@ -165,8 +172,6 @@ void Skill::SetLevel(int iLevel)
 
 int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 {
-// 	cout<<"using skill "<<m_pkScriptFileHandle->GetRes()<<endl;
-
 	if(!m_pkScriptFileHandle->IsValid())
 	{
 		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
@@ -175,41 +180,45 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	
 	//check reload
 	if(m_fTimeLeft != 0)
-	{
-		//cout<<"skill not reloaded yet"<<endl;
 		return 1;	
-	}
 	
+	//check level
 	if(m_iLevel < 1)
 	{
 		cout<<"got to have at least level 1 of a skill to use it"<<endl;
 		return 2;	
 	}
-	
+
+	//get character property from owner
+	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty");
+
+	if(!pkCP)
+	{
+		cout<<"WARNING, CHARACTER is missing Character property"<<endl;
+		return 7;
+	}
+			
 	//check baseitems
 	if(!m_kBaseTypes.empty())
 	{
-		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
+		bool bOk = false;
+		for(int i = 0;i<m_kBaseTypes.size();i++)
 		{
-			bool bOk = false;
-			for(int i = 0;i<m_kBaseTypes.size();i++)
+			if(pkCP->HaveEqipedBaseType(m_kBaseTypes[i]))
 			{
-				if(pkCP->HaveEqipedBaseType(m_kBaseTypes[i]))
-				{
-					bOk = true;
-					break;
-				}
+				bOk = true;
+				break;
 			}
+		}
 			
-			if(bOk == false)
-			{
-				cout<<"ned one of the folowing items:";
-				for(int i = 0;i<m_kBaseTypes.size();i++)
-					cout<< m_kBaseTypes[i]<<endl;
-				
-				return 7;			
-			}
-		}	
+		if(bOk == false)
+		{
+			cout<<"ned one of the folowing items:";
+			for(int i = 0;i<m_kBaseTypes.size();i++)
+				cout<< m_kBaseTypes[i]<<endl;
+			
+			return 7;			
+		}
 	}
 	
 	//character target  check if a character is targeted
@@ -248,6 +257,13 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	if(m_iTargetType == eITEM_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_Item")) 
 		return 5;
 		
+	
+	//use mana & stamina
+	if(!pkCP->UseMana(m_fManaUsage))
+		return 1;
+		
+	if(!pkCP->UseStamina(m_fStaminaUsage))
+		return 1;
 		
 	
 	static Vector3 kPosCopy,kDirCopy;
@@ -288,7 +304,6 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 		pkCC->Lock(m_fCastTime);
 		
 	//call use function
-	cout<<"calling script"<<m_pkScriptFileHandle->GetRes()<<endl;
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
 	{
 		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
@@ -298,6 +313,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	//reset reload timer
 	m_fTimeLeft = m_fReloadTime;
 	m_fLastUpdate = m_pkEntityManager->GetSimTime();
+	
 	
 	return 0;
 }
@@ -770,7 +786,7 @@ void P_CharacterProperty::UpdateStats()
 		
 		switch(pkCC->GetCharacterState())
 		{
-			case eWALKING: iDrain = 2; break;
+			case eWALKING: iDrain = 0; break;
 			case eRUNNING: iDrain = 5; break;
 			case eJUMPING: iDrain = 10; break;
 			case eSWIMMING: iDrain = 4; break;		
@@ -824,11 +840,13 @@ void P_CharacterProperty::UpdateStats()
 	int iSpeed = m_kCharacterStats.GetTotal("Speed");
 	int iJump = m_kCharacterStats.GetTotal("Jump");
 	
-	if(m_kCharacterStats.GetTotal("Stamina") < 1 )
+	if(m_kCharacterStats.GetTotal("Stamina") < 10 )
 	{
-		iSpeed = 0;
+		pkCC->SetForceCrawl(true);
 		iJump = 0;
 	}
+	else
+		pkCC->SetForceCrawl(false);
 	
 	//speed
 	pkCC->SetSpeed(iSpeed);
@@ -2022,6 +2040,27 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 
 }
 
+bool P_CharacterProperty::UseMana(float fMana)
+{
+	if(m_kCharacterStats.GetTotal("Mana") >= fMana)
+	{
+		m_kCharacterStats.ChangeStat("Mana",-fMana);
+		return true;
+	}
+
+	return false;
+}
+
+bool P_CharacterProperty::UseStamina(float fStamina)
+{
+	if(m_kCharacterStats.GetTotal("Stamina") >= fStamina)
+	{
+		m_kCharacterStats.ChangeStat("Stamina",-fStamina);
+		return true;
+	}
+
+	return false;
+}
 
 // SCRIPT INTERFACE FOR P_CharacterProperty
 using namespace ObjectManagerLua;

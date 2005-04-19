@@ -84,6 +84,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fYAngle;
 		float			m_fPAngle;
 		
+		bool			m_bForceCrawl;
+		
 		bool			m_bHaveJumped;
 		bool			m_bInWater;
 		
@@ -117,16 +119,18 @@ class MCOMMON_API P_CharacterControl: public Property
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
 																			m_fPAngle = fPAngle;			}
-		float GetYAngle()											{	return m_fYAngle;				};
-		void  SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			};
-														
+		float GetYAngle()											{	return m_fYAngle;				}
+		void  SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			}
+								
+		void SetForceCrawl(bool bCrawl)						{	m_bForceCrawl = bCrawl;		}
+								
 		void RotateTowards(const Vector3& kPos);
 							
 		void SetMoveDirection(int iDir);
 		int  GetMovedirection()									{	return m_iDirection;			}
 		bool GetControl(int iKey);																			
 		void SetCharacterState(int iState);
-		int  GetCharacterState()								{	return m_iCharacterState;	};
+		int  GetCharacterState()								{	return m_iCharacterState;	}
 		
 																												
 		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}

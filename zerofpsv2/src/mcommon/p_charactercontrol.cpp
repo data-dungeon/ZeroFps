@@ -175,7 +175,7 @@ void P_CharacterControl::Update()
 				kVel = kVel.Unit() * m_fSpeed;
 			
 			//check if where crawling
-			if(m_kControls[eCRAWL])
+			if(m_kControls[eCRAWL] || m_bForceCrawl)
 				kVel *= 0.45;
 				
 			//character moves slower while in the air
@@ -199,7 +199,7 @@ void P_CharacterControl::Update()
 			//check if where walking or running or nothing
 			if(kVel.Length() > 0 && pkTcs->GetOnGround())
 			{
-				if(m_kControls[eCRAWL])
+				if(m_kControls[eCRAWL] || m_bForceCrawl)
 				{
 					m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
 					SetCharacterState(eWALKING);
