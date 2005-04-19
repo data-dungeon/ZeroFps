@@ -780,37 +780,40 @@ void MistClient::Input()
 	//fireball test
 	if(m_pkInputHandle->Pressed(KEY_1))
 		if(!DelayCommand() )
-			SendAddSkillToCombatQueue("skill-fireball.lua",m_iTargetID);
+			SendAddSkillToQueue("skill-fireball.lua",m_iTargetID);
 
 	// speed	
 	if(m_pkInputHandle->Pressed(KEY_2))
 		if(!DelayCommand() )
- 			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+//  			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToQueue("skill-speed.lua",m_iTargetID);
 
 	// heal
 	if(m_pkInputHandle->Pressed(KEY_3))
 		if(!DelayCommand() )
-			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToQueue("skill-heal.lua",m_iTargetID);
+// 			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 	// normal attack
 	if(m_pkInputHandle->Pressed(KEY_4))
 		if(!DelayCommand() )
-			SendAddSkillToCombatQueue("skill-basic_attack.lua",m_iTargetID);		
+			SendAddSkillToQueue("skill-basic_attack.lua",m_iTargetID);		
 
 	// bow				
 	if(m_pkInputHandle->Pressed(KEY_5))
 		if(!DelayCommand() )
-			SendAddSkillToCombatQueue("skill-bow.lua",m_iTargetID);		
+			SendAddSkillToQueue("skill-bow.lua",m_iTargetID);		
 
 	// resurrect
 	if(m_pkInputHandle->Pressed(KEY_6))
 		if(!DelayCommand() )
-			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendAddSkillToQueue("skill-resurrect.lua",m_iTargetID);
+// 			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 	// bolt
 	if(m_pkInputHandle->Pressed(KEY_7))
 		if(!DelayCommand() )
-			SendAddSkillToCombatQueue("skill-bolt.lua",m_iTargetID);
+			SendAddSkillToQueue("skill-bolt.lua",m_iTargetID);
 // 			SendUseSkill("skill-bolt.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 
 /*	//list actions
@@ -1883,10 +1886,10 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 // 	}
 }
 
-void MistClient::SendAddSkillToCombatQueue(const string& strSkill,int iTargetID)
+void MistClient::SendAddSkillToQueue(const string& strSkill,int iTargetID)
 {
 	NetPacket kNp;			
-	kNp.Write((char) MLNM_CS_ADDSKILLTOCOMBATQUEUE);
+	kNp.Write((char) MLNM_CS_ADDSKILLTOQUEUE);
 	
 	kNp.Write_Str(strSkill);
 	kNp.Write(iTargetID);

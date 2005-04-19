@@ -22,7 +22,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_RESPAWN_IN_TOWN,
 	MLNM_CS_SET_TARGET,
 	MLNM_CS_COMBATMODE,
-	MLNM_CS_ADDSKILLTOCOMBATQUEUE,
+	MLNM_CS_ADDSKILLTOQUEUE,
 };
 
 //	A network message from the server to the client.

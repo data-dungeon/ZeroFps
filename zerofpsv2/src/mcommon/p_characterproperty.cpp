@@ -288,6 +288,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 		pkCC->Lock(m_fCastTime);
 		
 	//call use function
+	cout<<"calling script"<<m_pkScriptFileHandle->GetRes()<<endl;
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
 	{
 		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
@@ -678,11 +679,11 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("Defense"			,0,0);
 }
 
-void P_CharacterProperty::AddSkillToCombatQueue(const string& strSkill,int iTargetID)
+void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
 {
 	//not in combat mode
-	if(!m_bCombatMode)
-		return;
+// 	if(!m_bCombatMode)
+// 		return;
 
 	if(m_kSkillQueue.size() > 4)
 		return;
@@ -690,11 +691,11 @@ void P_CharacterProperty::AddSkillToCombatQueue(const string& strSkill,int iTarg
 	m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
 }
 
-void P_CharacterProperty::UpdateCombat()
+void P_CharacterProperty::UpdateSkillQueue()
 {
 	//not in combat mode
-	if(!m_bCombatMode)
-		return;
+// 	if(!m_bCombatMode)
+// 		return;
 
 	float fTime = m_pkZeroFps->GetEngineTime();
 		
@@ -706,18 +707,30 @@ void P_CharacterProperty::UpdateCombat()
 		if(!m_kSkillQueue.empty())
 		{
 			//use skill and dont pop queue if skill is still reloading
-			if(UseSkill(m_kSkillQueue.front().first,m_kSkillQueue.front().second,Vector3(0,0,0),Vector3(0,0,0)) != 1)
-				m_kSkillQueue.pop();
+			int iRes = UseSkill(m_kSkillQueue.front().first,m_kSkillQueue.front().second,Vector3(0,0,0),Vector3(0,0,0));
+			
+			//dont pop skill if skill not yet reloaded or another skill still being cast
+			if(iRes == 1 || iRes == 8)
+				return;
+			
+			//cout<<"returned:"<<iRes<<endl;
+			//cout<<"poping skill:"<<m_kSkillQueue.front().first<<endl;
+			m_kSkillQueue.pop();
+			//cout<<"queue size:"<<m_kSkillQueue.size()<<endl;			
 		}
 		else
 		{
-			if(m_iTarget != -1 && !m_strDefaultAttackSkill.empty())
-			{				
-				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iTarget,"P_CharacterProperty"))
-					if(pkCP->GetFaction() == GetFaction())
-						return;
-				
-				UseSkill(m_strDefaultAttackSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
+			//if in combat mode , attack with default attack
+			if(m_bCombatMode)
+			{			
+				if(m_iTarget != -1 && !m_strDefaultAttackSkill.empty())
+				{				
+					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iTarget,"P_CharacterProperty"))
+						if(pkCP->GetFaction() == GetFaction())
+							return;
+					
+					UseSkill(m_strDefaultAttackSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
+				}
 			}
 		}
 	}
@@ -1285,7 +1298,7 @@ void P_CharacterProperty::Update()
 				UpdateSkills();				
 			
 				//update combat
-				UpdateCombat();							
+				UpdateSkillQueue();							
 			}
 			else
 			{
@@ -2163,6 +2176,30 @@ namespace SI_P_CharacterProperty
 		return 0;
 	}
 
+	//set combat mode ,0 = false, 1 = true
+	int SetCombatModeLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		{
+			cout<<"WARNING: SetDefaultAttackSkill - wrong number of arguments"<<endl;
+			return 0;		
+		}
+					
+		int iCharcterID;
+		int iMode;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 1, &iMode);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->SetCombatMode(iMode);
+		}
+	
+		return 0;	
+	
+	}
+	
 	//set default attack skill on character
 	int SetDefaultAttackSkillLua(lua_State* pkLua)
 	{
@@ -2431,6 +2468,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	
 	//combat
 	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
+	g_pkScript->ExposeFunction("SetCombatMode",				SI_P_CharacterProperty::SetCombatModeLua);
 }
 
 

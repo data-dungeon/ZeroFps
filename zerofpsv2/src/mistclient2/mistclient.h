@@ -128,7 +128,7 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);
 		
 		//general network sends
-		void SendAddSkillToCombatQueue(const string& strSkill,int iTargetID);
+		void SendAddSkillToQueue(const string& strSkill,int iTargetID);
 		void SendSetTarget(int iTargetID);
 		void SendCombatMode(bool bCombatMode);
 		void SendAction(int iEntityID,const string& strAction);

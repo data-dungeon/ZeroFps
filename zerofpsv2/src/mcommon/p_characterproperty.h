@@ -204,7 +204,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendAliveInfo();
 		
 		void UpdateStats();					//updates character stats
-		void UpdateCombat();					//updates combat, updates and performs combat queue
+		void UpdateSkillQueue();					//updates combat, updates and performs combat queue
 		void UpdateSkills();					//updates skill reloads and so on
 
 		void SetupCharacterStats();		//first tim character stat setup
@@ -289,7 +289,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetTarget(int iTargetID)									{	m_iTarget = iTargetID;			};
 		void SetCombatMode(bool bCombat)								{	m_bCombatMode = bCombat;		}
 		bool GetCombatMode()												{	return m_bCombatMode;			}
-		void AddSkillToCombatQueue(const string& strSkill,int iTargetID);
+		void AddSkillToQueue(const string& strSkill,int iTargetID);
 		
 		
 		//client code
