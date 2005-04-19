@@ -257,6 +257,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
 		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
+		void SetDefaultAttackSkill(const string& strDA)		{	m_strDefaultAttackSkill=  strDA;		ResetAllNetUpdateFlags();}
 		
 		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
 		void SetClient(int iConID)									{	m_iConID = iConID;				}	

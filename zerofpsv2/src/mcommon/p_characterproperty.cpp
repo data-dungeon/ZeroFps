@@ -520,7 +520,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	8;
+	m_iVersion = 	9;
 	
 	//initiate stuff
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
@@ -1527,7 +1527,7 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 	}
 	else
 	{
-		cout<<"still waiting for skill to complete"<<endl;
+		//cout<<"still waiting for skill to complete"<<endl;
 		return 8;
 	}
 }
@@ -1689,6 +1689,8 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_bWalkSound);
 	pkPackage->Write(m_fMarkerSize);		
 	pkPackage->Write(m_bDead);	
+	
+	pkPackage->Write_Str(m_strDefaultAttackSkill);
 	
 	m_kCharacterStats.Save(pkPackage);
 	
@@ -1881,7 +1883,48 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			}
 			
 			break;
-		}				
+		}
+		
+		case 9:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			pkPackage->Read(m_bDead); 
+		
+			pkPackage->Read_Str(m_strDefaultAttackSkill);
+			
+			m_kCharacterStats.Load(pkPackage);
+			
+			//load skills
+			RemoveAllSkills();
+			
+			int		iNrOfSkills;
+			string	strSkill;
+			string	strParent;
+			int 		iLevel;
+			float		fTimeLeft;
+			
+			pkPackage->Read(iNrOfSkills);			
+			for(int i=0;i<iNrOfSkills;i++)
+			{
+				pkPackage->Read_Str(strSkill);
+				pkPackage->Read_Str(strParent);
+				pkPackage->Read(iLevel);
+				pkPackage->Read(fTimeLeft);
+				
+				AddSkill(strSkill,strParent);
+				SetSkill(strSkill,iLevel);
+				
+				if(Skill* pkSkill = GetSkillPointer(strSkill))
+					pkSkill->SetTimeLeft(fTimeLeft);
+			}
+			
+			break;		
+		}	
 	}
 }
 
@@ -2116,6 +2159,28 @@ namespace SI_P_CharacterProperty
 		return 0;
 	}
 
+	//set default attack skill on character
+	int SetDefaultAttackSkillLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		{
+			cout<<"WARNING: SetDefaultAttackSkill - wrong number of arguments"<<endl;
+			return 0;		
+		}
+					
+		int iCharcterID;
+		string strSkill;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,strSkill);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->SetDefaultAttackSkill(strSkill);
+		}
+	
+		return 0;				
+	}	
 	//faction
 	int SetFactionLua(lua_State* pkLua)
 	{
@@ -2360,7 +2425,8 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	//faction
 	g_pkScript->ExposeFunction("SetFaction",		SI_P_CharacterProperty::SetFactionLua);
 	
-	
+	//combat
+	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
 }
 
 

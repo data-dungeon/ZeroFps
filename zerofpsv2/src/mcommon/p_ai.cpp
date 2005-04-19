@@ -99,6 +99,7 @@ void P_AI::Update()
 					//set look att state
 					m_iState = eAI_STATE_LOOKAT;
 					m_iTarget = iEnemy;
+					m_pkCharacterProperty->SetCombatMode(false);
 				}	
 			
 			}	
@@ -114,6 +115,7 @@ void P_AI::Update()
 				float fRot = m_pkCharacterControl->GetYAngle();				
 				fRot += Randomf(20)-10;
 				//fRot +=4;
+				m_pkCharacterProperty->SetCombatMode(false);
 				m_pkCharacterControl->SetYAngle(fRot);								
 				m_pkCharacterControl->SetControl(eUP,true);
 				m_pkCharacterControl->SetControl(eCRAWL,true);											
@@ -220,6 +222,9 @@ void P_AI::Update()
 				}
 				
 				//chase
+				m_pkCharacterProperty->SetCombatMode(true);
+				m_pkCharacterProperty->SetTarget(m_iTarget);
+				
 				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
 				m_pkCharacterControl->SetControl(eUP,true);
 				m_pkCharacterControl->SetControl(eCRAWL,false);						
@@ -250,10 +255,12 @@ void P_AI::Update()
 					break;
 				}
 						
+				m_pkCharacterProperty->SetCombatMode(true);
+				m_pkCharacterProperty->SetTarget(m_iTarget);
 				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
 				m_pkCharacterControl->SetControl(eUP,false);
-				
-				UseOffensiveSkill();
+								
+				//UseOffensiveSkill();
 	
 			}
 			
