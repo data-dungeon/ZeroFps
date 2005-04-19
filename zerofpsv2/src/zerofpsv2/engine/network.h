@@ -199,6 +199,7 @@ private:
 	bool						m_bPublishServer;						// True if we should publish ourselfs to MS.
 	char						m_szGameName[ZF_MAX_GAMENAME];	// Gamename for this server.
 	float						m_fMSNextPing;							// Next engine time we ping the MS that we are still online.
+	string					m_strPublishIp;						// IP to publish to master server.
 
 	// Server List
 	//vector<IPaddress>		m_kServers;								// List of servers recv from master list.

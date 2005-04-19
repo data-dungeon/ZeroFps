@@ -117,7 +117,16 @@ void ZFMasterServer::OnServerStart(NetPacket* pkNetPacket)
 	char szGameName[MAX_GAME_NAME];
 	cout << "ServerStart: " << endl;
 	pkNetPacket->Read_Str(szGameName);
-	AddServer(pkNetPacket->m_kAddress,szGameName);
+
+	IPaddress kFromIp;
+	kFromIp = pkNetPacket->m_kAddress;
+
+	int SpoofIp;
+	pkNetPacket->Read(SpoofIp);
+	if(SpoofIp == 1)
+		pkNetPacket->Read(kFromIp);
+
+	AddServer(kFromIp ,szGameName);
 }
 
 void ZFMasterServer::OnServerDown(NetPacket* pkNetPacket)

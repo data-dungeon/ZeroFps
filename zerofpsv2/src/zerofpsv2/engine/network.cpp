@@ -30,12 +30,14 @@ NetWork::NetWork()
 	m_bPublishServer		= true;
 	m_fMSNextPing			= 0;
 	m_strServerName		= "Mistlands_Server";
+	m_strPublishIp			= "none";
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
 	RegisterVariable("n_mslink",				&m_strMasterServer,	CSYS_STRING);	
 	RegisterVariable("n_mspublish",			&m_bPublishServer,	CSYS_BOOL);	
    RegisterVariable("n_servername",			&m_strServerName,		CSYS_STRING);
+   RegisterVariable("n_publiship",			&m_strPublishIp,		CSYS_STRING);
 	
 
 
@@ -551,6 +553,19 @@ void NetWork::MS_ServerIsActive()
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((int) 0);
 	NetP.Write_Str(m_szGameName);
+
+	if(m_strPublishIp != "none")
+	{
+		IPaddress kTargetIP;
+		StrToAddress(m_strPublishIp.c_str(),&kTargetIP); 	
+		NetP.Write((int) 1);
+		NetP.Write(kTargetIP);
+	}
+	else
+	{
+		NetP.Write((int) 0);
+	}
+
 	SendRaw(&NetP);
 }
 
