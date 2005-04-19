@@ -375,6 +375,9 @@ EnvList* ZSSEnviroment::GetEnvList(const string& strEnviroment)
 	}
 
 		
+	//update newloaded enviroment
+	UpdateEnvList(pkNewEnvList);
+	
 	//add list 
 	m_kEnvLists.push_back(pkNewEnvList);
 	return pkNewEnvList;
