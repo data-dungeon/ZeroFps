@@ -16,7 +16,6 @@ NetWork::NetWork()
 	GetSystem().Log_Create("net");
 	GetSystem().Log_Create("netpac");
 
-	strcpy(m_szServerName,"No Name");
 	strcpy(m_szGameName, "ZeroFps");
 	m_bAcceptClientConnections = false;
 	m_pkSocket						= NULL;
@@ -30,11 +29,13 @@ NetWork::NetWork()
 	m_strMasterServer    = "dvoid.no-ip.com";
 	m_bPublishServer		= true;
 	m_fMSNextPing			= 0;
+	m_strServerName		= "Mistlands_Server";
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
-	RegisterVariable("n_mslink",	&m_strMasterServer,	CSYS_STRING);	
-	RegisterVariable("n_mspublish",	&m_bPublishServer,	CSYS_BOOL);	
+	RegisterVariable("n_mslink",				&m_strMasterServer,	CSYS_STRING);	
+	RegisterVariable("n_mspublish",			&m_bPublishServer,	CSYS_BOOL);	
+   RegisterVariable("n_servername",			&m_strServerName,		CSYS_STRING);
 	
 
 
@@ -476,6 +477,62 @@ void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const
 	m_kServerAddress = NetP.m_kAddress;
 }
 
+void NetWork::RequestServerInfo(IPaddress kIp)
+{
+	NetPacket NetP;
+
+	NetP.Clear();
+	NetP.m_kAddress = kIp;
+	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetP.m_kData.m_kHeader.m_iOrder = 0;
+	NetP.Write((char) ZF_NETCONTROL_LIST);
+	SendRaw(&NetP);
+}
+
+void NetWork::SendServerInfo(IPaddress kIp)
+{
+	NetPacket NetP;
+
+	NetP.Clear();
+	NetP.m_kAddress = kIp;
+	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetP.m_kData.m_kHeader.m_iOrder = 0;
+	NetP.Write((char) ZF_NETCONTROL_SERVERINFO);
+	NetP.Write_Str(m_strServerName.c_str());
+	NetP.Write(GetNumOfClients());
+	NetP.Write(m_iMaxNumberOfNodes);
+
+	SendRaw(&NetP);
+}
+
+void NetWork::GotServerInfo(NetPacket* pkNetPacket)
+{
+	// Read out info
+	char szServerName[256];
+	int iNumOfPlayers;
+	int iMaxPlayers;
+
+	pkNetPacket->Read_Str(szServerName);
+	pkNetPacket->Read(iNumOfPlayers);
+	pkNetPacket->Read(iMaxPlayers);
+
+
+	for(int i=0; i<m_kServers.size(); i++)
+	{
+		if( IsAddressEquals(&m_kServers[i].m_kServerIp, &pkNetPacket->m_kAddress))
+		{
+			m_kServers[i].m_iNumOfPlayers = iNumOfPlayers;
+			m_kServers[i].m_iMaxPlayers = iMaxPlayers;
+			m_kServers[i].m_bUpdated = true;
+			strcpy(m_kServers[i].m_acServerName, szServerName);
+			GetSystem().SendSystemMessage(string("Application"),string("serverlist"),NULL);
+			return;
+		}
+	}
+}
+
+
+
 void NetWork::MS_ServerIsActive()
 {
 	if(!m_bPublishServer)
@@ -542,10 +599,17 @@ void NetWork::MS_GotServers(NetPacket* pkNetPack)
 	m_pkConsole->Printf("There are %d active servers\n",iNumOfServers );
 	for(int i=0; i<iNumOfServers; i++)
 	{
-		pkNetPack->Read(kIp);	
-		AddressToStr(&kIp, SzAdress);
+		ServerInfo kServer;
+		kServer.m_bUpdated			= false;
+		kServer.m_iNumOfPlayers		= 0;
+		kServer.m_iMaxPlayers		= 0;
+		strcpy(kServer.m_acServerName, "Unkown");
+
+		pkNetPack->Read(kServer.m_kServerIp);	
+		AddressToStr(&kServer.m_kServerIp, SzAdress);
 		m_pkConsole->Printf("[%d]: %s\n",i, SzAdress);
-		m_kServers.push_back(kIp);
+		RequestServerInfo(kServer.m_kServerIp);
+		m_kServers.push_back(kServer);
 	}
 
 	GetSystem().SendSystemMessage(string("Application"),string("serverlist"),NULL);
@@ -744,6 +808,12 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
 			// Broadcast to find servers.
 			// Server respons with name.
+			SendServerInfo(pkNetPacket->m_kAddress);
+			break;
+
+		case ZF_NETCONTROL_SERVERINFO:
+			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
+			GotServerInfo(pkNetPacket);
 			break;
 
 		case ZF_NETCONTROL_JOIN:

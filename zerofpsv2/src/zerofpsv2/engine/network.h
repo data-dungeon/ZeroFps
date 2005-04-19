@@ -16,7 +16,7 @@
 using namespace std;
 
 
-#define MAX_NETWORKNAME					16					
+#define MAX_NETWORKNAME					64					
 
 // Diffrent types of messages the network sends.
 #define ZF_NETTYPE_NONE					0	// A Unspec Packet.
@@ -35,7 +35,8 @@ using namespace std;
 #define ZF_NETCONTROL_NETSTRINGS		9	//
 #define ZF_NETCONTROL_REQNETSTRING	10	//
 #define ZF_NETCONTROL_ACKREL			15	// Ack that we got a rel pack.	
-#define ZF_NETCONTROL_SERVERLISTPAGE	16	// Ack that we got a rel pack.	
+#define ZF_NETCONTROL_SERVERLISTPAGE	16	// Info from masterserver	
+#define ZF_NETCONTROL_SERVERINFO		17	// Info from a server.	
 
 #define MAX_NET_CLIENTS					4		// Max number of clients (nodes).
 #define ZF_NET_NOCLIENT					-1		// ID for a non client.
@@ -151,6 +152,18 @@ struct ZFNet_String
 	bool		m_bNeedUpdate;	// True if we need to request a update from server.
 };
 
+// Info about one available server.
+class ServerInfo
+{
+public:
+	IPaddress		m_kServerIp;								// Address of the server.
+	char				m_acServerName[MAX_NETWORKNAME];		// Name of server.
+	bool				m_bUpdated;									// True if we got info about this server.
+	unsigned char	m_iNumOfPlayers;
+	unsigned char	m_iMaxPlayers;								
+};
+
+
 /** \brief	NetWork SubSystem
 	 \ingroup Engine
 */
@@ -159,8 +172,8 @@ class ENGINE_API NetWork : public ZFSubSystem
 private:
 	UDPsocket				m_pkSocket;								// Socket we use for all our messages.
 
-	char						m_szServerName[MAX_NETWORKNAME];	// Well ... VIM... ***
-	bool						m_bAcceptClientConnections;			// If false all connect attemts are ignored.
+	string					m_strServerName;	
+	bool						m_bAcceptClientConnections;		// If false all connect attemts are ignored.
 	Console*					m_pkConsole;							// Ptr to console.
 	ZeroFps*					m_pkZeroFps;							// Ptr to zerofps engine.
 
@@ -188,7 +201,8 @@ private:
 	float						m_fMSNextPing;							// Next engine time we ping the MS that we are still online.
 
 	// Server List
-	vector<IPaddress>		m_kServers;								// List of servers recv from master list.
+	//vector<IPaddress>		m_kServers;								// List of servers recv from master list.
+	vector<ServerInfo>		m_kServers;								// List of servers recv from master list.
 
 
 
@@ -200,7 +214,6 @@ private:
 	void SendAckList(int iClient, vector<int>& kAckList);
 
 public:
-
 		enum FuncId_e
 		{
 			FID_NETGMAX,
@@ -233,7 +246,7 @@ public:
 	void MS_ServerDown();
 	void MS_RequestServers();
 	void MS_GotServers(NetPacket* pkNetPack);
-	vector<IPaddress> GetServers() { return m_kServers; }
+	vector<ServerInfo> GetServers() { return m_kServers; }
 
 	void	SetMaxNodes(int iMaxNode);			
 	int GetNumOfClients(void);
@@ -280,6 +293,10 @@ public:
 	// Debug
 	void DrawConnectionGraphs();
 	void DevShow_ClientConnections();
+
+	void RequestServerInfo(IPaddress kIp);
+	void SendServerInfo(IPaddress kIp);
+	void GotServerInfo(NetPacket* pkNetPacket);
 
 	friend class NetPacket;
 	friend class EntityManager;	

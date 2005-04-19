@@ -2066,15 +2066,22 @@ void MistClient::AddChar(string strChar, string strMod)
 
 void MistClient::OnSystemMessage(const string& strType,void* pkData)
 {
+	char szTitle[256];
+
 	if(strType == "serverlist")
 	{
 		m_kServerList.clear();
-		vector<IPaddress> pkServerIp = m_pkNetwork->GetServers();
+		vector<ServerInfo> pkServerIp = m_pkNetwork->GetServers();
 		char szIp[128];
 		for(int i=0; i<pkServerIp.size(); i++)
 		{
-			m_pkNetwork->AddressToStr(&pkServerIp[i],szIp);
-			AddRemoveServer("remote", szIp,true);
+			m_pkNetwork->AddressToStr(&pkServerIp[i].m_kServerIp,szIp);
+			sprintf(szTitle, "%s: %d/%d",pkServerIp[i].m_acServerName, pkServerIp[i].m_iNumOfPlayers,
+				pkServerIp[i].m_iMaxPlayers);
+			AddRemoveServer(szTitle, szIp,true);
+			//m_pkNetwork->AddressToStr(&pkServerIp[i],szIp);
+			//AddRemoveServer("remote", szIp,true);
+
 		}
 
 		//fulhaxos
