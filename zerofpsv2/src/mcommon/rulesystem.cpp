@@ -70,18 +70,28 @@ void RuleSystem::Damage(int iAttacker,int iDefender,float fDamage)
 			pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
 			SendPointText(IntToString(int(fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 			
-			CharacterAttacked(pkDefender,iAttacker);
+			CharacterHit(pkDefender,iAttacker);
 		}
 	}
 }
 
-void RuleSystem::CharacterAttacked(Entity* pkCharacter,int iAttacker)
+
+void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker)
 {
 	vector<ScriptFuncArg> args(1);
 	args[0].m_kType.m_eType = tINT;
 	args[0].m_pData = &iAttacker;			//owner character id
 			
-	m_pkEntityManager->CallFunction(pkCharacter,"Attacked",&args);	
+	m_pkEntityManager->CallFunction(pkCharacter,"Hit",&args);	
+}
+
+void RuleSystem::CharacterMiss(Entity* pkCharacter,int iAttacker)
+{
+	vector<ScriptFuncArg> args(1);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &iAttacker;			//owner character id
+			
+	m_pkEntityManager->CallFunction(pkCharacter,"Miss",&args);	
 
 }
 
@@ -98,21 +108,21 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		float fRandA = Randomf(pkStatsA->GetTotal("Attack")  );
 		float fRandD = Randomf(pkStatsD->GetTotal("Defense") );
 	
-		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
+		//cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
 		
 		if(fRandA <= fRandD)
 		{
-			cout<<"MISS"<<endl;
+			//cout<<"MISS"<<endl;
 			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV(),1);
 			
-			//tell defender its under attack
-			CharacterAttacked(pkDefender->GetEntity(),iAttacker);
+			//tell defender its been missed
+			CharacterMiss(pkDefender->GetEntity(),iAttacker);
 			
 			return false;			
 		}
 		else
 		{
-			cout<<"HIT"<<endl;
+			//cout<<"HIT"<<endl;
 		
 			//calculate damage	
 			int iSlashing 	=pkStatsA->GetTotal("DamageSlashingMin") + 
@@ -144,24 +154,24 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		
 			int iTotal = iSlashing + iCrushing + iPiercing + iFire + iIce + iLightning + iMagic + iPoison;
 			
-			cout<<"__DAMAGE__"<<endl;
-			cout<<"Slashing : "<<iSlashing<<endl;
-			cout<<"Crushing : "<<iCrushing<<endl;
-			cout<<"Piercing : "<<iPiercing<<endl;
-			cout<<"Fire     : "<<iFire<<endl;
-			cout<<"Ice      : "<<iIce<<endl;
-			cout<<"Lightning: "<<iLightning<<endl;
-			cout<<"MAgic    : "<<iMagic<<endl;
-			cout<<"Poison   : "<<iPoison<<endl;
-			cout<<"TOTAL    : "<<iTotal<<endl;
+// 			cout<<"__DAMAGE__"<<endl;
+// 			cout<<"Slashing : "<<iSlashing<<endl;
+// 			cout<<"Crushing : "<<iCrushing<<endl;
+// 			cout<<"Piercing : "<<iPiercing<<endl;
+// 			cout<<"Fire     : "<<iFire<<endl;
+// 			cout<<"Ice      : "<<iIce<<endl;
+// 			cout<<"Lightning: "<<iLightning<<endl;
+// 			cout<<"MAgic    : "<<iMagic<<endl;
+// 			cout<<"Poison   : "<<iPoison<<endl;
+// 			cout<<"TOTAL    : "<<iTotal<<endl;
 		
 			
 			//Damage(iAttacker,iDefender,iTotal);
 			pkStatsD->ChangeStat("Health",-iTotal);		
 			SendPointText(IntToString(iTotal),pkDefender->GetEntity()->GetWorldPosV(),0);			
 		
-			//tell defender its under attack
-			CharacterAttacked(pkDefender->GetEntity(),iAttacker);
+			//tell defender its been hit
+			CharacterHit(pkDefender->GetEntity(),iAttacker);
 			
 			return true;
 		} 			
