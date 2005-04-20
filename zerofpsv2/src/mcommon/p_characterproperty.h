@@ -205,6 +205,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendStats();
 		void SendDeathInfo();
 		void SendAliveInfo();
+		void SendTextToClient(const string& strText);
 		
 		void UpdateStats();					//updates character stats
 		void UpdateSkillQueue();					//updates combat, updates and performs combat queue

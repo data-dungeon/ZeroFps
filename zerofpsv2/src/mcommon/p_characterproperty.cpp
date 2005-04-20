@@ -732,7 +732,30 @@ void P_CharacterProperty::UpdateSkillQueue()
 			//cout<<"returned:"<<iRes<<endl;
 			//cout<<"poping skill:"<<m_kSkillQueue.front().first<<endl;
 			m_kSkillQueue.pop();
-			//cout<<"queue size:"<<m_kSkillQueue.size()<<endl;			
+			//cout<<"queue size:"<<m_kSkillQueue.size()<<endl;	
+	
+			switch(iRes)
+			{
+				case -1:
+					SendTextToClient("You dont have that skill");break;
+				case -2:
+					SendTextToClient("You are dead");break;						
+				case 2:
+					SendTextToClient("You need at least level 1 to use a skill");break;
+				case 3:
+					SendTextToClient("You need to target an enemy");break;
+				case 4:
+					SendTextToClient("You need to look at the target");break;							
+				case 5:
+					SendTextToClient("You need to target an item");break;										
+				case 6:
+					SendTextToClient("You are to faar away");break;										
+				case 7:
+					SendTextToClient("You need to equip a sertain item");break;										
+				case 9:
+					SendTextToClient("You cant use that skill when not in combat mode");break;										
+										
+			}	
 		}
 		else
 		{
@@ -1474,6 +1497,18 @@ void P_CharacterProperty::SendDeathInfo()
 	//send package
 	kNp.TargetSetClient(m_iConID);
 	m_pkApp->SendAppMessage(&kNp);		
+}
+
+void P_CharacterProperty::SendTextToClient(const string& strText)
+{
+	if(m_iConID == -1)
+		return;
+
+	const void* apParams[2];
+	apParams[0] = &strText;
+	apParams[1] = &m_iConID;
+
+	g_ZFObjSys.SendSystemMessage("Application","SayToClients",2,apParams);
 }
 
 void P_CharacterProperty::SendStats()

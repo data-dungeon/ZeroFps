@@ -32,14 +32,6 @@ bool RuleSystem::ShutDown()
 
 void RuleSystem::SendPointText(const string& strText,const Vector3& kPos,int iType)
 {
-// 	static struct pointdatatext
-// 	{
-// 		string	strText;
-// 		Vector3	kPos;
-// 		Vector3	kVel;
-// 		float		fTTL;
-// 		int		iType;
-// 	} kPointTextData;
 	const void* apParam[5];
 
 	float fTTL = 3;
@@ -49,15 +41,10 @@ void RuleSystem::SendPointText(const string& strText,const Vector3& kPos,int iTy
 	apParam[2] = &Vector3(0,0.3,0);
 	apParam[3] = &fTTL;
 	apParam[4] = &iType;
-// 	kPointTextData.strText = strText;
-// 	kPointTextData.kPos = kPos;
-// 	kPointTextData.kVel.Set(0,0.3,0);
-// 	kPointTextData.fTTL = 3;
-// 	kPointTextData.iType = iType;
-	g_ZFObjSys.SendSystemMessage("Application","PointText",5,apParam);
 	
-// 	m_pkApplication->OnSystemMessage("PointText",&kPointTextData);
-	//g_ZFObjSys.SendSystemMessage("Application","PointText",&kPointTextData);
+	m_pkApplication->OnSystemMessage("PointText",5,apParam);
+// 	g_ZFObjSys.SendSystemMessage("Application","PointText",5,apParam);
+	
 }
 
 

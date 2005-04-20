@@ -1181,8 +1181,7 @@ void MistServer::OnSystemMessage(const string& strType,int iNrOfParam,const void
 	
 		SendPointText(*(string*)pkParams[0],*(Vector3*)pkParams[1],*(Vector3*)pkParams[2],*(float*)pkParams[3],*(int*)pkParams[4]);
 	}
-
-	if(strType == "SayToClients")
+	else if(strType == "SayToClients")
 	{
 		if(iNrOfParam != 2)
 		{
