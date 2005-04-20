@@ -837,6 +837,13 @@ bool P_Mad::operator<(Property& kOther)
 */
 class SIMad { };
 
+
+
+/**	\brief Script functions for propertys
+*/
+namespace SIProperty
+{
+
 namespace SI_PMad
 {
 
@@ -955,6 +962,7 @@ int SetDrawingOrderLua(lua_State* pkLua)
    return 0;
 }
 }
+}
 
 
 Property* Create_MadProperty()
@@ -968,11 +976,11 @@ void Register_MadProperty(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_Mad", Create_MadProperty);				
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("SetNextAnim",			SI_PMad::SetNextAnim);
-	g_pkScript->ExposeFunction("PlayAnim",				SI_PMad::PlayAnim);
-	g_pkScript->ExposeFunction("AddMesh",				SI_PMad::AddMesh);
-	g_pkScript->ExposeFunction("SetMadfile",			SI_PMad::SetMadfileLua);
-	g_pkScript->ExposeFunction("SetDrawingOrder",	SI_PMad::SetMadfileLua);
+	g_pkScript->ExposeFunction("SetNextAnim",			SIProperty::SI_PMad::SetNextAnim);
+	g_pkScript->ExposeFunction("PlayAnim",				SIProperty::SI_PMad::PlayAnim);
+	g_pkScript->ExposeFunction("AddMesh",				SIProperty::SI_PMad::AddMesh);
+	g_pkScript->ExposeFunction("SetMadfile",			SIProperty::SI_PMad::SetMadfileLua);
+	g_pkScript->ExposeFunction("SetDrawingOrder",	SIProperty::SI_PMad::SetMadfileLua);
 }
 
 
