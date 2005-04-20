@@ -986,11 +986,11 @@ int ZFSystem::GetTotalTime()
 }
 
 
-bool ZFSystem::SendSystemMessage(const string& strSystem,const string& strType,void* pkData)
+bool ZFSystem::SendSystemMessage(const string& strSystem,const string& strType,int iNrOfParam,const void** pkParam)
 {
 	if(ZFSubSystem* pkSystem = GetObjectPtr(strSystem.c_str(),false))
 	{
-		pkSystem->OnSystemMessage(strType,pkData);		
+		pkSystem->OnSystemMessage(strType,iNrOfParam,pkParam);		
 		return true;
 	}
 	

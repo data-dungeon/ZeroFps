@@ -170,7 +170,7 @@ public:
 	string GetArgument(int iArg)		{	return m_kRawArguments[iArg];				};
 	
 	//message system
-	bool SendSystemMessage(const string& strSystem,const string& strType,void* pkData);
+	bool SendSystemMessage(const string& strSystem,const string& strType,int iNrOfParam,const void** pkParam);
 	
 	// Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);	// GALLA

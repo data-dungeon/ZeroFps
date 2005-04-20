@@ -1169,24 +1169,29 @@ Vector3 MistServer::GetPlayerStartPos()
 	}
 }
 
-void MistServer::OnSystemMessage(const string& strType,void* pkData)
+void MistServer::OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams)
 {
 	if(strType == "PointText")
 	{
-		static struct pointdatatext
+		if(iNrOfParam != 5)
 		{
-			string	strText;
-			Vector3	kPos;
-			Vector3	kVel;
-			float		fTTL;
-			int		iType;
-		} *pkPointTextData;
-		 
-		pkPointTextData = (pointdatatext*)pkData;
+			cout<<"PointText - Wrong number of parameters"<<endl;
+			return;
+		}
 	
-		SendPointText(pkPointTextData->strText,pkPointTextData->kPos,pkPointTextData->kVel,pkPointTextData->fTTL,pkPointTextData->iType);		
+		SendPointText(*(string*)pkParams[0],*(Vector3*)pkParams[1],*(Vector3*)pkParams[2],*(float*)pkParams[3],*(int*)pkParams[4]);
 	}
 
+	if(strType == "SayToClients")
+	{
+		if(iNrOfParam != 2)
+		{
+			cout<<"PointText - Wrong number of parameters"<<endl;
+			return;
+		}	
+	
+		SayToClients(*(string*)pkParams[0],"Server",-1,*(int*)pkParams[1]);
+	}	
 }
 
 

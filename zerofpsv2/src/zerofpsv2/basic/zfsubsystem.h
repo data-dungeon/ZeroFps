@@ -130,7 +130,7 @@ public:
 	
 	/**	\brief	Recive a system message.
 	*/	
-	virtual void OnSystemMessage(const string& strType,void* pkData)	{};
+	virtual void OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams)	{};
 };
 
 #endif

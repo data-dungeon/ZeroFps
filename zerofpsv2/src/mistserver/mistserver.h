@@ -116,7 +116,7 @@ class MistServer :public Application , public ZGuiApp
 		void OnServerStart(void);
 		void OnClientStart(void);
 		
-		void OnSystemMessage(const string& strType,void* pkData);
+		void OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams);
 		
 		//init client
 		void ClientInit();

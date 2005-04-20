@@ -213,7 +213,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 			
 		if(bOk == false)
 		{
-			cout<<"ned one of the folowing items:";
+			cout<<"ned one of the folowing items:"<<endl;
 			for(int i = 0;i<m_kBaseTypes.size();i++)
 				cout<< m_kBaseTypes[i]<<endl;
 			

@@ -527,7 +527,7 @@ void NetWork::GotServerInfo(NetPacket* pkNetPacket)
 			m_kServers[i].m_iMaxPlayers = iMaxPlayers;
 			m_kServers[i].m_bUpdated = true;
 			strcpy(m_kServers[i].m_acServerName, szServerName);
-			GetSystem().SendSystemMessage(string("Application"),string("serverlist"),NULL);
+			GetSystem().SendSystemMessage(string("Application"),string("serverlist"),0,NULL);
 			return;
 		}
 	}
@@ -627,7 +627,7 @@ void NetWork::MS_GotServers(NetPacket* pkNetPack)
 		m_kServers.push_back(kServer);
 	}
 
-	GetSystem().SendSystemMessage(string("Application"),string("serverlist"),NULL);
+	GetSystem().SendSystemMessage(string("Application"),string("serverlist"),0,NULL);
 }
 
 
