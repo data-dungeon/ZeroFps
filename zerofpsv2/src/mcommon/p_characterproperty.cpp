@@ -786,7 +786,7 @@ void P_CharacterProperty::UpdateStats()
 		
 		switch(pkCC->GetCharacterState())
 		{
-			case eWALKING: iDrain = 0; break;
+			case eWALKING: iDrain = m_kCharacterStats.GetTotal("StaminaRegen"); break;
 			case eRUNNING: iDrain = 5; break;
 			case eJUMPING: iDrain = 10; break;
 			case eSWIMMING: iDrain = 4; break;		

@@ -1573,9 +1573,13 @@ void MistClient::OnClientConnected()
 
 	m_pkConsole->Printf("Successfully connected to server");
 
-	ShowWnd("CharGen_SelectCharWnd", true, true, true);
 
-	m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
+/*	ShowWnd("ConnectWnd", true, true, true);
+	m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("ConnectWnd"), true);
+	m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("ConnectWnd"));	*/
+	
+	ShowWnd("CharGen_SelectCharWnd", true, true, true);
+	m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);	
 	m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));	
 
 
