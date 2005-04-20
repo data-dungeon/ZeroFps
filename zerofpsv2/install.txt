@@ -1,0 +1,18 @@
+Mistlands - Install Guide.
+********************************************************************************
+
+How to i install the game:
+Unpack the file that contain the snapshot and put it in a path without any 
+spaces in the name. C:\games\mistland would work fine. Putting it on the window 
+desktop don't work.
+
+How do i run the game:
+Start mistserver found in the bin dir and then start mistclient also in the bin
+dir. Select connect in mistclient, local server and then join. Set any loginname,
+password and remember it to next time you connect. Create a new characters, 
+give him a name and the click play to start.
+
+How to Contact Zero Point Gameplay:
+homepage: http://www.zeropointgameplay.com
+irc: freenode, #mistlands
+e-mail: postmaster@zeropointgameplay.com

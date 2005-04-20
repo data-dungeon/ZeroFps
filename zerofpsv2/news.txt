@@ -1,0 +1,66 @@
+Mistlands - What's new
+********************************************************************************
+
+
+0.3.2 - (Mistlands milestone 3)
+-------------------------------
+* added missing windows dll:s in the release
+
+0.3.1 - (Mistlands milestone 3)
+-------------------------------
+* Fixed bad dll
+* Added missing model
+
+
+0.3.0 - (Mistlands milestone 3)
+-------------------------------
+* Fixed bugs in psystem
+* Actionmeny - a meny with alternatives appears when rightclicking on objects
+* Equip screen - drag n drop items from inventory to equip
+* Inventory screen
+* Pickup/drop item - left click on items to pickup. Drag to ground to drop.
+* Drag items between containers
+* Containers implemented
+* New physic system
+* Compass
+* Script error messages
+* Open containers in the world (get a screen of containts) 
+* Pressing space changes from mouselook on/off. 
+* New enviroment system
+* Day & night cycles
+* Time and calender system
+* Simple character creation screen
+* New gui editor
+* Obj export in madmake
+* Teleporters
+* Switches
+* Doors
+* Elevators
+* New playermodel
+* Menylevel
+* Shadowmaps
+* GUI rendered in same scale irrespective of resolution
+
+0.2.0 - (Mistlands milestone 2)
+-------------------------------
+* Network 
+   Stable 
+   Clients disconnected in a nice way
+   Reliable 
+   Reliable packet support. 
+   No Duplicate packets. 
+   In order packets 
+   Improve bandwith usage. 
+   Pack bool to bitflags. 
+   Removed send of unused data in Entity. 
+* Madviewer: App to view mad modells. Play animations, change between skinns.
+* Console variables can handle bitvectors (vector<bool>).
+* Updated/fixed audio system
+* Options menu
+* ZeroEd
+   Zone edit in network mode (select, delete, add, change) 
+   ZeroEd: Zoner visible on zeroed in netmode. 
+* Gui can render models
+* New outdoors and cave enviourement.
+* New playermodel
+

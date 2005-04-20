@@ -1,0 +1,51 @@
+Mistlands - Build.
+********************************************************************************
+
+This is a guide of what is needed to install the ZeroFps engine for 
+development. 
+
+### What applications do i need.
+You need to have a OS and compiler that ZeroFps supports. The ones the 
+developers use are:
+
+	* Windows:	VC++ .NET 2003.
+	* Linux:	GCC 3.4
+	
+### Get Source
+The source code for a snapshot is found in src.rar. Unpack this to /src. You can
+also checkout the src from https://sourceforge.net/cvs/?group_id=55045, module 
+ZeroFpsV2. To run it also need some datafiles but the are part of the snapshot 
+so you already have them :).
+	
+### Download all libs you need.
+ X  Name            Version  	Link						
+(A) STL port        5.0-0125    http://www.stlport.org/ (Windows Only)			
+(B) GLEE            3.05        http://elf-stone.com/downloads.php
+(C) SDL             1.2.7       http://www.libsdl.org
+(D) SDL_net         1.2.5       http://www.libsdl.org/projects/SDL_net/
+(E) Lua             5.0.2       http://www.lua.org/
+(F) Open AL SDK     1.0         http://www.openal.org/
+(G) Ogg Vorbis      1.0.1       http://www.vorbis.com/download
+(J) tolua++         1.0.3       http://www.codenix.com/~tolua/ 
+
+### Install
+Windows:
+    * Create a dir codetool in /program. Create three dir in codetool /dll, 
+	/include och /lib.
+	* A: Look in install.txt in zip file. 
+	* B-G: Unpack. Move lib's to /lib and dll's to /dll. Put header 
+    files in /include.
+		/include		lua
+			/al			openal.
+			/gl			glee
+			/ogg		ogg
+			/sdl		sdl/sdl_net
+			/vorbis		vorbis
+	*: Go to VS.Net and menu tools/options. Select projects in 
+	treeview and VC++ Directories. Add /program/codetool/include 
+	in include and /program/codetool/lib in libs.
+    
+### Compile
+Windows:
+    * Use src.sln i /src. If everything works out the files will be in
+    /bin.
