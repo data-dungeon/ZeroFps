@@ -869,9 +869,11 @@ void P_Tcs::Wakeup(bool bWakeChilds)
 
 namespace SI_PTcs
 {
-	/**	\fn ApplyImpuls( Entity, Table.xyz)
+	/**	\fn ApplyImpuls( EntityID, Table.xyz)
 			\relates Tcs
 			\brief Adds a one time impulse to the entity.
+			\param EntityID Id of entity.
+			\param Table.xyz Dir and force in one vector.
 	
 			Impulse is given in the direction specified by xyz.
 	*/

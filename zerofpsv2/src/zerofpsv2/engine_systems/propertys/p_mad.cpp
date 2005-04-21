@@ -840,9 +840,11 @@ namespace SI_PMad
  *  \ingroup Property
  *  */
 
-/**	\fn SetNextAnim( Entity, AnimName)
+/**	\fn SetNextAnim( EntityID, szAnimName)
 		\brief Sets the next animation for a object to play.
 		\relates Mad
+		\param EntityID Id of entity.
+		\param szAnimName Name of the animation to set.
 
 	This function sets the next animation that the object will play after completing the current one
 	(if any). If the current playing animation is set to loop it will stop loop so AnimName can play after it.
@@ -864,9 +866,11 @@ int SetNextAnim(lua_State* pkLua)
 	return 1;
 }
 
-/**	\fn PlayAnim( Entity, AnimName)
+/**	\fn PlayAnim( EntityID, szAnimName)
 		\brief Sets the playing animation.
 		\relates Mad
+		\param EntityID Id of entity.
+		\param szAnimName Name of the animation to play.
 
 	Plays animation on entity. Aborts the current animation if any. The animation will loop.
 */
@@ -911,9 +915,11 @@ int AddMesh(lua_State* pkLua)
 	return 1;
 }
 
-/**	\fn SetMadfile( EntityID, filename)
-		\brief changes MadFile
+/**	\fn SetMad( EntityID, szFile)
+		\brief Change the mad used.
 		\relates Mad
+		\param EntityID Id of entity to change model on.
+		\param szFile The path and name of the model. Ex "/data/mad/barrel.mad".
 */
 int SetMadfileLua(lua_State* pkLua)
 {
@@ -938,7 +944,7 @@ int SetMadfileLua(lua_State* pkLua)
 
 /**	\fn SetDrawingOrder( EntityID, filename)
 		\brief changes MadFile
-		\relates Mad
+		\relates Property
 */
 int SetDrawingOrderLua(lua_State* pkLua)
 {
@@ -979,7 +985,7 @@ void Register_MadProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetNextAnim",			SI_PMad::SetNextAnim);
 	g_pkScript->ExposeFunction("PlayAnim",				SI_PMad::PlayAnim);
 	g_pkScript->ExposeFunction("AddMesh",				SI_PMad::AddMesh);
-	g_pkScript->ExposeFunction("SetMadfile",			SI_PMad::SetMadfileLua);
+	g_pkScript->ExposeFunction("SetMad",				SI_PMad::SetMadfileLua);
 	g_pkScript->ExposeFunction("SetDrawingOrder",	SI_PMad::SetMadfileLua);
 }
 

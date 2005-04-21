@@ -10,6 +10,13 @@
 
 using namespace ObjectManagerLua;
 
+/**	\class SIEntityCreate 
+		\ingroup NewSi
+
+	This scriptfunctions are ones that can only be used inside a entitys Create function. 
+*/
+
+
 /** \class SIEntityManger 
  *  \ingroup NewSi
  *  */
@@ -134,7 +141,7 @@ int CreateEntityLua (lua_State* pkLua)
 
 /**	\fn Delete( Entity )
  		\relates SIEntityManger
-		\param Entity of entity to delete.
+		\param Id of entity to delete.
 		\brief Delete a entity.
 */
 int DeleteLua(lua_State* pkLua)
@@ -178,9 +185,9 @@ int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua)
 
 
 /**	\fn InitObject(ScripName)
- 	\relates SIEntityManger
-   \brief Run a script to create objects.
-   \param ScripName Name of the script to run. If not given a empty object will be created.
+ 		\relates SIEntityCreate
+		\brief Run a script to create objects.
+		\param ScripName Name of the script to run. If not given a empty object will be created.
 */
 int InitObjectLua(lua_State* pkLua)
 {
@@ -220,10 +227,11 @@ int InitObjectLua(lua_State* pkLua)
 }	
 
 /**	\fn InitProperty(PropertyName)
- 	\relates SIEntityManger
+ 	\relates SIEntityCreate
    \brief Gives a Entity a property.
    \param PropertyName Name of property to assign to object.
 
+	Note: This can only be called in a entity Create function. 
 	Assigns the property with the def values to the last created object.	
 */
 int InitPropertyLua(lua_State* pkLua)
@@ -243,7 +251,7 @@ int InitPropertyLua(lua_State* pkLua)
 
 
 /**	\fn InitParameter(szName, szValue )
- 	\relates SIEntityManger
+ 	\relates SIEntityCreate
    \brief Sets the value of a variable in a property.
    \param szName Name of variable to set.
    \param szValue Value to set variable to.
@@ -276,7 +284,7 @@ int InitParameterLua(lua_State* pkLua)
 }	
 
 /**	\fn AttachToParent()
- 	\relates SIEntityManger
+ 	\relates SIEntityCreate
 	\brief Sets the last created object to be a child to the active parent object,
 */
 int AttachToParent(lua_State* pkLua)
@@ -295,7 +303,7 @@ int AttachToParent(lua_State* pkLua)
 }	
 
 /**	\fn SetParentObject()
- 	\relates SIEntityManger
+ 	\relates SIEntityCreate
 	\brief Sets the last created object to be the active parent object.
 */
 int SetParentObjectLua(lua_State* pkLua)
@@ -311,7 +319,7 @@ int SetParentObjectLua(lua_State* pkLua)
 }
 
 /**	\fn SetReturnObject(x,y,z)
- 	\relates SIEntityManger
+ 	\relates SIEntityCreate
 	\brief Sets the last object to be the object to be returned as the new created object.
 */
 int SetReturnObjectLua(lua_State* pkLua)
@@ -325,7 +333,7 @@ int SetReturnObjectLua(lua_State* pkLua)
 	return 0;
 }
 /**	\fn HaveRelativOri()
- 	\relates SIEntityManger
+ 	\relates SIEntityCreate
 	\brief Sets the last object to have relative orientation.
 */
 
