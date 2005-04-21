@@ -98,13 +98,12 @@ Property* Create_P_ScriptInterface()
 }
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
-/**	\brief Script functions for P_ScriptInterface
-	\ingroup si
-*/
-class SIScriptInterface { };
-
 namespace SI_PScriptInterface
 {
+/** \class SIScriptInterface 
+ *  \ingroup Property
+ *  */
+
 /**	\fn SISetHeartRate( Entity, HeartRate)
  		\relates SIScriptInterface
 		\param Entity Id of entity to set rate on.

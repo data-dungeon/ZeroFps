@@ -74,8 +74,7 @@ FILE_PATTERNS          = si_*.cpp \
                          p_*.cpp \
                          entity.cpp
 RECURSIVE              = YES
-EXCLUDE                = C:/Projects/zerofpsv2/src/zerofpsv2/ogl/ \
-                         D:/zpg/zerofpsv2/src/doc
+EXCLUDE                = C:/Projects/zerofpsv2/src/zerofpsv2/ogl/
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = doxydoc \
                          ddscript

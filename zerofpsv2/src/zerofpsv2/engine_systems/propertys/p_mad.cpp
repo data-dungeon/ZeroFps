@@ -832,24 +832,17 @@ bool P_Mad::operator<(Property& kOther)
 
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
-/**	\brief Script functions for Mad
-	\ingroup si
-*/
-class SIMad { };
 
-
-
-/**	\brief Script functions for propertys
-*/
-namespace SIProperty
-{
 
 namespace SI_PMad
 {
+/** \class Mad 
+ *  \ingroup Property
+ *  */
 
 /**	\fn SetNextAnim( Entity, AnimName)
- 	\relates SIMad
-	\brief Sets the next animation for a object to play.
+		\brief Sets the next animation for a object to play.
+		\relates Mad
 
 	This function sets the next animation that the object will play after completing the current one
 	(if any). If the current playing animation is set to loop it will stop loop so AnimName can play after it.
@@ -872,8 +865,8 @@ int SetNextAnim(lua_State* pkLua)
 }
 
 /**	\fn PlayAnim( Entity, AnimName)
- 	\relates SIMad
-	\brief Sets the playing animation.
+		\brief Sets the playing animation.
+		\relates Mad
 
 	Plays animation on entity. Aborts the current animation if any. The animation will loop.
 */
@@ -897,8 +890,8 @@ int PlayAnim(lua_State* pkLua)
 }
 
 /**	\fn AddMesh( Entity, MeshIndex)
- 	\relates SIMad
-   \brief Adds the Mesh to be displayed on the entity.
+		\brief Adds the Mesh to be displayed on the entity.
+		\relates Mad
 */
 int AddMesh(lua_State* pkLua)
 {
@@ -918,7 +911,10 @@ int AddMesh(lua_State* pkLua)
 	return 1;
 }
 
-// p_mad: changes MadFile: Takes ObjectID, filename
+/**	\fn SetMadfile( EntityID, filename)
+		\brief changes MadFile
+		\relates Mad
+*/
 int SetMadfileLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 2)
@@ -940,6 +936,10 @@ int SetMadfileLua(lua_State* pkLua)
 	return 0;
 }
 
+/**	\fn SetDrawingOrder( EntityID, filename)
+		\brief changes MadFile
+		\relates Mad
+*/
 int SetDrawingOrderLua(lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
@@ -961,7 +961,7 @@ int SetDrawingOrderLua(lua_State* pkLua)
 
    return 0;
 }
-}
+
 }
 
 
@@ -976,11 +976,11 @@ void Register_MadProperty(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_Mad", Create_MadProperty);				
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("SetNextAnim",			SIProperty::SI_PMad::SetNextAnim);
-	g_pkScript->ExposeFunction("PlayAnim",				SIProperty::SI_PMad::PlayAnim);
-	g_pkScript->ExposeFunction("AddMesh",				SIProperty::SI_PMad::AddMesh);
-	g_pkScript->ExposeFunction("SetMadfile",			SIProperty::SI_PMad::SetMadfileLua);
-	g_pkScript->ExposeFunction("SetDrawingOrder",	SIProperty::SI_PMad::SetMadfileLua);
+	g_pkScript->ExposeFunction("SetNextAnim",			SI_PMad::SetNextAnim);
+	g_pkScript->ExposeFunction("PlayAnim",				SI_PMad::PlayAnim);
+	g_pkScript->ExposeFunction("AddMesh",				SI_PMad::AddMesh);
+	g_pkScript->ExposeFunction("SetMadfile",			SI_PMad::SetMadfileLua);
+	g_pkScript->ExposeFunction("SetDrawingOrder",	SI_PMad::SetMadfileLua);
 }
 
 

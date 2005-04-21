@@ -457,6 +457,14 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_AI
 {
+/** \class AI 
+ *  \ingroup Property
+ *  */
+
+/**	\fn SetAITarget( EntityID, TargetEntityID)
+		\brief Sets the taget that the ai try to attack.
+		\relates AI
+*/
 	int SetAITargetLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 3)
@@ -475,6 +483,10 @@ namespace SI_P_AI
 		return 0;			
 	}
 
+/**	\fn SetAIState( Entity, iState)
+		\brief Sets the current state of the AI
+		\relates AI
+*/
 	int SetAIStateLua(lua_State* pkLua)
 	{
 		if( g_pkScript->GetNumArgs(pkLua) == 2 )

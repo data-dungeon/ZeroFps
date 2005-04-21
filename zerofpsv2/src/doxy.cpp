@@ -22,12 +22,6 @@
 	MistLand is a MORPG made with ZeroFPS.
 */
 
-/**
-	\defgroup si ScriptGuide
-
-	Guide Over the scripts in ZFps/MistLand
-*/
-
 /** \mainpage My Personal Index Page
  
   \section intro Introduction
@@ -35,18 +29,12 @@
   This is the documentationen for the ZeroFps Engine, Tools and the game MistLand.
 */
 
-/**	\brief Class To Collect Script Gui Functions,
-	\ingroup si
-*/
-class MistLandGuiScript
-{
-	
-};
+/** @defgroup NewSi Script Interface
+ *	 This module contains all the script functions that can be called from Lua in mistlands. 
+ */
 
-/**	\brief Class To Collect Script Gui Functions,
-	\ingroup si
-*/
-class MistLandStdScript
-{
-	
-};
+/** @defgroup Property Property
+ *  @ingroup NewSi
+ *  This are the script interfaces for propertys. To use one of these functions the entity need
+ *	 to have the property the function belong to. 
+ */

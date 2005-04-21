@@ -10,12 +10,9 @@
 
 using namespace ObjectManagerLua;
 
-/**	\brief Class To Collect Script Functions,
-	\ingroup si
-*/
-class SIEntityManger { };
-
-
+/** \class SIEntityManger 
+ *  \ingroup NewSi
+ *  */
 
 namespace ObjectManagerLua
 {

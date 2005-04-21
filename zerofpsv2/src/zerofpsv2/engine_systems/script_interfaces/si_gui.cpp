@@ -6,6 +6,11 @@
 #include "../../gui/zgui.h"
 #include "si_gui.h"
 
+/**	\class SIGui 
+		\ingroup NewSi
+		\brief Functions used in gui scripts.	
+*/
+
 //ZFScriptSystem*	GuiAppLua::g_pkScript;
 //ZGuiApp* 			GuiAppLua::g_pkGuiApp;
 
@@ -52,7 +57,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 // (8) unsigned long uiFlags
 
 /**	\fn CreateWndLua(iType, szWndName, szParentName, szLabel, iX, iY, iW, iH, iFlags)
- 	\relates MistLandGuiScript
+ 	\relates SIGui
 	\brief Creates a window.
 
 	\param iType Desc
@@ -69,7 +74,6 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 
 	Creates a window in the GUI.	
 */
-
 int GuiAppLua::CreateWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
@@ -277,7 +281,7 @@ int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 // (0) char* resName of the Listbox
 
 /**	\fn ClearListbox( resName )
- 	\relates MistLandGuiScript
+ 	\relates SIGui
 	\brief Clears a Listbox.
 	\param resName resName of the Listbox.
 */
@@ -419,6 +423,14 @@ int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 	return 1;
 }
 
+/**	\fn CreateWndLua(szWndName, bVisible, bFocus)
+ 	\relates SIGui
+	\brief Sets the visible and focus status on a window.
+
+	\param szWndName Name of window.
+	\param bVisible Desc
+	\param bFocus Desc
+*/
 int GuiAppLua::ShowWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);

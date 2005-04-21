@@ -2190,10 +2190,9 @@ bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObje
 
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
-/**	\brief Script functions for Entitys
-	\ingroup si
-*/
-class SIEntity { };
+/** \class SIEntity 
+ *  \ingroup NewSi
+ *  */
 
 namespace SI_Entity
 {

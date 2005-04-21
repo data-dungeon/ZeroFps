@@ -12,6 +12,9 @@ extern EntityManager* g_pkObjMan;
 
 namespace StdLua
 {
+/**	\class SIStd 
+ 		\ingroup NewSi
+   */
 
 void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 {
@@ -33,7 +36,7 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 }
 
 /** \fn Print( szText )
-	\relates MistLandStdScript
+	\relates SIStd
 	\brief Print text to std out device.
 	\param szText Text to print.
 */
@@ -160,7 +163,7 @@ int PrintLua(lua_State* pkLua)
 }
 
 /**	\fn Sin( Angle )
- 		\relates MistLandStdScript
+ 		\relates SIStd
 		\brief Gets sin of angle.
 		\param Angle Angle in radians.
 		\return Return Sin of angle.
@@ -182,7 +185,7 @@ int SinLua(lua_State* pkLua)
 }
 
 /**	\fn Cos( Angle )
- 		\relates MistLandStdScript
+ 		\relates SIStd
 		\brief Gets cos of angle.
 		\param Angle Angle in radians.
 		\return Return cos of angle.
@@ -217,7 +220,7 @@ int GetTicksLua(lua_State* pkLua)
 }
 		
 /**	\fn Tan( Angle )
- 		\relates MistLandStdScript
+ 		\relates SIStd
 		\brief Gets tan of angle.
 		\param Angle Angle in radians.
 		\return Return tan of angle.
@@ -240,7 +243,7 @@ int TanLua(lua_State* pkLua)
 
 // 1:st argument = Path to folder with files (char*)
 /**	\fn GetFilesInFolder( szPath )
- 		\relates MistLandStdScript
+ 		\relates SIStd
 		\brief Returns table of all files in the given path.
 		\param szPath The path to list the files. 
 		\return Table with filenames.

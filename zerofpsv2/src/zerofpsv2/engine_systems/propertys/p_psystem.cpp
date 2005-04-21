@@ -257,18 +257,17 @@ P_PSystem::~P_PSystem()
 // ------------------------------------------------------------------------------------------
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
-/**	\brief Script functions for Particle Systems
-	\ingroup si
-*/
-class SIPSystem { };
-
 namespace SI_PPSystem
 {
-/**	\fn SetPSystem( Entity, SystemName)
- 	\relates SITcs
-	\brief Sets the particle system to use.
+/** \class PSystem 
+ *  \ingroup Property
+ *  */
 
-	Impulse is given in the direction specified by xyz.
+/**	\fn SetPSystem( Entity, SystemName)
+ 		\relates PSystem
+		\brief Sets the particle system to use.
+
+		Impulse is given in the direction specified by xyz.
 */
 int SetPSystemLua(lua_State* pkLua)
 {

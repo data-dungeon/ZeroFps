@@ -187,9 +187,6 @@ Property* Create_P_Controller()
 
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
-/**	\brief Script functions for Controller
-	\ingroup si
-*/
 class SIController { };
 
 namespace SI_PController

@@ -863,18 +863,17 @@ void P_Tcs::Wakeup(bool bWakeChilds)
 }
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
-/**	\brief Script functions for Tcs
-	\ingroup si
-*/
+/** \class Tcs 
+ *  \ingroup Property
+ *  */
 
 namespace SI_PTcs
 {
-
 	/**	\fn ApplyImpuls( Entity, Table.xyz)
-		\relates SITcs
-		\brief Adds a one time impulse to the entity.
+			\relates Tcs
+			\brief Adds a one time impulse to the entity.
 	
-		Impulse is given in the direction specified by xyz.
+			Impulse is given in the direction specified by xyz.
 	*/
 	int ApplyImpulsLua(lua_State* pkLua)
 	{
@@ -905,7 +904,10 @@ namespace SI_PTcs
 	
 	}
 
-	
+	/**	\fn SetRotVel( Entity, Table.xyz)
+			\relates Tcs
+			\brief No docs avil.
+	*/	
 	int SetObjectRotVelLua (lua_State* pkLua)
 	{
 		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
@@ -942,6 +944,10 @@ namespace SI_PTcs
 		return 1;
 	}
 	
+	/**	\fn ApplyImpuls( Entity, Table.xyz)
+			\relates Tcs
+			\brief No docs avil.
+	*/	
 	int SetObjectLinVelTowardsLua (lua_State* pkLua)
 	{
 		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
@@ -984,7 +990,10 @@ namespace SI_PTcs
 		return 1;
 	}	
 	
-	
+	/**	\fn SetLinVelTowards( Entity, Table.xyz)
+			\relates Tcs
+			\brief No docs avil.
+	*/		
 	int SetObjectLinVelLua (lua_State* pkLua)
 	{
 		int iNrArgs = g_pkScript->GetNumArgs(pkLua);
@@ -1020,7 +1029,11 @@ namespace SI_PTcs
 	
 		return 1;
 	}	
-	
+
+	/**	\fn Bounce( )
+			\relates Tcs
+			\brief No docs avil.
+	*/	
 	int BounceLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 1)
