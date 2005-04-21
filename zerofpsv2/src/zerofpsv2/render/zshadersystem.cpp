@@ -240,11 +240,12 @@ void ZShaderSystem::SetupPass(int iPass)
 	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);		
 	glEnable(GL_COLOR_MATERIAL);	
 	glColor4fv(&(pkSettings->m_kVertexColor.x));		
-	glDisable(GL_COLOR_MATERIAL);	
+// 	glDisable(GL_COLOR_MATERIAL);	
 
-	if ( m_bColorPointer )
-		glEnable(GL_COLOR_MATERIAL);
-
+	if( !pkSettings->m_bColorMaterial)
+		glDisable(GL_COLOR_MATERIAL);
+	
+		
 	//line width
 	glLineWidth(pkSettings->m_fLineWidth);
 

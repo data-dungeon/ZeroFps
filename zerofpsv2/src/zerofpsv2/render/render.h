@@ -174,7 +174,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		
 		// primitives and such
-		void DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale);//,int& iTexture1);//,int iTexture2);
+		void DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale,float fAlpha);//,int& iTexture1);//,int iTexture2);
 		void DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite, bool bAlpha, bool bBlend);
 		void DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial);
 

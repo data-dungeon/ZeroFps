@@ -23,6 +23,14 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 			float fWindStart;
 		};
 
+/*		struct LodLevel
+		{
+			vector<Vector3>	m_kVertexArray;
+			vector<Vector3>	m_kNormalArray;
+			vector<Vector2>	m_kTextureArray;		
+		};
+		vector<LodLevel>	m_kLodLevels;*/
+		
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
 		Render*				m_pkRender;	
@@ -31,6 +39,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		vector<vegitation>	m_akPositions;
 
+		
 		ZFResourceHandle* m_pkMaterial;	
 		string				m_strMaterialFile; 		
 			
@@ -47,6 +56,9 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );		
 	
+// 		void BuildArrays();
+// 		void DrawArray(int iLodLevel);
+		
 	public:
 		P_Vegitation();
 		~P_Vegitation();

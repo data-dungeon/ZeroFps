@@ -15,7 +15,7 @@ P_PfPath::P_PfPath()
 
 // 	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
 	m_iType = PROPERTY_TYPE_NORMAL;
-	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;// | PROPERTY_SIDE_CLIENT;
 
 	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkAStar	=	static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
