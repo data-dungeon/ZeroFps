@@ -2071,7 +2071,7 @@ void MistClient::AddChar(string strChar, string strMod)
 	SendAppMessage(&kNp);
 }
 
-void MistClient::OnSystemMessage(const string& strType,void* pkData)
+void MistClient::OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams)
 {
 	char szTitle[256];
 
@@ -2080,17 +2080,18 @@ void MistClient::OnSystemMessage(const string& strType,void* pkData)
 		m_kServerList.clear();
 		vector<ServerInfo> pkServerIp = m_pkNetwork->GetServers();
 		char szIp[128];
+		
 		for(int i=0; i<pkServerIp.size(); i++)
 		{
 			m_pkNetwork->AddressToStr(&pkServerIp[i].m_kServerIp,szIp);
 			sprintf(szTitle, "%s: %d/%d",pkServerIp[i].m_acServerName, pkServerIp[i].m_iNumOfPlayers,
 				pkServerIp[i].m_iMaxPlayers);
+			
+			
 			AddRemoveServer(szTitle, szIp,true);
-			//m_pkNetwork->AddressToStr(&pkServerIp[i],szIp);
-			//AddRemoveServer("remote", szIp,true);
 
 		}
-
+		
 		//fulhaxos
 		AddRemoveServer("localhost","localhost:4242",true);
 		

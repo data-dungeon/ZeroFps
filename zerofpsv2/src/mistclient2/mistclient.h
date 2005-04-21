@@ -201,7 +201,7 @@ class MistClient :public Application, public ZGuiApp {
 		void OnNetworkMessage(NetPacket *PkNetMessage);
 		void OnDisconnect(int iConnectionID);
 
-		void OnSystemMessage(const string& strType,void* pkData);
+		void OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams);
 
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
