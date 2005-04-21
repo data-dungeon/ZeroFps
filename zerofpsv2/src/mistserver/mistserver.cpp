@@ -402,25 +402,6 @@ void MistServer::Input()
 	float z ;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
-	Vector3 kMove(0,0,0);
-
-	if(m_pkInputHandle->Pressed(KEY_8))	assert(0);
-	if(m_pkInputHandle->Pressed(KEY_9))	ZFAssert(0, "Fet med test");
-
-	/*
-	if(pkEntTestArc)
-	{
-		P_ArcadeCharacter* pkArc = dynamic_cast<P_ArcadeCharacter*>( pkEntTestArc->GetProperty("P_ArcadeCharacter"));
-		if(pkArc)
-		{
-			if(m_pkInputHandle->Pressed(KEY_I))	pkArc->m_kActions[2] = 1;
-			if(m_pkInputHandle->Pressed(KEY_K))	pkArc->m_kActions[3] = 1;
-			if(m_pkInputHandle->Pressed(KEY_J))	pkArc->m_kActions[1] = 1;
-			if(m_pkInputHandle->Pressed(KEY_L))	pkArc->m_kActions[0] = 1;
-			
-		}
-	}
-	*/
 
 	Input_Camera(float(x),float(z));
 };
