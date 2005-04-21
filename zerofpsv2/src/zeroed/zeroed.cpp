@@ -253,6 +253,14 @@ void ZeroEd::CreateEditCameras()
 	GetWnd("vp4")->SetRenderTarget(m_pkCamera[3]);
 
 	SetViewPort("vp1");
+	
+	//link cameras as default
+	m_pkCameraObject[1]->SetRelativeOri(true);
+	m_pkCameraObject[2]->SetRelativeOri(true);
+	m_pkCameraObject[3]->SetRelativeOri(true);		
+ 	m_pkCameraObject[1]->SetParent( m_pkCameraObject[0] );
+ 	m_pkCameraObject[2]->SetParent( m_pkCameraObject[0] );
+ 	m_pkCameraObject[3]->SetParent( m_pkCameraObject[0] );
 }
 
 
@@ -1155,19 +1163,30 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_CAMLINK:
-				if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) {
+				if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) 
+				{
 					// Unlink
 					cout << "Unlink" << endl;
+					
+					m_pkCameraObject[1]->SetRelativeOri(false);
+					m_pkCameraObject[2]->SetRelativeOri(false);
+					m_pkCameraObject[3]->SetRelativeOri(false);
+					
+					
 					m_pkCameraObject[1]->SetParent( m_pkEntityManager->GetWorldEntity() );
 					m_pkCameraObject[1]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
 					m_pkCameraObject[2]->SetParent( m_pkEntityManager->GetWorldEntity() );
 					m_pkCameraObject[2]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
 					m_pkCameraObject[3]->SetParent( m_pkEntityManager->GetWorldEntity() );
 					m_pkCameraObject[3]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV());
-					}
+				}
 				else {
 					// Link
 					cout << "Link" << endl;
+					m_pkCameraObject[1]->SetRelativeOri(true);
+					m_pkCameraObject[2]->SetRelativeOri(true);
+					m_pkCameraObject[3]->SetRelativeOri(true);
+					
 					m_pkCameraObject[1]->SetParent( m_pkCameraObject[0] );
 					m_pkCameraObject[1]->SetLocalPosV(Vector3::ZERO);
 					m_pkCameraObject[2]->SetParent( m_pkCameraObject[0] );
