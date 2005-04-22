@@ -8,7 +8,15 @@ bool PSystem::Draw()
 	if ( m_bInsideFrustum )
 	{
 		m_pkShader->ResetPointers();
+		
+		//Dvoids uglyest Hack in the history of hacks	
+/*		vector<Vector3>	kNormals;
+		for(int i = 0;i<Particles() * 4;i++)
+			kNormals.push_back(Vector3(0,1,0));
 
+		m_pkShader->SetPointer(NORMAL_POINTER, &kNormals[0] );*/
+		//end of the worlds greatest hack
+		
 		if (m_pkTexCoords)
 			m_pkShader->SetPointer(TEXTURE_POINTER0, &m_pkTexCoords[Start() * 4] );
 		
@@ -17,16 +25,15 @@ bool PSystem::Draw()
 		if (m_pfColors)
 			m_pkShader->SetPointer(COLOR_POINTER, &m_pfColors[Start() * 16] );
 
-		m_pkShader->SetDrawMode(QUADS_MODE);
 		m_pkShader->SetNrOfVertexs(Particles() * 4);
 
-		ZMaterial* pkMaterial = (ZMaterial*)(GetPSystemType()->m_kParticleBehaviour.m_pkMaterial->GetResourcePtr());
-
-		m_pkShader->BindMaterial(pkMaterial);				
+ 		ZMaterial* pkMaterial = (ZMaterial*)(GetPSystemType()->m_kParticleBehaviour.m_pkMaterial->GetResourcePtr());
+ 		m_pkShader->BindMaterial(pkMaterial);				
+		
 		m_pkShader->SetPointer(INDEX_POINTER, m_pfIndices);				
 		m_pkShader->SetNrOfIndexes(Particles() * 4);
 
-		m_pkShader->DrawArray();
+		m_pkShader->DrawArray(QUADS_MODE);
 	}
 
 	return m_bInsideFrustum;

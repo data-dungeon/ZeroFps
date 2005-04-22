@@ -226,7 +226,7 @@ void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 			EnableLight(m_kLights[pkLightProfile->m_aiLights[i]],i);
 		}
 	}
-	
+
 }
  
 void Light::Update(Vector3 kRefPos)
