@@ -668,7 +668,13 @@ void PSystemManager::SetProperties ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_kEndSize.y )
 		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Size");
 
-	pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Light");
+	if ( pkPSType->m_kPSystemBehaviour.m_fLightStartColorR != -1 ||
+		  pkPSType->m_kPSystemBehaviour.m_fLightStartColorG != -1 ||
+		  pkPSType->m_kPSystemBehaviour.m_fLightStartColorB != -1 ||
+		  pkPSType->m_kPSystemBehaviour.m_fLightEndColorR != -1 ||
+		  pkPSType->m_kPSystemBehaviour.m_fLightEndColorG != -1 ||
+		  pkPSType->m_kPSystemBehaviour.m_fLightEndColorB != -1 )
+		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Light");
 }
 
 // ------------------------------------------------------------------------------------------
