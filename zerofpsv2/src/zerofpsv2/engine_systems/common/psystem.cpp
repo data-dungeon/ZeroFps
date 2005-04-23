@@ -17,6 +17,8 @@ bool PSystem::Draw()
 		m_pkShader->SetPointer(NORMAL_POINTER, &kNormals[0] );*/
 		//end of the worlds greatest hack
 		
+		m_pkShader->SetNormal(Vector3(0,1,0));
+		
 		if (m_pkTexCoords)
 			m_pkShader->SetPointer(TEXTURE_POINTER0, &m_pkTexCoords[Start() * 4] );
 		

@@ -344,6 +344,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 																					fGreen = m_fGreenGamma;
 																					fBlue =  m_fBlueGamma;	}
 		
+		void SetNormal(const Vector3& kNormal)				{	glNormal3fv(&kNormal.x);				}
+																					
 		//ucculusion
 		void OcculusionBegin();
 		unsigned int  OcculusionEnd();
