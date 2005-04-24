@@ -971,7 +971,7 @@ void MistClient::Input()
 		SendRespawnRequest();
 	
 	//check buttons
-	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
+	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward") || (!m_bGuiCapture && m_pkInputHandle->VKIsDown("use") ); 
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
 	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
 	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
@@ -1122,13 +1122,22 @@ void MistClient::Input()
 			pkCam->Set3PDistance(fDistance);
 		
 			//rotate character
-			if(!m_bDead)
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntityManager->GetPropertyFromEntityID(m_iCharacterID,"P_CharacterControl"))
 			{
-				Matrix4 kRot;
-				kRot.Identity();
-				kRot.Rotate(0,pkCam->Get3PYAngle(),0);
-				kRot.Transponse();				
-				pkCharacter->SetLocalRotM(kRot);			
+				if(pkCC->GetEnabled())			
+				{
+//  					pkCharacter->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,true);
+				
+					Matrix4 kRot;
+					kRot.Identity();
+					kRot.Rotate(0,pkCam->Get3PYAngle(),0);
+					kRot.Transponse();				
+					pkCharacter->SetLocalRotM(kRot);			
+				}
+				else
+				{
+//  					pkCharacter->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,false);
+				}
 			}
 		}
 	}
@@ -1167,7 +1176,7 @@ void MistClient::UpdateCharacter()
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
 		//disable rotation from server
-		pkEnt->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,true);
+		//pkEnt->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,true);
 	
 		//if theres no camera property, create one and set it up
 		if(!pkEnt->GetProperty("P_Camera"))

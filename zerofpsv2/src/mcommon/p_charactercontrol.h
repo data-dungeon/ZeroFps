@@ -93,6 +93,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fSoundRunDelay;
 		float			m_fJumpDelay;
 
+		int			m_iConnectionID;
+		
 		
 		//animation
 		int			m_iCurrentSet;
@@ -112,6 +114,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);		
+		
+		void SetClient(int iConID)								{	m_iConnectionID=iConID;		}
 		
 		void SetAnimationSet(int iSet)						{	m_iCurrentSet= iSet;			}
 		int  GetAnimationSet()									{	return m_iCurrentSet;		}
@@ -141,7 +145,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		void DoEmote(int iEmoteID);
 		void DoAnimation(const string& strAnim);
 		void Lock(float fTime);
-		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		}
+		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		ResetAllNetUpdateFlags();}
+		bool GetEnabled()											{	return m_bEnabled;			} 
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();

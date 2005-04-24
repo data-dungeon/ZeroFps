@@ -844,6 +844,12 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 			//rewive character if its dead
 			pkCP->MakeAlive();
 		}
+		
+		//setup character control to correct connection id 
+		if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+		{
+			pkCC->SetClient(iConID);
+		}		
 	}
 	else
 	{	

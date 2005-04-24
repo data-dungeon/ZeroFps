@@ -63,6 +63,8 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API PlaceObjectOnGroundLua(lua_State* pkLua);
 
+// 	int ENGINE_SYSTEMS_API SetObjectRotFromObjectLua(lua_State* pkLua);
+	
 	// Object Variables
 /*	
 	//int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);

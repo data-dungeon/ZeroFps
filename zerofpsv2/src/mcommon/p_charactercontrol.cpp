@@ -37,6 +37,8 @@ P_CharacterControl::P_CharacterControl()
 	m_iVersion = 			5;
 		
 	
+	m_iConnectionID	=	-1;
+	
 	m_fLockTime = 			-1;
 	m_bEnabled=				true;
 	
@@ -102,18 +104,25 @@ void P_CharacterControl::Update()
 {	
 	if(!m_bEnabled)
 	{
+		if(m_iConnectionID != -1)
+	 		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,false);
+			
 		SetCharacterState(eNONE);
 		return;
 	}
 		
+	
 	if(m_fLockTime != -1)
 	{
 		if(m_pkEntityManager->GetSimTime() < m_fLockTime)
 			return;
 		else
-			m_fLockTime = -1;
-	
+			m_fLockTime = -1;	
 	}
+	
+	if(m_iConnectionID != -1)
+ 		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,true);
+	
 
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
@@ -313,9 +322,20 @@ void P_CharacterControl::DoAnimation(const string& strAnim)
 {
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
 	{
- 		string strTemp = pkMad->GetCurrentAnimationName();
-		pkMad->SetAnimation(strAnim.c_str(), 0);		
- 		pkMad->SetNextAnimation(strTemp.c_str());
+	
+		if(strAnim.empty())
+		{
+			cout<<"blub"<<endl;
+			pkMad->SetAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str(), 0);
+			pkMad->SetNextAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str());	
+		}
+		else
+		{
+			
+ 			string strTemp = pkMad->GetCurrentAnimationName();
+			pkMad->SetAnimation(strAnim.c_str(), 0);		
+ 			pkMad->SetNextAnimation(strTemp.c_str());
+		}
 	}
 }
 
@@ -497,18 +517,21 @@ void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
-// 	pkNetPacket->Write(m_kCharacterStates);
 	pkNetPacket->Write(m_iCharacterState);
 	pkNetPacket->Write(m_iDirection);
+	
+	pkNetPacket->Write(m_bEnabled);
+	
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-// 	pkNetPacket->Read(m_kCharacterStates);
 	pkNetPacket->Read(m_iCharacterState);
 	pkNetPacket->Read(m_iDirection);
+	
+	pkNetPacket->Read(m_bEnabled);
 }
 
 
@@ -650,6 +673,24 @@ namespace SI_P_CharacterControl
 		return 0;
 	}	
 	
+	int MovementEnabledLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		int iEnabled;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &id);
+		g_pkScript->GetArgInt(pkLua, 1, &iEnabled);
+		
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->SetEnabled(iEnabled);
+		
+		return 0;		
+	}
+	
 	int LockCharacterLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -723,6 +764,7 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
 	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);
 	
+	g_pkScript->ExposeFunction("MovementEnabled",	SI_P_CharacterControl::MovementEnabledLua);
 	g_pkScript->ExposeFunction("LockCharacter",		SI_P_CharacterControl::LockCharacterLua);
 	g_pkScript->ExposeFunction("DoEmote",				SI_P_CharacterControl::DoEmoteLua);
 	g_pkScript->ExposeFunction("DoAnimation",			SI_P_CharacterControl::DoAnimationLua);

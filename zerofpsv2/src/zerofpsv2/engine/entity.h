@@ -205,8 +205,8 @@ class ENGINE_API Entity
 		vector<Property*>			m_akPropertys;						///< List of propertys of entity.
 		
 		//network
-		vector<bitset <MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;
-		bitset<MAX_NETUPDATEFLAGS>					m_kNetIgnoreFlags;
+		vector<bitset<MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;
+		vector<bitset<MAX_NETUPDATEFLAGS> >	m_kNetIgnoreFlags;
 		vector<bool>									m_kExistOnClient;
 					
 		Entity();		
@@ -217,9 +217,9 @@ class ENGINE_API Entity
 		void	SetNetUpdateFlag(int iConID,int iFlagID,bool bValue);		
 		bool	GetNetUpdateFlag(int iConID,int iFlagID);					
 		bool	IsAnyNetUpdateFlagTrue(int iConID);					
-		void	ResetAllNetUpdateFlags();												// reset all update flags to true
-		void	ResetAllNetUpdateFlags(int iConID);									// reset all update flags to true		
-		void	ResetAllNetUpdateFlagsAndChilds(int iConID);						// reset all update flags to true				
+		void	ResetAllNetFlags();												// reset all update flags to true
+		void	ResetAllNetFlags(int iConID);									// reset all update flags to true		
+		void	ResetAllNetFlagsAndChilds(int iConID);						// reset all update flags to true				
 		
 		
 		void	SetNrOfConnections(int iConNR);
@@ -359,8 +359,8 @@ class ENGINE_API Entity
 		inline int GetCurrentZone()  						{	return m_iCurrentZone;	};
 
 		//network ignore flags
-		void	SetNetIgnoreFlag(int iFlagID,bool bValue)			{	m_kNetIgnoreFlags[iFlagID] = bValue;	};
-		bool	GetNetIgnoreFlag(int iFlagID)							{	return m_kNetIgnoreFlags[iFlagID];		};
+		void	SetNetIgnoreFlag(int iConID,int iFlagID,bool bValue)			{	m_kNetIgnoreFlags[iConID][iFlagID] = bValue;		};
+		bool	GetNetIgnoreFlag(int iConID,int iFlagID)							{	return m_kNetIgnoreFlags[iConID][iFlagID];		};
 		
 		
 		bool GetUseZones() 									{	return m_bUseZones;		};

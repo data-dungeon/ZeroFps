@@ -959,7 +959,7 @@ void EntityManager::PackToClients()
 			int iZoneID = (*itActiveZone);
 			
 			if(m_kZones[iZoneID].m_pkZone)
-				m_kZones[iZoneID].m_pkZone->ResetAllNetUpdateFlagsAndChilds( iClient );
+				m_kZones[iZoneID].m_pkZone->ResetAllNetFlagsAndChilds( iClient );
 		}
 
 		//send all tracked object first =)
@@ -2544,9 +2544,8 @@ void EntityManager::ForceSave()
 void EntityManager::ResetNetUpdateFlags(int iConID)
 {
 	for(map<int,Entity*>::iterator it=m_akEntitys.begin();it!=m_akEntitys.end();it++) {
-		(*it).second->ResetAllNetUpdateFlags(iConID);
+		(*it).second->ResetAllNetFlags(iConID);
 	}
-	
 }
 
 
@@ -2976,8 +2975,8 @@ void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
 	if(Entity* pkEnt = GetEntityByID(iEntityID))
 	{
 		//cout<<"entity exist"<<endl;
-		pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);		
-		pkEnt->SetExistOnClient(iClient,false);	
+		pkEnt->ResetAllNetFlagsAndChilds(iClient);		
+// 		pkEnt->SetExistOnClient(iClient,false);	
 	}
 	
 	//cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;

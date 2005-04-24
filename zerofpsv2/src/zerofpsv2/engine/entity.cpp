@@ -69,7 +69,7 @@ Entity::Entity()
 	SetNrOfConnections(m_pkZeroFps->GetMaxPlayers());
 	
 	//reset network ignore flags
-	m_kNetIgnoreFlags.reset();
+// 	m_kNetIgnoreFlags.reset();
 }
 
 Entity::~Entity() 
@@ -597,40 +597,6 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 	
 return false;
 
-
-// 	if(!bHasNetPropertys && m_bSendChilds)
-// 	{
-// 		for(int i = 0;i<m_akChilds.size();i++)
-// 		{
-// 			if(m_akChilds[i]->HaveSomethingToSend(iConnectionID))
-// 			{
-// 				bHasNetChilds = true;
-// 				break;
-// 			}
-// 		}	
-// 	}	
-/*		
-	//no propertys to send
-	if(!bHasNetPropertys)
-	{
-		m_eRemoteRole = NETROLE_NONE;
-		
-		
-		//check if this entity has any value to an editor, if so send it if client is an editor
-		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
-			if(IsAnyNetUpdateFlagTrue(iConnectionID))
-				return true;
-				
-		return false;
-	}
-
-	
-	
-	//is there any entity data to send?
-	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
-	
-	
-	return bNeedUpdate;*/
 }
 
 
@@ -640,8 +606,13 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {	
 	//cout<<"sending entity "<<GetEntityID()<<" to "<<iConnectionID<<endl;
 	SetExistOnClient(iConnectionID,true);
-
-	//send update flags
+	
+	//apply ignore flags
+	for(int i =0;i<MAX_NETUPDATEFLAGS;i++)
+		if(m_kNetIgnoreFlags[iConnectionID][i])
+			m_kNetUpdateFlags[iConnectionID][i] = false;
+	
+	//send update flags	
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 
 		
@@ -782,14 +753,11 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		int iParentID;		
 		pkNetPacket->Read( iParentID );		
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_PARENT))
-		{			
-			Entity* parent = m_pkEntityManager->GetEntityByID(iParentID);			
-			if(!parent)
-				parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
-			
-			SetParent(parent);
-		}
+		Entity* parent = m_pkEntityManager->GetEntityByID(iParentID);			
+		if(!parent)
+			parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
+		
+		SetParent(parent);
 	
 		LOGSIZE("Entity::ParentID", 4);	
 	}
@@ -800,8 +768,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static int iUpdateStatus;	
 	   pkNetPacket->Read( iUpdateStatus );		   
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_UPDATESTATUS))
-			m_iUpdateStatus = iUpdateStatus;		
+		m_iUpdateStatus = iUpdateStatus;		
 	}
 
 
@@ -811,9 +778,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		unsigned char ucEntityFlags;
 		pkNetPacket->Read(ucEntityFlags );
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_RELPOS)) 			m_bRelativeOri = ucEntityFlags & 1;
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_INTERPOLATE))	m_bInterpolate = ucEntityFlags & 2;
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_ISZONE)) 			m_bZone 			= ucEntityFlags & 4;
+		m_bRelativeOri = ucEntityFlags & 1;
+		m_bInterpolate = ucEntityFlags & 2;
+		m_bZone 			= ucEntityFlags & 4;		
 	}
 
 	//get position
@@ -822,8 +789,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static Vector3 kPos;		
 		pkNetPacket->Read(kPos);
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_POS))
-			SetLocalPosV(kPos);		
+		SetLocalPosV(kPos);		
 	
 		LOGSIZE("Entity::Position", sizeof(kPos) );	
 	}
@@ -834,8 +800,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static Matrix3 kRot;
 		pkNetPacket->Read(kRot);
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_ROT))
-			SetLocalRotM(kRot);
+		SetLocalRotM(kRot);
 			
 		LOGSIZE("Entity::Rotation", sizeof(kRot));
 	}
@@ -846,8 +811,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static Vector3 kVel;
 		pkNetPacket->Read(kVel);
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_VEL))
-			SetVel(kVel);
+		SetVel(kVel);
 				
 		LOGSIZE("Entity::Velocity", sizeof(kVel));
 	}
@@ -858,8 +822,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static Vector3 kAcc;
 		pkNetPacket->Read(kAcc);
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_ACC))
-			SetAcc(kAcc);
+		SetAcc(kAcc);
 			
 		LOGSIZE("Entity::Acceleration", sizeof(kAcc));
 	}
@@ -870,8 +833,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static float fRadius;	
 		pkNetPacket->Read(fRadius);
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_RADIUS))
-			m_fRadius = fRadius;		
+		m_fRadius = fRadius;		
 			
 		LOGSIZE("Entity::Radius", sizeof(m_fRadius));
 	}
@@ -882,8 +844,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		static string strName;	
 		pkNetPacket->Read_Str(strName);
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_NAME))
-			m_strName = strName;
+		m_strName = strName;
 		
 		LOGSIZE("Entity::Name", strlen(szStr) + 1);
 	}	
@@ -897,15 +858,11 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Read_Str(strType);
 		pkNetPacket->Read( ucIcon );
 		
-		if(!GetNetIgnoreFlag(NETUPDATEFLAG_TYPE))
-		{
-			m_strType = strType;
-			m_ucIcon	 = ucIcon;
+		m_strType = strType;
+		m_ucIcon	 = ucIcon;
 		
-			if(m_ucIcon != 0 && m_pkZeroFps->m_bEditMode)
-				AddProxyProperty("P_EditIcon");
-		
-		}
+		if(m_ucIcon != 0 && m_pkZeroFps->m_bEditMode)
+			AddProxyProperty("P_EditIcon");
 		
 		LOGSIZE("Entity::Type", strlen(szStr) + 1);
 	}		
@@ -1088,7 +1045,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	}
 	
 	//reset alla update flags for this Entity
-	ResetAllNetUpdateFlags();
+	ResetAllNetFlags();
 }
 
 /**	\brief	Save Entity.
@@ -1674,9 +1631,10 @@ Matrix4 Entity::GetLocalOriM()
 void	Entity::SetNrOfConnections(int iConNR)
 {
 	m_kNetUpdateFlags.resize(iConNR);
-	ResetAllNetUpdateFlags();
-	
+	m_kNetIgnoreFlags.resize(iConNR);
 	m_kExistOnClient.resize(iConNR);
+
+	ResetAllNetFlags();
 }
 
 void	Entity::SetExistOnClient(int iConID,bool bStatus)
@@ -1696,11 +1654,16 @@ bool	Entity::GetExistOnClient(int iConID)
 	return m_kExistOnClient[iConID];
 }
 
-void	Entity::ResetAllNetUpdateFlags()
+void	Entity::ResetAllNetFlags()
 {
 	for(int i = 0;i<m_kExistOnClient.size();i++)
 		m_kExistOnClient[i] = false;
 
+	for(unsigned int i = 0;i<m_kNetIgnoreFlags.size();i++)
+	{
+		m_kNetIgnoreFlags[i].reset();	//reset all bits to false
+	}
+		
 
 	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
@@ -1715,10 +1678,12 @@ void	Entity::ResetAllNetUpdateFlags()
 	}
 }
 
-void	Entity::ResetAllNetUpdateFlags(int iConID)
+void	Entity::ResetAllNetFlags(int iConID)
 {
 	m_kExistOnClient[iConID] = false;	
-	
+
+	m_kNetIgnoreFlags[iConID].reset();	//reset all bits to false
+		
 	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
 	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
 
@@ -1727,12 +1692,15 @@ void	Entity::ResetAllNetUpdateFlags(int iConID)
 	{
 		m_akPropertys[j]->SetNetUpdateFlag(iConID,true);
 	}	
+	
 }
 
-void	Entity::ResetAllNetUpdateFlagsAndChilds(int iConID)
+void	Entity::ResetAllNetFlagsAndChilds(int iConID)
 {
 	m_kExistOnClient[iConID] = false;
 
+	m_kNetIgnoreFlags[iConID].reset();	//reset all bits to false
+	
 	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
 	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
 	
@@ -1745,7 +1713,7 @@ void	Entity::ResetAllNetUpdateFlagsAndChilds(int iConID)
 	//reset all childs
 	for(unsigned int i = 0;i<m_akChilds.size();i++)
 	{
-		m_akChilds[i]->ResetAllNetUpdateFlagsAndChilds(iConID);
+		m_akChilds[i]->ResetAllNetFlagsAndChilds(iConID);
 	}	
 }
 
@@ -2554,6 +2522,59 @@ int GetLocalVector(lua_State* pkLua)
 }
 
 
+/**	\fn SetObjectRotFromObjectLua( TargetEntity, SourceEntity)
+ 	\relates SIEntity
+   \brief Sets the rotation of an entity to that of the seccond entity
+   \param TargetEntity Entity to set rotation on
+   \param SourceEntity Entity to take rotation from
+*/
+int SetObjectRotToIdentityLua(lua_State* pkLua)
+{
+	if(!g_pkScript->VerifyArg(pkLua, 1))
+		return 0;
+
+	if(Entity* pkTargetEnt = GetEntityPtr(pkLua, 0))
+	{
+		static Matrix3 kIdentity;
+		kIdentity.Identity();
+		
+		pkTargetEnt->SetLocalRotM(kIdentity);
+	}
+	else
+	{
+		cout<<"WARNING, missing entity when calling SetObjectRotToIdentityLua"<<endl;
+	}
+
+	return 1;
+}
+
+
+/**	\fn SetObjectRotFromObjectLua( TargetEntity, SourceEntity)
+ 	\relates SIEntity
+   \brief Sets the rotation of an entity to that of the seccond entity
+   \param TargetEntity Entity to set rotation on
+   \param SourceEntity Entity to take rotation from
+*/
+int SetObjectRotFromObjectLua(lua_State* pkLua)
+{
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
+	Entity* pkTargetEnt = GetEntityPtr(pkLua, 0);	
+	Entity* pkSourceEnt = GetEntityPtr(pkLua, 1);	
+		
+	if(pkTargetEnt && pkSourceEnt)
+	{
+		pkTargetEnt->SetLocalRotM(pkSourceEnt->GetLocalRotM());
+	}
+	else
+	{
+		cout<<"WARNING, missing entity when calling SetObjectRotFromObjectLua"<<endl;
+	}
+
+	return 1;
+}
+
 
 /**	\fn SetObjectPos( Entity, Pos)
  	\relates SIEntity
@@ -2770,6 +2791,9 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetLocalString",		SI_Entity::SetLocalString);
 
 	g_pkScript->ExposeFunction("SetObjectPos",		SI_Entity::SetObjectPosLua);
+	g_pkScript->ExposeFunction("SetObjectRotFromObject",		SI_Entity::SetObjectRotFromObjectLua);
+	g_pkScript->ExposeFunction("SetObjectRotToIdentity",		SI_Entity::SetObjectRotToIdentityLua);
+	
 	//g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
 	g_pkScript->ExposeFunction("GetObjectPos",		SI_Entity::GetObjectPosLua);
 	g_pkScript->ExposeFunction("GetObjectRot",		SI_Entity::GetObjectRotLua);

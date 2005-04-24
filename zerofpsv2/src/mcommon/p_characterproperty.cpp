@@ -904,6 +904,7 @@ void P_CharacterProperty::MakeAlive()
 	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
 	{
 		pkTcs->SetTestType(E_SPHERE);
+		pkTcs->SetStatic(false);
 	}	
 	
 	
