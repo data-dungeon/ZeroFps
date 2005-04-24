@@ -325,7 +325,6 @@ void P_CharacterControl::DoAnimation(const string& strAnim)
 	
 		if(strAnim.empty())
 		{
-			cout<<"blub"<<endl;
 			pkMad->SetAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str(), 0);
 			pkMad->SetNextAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str());	
 		}
@@ -673,6 +672,27 @@ namespace SI_P_CharacterControl
 		return 0;
 	}	
 	
+	int IsMovementEnabledLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua, 1))
+			return 0;
+		
+		int id;		
+		g_pkScript->GetArgInt(pkLua, 0, &id);
+
+		int iReturnValue = 0;
+				
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				if(pkCC->GetEnabled())
+					iReturnValue = 1;
+
+		g_pkScript->AddReturnValue( pkLua, iReturnValue );
+		
+							
+		return 1;		
+	}
+	
 	int MovementEnabledLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -764,6 +784,7 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
 	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);
 	
+	g_pkScript->ExposeFunction("IsMovementEnabled",	SI_P_CharacterControl::IsMovementEnabledLua);
 	g_pkScript->ExposeFunction("MovementEnabled",	SI_P_CharacterControl::MovementEnabledLua);
 	g_pkScript->ExposeFunction("LockCharacter",		SI_P_CharacterControl::LockCharacterLua);
 	g_pkScript->ExposeFunction("DoEmote",				SI_P_CharacterControl::DoEmoteLua);
