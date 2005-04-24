@@ -19,7 +19,7 @@ P_Container::P_Container()
 	m_iSide=PROPERTY_SIDE_SERVER;
 
 	m_bNetwork = 	false;
-	m_iVersion = 	4;
+	m_iVersion = 	5;
 
 	m_bFirstUpdate = true;
 	
@@ -29,6 +29,8 @@ P_Container::P_Container()
 	m_iMaxItems 			= 0;
 	m_iContainerType		= eNormal;
 	m_bEquip					= false;
+	m_bWeaponHand			= false;
+	m_bDisabled				= false;
 	m_kItemTypes.clear();
 	
 	SetSize(4,4);		
@@ -320,6 +322,9 @@ bool P_Container::GetItemPos(int iID,int& iRX,int& iRY)
 
 bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 {
+	if(m_bDisabled)
+		return false;
+	
 	P_Item* pkItem = NULL;
 		
 	//get item
@@ -381,11 +386,24 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 		return false;
 	}
 	
-	//cout<<"setting item to new location"<<endl;
+	//check if we can use a twohanded weapon at the moment
+	if(pkItem->m_bTwoHanded)
+		if(m_bWeaponHand)
+			if(!SetupTwohanded(true))
+			{
+				cout<<"need to have both hands free to eqip that"<<endl;
+				return false;
+			}
+			
 		
 	//get current container, if any, and clear item from its current position
 	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
 	{
+		//uneqip twohanded
+		if(pkItem->m_bTwoHanded)		
+			if(pkContainer->GetWeaponHand())
+				pkContainer->SetupTwohanded(false);
+	
 		pkContainer->ClearItem(pkItemEnt->GetEntityID());
 	}
 	
@@ -450,6 +468,41 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 	
 	
 	return true;
+}
+
+bool P_Container::SetupTwohanded(bool bEnable)
+{
+	cout<<"setting up twohanded"<<endl;
+
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
+	{
+		if(P_Container* pkCon = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(pkCP->m_iLeftHand,"P_Container"))
+		{
+			return pkCon->SetDisabled(bEnable);
+		}
+	}
+	
+	return false;
+}
+
+bool P_Container::SetDisabled(bool bDisabled)
+{
+	if(bDisabled)
+	{
+		for(int i = 0;i<m_kSlots.size();i++)
+		{
+			if(m_kSlots[i] != -1)
+				return false;
+		}
+		
+		m_bDisabled = true;
+		return true;
+	}
+	else
+	{
+		m_bDisabled = false;
+		return true;
+	}
 }
 
 bool P_Container::IsFree(int iX,int iY,int iW,int iH,int iSelfID)
@@ -686,6 +739,8 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_bStaticOwner);	
 	pkPackage->Write(m_bEquip);	
 	
+	pkPackage->Write(m_bWeaponHand);
+	
 	pkPackage->Write_Str(m_strAttachToJoint);	
 	
 	
@@ -699,7 +754,35 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 
 void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	if(iVersion == 4)
+	if(iVersion == 5)
+	{
+		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+		
+		pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
+		pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
+	
+		SetSize(m_iSizeX,m_iSizeY);
+	
+		pkPackage->Read(m_iContainerType);
+		pkPackage->Read(m_bStaticOwner);
+		pkPackage->Read(m_bEquip);
+
+		pkPackage->Read(m_bWeaponHand);		
+				
+		pkPackage->Read_Str(m_strAttachToJoint);
+	
+		//load types
+		int iTypes;
+		pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+		m_kItemTypes.clear();
+		for(int i = 0 ;i < iTypes;i++)
+		{
+			int iT;
+			pkPackage->Read(&iT,sizeof(iT),1);				
+			m_kItemTypes.push_back(iT);
+		}				
+	}
+	else if(iVersion == 4)
 	{
 		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
 		

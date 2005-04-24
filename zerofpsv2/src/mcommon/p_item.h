@@ -18,7 +18,7 @@ enum MCOMMON_API eMLItemTypes
 	
 	MLITEM_HEAD = 		1,
 	MLITEM_BODY = 		2,
-	MLITEM_HAND = 		3,
+	MLITEM_WEAPONHAND=3,
 	MLITEM_RING =		4,
 	MLITEM_NECKLACE = 5,
 	MLITEM_BRACERS=	6,
@@ -26,6 +26,7 @@ enum MCOMMON_API eMLItemTypes
 	MLITEM_BELT = 		8,
 	MLITEM_FEETS =		9,
 	MLITEM_CAPE =		10,
+	MLITEM_SHIELDHAND=11,
 };
 
 
@@ -60,6 +61,8 @@ class MCOMMON_API P_Item: public Property
 		
 		float		m_fWeight;
 		int		m_iValue;
+		
+		bool		m_bTwoHanded;
 		
 		//container
 		int		m_iInContainerID;					//last known container this item was in, if -1 it was not in any container

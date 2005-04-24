@@ -1124,7 +1124,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
-				pkCon->AddItemType(MLITEM_HAND);
+				pkCon->AddItemType(MLITEM_SHIELDHAND);
 				pkCon->SetJoint("equip_left");
 				pkCon->SetEquip(true);
 				
@@ -1138,9 +1138,10 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
-				pkCon->AddItemType(MLITEM_HAND);
+				pkCon->AddItemType(MLITEM_WEAPONHAND);
 				pkCon->SetJoint("equip_right");
 				pkCon->SetEquip(true);
+				pkCon->SetWeaponHand(true);
 				
 		//eGloves
 		pkContainer = m_pkEntityMan->CreateEntity();

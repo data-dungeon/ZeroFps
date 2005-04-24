@@ -12,7 +12,7 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_bNetwork = true;
-	m_iVersion = 8;
+	m_iVersion = 9;
 
 	// ITEM STUFF
 	m_strBaseName=	"misc";
@@ -27,6 +27,8 @@ P_Item::P_Item()
 
 	m_fWeight	=	1;
 	m_iValue		=	1;
+	
+	m_bTwoHanded=	false;
 	
 	//item info
 	m_strInfo = 	"Nothing is known about this item";
@@ -133,6 +135,7 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_iInContainerPosX);
 	pkPackage->Write(m_iInContainerPosY);
 	
+	pkPackage->Write(m_bTwoHanded);
 	
 	pkPackage->Write_Str(m_strBuffName);
 	
@@ -313,13 +316,45 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_kItemStats.Load(pkPackage);
 			
 			break;
-		}							
+		}	
+		
+		case 9:
+		{
+			pkPackage->Read_Str(m_strBaseName);
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);	
+		
+			pkPackage->Read(m_bTwoHanded);									
+			
+			pkPackage->Read_Str(m_strBuffName);			
+		
+			pkPackage->Read_Str(m_strInfo);
+			pkPackage->Read_Str(m_strImage);			
+			
+			pkPackage->Read(m_fWeight);
+			pkPackage->Read(m_iValue);			
+			
+			m_kItemStats.Load(pkPackage);
+			
+			break;
+		}			
 	}
 }
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(13);
+	vector<PropertyValues> kReturn(14);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -374,7 +409,9 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[12].iValueType = VALUETYPE_STRING;
 	kReturn[12].pkValue    = &m_strBaseName;			
 				
-	
+	kReturn[13].kValueName = "twohanded";
+	kReturn[13].iValueType = VALUETYPE_BOOL;
+	kReturn[13].pkValue    = &m_bTwoHanded;		
 	
 	return kReturn;
 }

@@ -227,10 +227,10 @@ void EquipmentDlg::HighlightSlot(int iItemType)
 	{
 		case MLITEM_HEAD: m_vkHighLightslots.push_back(&m_kHead); break;
 		case MLITEM_BODY: m_vkHighLightslots.push_back(&m_kBody); break;
-		case MLITEM_HAND: 
-			m_vkHighLightslots.push_back(&m_kRightHand); 
-			m_vkHighLightslots.push_back(&m_kLeftHand); 
-			break;
+		case MLITEM_WEAPONHAND: 
+			m_vkHighLightslots.push_back(&m_kRightHand); break;
+		case MLITEM_SHIELDHAND:
+			m_vkHighLightslots.push_back(&m_kLeftHand); break;
 		case MLITEM_RING:
 			m_vkHighLightslots.push_back(&m_kRing1); 
 			m_vkHighLightslots.push_back(&m_kRing2); 
