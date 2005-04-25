@@ -638,6 +638,7 @@ void P_CharacterProperty::SetupCharacterStats()
 {
 	m_kCharacterStats.AddStat("Level"			,0,0);
 	m_kCharacterStats.AddStat("Experience"		,0,0);
+	m_kCharacterStats.AddStat("PrevLevel"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
 	
 	m_kCharacterStats.AddStat("Speed"			,0,0);
@@ -1529,6 +1530,13 @@ void P_CharacterProperty::SendStats()
 	
 	kNp.Write(m_kCharacterStats.GetTotal("Mana"));
 	kNp.Write(m_kCharacterStats.GetTotal("ManaMax"));
+	
+	kNp.Write_Str(m_strName);
+	kNp.Write(m_kCharacterStats.GetTotal("Level"));	
+	kNp.Write(m_kCharacterStats.GetTotal("Experience"));	
+	kNp.Write(m_kCharacterStats.GetTotal("PrevLevel"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("NextLevel"));	
+	
 	
 	//send package
 	kNp.TargetSetClient(m_iConID);

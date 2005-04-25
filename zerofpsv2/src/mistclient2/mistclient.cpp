@@ -1337,6 +1337,11 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fHealthMax;
 			float	fMana;
 			float fManaMax;
+			string strName;
+			float fLevel;
+			float fXP;
+			float fPrevLevel;
+			float fNextLevel;
 			
 			pkNetMessage->Read(fStamina);
 			pkNetMessage->Read(fStaminaMax);
@@ -1347,23 +1352,47 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fMana);
 			pkNetMessage->Read(fManaMax);
 									
-// 			cout<<"stamina:"<<fManaMax<<"  "<<fMana<<endl;
+			pkNetMessage->Read_Str(strName);
 			
+			pkNetMessage->Read(fLevel);
+			pkNetMessage->Read(fXP);
+			pkNetMessage->Read(fPrevLevel);
+ 			pkNetMessage->Read(fNextLevel);
+			
+			//level and xp
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatLevel"))
+				pkP->SetText((char*)IntToString(int(fLevel)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatXP"))
+				pkP->SetText(((char*)IntToString(int(fXP)).c_str()));
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatNextLevel"))
+				pkP->SetText((char*)IntToString(int(fNextLevel)).c_str());
 
+			//XP BAR
+			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StatXPBar"))
+			{
+				pkPB->SetRange(0,int(fNextLevel - fPrevLevel));
+				pkPB->SetPos(int(fXP - fPrevLevel));				
+			}
+							
+			//name
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatName"))
+				pkP->SetText((char*)strName.c_str());
 
+			//life
 			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("LifeProgressbar"))
 			{
 				pkPB->SetRange(0,int(fHealthMax));
 				pkPB->SetPos(int(fHealth));				
 			}
 					
+			//mana
 			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("ManaProgressbar"))
 			{
 				pkPB->SetRange(0,int(fManaMax));
 				pkPB->SetPos(int(fMana));				
 			}			
 				
-			//update stamina bar
+			//stamina
 			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StaminaProgressbar"))
 			{
 				pkPB->SetRange(0,int(fStaminaMax));
