@@ -1347,21 +1347,29 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fMana);
 			pkNetMessage->Read(fManaMax);
 									
-			//cout<<"stamina:"<<fStamina<<endl;
+// 			cout<<"stamina:"<<fManaMax<<"  "<<fMana<<endl;
 			
-			//update stamina bar
-			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("ManaProgressbar"))
-			{
-				pkPB->SetRange(0,int(fStaminaMax));
-				pkPB->SetPos(int(fStamina));				
-			}
+
 
 			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("LifeProgressbar"))
 			{
 				pkPB->SetRange(0,int(fHealthMax));
 				pkPB->SetPos(int(fHealth));				
 			}
-						
+					
+			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("ManaProgressbar"))
+			{
+				pkPB->SetRange(0,int(fManaMax));
+				pkPB->SetPos(int(fMana));				
+			}			
+				
+			//update stamina bar
+			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StaminaProgressbar"))
+			{
+				pkPB->SetRange(0,int(fStaminaMax));
+				pkPB->SetPos(int(fStamina));				
+			}			
+			
 			break;		
 		}
 				
