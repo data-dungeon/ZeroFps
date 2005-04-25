@@ -1,0 +1,71 @@
+Mistlands - Manual: Client
+********************************************************************************
+
+### Before you can play
+You need a server to connect to. Look in server to find out how to start one.
+
+### How to connect to the server
+Start the mistclient application.
+There are then two ways of connecting to a server. The fastest one is doing it 
+from the consol by typing connect ipnummer loginname password, ex. connect 
+192.168.0.100 MyName MyPassword in the console. The other way is using the gui.
+Press start and then the Add button to add a new server. Then select a server 
+from the list and press connect. Now you will be told to enter a playername and 
+a password. When you press Ok after typing both name and password, the client 
+should connect to the chosen server. The password you enter is the userpassword
+for your character. The password is saved the first time you enter the server, 
+and the second time you enter you must chose the same password. 
+
+### Controls:
+Character movement
+ A - move left
+ D - move right
+ W - move foward
+ S - move back
+ shift - jump
+ ctrl - Hold down to walk
+ q - Turn left
+ e - turn righteq
+
+Camera controls
+ x - Change to frontview of character
+ Mouse scroll - zoom in/out
+ RMB+Mouse - rotate camera
+
+Other
+ Left click - interact with object
+ Right click - Bring up action meny on object, if it has any
+ Space - mouselook
+ I - open/closes inventory screen
+ C - open/closes equip screen
+ Enter - Write something in chatbox (click enter again to send it).
+
+
+Game controls
+ ESC - Menu
+ § or ` - open console
+ F9 - Screenshot 
+ F10 - capture/release mouse
+ F11 - Fullscreen (linux only)
+
+### Picking up items
+To pick up an item, left click on it.
+
+### Dropping items
+Do drop an item, drag it outside the gui.
+
+### Action meny
+The actionmeny appears when clicking and holdning down the right mouse button
+on some objects. For example, when right clicking on a potion, three icons 
+appear: look, dring and pickup. Letting go of the mousebutton while the mouse 
+is on one of the buttons, triggers the action. The action meny always appear 
+when more than one action can be performed with an object.
+
+### Open containers
+To open or close an container in the inventory, right click on it.
+To open a container in the world, chose open from the action meny when right
+clicking on it.
+
+### Using objects, items and characters
+Usually just left click on a object, or rightclick on it and chose an event on 
+the action menu. Items can't be used from the inventory yet.

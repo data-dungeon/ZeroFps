@@ -1,0 +1,14 @@
+Mistlands - Manual: Server
+********************************************************************************
+This document describes how to use the server (mistserver.exe) in Mistlands.
+
+
+### How to start a server?
+Just start the mistserver application in the /bin directory, and it will set up 
+everything itself. Minimize it or type "set r_render 0" in the console, to 
+prevent the application from rendering and using CPU.
+
+### How do i load/save a world?
+Take down the console with the ½ key, the one above your TAB key and below you 
+ESC key. Use load levelname and save levelname to load and save levels.
+

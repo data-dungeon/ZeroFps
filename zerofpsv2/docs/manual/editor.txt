@@ -1,0 +1,10 @@
+Mistlands - Manual: Editor
+********************************************************************************
+This document describes how to use the editor (zeroed.exe) in Mistlands.
+
+### How to connect with the editor
+Type "connect ipnumber" in the console. All editor functions doens't work over 
+the network yet. When connected to a server, the world is saved when the server
+quits the application from the console. Typing save in the editor won't save 
+the world.
+

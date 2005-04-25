@@ -1,0 +1,10 @@
+Mistlands - Manual: Index
+********************************************************************************
+
+### What to all the diffrent programs in bin do?
+mistserver		This is the server that runs the game.
+mistclient		Use this to connect to a server and play the game.
+zeroed			Editor for the game, use it alone or connect to a server.
+madview			Used to view the modells used in the game.
+madmake			Tool to make modells for the game.
+zguied			Editor for gui's used in the game.
