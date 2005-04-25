@@ -1536,7 +1536,18 @@ void P_CharacterProperty::SendStats()
 	kNp.Write(m_kCharacterStats.GetTotal("Experience"));	
 	kNp.Write(m_kCharacterStats.GetTotal("PrevLevel"));	
  	kNp.Write(m_kCharacterStats.GetTotal("NextLevel"));	
-	
+
+ 	kNp.Write(m_kCharacterStats.GetTotal("Strength"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("Dexterity"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("Vitality"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("Intelligence"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("Wisdom"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("Charisma"));	
+
+ 	kNp.Write(m_kCharacterStats.GetTotal("Attack"));	
+ 	kNp.Write(m_kCharacterStats.GetTotal("Defense"));	
+
+			
 	
 	//send package
 	kNp.TargetSetClient(m_iConID);

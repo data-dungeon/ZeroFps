@@ -1343,22 +1343,58 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fPrevLevel;
 			float fNextLevel;
 			
+			float fStrength;
+			float fDexterity;
+			float fVitality;
+			float fIntelligence;
+			float fWisdom;
+			float fCharisma;
+			
+			float fAttack;
+			float fDefense;
+			
+			
+			
 			pkNetMessage->Read(fStamina);
 			pkNetMessage->Read(fStaminaMax);
-
 			pkNetMessage->Read(fHealth);
 			pkNetMessage->Read(fHealthMax);
-
 			pkNetMessage->Read(fMana);
-			pkNetMessage->Read(fManaMax);
-									
-			pkNetMessage->Read_Str(strName);
-			
+			pkNetMessage->Read(fManaMax);									
+			pkNetMessage->Read_Str(strName);			
 			pkNetMessage->Read(fLevel);
 			pkNetMessage->Read(fXP);
 			pkNetMessage->Read(fPrevLevel);
  			pkNetMessage->Read(fNextLevel);
 			
+ 			pkNetMessage->Read(fStrength);
+ 			pkNetMessage->Read(fDexterity);
+ 			pkNetMessage->Read(fVitality);
+ 			pkNetMessage->Read(fIntelligence);
+ 			pkNetMessage->Read(fWisdom);
+ 			pkNetMessage->Read(fCharisma);
+ 			pkNetMessage->Read(fAttack);
+ 			pkNetMessage->Read(fDefense);
+
+			//basic stats
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatStrength"))
+				pkP->SetText((char*)IntToString(int(fStrength)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatDexterity"))
+				pkP->SetText((char*)IntToString(int(fDexterity)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatVitality"))
+				pkP->SetText((char*)IntToString(int(fVitality)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatIntelligence"))
+				pkP->SetText((char*)IntToString(int(fIntelligence)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatWisdom"))
+				pkP->SetText((char*)IntToString(int(fWisdom)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatCharisma"))
+				pkP->SetText((char*)IntToString(int(fCharisma)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatAttack"))
+				pkP->SetText((char*)IntToString(int(fAttack)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatDefense"))
+				pkP->SetText((char*)IntToString(int(fDefense)).c_str());
+							
+						
 			//level and xp
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatLevel"))
 				pkP->SetText((char*)IntToString(int(fLevel)).c_str());
