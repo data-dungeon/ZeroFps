@@ -49,6 +49,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bShowMenulevel 		= 	false;
 	m_bQuickStart 			=	false;
 	m_bTargetRotate		=	false;
+	m_bLoginKeepAlive    =  false;
+	m_fPingDelay			=  2;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
 	m_strMenuMusic			=	"";//data/music/2nd_maintheme.ogg";
@@ -395,6 +397,16 @@ void MistClient::OnIdle()
 	}
 
 	UpdateBuffIconList();
+
+	if(m_bLoginKeepAlive)
+	{
+		m_fPingDelay -= this->m_pkZeroFps->GetFrameTime();
+		if(m_fPingDelay < 0.0)
+		{
+			m_pkNetwork->Ping();
+			m_fPingDelay = 2;
+		}
+	}
 
 // 	if(m_iCharacterID == -1) 
 // 	{
@@ -1663,7 +1675,7 @@ void MistClient::OnClientConnected()
 	ShowWnd("CharGen_SelectCharWnd", true, true, true);
 	m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);	
 	m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));	
-
+	m_bLoginKeepAlive = true;
 
 	//load ingame gui	
 	//LoadInGameGui();
@@ -1681,7 +1693,7 @@ void MistClient::OnDisconnect(int iConnectionID)
 		ShowWnd("CharGen_SelectCharWnd", false);
 
 	m_iCharacterID = -1;
-
+	m_bLoginKeepAlive = false;
 	cout << "NOOOOOOOOOOOO im disconnected" << endl;
 }
 
@@ -2130,6 +2142,7 @@ void MistClient::RegBeginPlay(string strChar)
 	kNp.Write_Str( strChar );
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);
+	m_bLoginKeepAlive = false;
 }
 
 void MistClient::DeleteChar(string strChar)

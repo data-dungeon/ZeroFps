@@ -976,6 +976,19 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			// Server removes client, client stops sim.
 			break;
 
+		case ZF_NETCONTROL_PING:
+			kNetPRespons.Clear();
+			kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+			kNetPRespons.Write((unsigned char) ZF_NETCONTROL_PONG);
+			kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
+			SendRaw(&kNetPRespons);
+			break;
+
+		case ZF_NETCONTROL_PONG:
+			// 
+			cout << "Pong" << endl;
+			break;
+
 		case ZF_NETCONTROL_NOP:
 			// 
 			break;
@@ -1452,7 +1465,21 @@ void NetWork::SetGameName(char* szGameName)
    strcpy(m_szGameName, szGameName);
 }
 
+void NetWork::Ping()
+{
+	NetPacket kNetPRespons;
+	kNetPRespons.Clear();
+	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_PING);
 
+	for(int i=0; i<m_RemoteNodes.size(); i++)
+	{
+		if(m_RemoteNodes[i]->m_eConnectStatus == NETSTATUS_DISCONNECT)
+			continue;
+		kNetPRespons.m_kAddress = m_RemoteNodes[i]->m_kAddress;
+		SendRaw(&kNetPRespons);
+	}
+}
 
 
 

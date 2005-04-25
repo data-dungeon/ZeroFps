@@ -79,7 +79,9 @@ class MistClient :public Application, public ZGuiApp {
 		string		m_strQuickStartAddress;	
 		bool			m_bGuiCapture;
 		string		m_strLoginName, m_strLoginPW;
-		
+		bool			m_bLoginKeepAlive;			// If we are in login menu we send to keep connection open.
+		float			m_fPingDelay;
+
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
 
 		//gui

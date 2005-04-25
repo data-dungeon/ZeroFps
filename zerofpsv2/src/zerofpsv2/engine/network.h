@@ -37,6 +37,8 @@ using namespace std;
 #define ZF_NETCONTROL_ACKREL			15	// Ack that we got a rel pack.	
 #define ZF_NETCONTROL_SERVERLISTPAGE	16	// Info from masterserver	
 #define ZF_NETCONTROL_SERVERINFO		17	// Info from a server.	
+#define ZF_NETCONTROL_PING				18	
+#define ZF_NETCONTROL_PONG				19		
 
 #define MAX_NET_CLIENTS					4		// Max number of clients (nodes).
 #define ZF_NET_NOCLIENT					-1		// ID for a non client.
@@ -298,6 +300,8 @@ public:
 	void RequestServerInfo(IPaddress kIp);
 	void SendServerInfo(IPaddress kIp);
 	void GotServerInfo(NetPacket* pkNetPacket);
+
+	void Ping();
 
 	friend class NetPacket;
 	friend class EntityManager;	
