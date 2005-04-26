@@ -650,6 +650,8 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("PrevLevel"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
 	
+	m_kCharacterStats.AddStat("ExperienceValue",0,0);
+	
 	m_kCharacterStats.AddStat("Speed"			,0,0);
 	m_kCharacterStats.AddStat("Jump"				,0,0);
 	
@@ -946,8 +948,11 @@ void P_CharacterProperty::OnDeath()
 		{
 			//only give plyer characters XP
 			if(pkKiller->GetIsPlayerCharacter())
-			{		
-				int iXP = 1050;		
+			{
+				float fLevelMod = 1.5;
+				int iXP =	 m_kCharacterStats.GetTotal("ExperienceValue") * 
+								(m_kCharacterStats.GetTotal("Level") * fLevelMod );
+								
 				pkKiller->GiveExperience(iXP);				
 			}
 		}		
@@ -1000,11 +1005,11 @@ void P_CharacterProperty::GiveExperience(int iXP)
 	SendTextToClient("You got "+IntToString(iXP)+" XP");
 	
 	m_kCharacterStats.ChangeStat("Experience",iXP);
-	
-	
+		
 	if(m_kCharacterStats.GetTotal("Experience") >= m_kCharacterStats.GetTotal("NextLevel"))
 	{
-		float fLevelMod = 2.0;	
+		float fLevelMod = 2.5;	
+		m_kCharacterStats.SetStat("LastLevel",m_kCharacterStats.GetTotal("NextLevel"));
 		m_kCharacterStats.SetStat("NextLevel",m_kCharacterStats.GetTotal("NextLevel") * fLevelMod);
 		m_kCharacterStats.ChangeStat("Level",1);
 		
@@ -1014,7 +1019,7 @@ void P_CharacterProperty::GiveExperience(int iXP)
 
 void P_CharacterProperty::OnLevelUP()
 {
-	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV(),3);
+// 	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV(),3);
 	SendTextToClient("You are now level "+IntToString(m_kCharacterStats.GetTotal("Level")));	
 
 	//tillfälligt test

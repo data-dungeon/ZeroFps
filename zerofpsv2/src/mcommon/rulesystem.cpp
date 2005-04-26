@@ -106,7 +106,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		float fRandA = Randomf(pkStatsA->GetTotal("Attack")  );
 		float fRandD = Randomf(pkStatsD->GetTotal("Defense") );
 	
-		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
+// 		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
 		
 		if(fRandA <= fRandD)
 		{
