@@ -152,7 +152,7 @@ void MistServer::Init()
 	//m_pkNetwork->SetNetSpeed(4000);	
 	
 	//set tracker los
-	m_pkEntityManager->SetTrackerLos(25);
+	m_pkEntityManager->SetTrackerLos(30);
 	
 	
 	//setup physics
