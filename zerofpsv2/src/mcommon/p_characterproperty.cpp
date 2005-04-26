@@ -213,9 +213,9 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 			
 		if(bOk == false)
 		{
-			cout<<"ned one of the folowing items:"<<endl;
-			for(int i = 0;i<m_kBaseTypes.size();i++)
-				cout<< m_kBaseTypes[i]<<endl;
+			//cout<<"ned one of the folowing items:"<<endl;
+			//for(int i = 0;i<m_kBaseTypes.size();i++)
+			//	cout<< m_kBaseTypes[i]<<endl;
 			
 			return 7;			
 		}
@@ -224,10 +224,18 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	//character target  check if a character is targeted
 	if(m_iTargetType == eCHARACTER_TARGET)
 	{
-		if(!m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty"))
+		//get target character property
+		P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty");
+	
+		//does target have a character property?
+		if(!pkCP)
 			return 3;
-						
+		else 			//yes character have a characterproperty, if this is an offensive skill, check that target is alive
+			if(m_iSkillType==eOFFENSIVE && pkCP->IsDead())
+				return 3;		
+			
 	 
+		//Do rotation and distance check
 		if(Entity* pkOwner = m_pkEntityManager->GetEntityByID(m_iOwnerID))
 		{
 			if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(iTargetID))
@@ -806,8 +814,7 @@ void P_CharacterProperty::UpdateStats()
 	
 		
 		//stamina
-		int iDrain = 0;
-		
+		int iDrain = 0;		
 		switch(pkCC->GetCharacterState())
 		{
 			case eWALKING: iDrain = m_kCharacterStats.GetTotal("StaminaRegen"); break;
@@ -815,16 +822,6 @@ void P_CharacterProperty::UpdateStats()
 			case eJUMPING: iDrain = 10; break;
 			case eSWIMMING: iDrain = 4; break;		
 		}
-		
-//  		if(pkCC->GetCharacterState(eWALKING))
-//  			iDrain = 2;		
-//  		if(pkCC->GetCharacterState(eRUNNING))
-//  			iDrain = 5;
-//  		if(pkCC->GetCharacterState(eJUMPING))
-//  			iDrain = 10;
-//  		if(pkCC->GetCharacterState(eSWIMMING))
-//  			iDrain = 4;
-
 			
 		string strStamina("Stamina");		
 		m_kCharacterStats.ChangeStat(strStamina,-iDrain);
@@ -852,6 +849,13 @@ void P_CharacterProperty::UpdateStats()
 			m_kCharacterStats.SetStat(strMana,0);
 				
 			
+		//setup basic damage, and attack
+		m_kCharacterStats.SetStat("Attack",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
+		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
+			
+		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
+		m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );
+		
 		SendStats();
 	}
 

@@ -105,7 +105,7 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 
 void Tcs::AddTrigger(P_TcsTrigger* pkPTcsTrigger)
 {
-	cout<<"adding trigger"<<endl;
+// 	cout<<"adding trigger"<<endl;
 
  	//check so its not added twice
 	for(unsigned int i=0;i<m_kTriggers.size();i++)

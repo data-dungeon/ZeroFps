@@ -112,11 +112,11 @@ void MistServer::CreateEditCameras()
 	m_pkCamera->m_bForceFullScreen = true;
 	
 	
-	if(m_pkActiveCameraObject->GetUseZones())
-		cout<<"using zones"<<endl;
-	else
-		cout<<"not using zones"<<endl;
-	
+// 	if(m_pkActiveCameraObject->GetUseZones())
+// 		cout<<"using zones"<<endl;
+// 	else
+// 		cout<<"not using zones"<<endl;
+// 	
 }
 
 

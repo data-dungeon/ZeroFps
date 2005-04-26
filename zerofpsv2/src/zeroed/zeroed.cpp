@@ -1393,16 +1393,15 @@ Entity* ZeroEd::GetTargetObject()
 		if(kObjects[i] == m_pkCameraObject[1])	continue;
 		if(kObjects[i] == m_pkCameraObject[2])	continue;
 		if(kObjects[i] == m_pkCameraObject[3])	continue;
-		
+
+		if(kObjects[i] == m_pkZoneMarkerEntity) continue;
+				
 		if(kObjects[i]->IsZone())
 			continue;
 		
 		if(kObjects[i]->GetEntityID() <100000)
 			continue;
-		
-// 		if(kObjects[i]->GetName() == "ZoneObject")
-// 			continue;
-		
+							
 		if(kObjects[i]->GetName() == "StaticEntity")
 			continue;
 		
