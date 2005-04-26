@@ -497,7 +497,7 @@ void EquipmentDlg::OnDropItem(int mx, int my)
 	}
 
 	// Show normal cursor again.
-	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
+	float w = g_kMistClient.GetScaleX()*32.0f, h = g_kMistClient.GetScaleY()*32.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
 

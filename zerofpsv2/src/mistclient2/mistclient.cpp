@@ -1875,6 +1875,9 @@ Entity* MistClient::GetTargetObject()
 		
 		//-------------
 		
+// 		bool bSphereOnly = false;
+// 		if(kObjects[i]->GetProperty("P_CharacterProperty"))
+// 			bSphereOnly = true;
 		
 		
 		//get mad property and do a linetest		
