@@ -1365,6 +1365,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fAttack;
 			float fDefense;
 			
+			float fMinDamage;
+			float fMaxDamage;
 			
 			
 			pkNetMessage->Read(fStamina);
@@ -1387,7 +1389,12 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
  			pkNetMessage->Read(fCharisma);
  			pkNetMessage->Read(fAttack);
  			pkNetMessage->Read(fDefense);
+ 			
+			pkNetMessage->Read(fMinDamage);
+ 			pkNetMessage->Read(fMaxDamage);
 
+			
+			
 			//basic stats
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatStrength"))
 				pkP->SetText((char*)IntToString(int(fStrength)).c_str());
@@ -1401,10 +1408,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkP->SetText((char*)IntToString(int(fWisdom)).c_str());
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatCharisma"))
 				pkP->SetText((char*)IntToString(int(fCharisma)).c_str());
+			
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatAttack"))
 				pkP->SetText((char*)IntToString(int(fAttack)).c_str());
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatDefense"))
 				pkP->SetText((char*)IntToString(int(fDefense)).c_str());
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatDamage"))
+				pkP->SetText( (char*) (IntToString(int(fMinDamage))+string(" - ")+IntToString(int(fMaxDamage)) ).c_str()  );
 							
 						
 			//level and xp

@@ -575,6 +575,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strDefaultAttackSkill = "skill-basic_attack.lua";
 	m_iTarget				=	-1;
 	m_bCombatMode			=	false;
+	m_iLastDamageFrom		=	-1;
 	
 	//container id's
 	m_iInventory	= -1;		
@@ -937,6 +938,22 @@ void P_CharacterProperty::OnDeath()
 	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Death");
 	
+	
+	//give killer some XP
+	if(m_iLastDamageFrom != -1)
+	{
+		if(P_CharacterProperty* pkKiller = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iLastDamageFrom,"P_CharacterProperty"))
+		{
+			//only give plyer characters XP
+			if(pkKiller->GetIsPlayerCharacter())
+			{		
+				int iXP = 1050;		
+				pkKiller->GiveExperience(iXP);				
+			}
+		}		
+	}				
+	
+	
 	//set death animation
 	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 	{
@@ -970,13 +987,59 @@ void P_CharacterProperty::OnDeath()
 		}				
 	}
 	else
-	{	
+	{		
 		//send death info to client
 		SendStats();
 		SendDeathInfo();
 	}
 }
 
+void P_CharacterProperty::GiveExperience(int iXP)
+{
+	SendPointText(IntToString(iXP)+" XP",m_pkEntity->GetWorldPosV(),3);
+	SendTextToClient("You got "+IntToString(iXP)+" XP");
+	
+	m_kCharacterStats.ChangeStat("Experience",iXP);
+	
+	
+	if(m_kCharacterStats.GetTotal("Experience") >= m_kCharacterStats.GetTotal("NextLevel"))
+	{
+		float fLevelMod = 2.0;	
+		m_kCharacterStats.SetStat("NextLevel",m_kCharacterStats.GetTotal("NextLevel") * fLevelMod);
+		m_kCharacterStats.ChangeStat("Level",1);
+		
+		OnLevelUP();
+	}
+}
+
+void P_CharacterProperty::OnLevelUP()
+{
+	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV(),3);
+	SendTextToClient("You are now level "+IntToString(m_kCharacterStats.GetTotal("Level")));	
+
+	//tillfälligt test
+	m_kCharacterStats.ChangeStat("Strength",3);
+	m_kCharacterStats.ChangeStat("Dexterity",3);
+	m_kCharacterStats.ChangeStat("Vitality",3);
+	m_kCharacterStats.ChangeStat("Wisdom",3);
+	m_kCharacterStats.ChangeStat("Intelligence",3);
+	m_kCharacterStats.ChangeStat("Charisma",3);
+}
+
+void P_CharacterProperty::SendPointText(const string& strText,const Vector3& kPos,int iType)
+{
+	const void* apParam[5];
+
+	float fTTL = 3;
+	
+	apParam[0] = &strText;
+	apParam[1] = &kPos;
+	apParam[2] = &Vector3(0,0.3,0);
+	apParam[3] = &fTTL;
+	apParam[4] = &iType;
+	
+	g_ZFObjSys.SendSystemMessage("Application","PointText",5,apParam);	
+}
 
 
 void P_CharacterProperty::UpdateSkills()
@@ -1552,7 +1615,21 @@ void P_CharacterProperty::SendStats()
  	kNp.Write(m_kCharacterStats.GetTotal("Defense"));	
 
 			
+	float fMinDamage = 0;
+	fMinDamage += m_kCharacterStats.GetTotal("DamageSlashingMin");
+	fMinDamage += m_kCharacterStats.GetTotal("DamageCrushingMin");
+	fMinDamage += m_kCharacterStats.GetTotal("DamagePiercingMin");
+
+	float fMaxDamage = 0;
+	fMaxDamage += m_kCharacterStats.GetTotal("DamageSlashingMax");
+	fMaxDamage += m_kCharacterStats.GetTotal("DamageCrushingMax");
+	fMaxDamage += m_kCharacterStats.GetTotal("DamagePiercingMax");
 	
+ 	kNp.Write(fMinDamage);
+ 	kNp.Write(fMaxDamage);
+	
+	
+		
 	//send package
 	kNp.TargetSetClient(m_iConID);
 	m_pkApp->SendAppMessage(&kNp);	

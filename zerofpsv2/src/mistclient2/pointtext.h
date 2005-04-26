@@ -30,6 +30,7 @@ class PointText
 		ZMaterial*	m_pkRedMaterial;
 		ZMaterial*	m_pkGreenMaterial;
 		ZMaterial*	m_pkBlueMaterial;
+		ZMaterial*	m_pkYellowMaterial;
 		ZGuiFont*	m_pkFont;		
 		
 	

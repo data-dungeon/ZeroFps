@@ -35,6 +35,15 @@ PointText::PointText()
 	m_pkBlueMaterial->GetPass(0)->m_bAlphaTest =				true;		
 	m_pkBlueMaterial->GetPass(0)->m_bDepthTest = 			false;
 	
+	
+	m_pkYellowMaterial = new ZMaterial;
+	m_pkYellowMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
+	m_pkYellowMaterial->GetPass(0)->m_bLighting = 			false;		
+	m_pkYellowMaterial->GetPass(0)->m_bColorMaterial = 	true;
+	m_pkYellowMaterial->GetPass(0)->m_kVertexColor =		Vector3(1,1,0);
+	m_pkYellowMaterial->GetPass(0)->m_bFog = 					false;		
+	m_pkYellowMaterial->GetPass(0)->m_bAlphaTest =			true;		
+	m_pkYellowMaterial->GetPass(0)->m_bDepthTest = 			false;
 			
 	//setup font
 	m_pkFont = new ZGuiFont("CharacterFont");
@@ -99,6 +108,12 @@ void PointText::Draw()
 					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
 														fScale,m_kText[i].m_strText,m_pkBlueMaterial,m_pkFont,true);
 					break;
+					
+				case 3:			
+					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
+														fScale,m_kText[i].m_strText,m_pkYellowMaterial,m_pkFont,true);
+					break;
+					
 			}
 		}	
 	}

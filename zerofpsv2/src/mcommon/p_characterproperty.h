@@ -161,6 +161,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		queue<pair<string,int> >	m_kSkillQueue;
 		string							m_strDefaultAttackSkill;
 		float								m_fCombatTimer;
+		int								m_iLastDamageFrom;			//what character did the last damage on me
 		
 		//skills
 		vector<Skill*>	m_kSkills;				//what skills do we have
@@ -206,15 +207,17 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendDeathInfo();
 		void SendAliveInfo();
 		void SendTextToClient(const string& strText);
+		void SendPointText(const string& strText,const Vector3& kPos,int iType);
 		
 		void UpdateStats();					//updates character stats
-		void UpdateSkillQueue();					//updates combat, updates and performs combat queue
+		void UpdateSkillQueue();			//updates combat, updates and performs combat queue
 		void UpdateSkills();					//updates skill reloads and so on
 
 		void SetupCharacterStats();		//first tim character stat setup
 		
 		
 		void OnDeath();
+		void OnLevelUP();
 		
 	public:
 		Stats	m_kCharacterStats;
@@ -289,6 +292,10 @@ class MCOMMON_API P_CharacterProperty: public Property
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
 		void  LockSkillUsage(float fTime);
 		
+		//experience and level
+		void  GiveExperience(int iXP);
+		
+		
 		//mana and stamina
 		bool UseMana(float fMana);
 		bool UseStamina(float fStamina);
@@ -299,6 +306,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool GetCombatMode()												{	return m_bCombatMode;			}
 		void AddSkillToQueue(const string& strSkill,int iTargetID);
 		
+		void SetLastDamageFrom(int iCharacterID)					{	m_iLastDamageFrom=iCharacterID;}
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);

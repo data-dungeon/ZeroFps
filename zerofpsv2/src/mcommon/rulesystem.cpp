@@ -52,6 +52,7 @@ void RuleSystem::Damage(int iCharacter,float fDamage)
 {
 	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacter,"P_CharacterProperty"))
 	{
+		pkCP->SetLastDamageFrom(-1);
 		pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
 		SendPointText(IntToString(int(fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 	}
@@ -63,6 +64,7 @@ void RuleSystem::Damage(int iAttacker,int iDefender,float fDamage)
 	{
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkDefender->GetProperty("P_CharacterProperty"))
 		{
+			pkCP->SetLastDamageFrom(iAttacker);
 			pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
 			SendPointText(IntToString(int(fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 			
@@ -104,7 +106,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		float fRandA = Randomf(pkStatsA->GetTotal("Attack")  );
 		float fRandD = Randomf(pkStatsD->GetTotal("Defense") );
 	
-		//cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
+		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
 		
 		if(fRandA <= fRandD)
 		{
@@ -163,6 +165,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		
 			
 			//Damage(iAttacker,iDefender,iTotal);
+			pkDefender->SetLastDamageFrom(iAttacker);
 			pkStatsD->ChangeStat("Health",-iTotal);		
 			SendPointText(IntToString(iTotal),pkDefender->GetEntity()->GetWorldPosV(),0);			
 		
