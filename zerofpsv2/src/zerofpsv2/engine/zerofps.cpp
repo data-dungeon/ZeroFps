@@ -98,7 +98,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fNetworkUpdateTime		= 0;
 	m_fNetworkUpdateFpsDelta= 0;	
 	m_bSyncNetwork				= true;
-	m_iConnectionSpeed		= 3000;
+	m_iConnectionSpeed		= 10000;
 		
 	m_bEditMode					= false;
 	m_bServerMode				= false;
