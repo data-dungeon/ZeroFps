@@ -280,7 +280,8 @@ void MistServer::OnIdle()
 	
 	//update ml time and save time in serverinfo
 	m_pkTime->AddTime(m_pkZeroFps->GetFrameTime());		
-	m_pkServerInfoP->SetTime(m_pkTime->GetTotalMLTime());
+	if(m_pkServerInfoP)
+		m_pkServerInfoP->SetTime(m_pkTime->GetTotalMLTime());
 	
 	//print current mistlands time
 	m_pkZeroFps->DevPrintf("server","date: %s", m_pkTime->GetDateString().c_str());
@@ -446,10 +447,12 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			m_pkZeroFps->StopAll();
+			// konstig krash, nått med nätverket om man försöker ladda en bana som inte fins
+			// 			m_pkZeroFps->StopAll();
+
 			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
-				cout<<"Error loading world"<<endl;
+				cout<<"Error loading world: "<<kCommand->m_kSplitCommand[1]<<endl;
 				break;
 			}				
 			
@@ -460,7 +463,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			m_pkZeroFps->StartServer(false,true,m_iServerPort);
+ 			m_pkZeroFps->StartServer(false,true,m_iServerPort);
 			
 			break;		
 		
