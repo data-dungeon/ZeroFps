@@ -9,6 +9,7 @@ class OptionsDlg;
 class ActionMenu;
 class InventoryDlg;
 class EquipmentDlg;
+class SkillBar;
 class Camera;
 class Entity;
 
@@ -93,6 +94,8 @@ class MistClient :public Application, public ZGuiApp {
 		ActionMenu* 	m_pkActionDlg;
 		InventoryDlg* 	m_pkInventoryDlg;
 		EquipmentDlg* 	m_pkEquipmentDlg;
+		SkillBar*		m_pkSkillBar;
+
 
 		struct BUFF_ICON_INFO
 		{

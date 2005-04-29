@@ -77,6 +77,8 @@ class MCOMMON_API Skill
 		void Update();
 		int Use(int iTargetID,const Vector3& kPos,const Vector3& kDir);
 		
+		bool IsReloaded();
+
 		//sets
 		void SetLevel(int iLevel);
 		void SetTimeLeft(float fTime)	{	m_fTimeLeft = fTime;				}
@@ -154,6 +156,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//death
 		bool			m_bDead;
 		float			m_fDeadTimer;
+		float			m_fDecayTime;										//how long does a non player body stay in the world before decaying
 		
 		//combat		
 		bool								m_bCombatMode;

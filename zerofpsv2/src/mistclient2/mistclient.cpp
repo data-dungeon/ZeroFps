@@ -25,6 +25,7 @@
 #include "gui_inventory.h"
 #include "gui_optionsdlg.h"
 #include "gui_equipwnd.h"
+#include "skillbar.h"
 #include "../mcommon/mainmcommon.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
@@ -1160,6 +1161,10 @@ void MistClient::OnSystem()
 	UpdateCharacter();
 	SendControlInfo();
 	CloseActiveContainer();
+
+
+	m_pkSkillBar->Update();
+
 }
 
 void MistClient::SendControlInfo()
@@ -1393,7 +1398,6 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fMinDamage);
  			pkNetMessage->Read(fMaxDamage);
 
-			
 			
 			//basic stats
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatStrength"))

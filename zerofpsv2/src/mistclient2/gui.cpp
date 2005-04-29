@@ -3,6 +3,7 @@
 #include "actionmenu.h"
 #include "gui_inventory.h"
 #include "gui_equipwnd.h"
+#include "skillbar.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/basic/zfbasicfs.h"
 #include "../zerofpsv2/engine/zerofps.h"
@@ -186,6 +187,7 @@ void MistClient::SetupGUI()
 	m_pkActionDlg = new ActionMenu();
 	m_pkInventoryDlg = new InventoryDlg();
 	m_pkEquipmentDlg = new EquipmentDlg();
+	m_pkSkillBar = new SkillBar();
 
 	ZGuiFont* font = g_kMistClient.m_pkGui->GetResMan()->Font("book_antiqua_outlined10");
 

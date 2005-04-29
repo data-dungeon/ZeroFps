@@ -80,6 +80,15 @@ void Skill::Update()
 
 }
 
+bool Skill::IsReloaded()
+{
+	//check reload
+	if(m_fTimeLeft != 0)
+		return false;	
+
+	return true;
+}
+
 void Skill::UpdateFromScript()
 {
 	if(!m_pkScriptFileHandle->IsValid())
@@ -569,7 +578,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fLegLength			=	0;
 	m_fMarkerSize			=	1;
 	m_bDead					=	false;
-	m_fDeadTimer			=	0;	
+	m_fDeadTimer			=	0;
+	m_fDecayTime			=	60;
 	
 	m_fCombatTimer			=	0;
 	m_strDefaultAttackSkill = "skill-basic_attack.lua";
@@ -709,14 +719,13 @@ void P_CharacterProperty::SetupCharacterStats()
 
 void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
 {
-	//not in combat mode
-// 	if(!m_bCombatMode)
-// 		return;
-
 	if(m_kSkillQueue.size() > 4)
 		return;
 		
-	m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
+	if(Skill* pkSkill = GetSkillPointer(strSkill))
+		if(pkSkill->IsReloaded())
+			m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
+
 }
 
 void P_CharacterProperty::UpdateSkillQueue()
@@ -853,8 +862,10 @@ void P_CharacterProperty::UpdateStats()
 				
 			
 		//setup basic damage, and attack
-		m_kCharacterStats.SetStat("Attack",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
-		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
+		m_kCharacterStats.SetStat("HealthMax",m_kCharacterStats.GetTotal("Vitality") / 1.0 );
+
+		m_kCharacterStats.SetStat("Attack",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
+		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
 			
 		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
 		m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );
@@ -946,7 +957,7 @@ void P_CharacterProperty::OnDeath()
 	{
 		if(P_CharacterProperty* pkKiller = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iLastDamageFrom,"P_CharacterProperty"))
 		{
-			//only give plyer characters XP
+			//only give player characters XP
 			if(pkKiller->GetIsPlayerCharacter())
 			{
 				float fLevelMod = 1.5;
@@ -1422,7 +1433,7 @@ void P_CharacterProperty::Update()
 				if(m_iConID == -1)
 				{
 					//been dead for a while
-					if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > 10)
+					if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > m_fDecayTime)
 					{
 						//send character to the world beyound
 						m_pkEntityManager->Delete(m_pkEntity);						
