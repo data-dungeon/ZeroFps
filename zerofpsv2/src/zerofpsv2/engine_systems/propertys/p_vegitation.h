@@ -43,6 +43,8 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		ZFResourceHandle* m_pkMaterial;	
 		string				m_strMaterialFile; 		
 			
+		Vector3				m_kAABBMin;
+		Vector3				m_kAABBMax;
 		Vector3				m_kScale;
 		float					m_fRadius;		
 		int					m_iAmount;
@@ -59,6 +61,9 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 // 		void BuildArrays();
 // 		void DrawArray(int iLodLevel);
 		
+		void CalculateRadius();
+		void CreateAABB();
+
 	public:
 		P_Vegitation();
 		~P_Vegitation();
@@ -72,9 +77,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		void AddPos(const Vector3& kPos);
 		void Clear();
-		
-		void CalculateRadius();
-		
+				
 		void Random(P_HMRP2* pkHmrp2 = NULL);
 		
 		void Save(ZFIoInterface* pkPackage);

@@ -8,15 +8,7 @@ bool PSystem::Draw()
 	if ( m_bInsideFrustum )
 	{
 		m_pkShader->ResetPointers();
-		
-		//Dvoids uglyest Hack in the history of hacks	
-/*		vector<Vector3>	kNormals;
-		for(int i = 0;i<Particles() * 4;i++)
-			kNormals.push_back(Vector3(0,1,0));
 
-		m_pkShader->SetPointer(NORMAL_POINTER, &kNormals[0] );*/
-		//end of the worlds greatest hack
-		
 		m_pkShader->SetNormal(Vector3(0,1,0));
 		
 		if (m_pkTexCoords)

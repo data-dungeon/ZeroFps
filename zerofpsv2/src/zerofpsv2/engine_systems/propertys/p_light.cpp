@@ -49,7 +49,8 @@ void P_Light::Update()
 {
 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
-		m_pkLightSource->kPos = m_pkEntity->GetWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);	
+// 		m_pkLightSource->kPos = m_pkEntity->GetWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);	
+		m_pkLightSource->kPos = m_pkEntity->GetIWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);	
 	
 		if(m_pkLightSource->iType == SPOT_LIGHT)	
 			m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));

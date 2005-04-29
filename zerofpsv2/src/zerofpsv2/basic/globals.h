@@ -96,7 +96,7 @@ int BASIC_API Randomi(int iInterval);
 Vector3 BASIC_API RndColor();												//randomize a colorvector...i think
 
 //profiling
-//#define NOPROFILE
+#define NOPROFILE
 #ifdef NOPROFILE
 	#define StartProfileTimer(czName)	((void)0)
 	#define StopProfileTimer(czName)	((void)0)

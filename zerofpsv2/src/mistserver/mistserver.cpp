@@ -166,7 +166,7 @@ void MistServer::Init()
 	m_pkZeroFps->SetSyncNetwork(false);
 	
 	//enable debug graphics
-	m_pkZeroFps->SetDebugGraph(true);
+	//m_pkZeroFps->SetDebugGraph(true);
 	
 	//register script functions
 	RegisterScriptFunctions();

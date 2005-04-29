@@ -120,7 +120,7 @@ void P_Mad::Update()
 				m_bHaveAABB = false;
 			}
 		}
-			
+		
 		
 		//always update bones
 		UpdateBones();

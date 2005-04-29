@@ -78,6 +78,7 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 	
 	
 	CalculateRadius();
+	CreateAABB();
 // 	BuildArrays();
 		
 	
@@ -95,9 +96,17 @@ void P_Vegitation::Update()
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWMAP)
 		return;
 
-	//frustum culling
-	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
+	static Vector3 kObjectPos;
+	kObjectPos = m_pkEntity->GetWorldPosV();
+
+	//frustum culling sphere
+ 	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(kObjectPos,m_fRadius))
+ 		return;
+
+	//frustum culling aabb
+	if(!m_pkFps->GetCam()->GetFrustum()->CubeInFrustum(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax))
 		return;
+
 
 	//update light					
 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
@@ -120,14 +129,15 @@ void P_Vegitation::Update()
 		}		
 	}
 	
-	static Vector3 kObjectPos;
-	kObjectPos = m_pkEntity->GetWorldPosV();			
+
 
 					
  	//draw a ball on the server
   	if(m_pkFps->GetDebugGraph())
+	{
   		m_pkRender->Sphere(kObjectPos,0.5,1,Vector3(1,1,1),true);
-
+		m_pkRender->DrawAABB(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax,Vector3(1,1,1),1);
+	}
 	
 	float fDistance = kObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
 	if(fDistance > 10)
@@ -147,6 +157,7 @@ void P_Vegitation::Update()
 			kPos = m_akPositions[i].kPos + kObjectPos;
 			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale,fAlpha);			
 		}	*/	
+
 	
 	//setup material	
 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
@@ -259,6 +270,7 @@ void P_Vegitation::SetScale(Vector3 kScale)
 	m_kScale=kScale;
  
  	CalculateRadius();
+	CreateAABB();
 }
 
 void P_Vegitation::Clear()
@@ -288,10 +300,60 @@ void P_Vegitation::CalculateRadius()
 		maxscale = m_kScale.z;
 	
 	
-	m_fRadius = maxDist + (maxscale /2);
-	
+	m_fRadius = maxDist + (maxscale /2);	
+}
+
+void P_Vegitation::CreateAABB()
+{
+	m_kAABBMax.Set(-99999999,-99999999,-99999999);
+	m_kAABBMin.Set(99999999,99999999,99999999);
+
+	static Vector3* pkVert;
+	int iSize = m_akPositions.size();
+	for(unsigned int i=0;i<iSize;i++)
+	{
+		pkVert = &m_akPositions[i].kPos;
+
+		//max
+		if(pkVert->x > m_kAABBMax.x)
+			m_kAABBMax.x = pkVert->x;
+
+		if(pkVert->y > m_kAABBMax.y)
+			m_kAABBMax.y = pkVert->y;
+		
+		if(pkVert->z > m_kAABBMax.z)
+			m_kAABBMax.z = pkVert->z;	
+			
+		//min	
+		if(pkVert->x < m_kAABBMin.x)
+			m_kAABBMin.x = pkVert->x;
+
+		if(pkVert->y < m_kAABBMin.y)
+			m_kAABBMin.y = pkVert->y;
+		
+		if(pkVert->z < m_kAABBMin.z)
+			m_kAABBMin.z = pkVert->z;	
+	}		
+
+	float maxwidth =0;
+
+	if(m_kScale.x > maxwidth)
+		maxwidth = m_kScale.x;
+	if(m_kScale.z > maxwidth)
+		maxwidth = m_kScale.z;
+
+	maxwidth/=2;
+
+	m_kAABBMax.y += m_kScale.y;
+
+	m_kAABBMin.x -= maxwidth;
+	m_kAABBMin.z -= maxwidth;
+	m_kAABBMax.x += maxwidth;
+	m_kAABBMax.z += maxwidth;
 
 }
+
+
 
 void P_Vegitation::AddPos(const Vector3& kPos)
 {

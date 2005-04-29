@@ -12,7 +12,7 @@ P_FogPlane::P_FogPlane()
 	m_iSortPlace=3;
 	
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
-
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	
 	m_fSize = 4;
 	
@@ -41,6 +41,16 @@ P_FogPlane::~P_FogPlane()
 
 void P_FogPlane::Update()
 {
+	if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fSize*0.5))
+		return;
+
+
+//   	if(m_pkZeroFps->GetDebugGraph())
+// 	{
+//   		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),m_fSize*0.5,1,Vector3(1,1,1),false);
+// 	}
+
+
 	static float afVerts[] = {	-0.5,	0,	0.5,	
 							 			-0.5,	0,	-0.5,	
 							 			0.5,	0,	-0.5,	
@@ -57,9 +67,10 @@ void P_FogPlane::Update()
 										0,0};	
 
 	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetNormal(Vector3(0,1,0));
 	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,afVerts);
 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
-	m_pkZShaderSystem->SetPointer(NORMAL_POINTER,afNormals);
+// 	m_pkZShaderSystem->SetPointer(NORMAL_POINTER,afNormals);
 	m_pkZShaderSystem->SetNrOfVertexs(4);
 	
 										

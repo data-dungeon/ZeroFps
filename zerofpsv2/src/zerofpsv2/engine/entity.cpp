@@ -222,7 +222,8 @@ void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	static Property* pkProp;
 	
-	for(int i = 0;i<m_akPropertys.size();i++)
+	int iSize = m_akPropertys.size();
+	for(int i = 0;i < iSize;i++)
 	{
 		pkProp = m_akPropertys[i];
 		if( (pkProp->m_iType & iType) &&
@@ -250,7 +251,8 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 		return;
 	
 	//go trough all childs and get propertys
-	for(int i =0;i<m_akChilds.size();i++)
+	int iSize = m_akChilds.size();
+	for(int i =0;i<iSize;i++)
 		m_akChilds[i]->GetAllPropertys(akPropertys,iType,iSide);
 	
 }
