@@ -151,6 +151,9 @@
 			<File
 				RelativePath=".\pointtext.cpp">
 			</File>
+			<File
+				RelativePath=".\skillbar.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -176,6 +179,9 @@
 			</File>
 			<File
 				RelativePath=".\resource.h">
+			</File>
+			<File
+				RelativePath=".\skillbar.h">
 			</File>
 		</Filter>
 		<Filter
