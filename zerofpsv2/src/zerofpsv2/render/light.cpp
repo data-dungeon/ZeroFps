@@ -163,7 +163,8 @@ void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 		vector<LightSource*> kSorted;
 	
 		//loop trough all lightsources and find wich to view
-		for(int i = 0;i< m_kLights.size();i++) 
+		int iLights = m_kLights.size();
+		for(int i = 0;i< iLights;i++) 
 		{
 			LightSource* pkL = m_kLights[i];
 		
@@ -294,7 +295,8 @@ void Light::Update(Vector3 kRefPos)
 
 } 
 
-void Light::TurnOffAll() {
+void Light::TurnOffAll() 
+{
 	glDisable(GL_LIGHT0);	
 	glDisable(GL_LIGHT1);	
 	glDisable(GL_LIGHT2);	 
@@ -303,6 +305,45 @@ void Light::TurnOffAll() {
 	glDisable(GL_LIGHT5);	
 	glDisable(GL_LIGHT6);	
 	glDisable(GL_LIGHT7);		
+}
+
+void Light::DisableLight(int iGlLight)
+{
+	static GLenum light;		
+			
+	//wich light to change
+	switch(iGlLight) 
+	{
+		case 0:
+			light=GL_LIGHT0;
+			break; 		
+		case 1:
+			light=GL_LIGHT1;
+			break; 		
+		case 2:
+			light=GL_LIGHT2;
+			break; 		
+		case 3:
+			light=GL_LIGHT3;
+			break; 		
+		case 4:
+			light=GL_LIGHT4;
+			break; 		
+		case 5:
+			light=GL_LIGHT5;
+			break; 		
+		case 6:
+			light=GL_LIGHT6;
+			break; 		
+		case 7:
+			light=GL_LIGHT7;
+			break; 
+		default:
+			return;
+	}
+	
+	//enable light
+	glDisable(light);	
 }
 
 void Light::EnableLight(LightSource* pkLight,int iGlLight)

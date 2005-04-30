@@ -83,14 +83,6 @@ void ZFResourceHandle::FreeRes()
 	m_pkResource = NULL;
 }
 
-bool  ZFResourceHandle::IsValid()
-{
-	if(m_iID == -1)
-		return false;
-
-	return true;
-}
-
 ZFResource* ZFResourceHandle::GetResourcePtr()
 {
 	if(m_iID == -1)

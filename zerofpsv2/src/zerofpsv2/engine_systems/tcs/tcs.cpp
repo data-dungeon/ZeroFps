@@ -737,9 +737,15 @@ void Tcs::SyncBodys()
 
 void Tcs::UpdateBodyVels(float fAtime)
 {
-	for(unsigned int i=0;i<m_kBodys.size();i++)
+	static int iBodys;
+	static P_Tcs** pkFirstBody;
+	
+	pkFirstBody = &m_kBodys[0];
+	iBodys = m_kBodys.size();
+
+	for(unsigned int i=0;i<iBodys;i++)
 	{	
-		UpdateBodyVel(m_kBodys[i],fAtime);					
+		UpdateBodyVel(pkFirstBody[i],fAtime);					
 	}
 }
 
@@ -883,14 +889,15 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 	UpdateAABBs();
 
 	//loop trough all bodys and testing for collisions against each other
+	P_Tcs** pkBodyStart = &m_kBodys[0];
 	iBodys = m_kBodys.size();
 	for(unsigned int B1=0;B1<iBodys;B1++)
 	{
-		pkBody1 = m_kBodys[B1];
+		pkBody1 = pkBodyStart[B1];
 	
 		for(unsigned int B2=B1+1;B2<iBodys;B2++)
 		{					
-			pkBody2 = m_kBodys[B2];
+			pkBody2 = pkBodyStart[B2];
 		
 			//dont test if both bodys are static or sleeping
 			if( (pkBody1->InActive()) && (pkBody2->InActive()))

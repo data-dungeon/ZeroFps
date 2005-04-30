@@ -432,7 +432,7 @@ void ZShaderSystem::SetupPass(int iPass)
       glDisable (GL_DEPTH_TEST);
 		
 	
-	//enable /disable blending
+	//enable /disable fog
 	if(pkSettings->m_bFog)
 		glEnable(GL_FOG);
 	else

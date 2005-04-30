@@ -107,6 +107,8 @@ class RENDER_API Light : public ZFSubSystem
 		int		m_iVersion;			//is updated each time the number of lights is changed
 		
 		void TurnOffAll();
+		void EnableLight(LightSource* pkLight,int iGlLight);		
+		void DisableLight(int iGlLight);
 		
 	public:
 
@@ -116,7 +118,6 @@ class RENDER_API Light : public ZFSubSystem
 		bool IsValid();
 
 		void Add(LightSource* kNewLight);
-		void EnableLight(LightSource* pkLight,int iGlLight);
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update(Vector3 kPos);

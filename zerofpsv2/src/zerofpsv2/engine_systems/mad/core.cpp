@@ -667,12 +667,6 @@ int Mad_Core::GetBoneParent(int iBone)
 	return m_kSkelleton[iBone].m_iParent;
 }
 
-int	Mad_Core::NumOfMeshes()
-{
-	return m_kMesh.size();
-
-}
-
 Mad_CoreMesh* Mad_Core::CreateCoreMesh(const char* szName)
 {
 	Mad_CoreMesh kNewMesh;

@@ -82,7 +82,7 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
-// 		StartProfileTimer("r___mad");				
+ 		//StartProfileTimer("r___mad");				
 				
 		DoAnimationUpdate();
 		
@@ -90,7 +90,7 @@ void P_Mad::Update()
 		//Cull against sphere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
 		{
-// 			StopProfileTimer("r___mad");
+ 			//StopProfileTimer("r___mad");
 			return;
 		}
 
@@ -108,14 +108,13 @@ void P_Mad::Update()
 				//have up to date AABB
 				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + m_pkEntity->GetIWorldPosV(),m_AABBMax + m_pkEntity->GetIWorldPosV()))
 				{
-// 					StopProfileTimer("r___mad");
+ 					//StopProfileTimer("r___mad");
 					return;
 				}								
 			}
 			else
 			{
 				//AABB is not up to date
-				//cout<<"aabb not up do date,removing"<<endl;
 				m_bHaveAABB = false;
 			}
 		}
@@ -155,13 +154,12 @@ void P_Mad::Update()
 			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());						
 		
 			m_pkZShaderSystem->MatrixPush();
+			
 				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
 				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
-				m_pkZShaderSystem->MatrixScale(m_fScale);
-	
-				
-				
+				m_pkZShaderSystem->MatrixScale(m_fScale);									
 				Draw_All(m_pkZeroFps->m_iMadDraw);
+				
 			m_pkZShaderSystem->MatrixPop();
 		}
 

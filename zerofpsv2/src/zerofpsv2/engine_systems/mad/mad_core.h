@@ -530,7 +530,7 @@ public:
 	Mad_CoreMesh*	GetMeshByID(int iMesh);
 	int	GetMeshIDByName(char* szName);
 	Mad_CoreMesh* CreateCoreMesh(const char* szName);
-	int	NumOfMeshes();
+	int	NumOfMeshes()														{	return m_kMesh.size();	};
 
 	void Save_SD(ZFVFile* pkZFile);
 	void Save_MD(int iMeshId, ZFVFile* pkZFile);

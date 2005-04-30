@@ -497,6 +497,17 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	if(iDrawFlags == 0)
 		return;
 	
+	static ZMaterial* pkLineMaterial = NULL;
+	if(!pkLineMaterial)
+	{
+		pkLineMaterial = new ZMaterial();
+		pkLineMaterial->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkLineMaterial->GetPass(0)->m_bLighting = false;
+		pkLineMaterial->GetPass(0)->m_bFog = true;
+		pkLineMaterial->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLineMaterial->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+	}
+		
 		
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
@@ -517,9 +528,6 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 			
 		//setup all texture pointers
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
-// 		m_pkShader->SetPointer(TEXTURE_POINTER1,GetTextureCooPtr());
-// 		m_pkShader->SetPointer(TEXTURE_POINTER2,GetTextureCooPtr());
-// 		m_pkShader->SetPointer(TEXTURE_POINTER3,GetTextureCooPtr());
 		
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
@@ -532,7 +540,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		{
 			SelectSubMesh(iSubM);
 
-			if(iDrawFlags & MAD_DRAW_MESH) 
+			if(iDrawFlags & MAD_DRAW_MESH || iDrawFlags & MAD_DRAW_LINES) 
 			{
 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
 
@@ -557,7 +565,12 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				else
 					m_iFirstMaterialID = -1;
 				
-				m_pkShader->BindMaterial(pkMaterial);				
+				
+				if(iDrawFlags & MAD_DRAW_LINES)
+					m_pkShader->BindMaterial(pkLineMaterial);				
+				else				
+					m_pkShader->BindMaterial(pkMaterial);				
+				
 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
 				

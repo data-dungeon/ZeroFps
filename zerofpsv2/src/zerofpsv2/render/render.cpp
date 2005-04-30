@@ -1470,35 +1470,7 @@ void Render::Draw_AxisIcon(float scale)
 	Line(Vector3(0,0,0),Vector3(scale,0,0),Vector3(1,0,0));
 	Line(Vector3(0,0,0),Vector3(0,scale,0),Vector3(0,1,0));
 	Line(Vector3(0,0,0),Vector3(0,0,scale),Vector3(0,0,1));
-/*
-	m_pkZShaderSystem->Push("Draw_AxisIcon");
 
-//	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING );
-	
-	
-	glColor3f(1,0,0);
-	glBegin(GL_LINES);
-		glVertex3f(0,0,0);			glVertex3f(scale,0,0);
-	glEnd();
-
-	glColor3f(0,1,0);
-	glBegin(GL_LINES);
-		glVertex3f(0,0,0);			glVertex3f(0,scale,0);
-	glEnd();
-
-	glColor3f(0,0,1);
-	glBegin(GL_LINES);
-		glVertex3f(0,0,0);			glVertex3f(0,0,scale);
-	glEnd();
-
-//	glEnable(GL_TEXTURE_2D);
-//	glEnable(GL_LIGHTING);
-//	glPopAttrib();
-
-	m_pkZShaderSystem->Pop();*/
 }
 
 void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
