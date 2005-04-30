@@ -640,7 +640,7 @@ void P_CharacterProperty::Init()
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(3);
 
 	kReturn[0].kValueName = "walksound";
 	kReturn[0].iValueType = VALUETYPE_BOOL; 
@@ -649,7 +649,12 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 	kReturn[1].kValueName = "markersize";
 	kReturn[1].iValueType = VALUETYPE_FLOAT; 
 	kReturn[1].pkValue    = (void*)&m_fMarkerSize;	
-		
+
+	kReturn[2].kValueName = "name";
+	kReturn[2].iValueType = VALUETYPE_STRING; 
+	kReturn[2].pkValue    = (void*)&m_strName;		
+	
+			
 	return kReturn;	
 }
 
@@ -957,6 +962,8 @@ void P_CharacterProperty::OnDeath()
 	{
 		if(P_CharacterProperty* pkKiller = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iLastDamageFrom,"P_CharacterProperty"))
 		{
+			SendTextToClient(string("You was killed by ")+pkKiller->GetName());
+		
 			//only give player characters XP
 			if(pkKiller->GetIsPlayerCharacter())
 			{
