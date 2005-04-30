@@ -356,17 +356,19 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 
 void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale,float fAlpha)//,int& iTexture1) //,int iTexture2) 
 {
-	static Vector3 normaldata[8] = { Vector3(0,1,0),
-												Vector3(0,1,0),
-												Vector3(0,1,0),
-												Vector3(0,1,0),
-												
-												Vector3(0,1,0),
-												Vector3(0,1,0),
-												Vector3(0,1,0),
-												Vector3(0,1,0),};
+// 	static Vector3 normaldata[8] = { Vector3(0,1,0),
+// 												Vector3(0,1,0),
+// 												Vector3(0,1,0),
+// 												Vector3(0,1,0),
+// 												
+// 												Vector3(0,1,0),
+// 												Vector3(0,1,0),
+// 												Vector3(0,1,0),
+// 												Vector3(0,1,0),};
 
 	
+	static Vector3 kNormal(0,1,0);												
+												
 	static Vector3 apointdata[8] = { Vector3(-0.5,1,0),
 												Vector3(-0.5,0,0),
 												Vector3( 0.5,0,0),
@@ -415,7 +417,8 @@ void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& k
 		m_pkZShaderSystem->ResetPointers();
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,atexdata);
 		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,apointdata);
-		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,normaldata);
+// 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,normaldata);
+		m_pkZShaderSystem->SetNormal(kNormal);
 		m_pkZShaderSystem->SetPointer(COLOR_POINTER,acolordata);
 		
 		m_pkZShaderSystem->SetNrOfVertexs(8);

@@ -243,16 +243,24 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
 
-	//get this Entitys propertys
-	GetPropertys(akPropertys,iType,iSide);	
-	
+	//add this Entitys propertys to the vector
+	static Property* pkProp;
+	int iPropertys = m_akPropertys.size();
+	for(int i = 0;i < iPropertys;i++)
+	{
+		pkProp = m_akPropertys[i];
+		if( (pkProp->m_iType & iType) &&
+			 (pkProp->m_iSide & iSide) )
+			akPropertys->push_back(pkProp);	
+	}	
+
 	//return if no child updates shuld be done
 	if(m_iUpdateStatus & UPDATE_NOCHILDS)
 		return;
 	
 	//go trough all childs and get propertys
-	int iSize = m_akChilds.size();
-	for(int i =0;i<iSize;i++)
+	int iChilds = m_akChilds.size();
+	for(int i =0;i<iChilds;i++)
 		m_akChilds[i]->GetAllPropertys(akPropertys,iType,iSide);
 	
 }

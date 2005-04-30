@@ -320,7 +320,7 @@ bool ZGui::Render(int fps)
 	if(!m_bRenderEnabled)
 		return true;
 
-	StartProfileTimer("r__Gui");		
+// 	StartProfileTimer("r__Gui");		
 		
 	m_pkRenderer->StartRender(m_bClearScreen);
 	
@@ -386,7 +386,7 @@ bool ZGui::Render(int fps)
 
 	m_pkRenderer->EndRender(); 
 
-	StopProfileTimer("r__Gui");	
+// 	StopProfileTimer("r__Gui");	
 	
 	m_kPointsToDraw.clear();
 	m_kRectsToDraw.clear(); 

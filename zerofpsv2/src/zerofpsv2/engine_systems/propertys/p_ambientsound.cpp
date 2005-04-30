@@ -93,7 +93,7 @@ string P_AmbientSound::GetSound()
 
 void P_AmbientSound::Update()
 {
-	StartProfileTimer("s__AmbientSound");
+// 	StartProfileTimer("s__AmbientSound");
 
 	if(m_pEntityMan->IsUpdate(PROPERTY_SIDE_CLIENT))
 	{
@@ -133,7 +133,7 @@ void P_AmbientSound::Update()
 	if(m_pkZeroFps->GetDebugGraph())
 		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.1,1,Vector3(1,1,0),true);
 
-	StopProfileTimer("s__AmbientSound");		
+// 	StopProfileTimer("s__AmbientSound");		
 }
 
 void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )

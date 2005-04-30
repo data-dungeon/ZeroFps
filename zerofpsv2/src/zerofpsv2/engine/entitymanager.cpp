@@ -417,6 +417,7 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 		
 		//logg stuff		
 		m_iNrOfActivePropertys = m_akPropertys.size();	
+
 		m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
 			GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 	
@@ -426,26 +427,13 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
  			//stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
 			sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
 			//sort(m_akPropertys.begin(),m_akPropertys.end());
-
-// 			if(iType == PROPERTY_TYPE_RENDER)
-// 			{
-// 				cout<<"Updateing render:"<<m_akPropertys.size()<<endl;
-// 				for(int i = 0;i<m_akPropertys.size();i++)
-// 				{
-// 					if(P_Mad* pkMad = dynamic_cast<P_Mad*>(m_akPropertys[i]))
-// 					{
-// 						cout<<"mad:"<<pkMad->m_iFirstMaterialID<<endl;
-// 					}
-// 					else
-// 						cout<<"other"<<endl;
-// 				
-// 				}
-// 			}
 		}
 	}
 		
+	
 	//run update in all propertys
-	for(int i = 0;i<m_akPropertys.size();i++)
+	int iPropertys = m_akPropertys.size();
+	for(int i = 0;i<iPropertys;i++)
 		m_akPropertys[i]->Update();
 
 /*			
@@ -2726,10 +2714,10 @@ bool EntityManager::LoadWorld(string strLoadDir)
 
 void EntityManager::UpdateZoneSystem()
 {
-	StartProfileTimer("s__ZoneSystem");	
+// 	StartProfileTimer("s__ZoneSystem");	
 	UpdateTrackers();
 	UpdateZoneStatus();
-	StopProfileTimer("s__ZoneSystem");	
+// 	StopProfileTimer("s__ZoneSystem");	
 }
 
 void EntityManager::UpdateTrackers()

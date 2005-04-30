@@ -37,7 +37,6 @@ P_Mad::P_Mad()
 	m_kOffset.Set(0,0,0);
 	
   	m_fLastAnimationUpdateTime = m_pkZeroFps->GetEngineTime();
-//  	m_fLastAnimationUpdateTime = m_pkEntityManager->GetSimTime();
 	m_iLastAnimationUpdateFrame = -1;
 
 	
@@ -83,7 +82,7 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
-		StartProfileTimer("r___mad");				
+// 		StartProfileTimer("r___mad");				
 				
 		DoAnimationUpdate();
 		
@@ -91,7 +90,7 @@ void P_Mad::Update()
 		//Cull against sphere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
 		{
-			StopProfileTimer("r___mad");
+// 			StopProfileTimer("r___mad");
 			return;
 		}
 
@@ -109,7 +108,7 @@ void P_Mad::Update()
 				//have up to date AABB
 				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + m_pkEntity->GetIWorldPosV(),m_AABBMax + m_pkEntity->GetIWorldPosV()))
 				{
-					StopProfileTimer("r___mad");
+// 					StopProfileTimer("r___mad");
 					return;
 				}								
 			}
@@ -188,7 +187,7 @@ void P_Mad::Update()
 		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
 				
-		StopProfileTimer("r___mad");			
+// 		StopProfileTimer("r___mad");			
 	}	
 }
 

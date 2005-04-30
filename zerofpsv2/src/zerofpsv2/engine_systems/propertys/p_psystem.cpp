@@ -11,7 +11,7 @@ using namespace ObjectManagerLua;
 void P_PSystem::Update()
 {
 
-	StartProfileTimer("r___PSystem");
+// 	StartProfileTimer("r___PSystem");
 
 	//m_pkZShaderSystem->Push("P_PSystem::Update");
 
@@ -52,7 +52,7 @@ void P_PSystem::Update()
 	}
 	//m_pkZShaderSystem->Pop();
 	
-	StopProfileTimer("r___PSystem");	
+// 	StopProfileTimer("r___PSystem");	
 }
 
 // ------------------------------------------------------------------------------------------

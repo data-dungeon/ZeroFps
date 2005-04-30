@@ -523,11 +523,11 @@ void ZeroFps::Run_EngineShell()
 	}
    else
    {
-		StartProfileTimer("s__input");	
+// 		StartProfileTimer("s__input");	
 	
 			UpdateGuiInput();
 
-		StopProfileTimer("s__input");	
+// 		StopProfileTimer("s__input");	
    }
 
 	//update delete
@@ -562,9 +562,9 @@ void ZeroFps::Run_Client()
 		m_pkAudioSystem->SetListnerPosition(m_kRenderCamera[0]->GetPos(),m_kRenderCamera[0]->GetRotM());
 	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
 	
-	StartProfileTimer("s__Sound");
+// 	StartProfileTimer("s__Sound");
 	m_pkAudioSystem->Update();
-	StopProfileTimer("s__Sound");
+// 	StopProfileTimer("s__Sound");
 }
 
 void ZeroFps::Update_Network()
@@ -700,7 +700,7 @@ void ZeroFps::Update_System()
 
 void ZeroFps::Draw_EngineShell()
 {
-	StartProfileTimer("r_Render");					
+// 	StartProfileTimer("r_Render");					
 
 	//render cameras	
 	Draw_RenderCameras();	
@@ -729,7 +729,7 @@ void ZeroFps::Draw_EngineShell()
 			m_pkConsole->Draw();
 
 			
-	StopProfileTimer("r_Render");				
+// 	StopProfileTimer("r_Render");				
 }
 
 void ZeroFps::MainLoop(void) 
@@ -828,14 +828,14 @@ void ZeroFps::RemoveRenderCamera(Camera* pkCamera)
 
 void ZeroFps::Draw_RenderCameras()
 {
-	StartProfileTimer("r__RenderCameras");	
+// 	StartProfileTimer("r__RenderCameras");	
 
 	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 	{		
 		m_kRenderCamera[i]->RenderView();
 	}
 	
-	StopProfileTimer("r__RenderCameras");	
+// 	StopProfileTimer("r__RenderCameras");	
 }
 
 Camera* ZeroFps::GetRenderCamera(string strName)

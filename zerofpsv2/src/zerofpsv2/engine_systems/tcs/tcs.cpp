@@ -136,7 +136,7 @@ void Tcs::Update(float fAlphaTime)
 	if(m_kBodys.empty())
 		return;
 	
-	StartProfileTimer("s__tcs");				
+// 	StartProfileTimer("s__tcs");				
 	
 	static float fLastTime= 0; 		
 	static float fStepSize = 0.033333;
@@ -162,7 +162,7 @@ void Tcs::Update(float fAlphaTime)
 	SyncBodys();
 	
 	
-	StartProfileTimer("s__tcs-main");
+// 	StartProfileTimer("s__tcs-main");
 // MAIN LOOP
 	
 	//calculate current forces
@@ -233,7 +233,7 @@ void Tcs::Update(float fAlphaTime)
 	UpdateBodyPos(fStepSize);
 //---------------- End of maaaaaaaaaain loop	
 	
-	StopProfileTimer("s__tcs-main");
+// 	StopProfileTimer("s__tcs-main");
 	
 	//update all character ground line tests	
 	UpdateLineTests(fStepSize);
@@ -256,7 +256,7 @@ void Tcs::Update(float fAlphaTime)
 	ResetForces();
 	
 	
-	StopProfileTimer("s__tcs");			
+// 	StopProfileTimer("s__tcs");			
 }
 
 
