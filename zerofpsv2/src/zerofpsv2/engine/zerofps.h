@@ -208,9 +208,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		//zeroed network stuff
 		void SendZoneList(bool bRemove,int iClientID,int iZoneID = -1);
-		
 		void RotateZoneModel(int iZoneID,Vector3 kRot);
-		
+		vector<int>	GetSelected(NetPacket* pkNetPack);
+
+
 	public:
 
 		/*

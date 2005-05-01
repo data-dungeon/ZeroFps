@@ -179,9 +179,17 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 	return false;
 }
 
+/** \class RuleSystem 
+ *  \ingroup NewSi
+ *  */
 
 namespace SI_RuleSystem
 {
+
+/**	\fn Damage( Target, dDamage )
+		\brief Damages target entity.
+		\relates RuleSystem
+*/
 	int DamageLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) < 2)
@@ -218,6 +226,10 @@ namespace SI_RuleSystem
 		return 0;
 	}	
 
+/**	\fn Attack( Attacker, Defender )
+		\brief Attack target entity.
+		\relates RuleSystem
+*/
 	int AttackLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)

@@ -173,7 +173,8 @@ void ZeroEd::AddPropertyVal()
 		NetPacket kNp;
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("setvariable");
-		kNp.Write(m_iCurrentObject);
+		//kNp.Write(m_iCurrentObject);
+		AddSelected(&kNp);
 		kNp.Write_Str(string(item));
 		kNp.Write_Str(string(val));
 		kNp.Write_Str(string(res));			

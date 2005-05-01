@@ -587,6 +587,17 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
    UpdatePropertyList(m_iCurrentObject);
 }
 
+void ZeroEd::AddSelected(NetPacket* pkNetPack)
+{
+	pkNetPack->Write((int) m_SelectedEntitys.size());
+
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+		int iId = (*itEntity);
+		pkNetPack->Write((int)iId);
+	}
+}
+
 void ZeroEd::SendDeleteSelected()
 {
 	if(m_SelectedEntitys.size() == 0)	
@@ -596,13 +607,14 @@ void ZeroEd::SendDeleteSelected()
 	kNp.Clear();
 	kNp.Write((char) ZFGP_EDIT);
 	kNp.Write_Str("del");
-	kNp.Write((int) m_SelectedEntitys.size());
+	/*kNp.Write((int) m_SelectedEntitys.size());
 
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
 		int iId = (*itEntity);
 		kNp.Write((int)iId);
-	}
+	}*/
+	AddSelected(&kNp);
 	m_pkZeroFps->RouteEditCommand(&kNp);
 
 	m_SelectedEntitys.clear();

@@ -640,7 +640,7 @@ void P_CharacterProperty::Init()
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
+	vector<PropertyValues> kReturn(4);
 
 	kReturn[0].kValueName = "walksound";
 	kReturn[0].iValueType = VALUETYPE_BOOL; 
@@ -654,6 +654,9 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 	kReturn[2].iValueType = VALUETYPE_STRING; 
 	kReturn[2].pkValue    = (void*)&m_strName;		
 	
+	kReturn[3].kValueName = "faction";
+	kReturn[3].iValueType = VALUETYPE_INT; 
+	kReturn[3].pkValue    = (void*)&m_iFaction;		
 			
 	return kReturn;	
 }
@@ -2225,9 +2228,15 @@ bool P_CharacterProperty::UseStamina(float fStamina)
 // SCRIPT INTERFACE FOR P_CharacterProperty
 using namespace ObjectManagerLua;
 
+/** \class CharacterProperty 
+ *  \ingroup Property
+ *  */
 namespace SI_P_CharacterProperty
 {
-	//skill
+/**	\fn AddSkill( EntityID, strSkill, strParent )
+		\brief Adds a skill.
+		\relates CharacterProperty
+*/
 	int AddSkillLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 3)
@@ -2248,6 +2257,10 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 
+/**	\fn AddSkill( EntityID, strSkill, iValue )
+		\brief Change a skill.
+		\relates CharacterProperty
+*/
 	int ChangeSkillLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 3)
@@ -2318,6 +2331,10 @@ namespace SI_P_CharacterProperty
 // 		return 0;			
 // 	}	
 	
+/**	\fn GetCharacterContainerID( EntityID, strContainerName )
+		\brief Unknown
+		\relates CharacterProperty
+*/
 	//eqipment
 	int GetCharacterContainerIDLua(lua_State* pkLua)
 	{
@@ -2357,6 +2374,10 @@ namespace SI_P_CharacterProperty
 		return 0;				
 	}
 	
+/**	\fn MakeAlive( EntityID )
+		\brief Return a dead character to life
+		\relates CharacterProperty
+*/
 	int MakeAliveLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 1)
@@ -2375,6 +2396,10 @@ namespace SI_P_CharacterProperty
 		return 0;
 	}
 
+/**	\fn SetCombatMode( EntityID, bMode )
+		\brief Set if a character is in combat mode.
+		\relates CharacterProperty
+*/
 	//set combat mode ,0 = false, 1 = true
 	int SetCombatModeLua(lua_State* pkLua)
 	{
@@ -2399,6 +2424,10 @@ namespace SI_P_CharacterProperty
 	
 	}
 	
+/**	\fn SetDefaultAttackSkill( EntityID, strSkill )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	//set default attack skill on character
 	int SetDefaultAttackSkillLua(lua_State* pkLua)
 	{
@@ -2421,7 +2450,11 @@ namespace SI_P_CharacterProperty
 	
 		return 0;				
 	}	
-	//faction
+
+/**	\fn SetFaction( EntityID, iFaction )
+		\brief Sets the faction that the character will be a member of.
+		\relates CharacterProperty
+*/
 	int SetFactionLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -2445,6 +2478,10 @@ namespace SI_P_CharacterProperty
 	}
 	
 
+/**	\fn ChangeStat( EntityID, strStat, dValue )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	//stat modification
 	int ChangeStatLua(lua_State* pkLua)
 	{
@@ -2470,6 +2507,10 @@ namespace SI_P_CharacterProperty
 		return 0;				
 	}
 		
+/**	\fn ChangeStatMod( EntityID, strStat, dValue )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	int ChangeStatModLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 3)
@@ -2495,6 +2536,10 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 	
+/**	\fn SetStat( EntityID, strStat, dValue )
+		\brief Set the stat of a character to the choosen value.
+		\relates CharacterProperty
+*/
 	int SetStatLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 3)
@@ -2519,6 +2564,10 @@ namespace SI_P_CharacterProperty
 		return 0;				
 	}	
 	
+/**	\fn AddBuff( EntityID, strBuff )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	//buffs
 	int AddBuffLua(lua_State* pkLua)
 	{
@@ -2539,6 +2588,10 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 
+/**	\fn RemoveBuff( EntityID, strBuff )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	int RemoveBuffLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -2559,6 +2612,10 @@ namespace SI_P_CharacterProperty
 	}
 		
 	
+/**	\fn PickupItem( ??? )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	int PickupItemLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -2595,6 +2652,10 @@ namespace SI_P_CharacterProperty
 		return 0;
 	}
 	
+/**	\fn HaveItem( ??? )
+		\brief Unkown
+		\relates CharacterProperty
+*/
 	int HaveItemLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)

@@ -1355,6 +1355,22 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 	}
 }
 
+vector<int>	ZeroFps::GetSelected(NetPacket* pkNetPack)
+{
+	int iNumOfId, iEntId;
+	vector<int>	kSelected;
+
+	pkNetPack->Read(iNumOfId);
+	for(int i=0; i<iNumOfId; i++) 
+	{
+		pkNetPack->Read(iEntId);
+		kSelected.push_back(iEntId);
+	}
+
+	return kSelected;
+}
+
+
 void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 {
 	char 		szCmd[512];
@@ -1373,11 +1389,15 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 
 	if( szCmd == string("move"))
 	{
-		pkNetPacket->Read(iEntId);
+		vector<int> kSelected = GetSelected(pkNetPacket);
 		pkNetPacket->Read(kMove);
-		
-		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
-			pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+
+		for(int i=0; i<kSelected.size(); i++) 
+		{
+			iEntId = kSelected[i];
+			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
+				pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+		}
 	}
 
 	if( szCmd == string("use"))
@@ -1429,12 +1449,11 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 
 	if( szCmd == string("del"))
 	{
-		int iNumOfId;
-		pkNetPacket->Read(iNumOfId);
+		vector<int> kSelected = GetSelected(pkNetPacket);
 
-		for(int i=0; i<iNumOfId; i++) 
+		for(int i=0; i<kSelected.size(); i++) 
 		{
-			pkNetPacket->Read(iEntId);
+			iEntId = kSelected[i];	//pkNetPacket->Read(iEntId);
 			
 			if(Entity* pkEntity = m_pkEntityManager->GetEntityByID(iEntId))
 			{
@@ -1495,7 +1514,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 			RotateZoneModel(id,kModelRot);
 		}						
 	}
-	
+
 	if( szCmd == string("setvariable") )	
 	{
 		int iCurrentObject;
@@ -1503,30 +1522,36 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		string strValue;
 		string strRes;
 	
-		pkNetPacket->Read(iCurrentObject);
+		vector<int> kSelected = GetSelected(pkNetPacket);
+		//pkNetPacket->Read(iCurrentObject);
 		pkNetPacket->Read_Str(strItem);
 		pkNetPacket->Read_Str(strValue);
 		pkNetPacket->Read_Str(strRes);		
-		
-		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iCurrentObject))
+
+		for(int i=0; i<kSelected.size(); i++) 
 		{
-			if(string("Entity") == string(strItem))
+			iCurrentObject = iEntId = kSelected[i];
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iCurrentObject))
 			{
-				pkEnt->Edit_SetDataString(strValue, strRes);				
-			}	
-			else if(string("Variables") == string(strItem))
-			{
-				pkEnt->SetVarString(strValue, strRes);				
-			}	
-			else
-			{
-				if(Property* pkProp = pkEnt->GetProperty(strItem.c_str()))
+				if(string("Entity") == string(strItem))
 				{
-					pkProp->SetValue(strValue, strRes);
-					pkProp->ResetAllNetUpdateFlags();
-				}							
-			}			
+					pkEnt->Edit_SetDataString(strValue, strRes);				
+				}	
+				else if(string("Variables") == string(strItem))
+				{
+					pkEnt->SetVarString(strValue, strRes);				
+				}	
+				else
+				{
+					if(Property* pkProp = pkEnt->GetProperty(strItem.c_str()))
+					{
+						pkProp->SetValue(strValue, strRes);
+						pkProp->ResetAllNetUpdateFlags();
+					}							
+				}			
+			}
 		}
+			
 	}
 	
 	if( szCmd == string("addproperty") )	

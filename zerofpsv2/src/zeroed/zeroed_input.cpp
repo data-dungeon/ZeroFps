@@ -350,7 +350,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Clear();
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("move");
-		kNp.Write(m_iCurrentObject);
+		AddSelected(&kNp);
+		//kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
 		m_pkZeroFps->RouteEditCommand(&kNp);
 	}

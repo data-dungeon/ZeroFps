@@ -69,7 +69,8 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = . \
-                         doxy.cpp
+                         doxy.cpp \
+                         mcommon\rulesystem.cpp
 FILE_PATTERNS          = si_*.cpp \
                          p_*.cpp \
                          entity.cpp
