@@ -58,34 +58,36 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		cout<<"WARNING: GL_ARB_shadow not supported shadows disabled"<<endl;
 		m_bShadowMap = false;
 	}
+	else	
+	{
+		//SHADOW HACK
 		
-	//SHADOW HACK
-	
-	//find shadowtexture size
-	m_iShadowTexWidth = GetMaxSize(m_pkRender->GetWidth());
-	m_iShadowTexHeight = GetMaxSize(m_pkRender->GetHeight());
+		//find shadowtexture size
+		m_iShadowTexWidth = GetMaxSize(m_pkRender->GetWidth());
+		m_iShadowTexHeight = GetMaxSize(m_pkRender->GetHeight());
+			
+		//cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
-	//cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
+		m_iShadowTexture = -1;
+		m_fShadowArea = 15;
+		
+		glGenTextures(1, &m_iShadowTexture);
+		glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_iShadowTexWidth, m_iShadowTexHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		
 	
-	m_iShadowTexture = -1;
-	m_fShadowArea = 15;
-	
-	glGenTextures(1, &m_iShadowTexture);
-	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_iShadowTexWidth, m_iShadowTexHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	
-
-	//Light projection matrix
- 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
-	m_pkZShaderSystem->MatrixGenerateOrtho(-m_fShadowArea,m_fShadowArea,-m_fShadowArea,m_fShadowArea,m_fNear,m_fFar);
- 	//m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
- 	m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
+		//Light projection matrix
+		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
+		m_pkZShaderSystem->MatrixGenerateOrtho(-m_fShadowArea,m_fShadowArea,-m_fShadowArea,m_fShadowArea,m_fNear,m_fFar);
+		//m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
+		m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
+	}
 }
 
 Camera::~Camera()
