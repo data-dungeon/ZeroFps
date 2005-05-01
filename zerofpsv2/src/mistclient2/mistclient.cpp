@@ -1089,8 +1089,8 @@ void MistClient::Input()
 			}else
 			{
 				//make sure camera is nto to far away
-				if(fDistance > 8.0)
-					fDistance = 8.0;			
+				if(fDistance > 5.0)
+					fDistance = 5.0;			
 				//make sure camera is not to close
 				if(fDistance < 0.2)
 					fDistance = 0.2;

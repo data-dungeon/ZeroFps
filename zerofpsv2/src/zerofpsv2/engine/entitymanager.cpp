@@ -476,7 +476,7 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 	
 	//setup interpolation
 	//pkNew->SetInterpolate(false);
-	pkNew->SetInterpolateFactor(6);
+	pkNew->SetInterpolateFactor(7);
 	
 	return pkNew;
 }
