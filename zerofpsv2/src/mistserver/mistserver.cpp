@@ -448,7 +448,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			
 			// konstig krash, nått med nätverket om man försöker ladda en bana som inte fins
-			// 			m_pkZeroFps->StopAll();
+			m_pkZeroFps->StopAll();
 
 			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
