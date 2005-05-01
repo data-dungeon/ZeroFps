@@ -452,6 +452,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
+				m_pkEntityManager->Clear();
 				cout<<"Error loading world: "<<kCommand->m_kSplitCommand[1]<<endl;
 				break;
 			}				
