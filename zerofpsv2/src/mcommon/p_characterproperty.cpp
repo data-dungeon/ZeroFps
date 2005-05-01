@@ -834,19 +834,19 @@ void P_CharacterProperty::UpdateStats()
 	
 		
 		//stamina
-		int iDrain = 0;		
+		int iDrain = m_kCharacterStats.GetTotal("StaminaRegen");		
 		switch(pkCC->GetCharacterState())
 		{
-			case eWALKING: iDrain = m_kCharacterStats.GetTotal("StaminaRegen"); break;
-			case eRUNNING: iDrain = 5; break;
-			case eJUMPING: iDrain = 10; break;
-			case eSWIMMING: iDrain = 4; break;		
-			case eSITTING: iDrain = -m_kCharacterStats.GetTotal("StaminaRegen"); break;		
+			case eWALKING: iDrain = 0; break;
+			case eRUNNING: iDrain -= 5; break;
+			case eJUMPING: iDrain -= 10; break;
+			case eSWIMMING: iDrain -= 4; break;		
+			case eSITTING: iDrain *= 2; break;		
 		}
-			
+		
 		string strStamina("Stamina");		
-		m_kCharacterStats.ChangeStat(strStamina,-iDrain);
-		m_kCharacterStats.ChangeStat(strStamina,m_kCharacterStats.GetTotal("StaminaRegen"));
+		m_kCharacterStats.ChangeStat(strStamina,iDrain);
+		
 		if(m_kCharacterStats.GetTotal(strStamina) > m_kCharacterStats.GetTotal("StaminaMax"))
 			m_kCharacterStats.SetStat(strStamina,m_kCharacterStats.GetTotal("StaminaMax"));
 		if(m_kCharacterStats.GetTotal(strStamina) < 0)
@@ -855,7 +855,11 @@ void P_CharacterProperty::UpdateStats()
 			
 		//health
 		string strHealth("Health");
-		m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen"));
+		if(pkCC->GetCharacterState() == eSITTING)		
+			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen") * 2);
+		else
+			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen"));
+		
 		if(m_kCharacterStats.GetTotal(strHealth) > m_kCharacterStats.GetTotal("HealthMax"))
 			m_kCharacterStats.SetStat(strHealth,m_kCharacterStats.GetTotal("HealthMax"));
 		if(m_kCharacterStats.GetTotal(strHealth) < 0)
@@ -863,7 +867,11 @@ void P_CharacterProperty::UpdateStats()
 
 		//mana
 		string strMana("Mana");
-		m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen"));
+		if(pkCC->GetCharacterState() == eSITTING)		
+			m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen")*2);
+		else
+			m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen"));		
+		
 		if(m_kCharacterStats.GetTotal(strMana) > m_kCharacterStats.GetTotal("ManaMax"))
 			m_kCharacterStats.SetStat(strMana,m_kCharacterStats.GetTotal("ManaMax"));
 		if(m_kCharacterStats.GetTotal(strMana) < 0)
