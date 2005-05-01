@@ -269,16 +269,23 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
 		void SetDefaultAttackSkill(const string& strDA)		{	m_strDefaultAttackSkill=  strDA;		ResetAllNetUpdateFlags();}
 		
-		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
 		void SetClient(int iConID)									{	m_iConID = iConID;				}	
 		
 		//gets
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
-		int	 GetFaction()											{	return m_iFaction;				}
 		float  GetLegLength()										{	return m_fLegLength;				}
 		float  GetMarkerSize()										{	return m_fMarkerSize;			}
+
+		//faction  stuff
+		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
+		int  GetFaction()												{	return m_iFaction;			}
+				
+		bool IsEnemy(int iCharacterID);						//is specified character an enemy to this character
+		bool IsFriend(int iCharacterID);						//is specified character a friend to this character
+		bool IsNeutral();											//is this character neutral
+		
 		
 		//buff
 		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 

@@ -2225,6 +2225,58 @@ bool P_CharacterProperty::UseStamina(float fStamina)
 	return false;
 }
 
+
+
+bool P_CharacterProperty::IsEnemy(int iCharacterID)
+{
+	//im netural, i have no enemy factions
+	if(m_iFaction == 0)
+		return false;
+
+	if(P_CharacterProperty* pkOtherCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
+	{
+		//im evil , i dont like any other factions
+		if(m_iFaction < 0)
+			if(pkOtherCP->GetFaction() != m_iFaction)
+				return true;
+			
+		//im good , i dont like evil factions
+		if(m_iFaction > 0)
+			if(pkOtherCP->GetFaction() < 0)
+				return true;
+
+	}
+	
+	return false;
+}
+
+bool P_CharacterProperty::IsFriend(int iCharacterID)
+{
+	//im netural, i have no friendly factions
+	if(m_iFaction == 0)
+		return false;
+
+	if(P_CharacterProperty* pkOtherCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
+	{
+		//im evil , im friend with my faction only
+		if(m_iFaction < 0)
+			if(pkOtherCP->GetFaction() == m_iFaction)
+				return true;
+			
+		//im good , im friend with all good factions
+		if(m_iFaction > 0)
+			if(pkOtherCP->GetFaction() > 0)
+				return true;
+	}
+
+	return false;
+}
+
+bool P_CharacterProperty::IsNeutral()
+{
+	return m_iFaction == 0;
+}
+
 // SCRIPT INTERFACE FOR P_CharacterProperty
 using namespace ObjectManagerLua;
 
@@ -2681,6 +2733,86 @@ namespace SI_P_CharacterProperty
 		g_pkScript->AddReturnValue(pkLua, dItemID);							
 		return 1;		
 	}	
+	
+	int IsPcLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,1))
+			return 0;		
+		
+		int iCharcterID;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		
+		int iRet = 0;	
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			if(pkCP->GetIsPlayerCharacter())
+				iRet = 1;
+			
+		g_pkScript->AddReturnValue(pkLua, double(iRet) );							
+		return 1;		
+	}		
+	
+	int IsEnemyLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;		
+		
+		int iCharcterID;
+		int iTargetID;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 0, &iTargetID);
+		
+		int iRet = 0;	
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			if(pkCP->IsEnemy(iTargetID))
+				iRet = 1;
+			
+		g_pkScript->AddReturnValue(pkLua, double(iRet) );							
+		return 1;		
+	}		
+	
+	int IsFriendLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;		
+		
+		int iCharcterID;
+		int iTargetID;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 0, &iTargetID);
+		
+		int iRet = 0;	
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			if(pkCP->IsFriend(iTargetID))
+				iRet = 1;
+			
+		g_pkScript->AddReturnValue(pkLua, double(iRet) );							
+		return 1;		
+	}			
+	
+	int IsNeutralLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,1))
+			return 0;		
+		
+		int iCharcterID;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		
+		int iRet = 0;	
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			if(pkCP->IsNeutral())
+				iRet = 1;
+			
+		g_pkScript->AddReturnValue(pkLua, double(iRet) );							
+		return 1;		
+	}		
 }
 
 
@@ -2725,6 +2857,12 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	
 	//faction
 	g_pkScript->ExposeFunction("SetFaction",		SI_P_CharacterProperty::SetFactionLua);
+	
+	//basic character handling
+	g_pkScript->ExposeFunction("IsPc",				SI_P_CharacterProperty::IsPcLua);
+	g_pkScript->ExposeFunction("IsEnemy",			SI_P_CharacterProperty::IsEnemyLua);
+	g_pkScript->ExposeFunction("IsFriend",			SI_P_CharacterProperty::IsFriendLua);
+	g_pkScript->ExposeFunction("IsNeutral",		SI_P_CharacterProperty::IsNeutralLua);
 	
 	//combat
 	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
