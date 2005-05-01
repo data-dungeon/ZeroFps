@@ -114,7 +114,7 @@ void P_CharacterControl::Update()
 	 		m_bNoClientRotate = true;
 	 	}
 			
-		SetCharacterState(eNONE);
+// 		SetCharacterState(eNONE);
 		return;
 	}
 		
@@ -287,6 +287,7 @@ void P_CharacterControl::Update()
 	// dont let the client rotate a sitting character
 	if(m_iCharacterState == eSITTING)
 	{
+		cout<<"sitting"<<endl;
 		m_bNoClientRotate = true;
 	}	
 	
@@ -635,6 +636,24 @@ namespace SI_P_CharacterControl
 		return 0;
 	}
 	
+	int SetCharacterStateLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;
+		
+		int iCharacterID;
+		int iState;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharacterID);
+		g_pkScript->GetArgInt(pkLua, 1, &iState);
+
+		
+		if(P_CharacterControl* pkCC = (P_CharacterControl*)g_pkObjMan->GetPropertyFromEntityID(iCharacterID,"P_CharacterControl"))
+			pkCC->SetCharacterState(iState);
+		
+		return 0;
+	}	
+	
 	int GetCharacterYAngleLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 1)
@@ -809,6 +828,8 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("SetCharacterControl",		SI_P_CharacterControl::SetCharacterControlLua);
 	g_pkScript->ExposeFunction("ClearCharacterControls",	SI_P_CharacterControl::ClearCharacterControlsLua);
+	g_pkScript->ExposeFunction("SetCharacterState",			SI_P_CharacterControl::SetCharacterStateLua);
+	
 	
 	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
 	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);

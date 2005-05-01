@@ -102,7 +102,6 @@ class MCOMMON_API P_CharacterControl: public Property
 		vector<AnimationSet>	m_kAnimationSets;
 
 		void SetMoveDirection(int iDir);
-		void SetCharacterState(int iState);
 		
 		void UpdateAnimation();			
 		vector<PropertyValues> GetPropertyValues();
@@ -134,7 +133,9 @@ class MCOMMON_API P_CharacterControl: public Property
 		void SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			}
 		void SetForceCrawl(bool bCrawl)						{	m_bForceCrawl = bCrawl;		}
 		void RotateTowards(const Vector3& kPos);
-																			
+							
+		void SetCharacterState(int iState);
+														
 		//get Y rotation																			
 		float GetYAngle()											{	return m_fYAngle;				}
 								
