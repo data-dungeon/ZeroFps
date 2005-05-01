@@ -788,7 +788,9 @@ void MistClient::Input()
 		m_iPickedEntityID = -1;
 	
 		
-
+	if(m_pkInputHandle->VKIsDown("sit"))
+		if(!DelayCommand() )
+			SendSit();
 
 	//fireball test
 	if(m_pkInputHandle->Pressed(KEY_1))
@@ -1137,19 +1139,13 @@ void MistClient::Input()
 			//rotate character
 			if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntityManager->GetPropertyFromEntityID(m_iCharacterID,"P_CharacterControl"))
 			{
-				if(pkCC->GetEnabled())			
+				if(!pkCC->GetNoClientRotation())			
 				{
-//  					pkCharacter->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,true);
-				
 					Matrix4 kRot;
 					kRot.Identity();
 					kRot.Rotate(0,pkCam->Get3PYAngle(),0);
 					kRot.Transponse();				
 					pkCharacter->SetLocalRotM(kRot);			
-				}
-				else
-				{
-//  					pkCharacter->SetNetIgnoreFlag(NETUPDATEFLAG_ROT,false);
 				}
 			}
 		}
@@ -1999,6 +1995,17 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 // 	{
 // 		m_pkGui->ShowCursor(false);
 // 	}
+}
+
+void MistClient::SendSit()
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_SIT);
+	
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
+
 }
 
 void MistClient::SendAddSkillToQueue(const string& strSkill,int iTargetID)

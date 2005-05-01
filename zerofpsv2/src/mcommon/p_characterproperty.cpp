@@ -841,6 +841,7 @@ void P_CharacterProperty::UpdateStats()
 			case eRUNNING: iDrain = 5; break;
 			case eJUMPING: iDrain = 10; break;
 			case eSWIMMING: iDrain = 4; break;		
+			case eSITTING: iDrain = -m_kCharacterStats.GetTotal("StaminaRegen"); break;		
 		}
 			
 		string strStamina("Stamina");		

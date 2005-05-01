@@ -77,6 +77,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		float			m_fLockTime;
 		bool			m_bEnabled;
+		bool			m_bNoClientRotate;
 		
 		float			m_fSpeed;
 		float			m_fJumpForce;
@@ -100,6 +101,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		int			m_iCurrentSet;
 		vector<AnimationSet>	m_kAnimationSets;
 
+		void SetMoveDirection(int iDir);
+		void SetCharacterState(int iState);
 		
 		void UpdateAnimation();			
 		vector<PropertyValues> GetPropertyValues();
@@ -115,38 +118,44 @@ class MCOMMON_API P_CharacterControl: public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);		
 		
+		//set client connection id if anny
 		void SetClient(int iConID)								{	m_iConnectionID=iConID;		}
 		
+		//set current animation set
 		void SetAnimationSet(int iSet)						{	m_iCurrentSet= iSet;			}
 		int  GetAnimationSet()									{	return m_iCurrentSet;		}
+		
+		//controls
+		void Sit();
 		void SetControl(int iControl,bool bState);
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
 																			m_fPAngle = fPAngle;			}
-		float GetYAngle()											{	return m_fYAngle;				}
-		void  SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			}
-								
+		void SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			}
 		void SetForceCrawl(bool bCrawl)						{	m_bForceCrawl = bCrawl;		}
-								
 		void RotateTowards(const Vector3& kPos);
-							
-		void SetMoveDirection(int iDir);
+																			
+		//get Y rotation																			
+		float GetYAngle()											{	return m_fYAngle;				}
+								
 		int  GetMovedirection()									{	return m_iDirection;			}
 		bool GetControl(int iKey);																			
-		void SetCharacterState(int iState);
 		int  GetCharacterState()								{	return m_iCharacterState;	}
 		
-																												
+		//movement stats																												
 		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}
 		void SetJumpForce(float fJump)						{	m_fJumpForce = fJump;		}
 
 		
-			
+		//animation stuff
 		void DoEmote(int iEmoteID);
 		void DoAnimation(const string& strAnim);
+		
+		//locking
 		void Lock(float fTime);
 		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		ResetAllNetUpdateFlags();}
-		bool GetEnabled()											{	return m_bEnabled;			} 
+		bool GetEnabled()											{	return m_bEnabled;			}
+		bool GetNoClientRotation()								{	return m_bNoClientRotate;	}
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();
