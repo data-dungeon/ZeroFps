@@ -388,6 +388,7 @@ void NetWork::CloseSocket()
 	if(!m_pkSocket)	return;
 	SDLNet_UDP_Close(m_pkSocket);
 	m_pkSocket = NULL;
+	m_eNetStatus = NET_NONE;
 }
 
 void NetWork::ServerStart(int iPort)
