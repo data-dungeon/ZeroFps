@@ -472,7 +472,7 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 
 bool P_Container::SetupTwohanded(bool bEnable)
 {
-	cout<<"setting up twohanded"<<endl;
+	//cout<<"setting up twohanded"<<endl;
 
 	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
 	{
