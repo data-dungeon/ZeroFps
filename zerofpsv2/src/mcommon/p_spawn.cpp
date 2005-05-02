@@ -11,9 +11,9 @@ P_Spawn::P_Spawn()
 	
 	m_iVersion = 1;
 	
-	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkEntityManager=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+// 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+// 	m_pkEntityManager=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+// 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 
 	
 
@@ -33,8 +33,8 @@ void P_Spawn::Update()
 // 		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(0.5,1,0.5),true);	
 // 	}
 
-	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
-	{
+// 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
+// 	{
 		if(m_pkEntityManager->GetSimTime() > m_fStartTime + m_fSpawnDelay)
 		{
 			//cout<<"spawning "<<m_strEntityScript<<endl;
@@ -48,7 +48,7 @@ void P_Spawn::Update()
 			//remove self
 			m_pkEntityManager->Delete(m_pkEntity);
 		}
-	}
+// 	}
 }
 
 
