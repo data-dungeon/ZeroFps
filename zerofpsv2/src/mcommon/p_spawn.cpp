@@ -6,35 +6,38 @@
 P_Spawn::P_Spawn()
 {
 	strcpy(m_acName,"P_Spawn");		
-	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
+	
+	m_iVersion = 1;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityManager=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 
+	
 
 	m_strEntityScript = "";
 	m_fSpawnDelay		=	1;
 	
 	m_fStartTime 		=	m_pkEntityManager->GetSimTime();
 	
-	cout<<"spawner created"<<endl;
+	//cout<<"spawner created"<<endl;
 }
 
 
 void P_Spawn::Update()
 {
-	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
-	{
-		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(0.5,1,0.5),true);	
-	}
+// 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
+// 	{
+// 		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(0.5,1,0.5),true);	
+// 	}
 
 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
 		if(m_pkEntityManager->GetSimTime() > m_fStartTime + m_fSpawnDelay)
 		{
-			cout<<"spawning "<<m_strEntityScript<<endl;
+			//cout<<"spawning "<<m_strEntityScript<<endl;
 		
 			//create spawn
 			if(!m_pkEntityManager->CreateEntityFromScriptInZone(m_strEntityScript.c_str(),m_pkEntity->GetWorldPosV(),m_pkEntity->GetCurrentZone()))
@@ -68,13 +71,14 @@ void P_Spawn::Save(ZFIoInterface* pkPackage)
 {	
 	pkPackage->Write_Str(m_strEntityScript);
 	pkPackage->Write(m_fSpawnDelay);
+	pkPackage->Write(m_fStartTime);
 }
 
 void P_Spawn::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	pkPackage->Read_Str(m_strEntityScript);
 	pkPackage->Read(m_fSpawnDelay);
-
+	pkPackage->Read(m_fStartTime);
 }
 
 
