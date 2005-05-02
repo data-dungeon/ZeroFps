@@ -3,6 +3,7 @@
 #include "p_container.h"
 #include "p_item.h"
 #include "p_buff.h"
+#include "p_spawn.h"
 #include "ml_netmessages.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
@@ -554,7 +555,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	9;
+	m_iVersion = 	10;
 	
 	//initiate stuff
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
@@ -580,6 +581,10 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bDead					=	false;
 	m_fDeadTimer			=	0;
 	m_fDecayTime			=	60;
+	
+	m_fRespawnTime			=	-1;
+	m_iRespawnZone			=	-1;
+	m_kRespawnPos			=	Vector3(0,0,0);
 	
 	m_fCombatTimer			=	0;
 	m_strDefaultAttackSkill = "skill-basic_attack.lua";
@@ -640,7 +645,7 @@ void P_CharacterProperty::Init()
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(4);
+	vector<PropertyValues> kReturn(5);
 
 	kReturn[0].kValueName = "walksound";
 	kReturn[0].iValueType = VALUETYPE_BOOL; 
@@ -658,6 +663,11 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 	kReturn[3].iValueType = VALUETYPE_INT; 
 	kReturn[3].pkValue    = (void*)&m_iFaction;		
 			
+	kReturn[4].kValueName = "respawntime";
+	kReturn[4].iValueType = VALUETYPE_FLOAT; 
+	kReturn[4].pkValue    = (void*)&m_fRespawnTime;		
+	
+	
 	return kReturn;	
 }
 
@@ -1019,7 +1029,10 @@ void P_CharacterProperty::OnDeath()
 		if(P_AI* pkAI = (P_AI*)m_pkEntity->GetProperty("P_AI"))
 		{
 			pkAI->SetState(eAI_STATE_DEAD);
-		}				
+		}
+		
+		//create spawner, could be evil if this character is rewived
+		CreateSpawner();				
 	}
 	else
 	{		
@@ -1093,6 +1106,17 @@ void P_CharacterProperty::UpdateSkills()
 	}
 }
 
+void P_CharacterProperty::SetupSpawnPos()
+{
+	//if we already have a respawn pos and zone, ignore it
+ 	if(m_iRespawnZone != -1)
+ 		return;
+
+	m_iRespawnZone = m_pkEntity->GetCurrentZone();
+	m_kRespawnPos = m_pkEntity->GetWorldPosV();
+	
+// 	cout<<"UPDATED SPAWN POSITON: zone "<<m_iRespawnZone<<endl;
+}
 
 void P_CharacterProperty::SetupContainers()
 {
@@ -1419,6 +1443,8 @@ void P_CharacterProperty::Update()
 		//SERVER
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 		{
+// 			cout<<"wtf:"<<m_pkEntity->GetCurrentZone()<<endl;
+		
 			//try to find items on load
 			if(m_bFirstUpdate)
 			{
@@ -1431,7 +1457,10 @@ void P_CharacterProperty::Update()
 				if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
 				{
 					m_fLegLength = pkTcs->GetLegLength();				
-				}				
+				}	
+				
+				//setup spawn pos
+				SetupSpawnPos();			
 			}
 		
 			//if not dead
@@ -1490,6 +1519,28 @@ void P_CharacterProperty::Update()
 			}
 		}	
 	}		
+}
+
+void P_CharacterProperty::CreateSpawner()
+{
+	if(m_fRespawnTime != -1)
+	{
+		//spawner created, disable spawning on this character
+		m_fRespawnTime = -1;
+	
+		//create a spawner
+		if(Entity* pkEnt = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/game objects/spawner.lua",m_kRespawnPos,m_iRespawnZone))
+		{
+			if(P_Spawn* pkSpawn = (P_Spawn*)pkEnt->GetProperty("P_Spawn"))
+			{
+				if(ZFResourceHandle* pkScript = m_pkEntity->GetEntityScript())
+				{			
+					pkSpawn->SetSpawnScript(pkScript->GetRes());
+					pkSpawn->SetSpawnDelay(m_fRespawnTime);
+				}
+			}
+		}	
+	}
 }
 
 void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
@@ -1897,6 +1948,10 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_fMarkerSize);		
 	pkPackage->Write(m_bDead);	
 	
+	pkPackage->Write(m_fRespawnTime);	
+	pkPackage->Write(m_iRespawnZone);	
+	pkPackage->Write(m_kRespawnPos);	
+	
 	pkPackage->Write_Str(m_strDefaultAttackSkill);
 	
 	m_kCharacterStats.Save(pkPackage);
@@ -1926,94 +1981,6 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	switch(iVersion)
 	{
-		case 1:
-		{
-			pkPackage->Read_Str(m_strName);	
-			pkPackage->Read_Str(m_strOwnedByPlayer);	
-			pkPackage->Read(m_bIsPlayerCharacter); 
-		
-			break;		
-		}
-		
-		case 2:
-		{
-			pkPackage->Read_Str(m_strName);	
-			pkPackage->Read_Str(m_strOwnedByPlayer);	
-			pkPackage->Read(m_bIsPlayerCharacter); 		
-		
-			m_kCharacterStats.Load(pkPackage);
-			break;
-		}
-	
-		case 3:
-		{
-			pkPackage->Read_Str(m_strName);	
-			pkPackage->Read_Str(m_strOwnedByPlayer);	
-			pkPackage->Read(m_bIsPlayerCharacter); 		
-			pkPackage->Read(m_iFaction); 		
-		
-			m_kCharacterStats.Load(pkPackage);
-			break;
-		}		
-		
-		case 4:
-		{
-			pkPackage->Read_Str(m_strName);	
-			pkPackage->Read_Str(m_strOwnedByPlayer);	
-			pkPackage->Read(m_bIsPlayerCharacter); 		
-			pkPackage->Read(m_iFaction); 		
-			pkPackage->Read(m_bWalkSound); 		
-		
-			m_kCharacterStats.Load(pkPackage);
-			break;
-		}		
-		
-		case 5:
-		{
-			pkPackage->Read_Str(m_strName);	
-			pkPackage->Read_Str(m_strOwnedByPlayer);	
-			pkPackage->Read(m_bIsPlayerCharacter); 		
-			pkPackage->Read(m_iFaction); 		
-			pkPackage->Read(m_bWalkSound); 		
-			pkPackage->Read(m_fMarkerSize); 
-			
-			m_kCharacterStats.Load(pkPackage);
-			break;
-		}			
-		
-		
-		case 6:
-		{
-			pkPackage->Read_Str(m_strName);	
-			pkPackage->Read_Str(m_strOwnedByPlayer);	
-			pkPackage->Read(m_bIsPlayerCharacter); 		
-			pkPackage->Read(m_iFaction); 		
-			pkPackage->Read(m_bWalkSound); 		
-			pkPackage->Read(m_fMarkerSize); 
-			
-			m_kCharacterStats.Load(pkPackage);
-			
-			//load skills
-			RemoveAllSkills();
-			
-			int		iNrOfSkills;
-			string	strSkill;
-			string	strParent;
-			int 		iLevel;
-			
-			pkPackage->Read(iNrOfSkills);			
-			for(int i=0;i<iNrOfSkills;i++)
-			{
-				pkPackage->Read_Str(strSkill);
-				pkPackage->Read_Str(strParent);
-				pkPackage->Read(iLevel);
-				
-				AddSkill(strSkill,strParent);
-				SetSkill(strSkill,iLevel);
-			}
-			
-			break;
-		}			
 		
 		case 7:
 		{
@@ -2132,6 +2099,51 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			
 			break;		
 		}	
+		
+		case 10:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			pkPackage->Read(m_bDead); 
+		
+			pkPackage->Read(m_fRespawnTime);	
+			pkPackage->Read(m_iRespawnZone);	
+			pkPackage->Read(m_kRespawnPos);				
+			
+			pkPackage->Read_Str(m_strDefaultAttackSkill);
+			
+			m_kCharacterStats.Load(pkPackage);
+			
+			//load skills
+			RemoveAllSkills();
+			
+			int		iNrOfSkills;
+			string	strSkill;
+			string	strParent;
+			int 		iLevel;
+			float		fTimeLeft;
+			
+			pkPackage->Read(iNrOfSkills);			
+			for(int i=0;i<iNrOfSkills;i++)
+			{
+				pkPackage->Read_Str(strSkill);
+				pkPackage->Read_Str(strParent);
+				pkPackage->Read(iLevel);
+				pkPackage->Read(fTimeLeft);
+				
+				AddSkill(strSkill,strParent);
+				SetSkill(strSkill,iLevel);
+				
+				if(Skill* pkSkill = GetSkillPointer(strSkill))
+					pkSkill->SetTimeLeft(fTimeLeft);
+			}
+			
+			break;		
+		}			
 	}
 }
 
@@ -2879,3 +2891,97 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 }
 
 
+
+
+
+
+// ------------ GRAVEYARD ---------------
+
+// 		case 1:
+// 		{
+// 			pkPackage->Read_Str(m_strName);	
+// 			pkPackage->Read_Str(m_strOwnedByPlayer);	
+// 			pkPackage->Read(m_bIsPlayerCharacter); 
+// 		
+// 			break;		
+// 		}
+// 		
+// 		case 2:
+// 		{
+// 			pkPackage->Read_Str(m_strName);	
+// 			pkPackage->Read_Str(m_strOwnedByPlayer);	
+// 			pkPackage->Read(m_bIsPlayerCharacter); 		
+// 		
+// 			m_kCharacterStats.Load(pkPackage);
+// 			break;
+// 		}
+// 	
+// 		case 3:
+// 		{
+// 			pkPackage->Read_Str(m_strName);	
+// 			pkPackage->Read_Str(m_strOwnedByPlayer);	
+// 			pkPackage->Read(m_bIsPlayerCharacter); 		
+// 			pkPackage->Read(m_iFaction); 		
+// 		
+// 			m_kCharacterStats.Load(pkPackage);
+// 			break;
+// 		}		
+// 		
+// 		case 4:
+// 		{
+// 			pkPackage->Read_Str(m_strName);	
+// 			pkPackage->Read_Str(m_strOwnedByPlayer);	
+// 			pkPackage->Read(m_bIsPlayerCharacter); 		
+// 			pkPackage->Read(m_iFaction); 		
+// 			pkPackage->Read(m_bWalkSound); 		
+// 		
+// 			m_kCharacterStats.Load(pkPackage);
+// 			break;
+// 		}		
+// 		
+// 		case 5:
+// 		{
+// 			pkPackage->Read_Str(m_strName);	
+// 			pkPackage->Read_Str(m_strOwnedByPlayer);	
+// 			pkPackage->Read(m_bIsPlayerCharacter); 		
+// 			pkPackage->Read(m_iFaction); 		
+// 			pkPackage->Read(m_bWalkSound); 		
+// 			pkPackage->Read(m_fMarkerSize); 
+// 			
+// 			m_kCharacterStats.Load(pkPackage);
+// 			break;
+// 		}			
+// 		
+// 		
+// 		case 6:
+// 		{
+// 			pkPackage->Read_Str(m_strName);	
+// 			pkPackage->Read_Str(m_strOwnedByPlayer);	
+// 			pkPackage->Read(m_bIsPlayerCharacter); 		
+// 			pkPackage->Read(m_iFaction); 		
+// 			pkPackage->Read(m_bWalkSound); 		
+// 			pkPackage->Read(m_fMarkerSize); 
+// 			
+// 			m_kCharacterStats.Load(pkPackage);
+// 			
+// 			//load skills
+// 			RemoveAllSkills();
+// 			
+// 			int		iNrOfSkills;
+// 			string	strSkill;
+// 			string	strParent;
+// 			int 		iLevel;
+// 			
+// 			pkPackage->Read(iNrOfSkills);			
+// 			for(int i=0;i<iNrOfSkills;i++)
+// 			{
+// 				pkPackage->Read_Str(strSkill);
+// 				pkPackage->Read_Str(strParent);
+// 				pkPackage->Read(iLevel);
+// 				
+// 				AddSkill(strSkill,strParent);
+// 				SetSkill(strSkill,iLevel);
+// 			}
+// 			
+// 			break;
+// 		}			
