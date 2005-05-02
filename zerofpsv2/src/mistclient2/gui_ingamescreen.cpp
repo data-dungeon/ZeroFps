@@ -1,6 +1,7 @@
 #include	"mistclient.h"
 #include "gui_inventory.h"
 #include "gui_equipwnd.h"
+#include "skillbar.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
@@ -69,6 +70,15 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			//{
 			//	g_kMistClient.ResizeChatDlg(false);
 			//}
+		}
+		else
+		if(strMainWnd == "SkillBar")
+		{
+			cout<<"skillbar"<<endl;
+			if(strController == "SkillButton0")
+			{
+				cout<<"Pressed skillbutton 0"<<endl;
+			}
 		}
 	}
 
@@ -294,6 +304,7 @@ void MistClient::LoadInGameGui()
 		return;
 	}
 
+	m_pkSkillBar->Init();		//initiate the skillbar
 	InitBuffWnd();
 
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->ToggleMultiLine(true);
@@ -327,6 +338,8 @@ void MistClient::LoadInGameGui()
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
 
 	m_pkGui->SetFocus(GetWnd("GuiMainWnd"), false);
+	
+	
 }
 
 void MistClient::InitBuffWnd()

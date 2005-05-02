@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+class ZGuiButton;
+
 using namespace std;
 
 class SkillInfo
@@ -16,6 +18,9 @@ class SkillInfo
 		string	m_strSkillIcon;
 
 		float		m_fReloadTimeLeft;
+		
+		ZGuiButton*	m_pkButton;
+	
 };
 
 class SkillBar
@@ -26,6 +31,8 @@ class SkillBar
 
 	public:
 		SkillBar();
+		
+		void Init();
 
 		void Update();
 };
