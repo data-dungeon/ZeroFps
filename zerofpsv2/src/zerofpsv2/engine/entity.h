@@ -237,7 +237,6 @@ class ENGINE_API Entity
 
 		NetWorkRole					m_eRole;								///< This node power on Entity.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on Entity.
-      string                  m_strCreatedFromScript;			// which script the Entity was created from. used when splitting items
 	
 		~Entity();
 		

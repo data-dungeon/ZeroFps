@@ -114,7 +114,7 @@ void P_CharacterControl::Update()
 	 		m_bNoClientRotate = true;
 	 	}
 			
-// 		SetCharacterState(eNONE);
+		SetCharacterState(eNONE);
 		return;
 	}
 		
@@ -287,7 +287,7 @@ void P_CharacterControl::Update()
 	// dont let the client rotate a sitting character
 	if(m_iCharacterState == eSITTING)
 	{
-		cout<<"sitting"<<endl;
+		//cout<<"sitting"<<endl;
 		m_bNoClientRotate = true;
 	}	
 	

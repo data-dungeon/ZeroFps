@@ -553,7 +553,6 @@ Entity* EntityManager::CreateEntityFromScript(const char* acName)
 	pkReturnObj->m_strType	= &acName[pos];
 	pkReturnObj->m_strName	= string("A ") + &acName[pos];
 	pkReturnObj->m_pScriptFileHandle->SetRes(acName);
-   pkReturnObj->m_strCreatedFromScript = acName;
 	
 	CallFunction(pkReturnObj, "FirstRun");
 

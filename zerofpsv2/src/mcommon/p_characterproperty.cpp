@@ -1524,10 +1524,7 @@ void P_CharacterProperty::Update()
 void P_CharacterProperty::CreateSpawner()
 {
 	if(m_fRespawnTime != -1)
-	{
-		//spawner created, disable spawning on this character
-		m_fRespawnTime = -1;
-	
+	{	
 		//create a spawner
 		if(Entity* pkEnt = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/game objects/spawner.lua",m_kRespawnPos,m_iRespawnZone))
 		{
@@ -1540,6 +1537,9 @@ void P_CharacterProperty::CreateSpawner()
 				}
 			}
 		}	
+		
+		//spawner created, disable spawning on this character
+		m_fRespawnTime = -1;
 	}
 }
 

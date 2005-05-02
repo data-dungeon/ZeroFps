@@ -15,32 +15,18 @@ using namespace std;
 /**	\brief	Da P_Spawn
 		\ingroup Common
 */
-class MCOMMON_API P_Spawn: public Property {
-	private:
-		enum Spawn_Mode
-		{
-			POINT_SPAWN,
-			AREA_SPAWN,		
-		};
-		
-		
+class MCOMMON_API P_Spawn: public Property 
+{
+	private:			
 		ZeroFps* 		m_pkFps;
 		EntityManager* m_pkEntityManager;
 		Render*			m_pkRender;
 		
-		vector<int>	m_kEntitys;
-
-		int	m_iEntityCounter;
-		int	m_iMaxEntitys;
-		float	m_fSpawnDelay;
+		string			m_strEntityScript;
+		float				m_fSpawnDelay;
 		
-		int	m_iSpawnMode;
-		float	m_fSpawnRadius;
-
-		string m_strTemplate;
-
-		float m_fTimer;
-
+		float				m_fStartTime;
+		
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
@@ -48,14 +34,12 @@ class MCOMMON_API P_Spawn: public Property {
 		
 		void Update();
 			
-		void SpawnEntity(Vector3 kPos);
-		void RemoveEntity(Entity* pkEnt);
-			
+		void SetSpawnScript(const string& strScript)					{	m_strEntityScript = strScript;	}
+		void SetSpawnDelay(float fDelay)									{	m_fSpawnDelay = fDelay;				}
+		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 			
-//		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
-//		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 };
 
 MCOMMON_API Property* Create_P_Spawn();

@@ -156,7 +156,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//death
 		bool			m_bDead;
 		float			m_fDeadTimer;
-		float			m_fDecayTime;										//how long does a non player body stay in the world before decaying
+		float			m_fDecayTime;					//how long does a non player body stay in the world before decaying
 		
 		//combat		
 		bool								m_bCombatMode;
@@ -165,6 +165,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string							m_strDefaultAttackSkill;
 		float								m_fCombatTimer;
 		int								m_iLastDamageFrom;			//what character did the last damage on me
+		
+		//respawn
+		float			m_fRespawnTime;
+		int			m_iRespawnZone;
+		Vector3		m_kRespawnPos;
 		
 		//skills
 		vector<Skill*>	m_kSkills;				//what skills do we have
@@ -217,7 +222,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void UpdateSkills();					//updates skill reloads and so on
 
 		void SetupCharacterStats();		//first tim character stat setup
-		
+		void SetupSpawnPos();
+		void CreateSpawner();	
 		
 		void OnDeath();
 		void OnLevelUP();

@@ -951,10 +951,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	
 	pkFile->Read(pos);	
 	pkFile->Read(rot);	
-	
-	SetLocalRotM(rot);
-	SetLocalPosV(pos);
-	
+		
 	pkFile->Read(m_kVel);	
 	pkFile->Read(m_kAcc);	
 	pkFile->Read(m_fRadius);		
@@ -963,8 +960,11 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	pkFile->Read(m_bSave);		
 	
 	pkFile->Read(m_bZone);			
-	pkFile->Read(m_bUseZones);				
+	pkFile->Read(m_bUseZones);	
 	
+	SetLocalRotM(rot);					//dvoid flytta ner dessa två så dom hamna efter usezones, annars kopplas odm inte korret till zonen vid laddning
+	SetLocalPosV(pos);					//
+		
 	pkFile->Read(m_eRole);		
 	pkFile->Read(m_eRemoteRole);				
 
