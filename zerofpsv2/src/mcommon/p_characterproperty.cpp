@@ -944,6 +944,7 @@ void P_CharacterProperty::MakeAlive()
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
 	{
 		pkCC->SetEnabled(true);	
+		pkCC->SetCharacterState(eIDLE_STANDING);		//this will make the character stand up when awakens
 	}
 
 	//enable sphere collissions on tcs again
