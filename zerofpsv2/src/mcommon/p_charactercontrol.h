@@ -154,9 +154,10 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		//locking
 		void Lock(float fTime);
-		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		ResetAllNetUpdateFlags();}
+		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		}
 		bool GetEnabled()											{	return m_bEnabled;			}
 		bool GetNoClientRotation()								{	return m_bNoClientRotate;	}
+		void SetNoClientRotation(bool bRot);
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();

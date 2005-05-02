@@ -103,7 +103,7 @@ vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 
 void P_CharacterControl::Update()
 {	
-	m_bNoClientRotate = false;
+	SetNoClientRotation(false);
 
 	
 	if(!m_bEnabled || m_pkEntityManager->GetSimTime() < m_fLockTime)
@@ -111,7 +111,7 @@ void P_CharacterControl::Update()
 		if(m_iConnectionID != -1)
 		{
 	 		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,false);
-	 		m_bNoClientRotate = true;
+	 		SetNoClientRotation(true);
 	 	}
 			
 		SetCharacterState(eNONE);
@@ -130,7 +130,7 @@ void P_CharacterControl::Update()
 	//is sitting ?
 	if(m_iConnectionID != -1)
 	{
-		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,true);		
+		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,true);	
 	}
 	
 	
@@ -288,7 +288,7 @@ void P_CharacterControl::Update()
 	if(m_iCharacterState == eSITTING)
 	{
 		//cout<<"sitting"<<endl;
-		m_bNoClientRotate = true;
+		SetNoClientRotation(true);
 	}	
 	
 	//only rotate non sitting characters
@@ -305,6 +305,16 @@ void P_CharacterControl::Update()
 	//update animation
 	UpdateAnimation();
 
+}
+
+void P_CharacterControl::SetNoClientRotation(bool bRot)
+{
+	if(m_bNoClientRotate == bRot)
+		return;
+	
+	m_bNoClientRotate = bRot;
+	
+	ResetAllNetUpdateFlags();
 }
 
 void P_CharacterControl::Sit()
@@ -546,9 +556,7 @@ void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
 	pkNetPacket->Write(m_iCharacterState);
-	pkNetPacket->Write(m_iDirection);
-	
-	
+	pkNetPacket->Write(m_iDirection);		
 	pkNetPacket->Write(m_bNoClientRotate);
 	
 	
@@ -558,8 +566,7 @@ void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	pkNetPacket->Read(m_iCharacterState);
-	pkNetPacket->Read(m_iDirection);
-	
+	pkNetPacket->Read(m_iDirection);	
 	pkNetPacket->Read(m_bNoClientRotate);
 }
 
