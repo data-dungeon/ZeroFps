@@ -1056,6 +1056,7 @@ void MistClient::Input()
 			}
 			else
 			{
+				/*
 				//hot edge camera rotation
 				if(fAx >= 0.49)
 					pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*100);
@@ -1066,6 +1067,7 @@ void MistClient::Input()
 					pkCam->Set3PPAngle(pkCam->Get3PPAngle() + m_pkZeroFps->GetFrameTime()*100);
 				if(fAy <= -0.49)
 					pkCam->Set3PPAngle(pkCam->Get3PPAngle() - m_pkZeroFps->GetFrameTime()*100);
+				*/					
 			}
 			
 			//rotate camera by keyboard
