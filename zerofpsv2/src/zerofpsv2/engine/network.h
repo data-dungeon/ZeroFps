@@ -274,6 +274,7 @@ public:
 	// Send
 	bool SendRaw(NetPacket* pkNetPacket);
 	bool Send2(NetPacket* pkNetPacket);
+	bool RealSend2(NetPacket* pkNetPacket);
 	void SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp);
 
 //	void SendToAllClients(NetPacket* pkNetPacket);

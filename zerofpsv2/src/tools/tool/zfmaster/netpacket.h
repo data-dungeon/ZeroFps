@@ -18,6 +18,7 @@ struct ZFNetHeader
 {
 	int				m_iOrder;							//  Order of packet 
 	unsigned char	m_iPacketType;						//  Type of packet.
+	unsigned char	m_iSplit;	
 };
 
 /// The Full Data in a Network packet.

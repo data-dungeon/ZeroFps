@@ -210,6 +210,20 @@ void NetPacket::WriteNp(NetPacket* pkNp)
 
 }
 
+void NetPacket::WriteNp(NetPacket* pkNp,int iStart,int iSize)
+{
+	if( ( pkNp->m_iLength - iStart ) < iSize)
+		iSize = ( pkNp->m_iLength - iStart );
+
+	unsigned char * add = &m_kData.m_acData[m_iPos];
+	
+	memcpy(add, &pkNp->m_kData.m_acData[iStart], iSize);
+	
+	m_iPos +=  iSize;
+	m_iLength += iSize;
+
+}
+
 void NetPacket::Write_Str(const string& strString)
 {
 	Write(strString.size()+1);

@@ -99,7 +99,7 @@ void MistClient::OnInit()
 	RegisterResources();
 	
 	//grab input
-	m_pkInput->ToggleGrab(true);
+// 	m_pkInput->ToggleGrab(true);
 	
 	//setup referense sound distance
 	//m_pkAudioSys->SetReferensDistance(0.25);
@@ -803,18 +803,18 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-resurrect.lua",5);
 			SendAddSkillToSkillbar("skill-bolt.lua",6);
 			
-// 			SendAddSkillToSkillbar("skill-fireball.lua",7);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",8);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",9);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",10);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",11);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",12);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",13);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",14);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",15);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",16);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",17);
-// 			SendAddSkillToSkillbar("skill-fireball.lua",18);
+			SendAddSkillToSkillbar("skill-fireball.lua",7);
+			SendAddSkillToSkillbar("skill-fireball.lua",8);
+			SendAddSkillToSkillbar("skill-fireball.lua",9);
+			SendAddSkillToSkillbar("skill-fireball.lua",10);
+			SendAddSkillToSkillbar("skill-fireball.lua",11);
+			SendAddSkillToSkillbar("skill-fireball.lua",12);
+			SendAddSkillToSkillbar("skill-fireball.lua",13);
+			SendAddSkillToSkillbar("skill-fireball.lua",14);
+			SendAddSkillToSkillbar("skill-fireball.lua",15);
+			SendAddSkillToSkillbar("skill-fireball.lua",16);
+			SendAddSkillToSkillbar("skill-fireball.lua",17);
+			SendAddSkillToSkillbar("skill-fireball.lua",18);
 		}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))

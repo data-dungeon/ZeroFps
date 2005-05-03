@@ -11,6 +11,8 @@
 using namespace std;
 
 #define MAX_PACKET_SIZE					1024				// Max Bytes in each packet.
+//#define MAX_PACKET_SIZE					10000				// Max Bytes in each packet.
+#define MAX_PACKETDATA_SIZE					10000				// Max Bytes in each packet.
 
 //	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
 #pragma pack( 1 )
@@ -21,13 +23,14 @@ struct ZFNetHeader
 {
 	int				m_iOrder;							//  Order of packet 
 	unsigned char	m_iPacketType;						//  Type of packet.
+	unsigned char	m_iSplit;
 };
 
 /// The Full Data in a Network packet.
 struct ZFNetPacketData
 {
 	ZFNetHeader		m_kHeader;							
-	unsigned char	m_acData[MAX_PACKET_SIZE];		
+	unsigned char	m_acData[MAX_PACKETDATA_SIZE];		
 };
 
 #pragma pack(  )
@@ -61,6 +64,7 @@ public:
 	bool IsReadError() { return m_bReadError; }
 
 	void WriteNp(NetPacket* pkNp);
+	void WriteNp(NetPacket* pkNp,int iStart,int iSize);
 
 	void Write_Str(const char* szString);
 	void Read_Str(char* szString);
@@ -74,7 +78,7 @@ public:
 
 	template <class Any> 
 	void Write(Any type) {
-		ZFAssert((m_iPos + sizeof(type)) < MAX_PACKET_SIZE, "NetPacket::Write");
+		//ZFAssert((m_iPos + sizeof(type)) < MAX_PACKET_SIZE, "NetPacket::Write");
 
 		unsigned char * add = &m_kData.m_acData[m_iPos];
 		memcpy(add, &type, sizeof(type));

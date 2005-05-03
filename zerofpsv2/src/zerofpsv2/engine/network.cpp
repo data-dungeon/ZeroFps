@@ -774,9 +774,62 @@ void NetWork::SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp)
 
 bool NetWork::Send2(NetPacket* pkNetPacket)
 {
+	static int iSpliceSize = 1000;
+
+	if(pkNetPacket->m_iLength > iSpliceSize)
+	{
+		cout<<"This package is to big"<<endl;	
+		if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == ZF_NETTYPE_REL)
+		{
+			int iTotalSize = pkNetPacket->m_iLength;
+		
+			cout<<"package is a reliable package, splitting it  , total size "<<iTotalSize<<endl;			
+			
+			int iSplices = 0;	
+			NetPacket kSplit;			
+			
+			for(int i = 0;i<iTotalSize;i+=iSpliceSize)
+			{
+				kSplit.Clear();			
+				kSplit.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_REL;
+				kSplit.m_iTargetClients = pkNetPacket->m_iTargetClients;
+
+				//set this as a split package if there is more then 1000 bytes left
+				if(iTotalSize - i > iSpliceSize)
+					kSplit.m_kData.m_kHeader.m_iSplit = true;
+				else
+					kSplit.m_kData.m_kHeader.m_iSplit = false;
+							
+ 				kSplit.WriteNp(pkNetPacket,i,iSpliceSize);
+			
+				RealSend2(&kSplit);	
+				
+				iSplices++;		
+			}
+			
+			cout<<"splitet package in "<<iSplices<< " splices"<<endl;
+			
+			return true;	
+		}
+		else
+		{
+			cout<<"this is not a reliable package, skipping it"<<endl;
+			return false;
+		}
+	}
+	else
+		pkNetPacket->m_kData.m_kHeader.m_iSplit = false;
+	
+	return RealSend2(pkNetPacket);
+}
+
+bool NetWork::RealSend2(NetPacket* pkNetPacket)
+{
 	// If we have any clients to send to.
-	if(pkNetPacket->m_iTargetClients.size()) {
-		for(unsigned int i=0; i<pkNetPacket->m_iTargetClients.size(); i++) {
+	if(pkNetPacket->m_iTargetClients.size()) 
+	{
+		for(unsigned int i=0; i<pkNetPacket->m_iTargetClients.size(); i++) 
+		{
 			if(m_RemoteNodes[ pkNetPacket->m_iTargetClients[i] ]->m_eConnectStatus != NETSTATUS_CONNECTED)
 				continue;
 			
@@ -784,18 +837,17 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 			pkNetPacket->m_kAddress = m_RemoteNodes[ pkNetPacket->m_iClientID ]->m_kAddress;
 
 			SendRaw(pkNetPacket);
-			}
+		}
 
 		return true;
-		}
-	
-	else {
+	}	
+	else 
+	{
 		pkNetPacket->m_iClientID = ZF_NET_NOCLIENT;
 		SendRaw(pkNetPacket);
 		return true;
-		}
+	}
 }
-
 
 void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 {
@@ -1222,7 +1274,47 @@ void NetWork::Run()
 					// Check if it is the correct packet.
 					if(m_RemoteNodes[iClientID]->m_iReliableRecvOrder == NetP.m_kData.m_kHeader.m_iOrder)
 					{
-						m_pkZeroFps->HandleNetworkPacket(&NetP);
+					
+						static NetPacket temp;
+						static bool bHaveSplit = false;
+						
+						//are we waiting for new package splices?
+						if(bHaveSplit)
+						{
+							cout<<"got another spliced package, size "<<NetP.m_iLength<<endl;
+							//add this package to the split package
+							temp.WriteNp(&NetP);
+													
+							//is this package a split to? if not handle package
+							if(NetP.m_kData.m_kHeader.m_iSplit == false)
+							{
+								cout<<"got the final package in the spliced package, total size "<<temp.m_iLength<<endl;
+								temp.m_iPos = 0;
+								m_pkZeroFps->HandleNetworkPacket(&temp);
+								bHaveSplit = false;
+							}
+						}
+						else
+						{
+							//is this package a spliced package?
+							if(NetP.m_kData.m_kHeader.m_iSplit == true)
+							{
+								cout<<"got the first package in a spliced package, size "<<NetP.m_iLength<<endl;
+								bHaveSplit = true;
+							
+								temp.Clear();							
+								temp.m_iClientID = NetP.m_iClientID;
+								temp.m_kData.m_kHeader = NetP.m_kData.m_kHeader;
+								temp.WriteNp(&NetP);
+							}
+							else
+							{
+								//not a spliced package
+								m_pkZeroFps->HandleNetworkPacket(&NetP);	
+							}
+						}						
+						
+						
 						m_RemoteNodes[iClientID]->m_iReliableRecvOrder++;
 						m_RemoteNodes[iClientID]->m_kRelAckList.push_back( NetP.m_kData.m_kHeader.m_iOrder );
 						m_RemoteNodes[iClientID]->FreeRelRecv( NetP.m_kData.m_kHeader.m_iOrder ); 
