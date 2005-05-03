@@ -244,7 +244,7 @@ void NetPacket::Read_Str(string& strString)
 
 void NetPacket::Write_Str(const char* szString)
 {
-	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKET_SIZE, "NetPacket::Write_Str");
+// 	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKET_SIZE, "NetPacket::Write_Str");
 
 	unsigned char * add = &m_kData.m_acData[m_iPos];
 	strcpy((char*)add, szString);
