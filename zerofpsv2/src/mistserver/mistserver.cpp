@@ -1063,11 +1063,11 @@ void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)
 				kNp.Write(kItemList[i].m_iStackSize);				
 				kNp.Write(kItemList[i].m_bIsContainer);	
 				
-				if(kNp.m_iPos > 1000)
-				{
-					cout<<"container to big, lets krash =P"<<endl;
-					
-				}
+// 				if(kNp.m_iPos > 1000)
+// 				{
+// 					cout<<"container to big, lets krash =P"<<endl;
+// 					
+// 				}
 			}
 			
 			kNp.TargetSetClient(iClientID);
