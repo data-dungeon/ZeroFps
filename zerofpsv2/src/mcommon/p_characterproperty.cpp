@@ -555,7 +555,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	10;
+	m_iVersion = 	11;
 	
 	//initiate stuff
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
@@ -1976,13 +1976,13 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 		pkPackage->Write(m_kSkills[i]->GetTimeLeft());
 	}
 	
-/*	//save container settings
-	m_pkInventory->Save(pkPackage);
-	m_pkHead->Save(pkPackage);
-	m_pkBody->Save(pkPackage);
-	m_pkLeftHand->Save(pkPackage);
-	m_pkRightHand->Save(pkPackage);
-*/	
+	
+	//save skillbar
+	pkPackage->Write(m_kSkillBar.size());
+	for(int i =0;i<m_kSkillBar.size();i++)
+	{
+		pkPackage->Write_Str(m_kSkillBar[i]);		
+	}
 }
 
 void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -2152,6 +2152,68 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			
 			break;		
 		}			
+		
+		case 11:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			pkPackage->Read(m_bDead); 
+		
+			pkPackage->Read(m_fRespawnTime);	
+			pkPackage->Read(m_iRespawnZone);	
+			pkPackage->Read(m_kRespawnPos);				
+			
+			pkPackage->Read_Str(m_strDefaultAttackSkill);
+			
+			m_kCharacterStats.Load(pkPackage);
+			
+			//load skills
+			RemoveAllSkills();
+			
+			int		iNrOfSkills;
+			string	strSkill;
+			string	strParent;
+			int 		iLevel;
+			float		fTimeLeft;
+			
+			pkPackage->Read(iNrOfSkills);			
+			for(int i=0;i<iNrOfSkills;i++)
+			{
+				pkPackage->Read_Str(strSkill);
+				pkPackage->Read_Str(strParent);
+				pkPackage->Read(iLevel);
+				pkPackage->Read(fTimeLeft);
+				
+				AddSkill(strSkill,strParent);
+				SetSkill(strSkill,iLevel);
+				
+				if(Skill* pkSkill = GetSkillPointer(strSkill))
+					pkSkill->SetTimeLeft(fTimeLeft);
+			}
+
+			//load skillbar
+			int iSkillbarSize;
+			string strSkillName;
+			
+			pkPackage->Read(iSkillbarSize);
+			
+			if(iSkillbarSize != m_kSkillBar.size())
+				cout<<"WARNING: skillbar size does not match while loading character"<<endl;
+			
+			m_kSkillBar.clear();			
+			for(int i =0;i<iSkillbarSize;i++)
+			{
+				pkPackage->Read_Str(strSkillName);
+				m_kSkillBar.push_back(strSkillName);
+			}
+			
+			
+			break;		
+		}					
 	}
 }
 
@@ -2282,11 +2344,25 @@ void P_CharacterProperty::SendSkillbar()
 
 	NetPacket kNp;
 	kNp.Write((char) MLNM_SC_SKILLBAR);	
-		
+// 	kNp.Write(int(0));
+	
 	int iSize = m_kSkillBar.size();
 	kNp.Write(iSize);
 	for(int i = 0;i<iSize;i++)
 	{
+// 		//is list to big, send package and prepare another one
+// 		if(kNp.m_iPos >= 900)
+// 		{
+// 			cout<<"SKILL LIST TO BIG"<<endl;
+// 			
+// 			//send package
+// 			kNp.TargetSetClient(m_iConID);				
+// 			m_pkApp->SendAppMessage(&kNp);	
+// 			
+// 			kNp.Clear();
+// 						
+// 		}
+	
 		if(Skill* pkSkill = GetSkillPointer(m_kSkillBar[i]))
 		{
 			kNp.Write_Str(m_kSkillBar[i]);	
@@ -2295,12 +2371,13 @@ void P_CharacterProperty::SendSkillbar()
 			kNp.Write(pkSkill->GetTimeLeft());
 		}
 		else	
-			kNp.Write_Str(string(""));	
+			kNp.Write_Str(string(""));				
 	}
-	
+
 	//send package
-	kNp.TargetSetClient(m_iConID);
+	kNp.TargetSetClient(m_iConID);				
 	m_pkApp->SendAppMessage(&kNp);	
+		
 }
 
 bool P_CharacterProperty::IsEnemy(int iCharacterID)

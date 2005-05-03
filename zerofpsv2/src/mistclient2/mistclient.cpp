@@ -802,6 +802,19 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-bow.lua",4);
 			SendAddSkillToSkillbar("skill-resurrect.lua",5);
 			SendAddSkillToSkillbar("skill-bolt.lua",6);
+			
+// 			SendAddSkillToSkillbar("skill-fireball.lua",7);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",8);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",9);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",10);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",11);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",12);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",13);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",14);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",15);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",16);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",17);
+// 			SendAddSkillToSkillbar("skill-fireball.lua",18);
 		}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))
@@ -1249,8 +1262,6 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 		case MLNM_SC_SKILLBAR:
 		{
-			cout<<"Got skillbar from server"<<endl;
-			
 			int iSize;			
 			
 			vector<SkillInfo>	kSkillList;
@@ -1263,8 +1274,6 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				
 				if(!temp.m_strSkillName.empty())
 				{
-					cout<<"got skill "<<temp.m_strSkillName<<endl;
-				
 					pkNetMessage->Read_Str(temp.m_strSkillScreenName);
 					pkNetMessage->Read_Str(temp.m_strSkillIcon);
 					pkNetMessage->Read(temp.m_fReloadTimeLeft);				
