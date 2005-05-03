@@ -77,6 +77,7 @@ EntityManager::EntityManager()
 	m_iObjectDistance			= 50;
 	m_fZoneUnloadTime			= 3;	
 	m_iMaxZoneIO 				= 1;	
+	m_bAiShowInfo				= false;
 
 	m_pkWorldEntity			= NULL;
 	m_pkZoneEntity				= NULL;
@@ -98,6 +99,7 @@ EntityManager::EntityManager()
 	RegisterVariable("l_zoneunloadtime",	&m_fZoneUnloadTime,			CSYS_FLOAT);	
 	RegisterVariable("l_maxzoneio",			&m_iMaxZoneIO,					CSYS_INT);	
 	RegisterVariable("l_objectdistance",	&m_iObjectDistance,			CSYS_FLOAT);		
+	RegisterVariable("ai_showinfo",			&m_bAiShowInfo,				CSYS_BOOL);	
 
 	// Register Commands
 	Register_Cmd("o_logtree",		FID_LOGOHTREE);	

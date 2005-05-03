@@ -72,8 +72,6 @@ class MCOMMON_API Skill
 		void UpdateFromScript();			
 
 	public:			
-		
-	
 		Skill(const string& strScriptFile,const string& strParent, int iOwnerID);
 		~Skill();
 		
@@ -141,6 +139,11 @@ class MCOMMON_API Stats
 		void GetStatsList(vector<Stat>* pkStats);
 };
 
+struct AIDebugVar
+{
+	string	m_Variable;
+	string	m_Value;
+};
 
 class MCOMMON_API P_CharacterProperty: public Property
 {
@@ -214,7 +217,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		int		m_iRunSoundID;
 		int		m_iSwimSoundID;
 		
-	
+		vector<AIDebugVar>	kDebugVar;
+
 		void PlayCharacterMovementSounds();
 		void SetupContainers();		
 		vector<PropertyValues> GetPropertyValues();				
@@ -264,6 +268,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		void Init();
 		void Update();
+		void DrawEditor();
 
 				
 		
@@ -347,6 +352,33 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
+
+		// AI Debug var
+		void DebugVarClear() { kDebugVar.clear();  }
+		void DebugSet(string strName, string strValue)
+		{
+			for(int i=0; i<kDebugVar.size(); i++)
+			{
+				if(kDebugVar[i].m_Variable == strName)
+				{
+					kDebugVar[i].m_Value = strValue;
+					return;
+				}
+			}
+			
+			AIDebugVar kVar;
+			kVar.m_Variable = strName;
+			kVar.m_Value = strValue;
+			kDebugVar.push_back(kVar);
+		}
+
+		void DebugSet(string strName, int iValue)
+		{
+			char szTxt[20];
+			sprintf(szTxt,"%d", iValue);
+			DebugSet("Health: ",szTxt);
+		}
+
 };
 
 MCOMMON_API Property* Create_P_CharacterProperty();

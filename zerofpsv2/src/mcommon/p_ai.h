@@ -29,6 +29,8 @@ enum MCOMMON_API AI_STATES
 class MCOMMON_API P_AI: public Property 
 {
 	private:
+		Render*					m_pkRender;	
+
 		P_CharacterControl*	m_pkCharacterControl;
 		P_CharacterProperty*	m_pkCharacterProperty;
 		
@@ -67,6 +69,8 @@ class MCOMMON_API P_AI: public Property
 		
 		void Init();
 	   void Update();
+		void DrawEditor();
+		void DrawCircle(float fRadius, char* szEditColor);
 		void Touch(int iID);		
 
        void Save(ZFIoInterface* pkPackage);

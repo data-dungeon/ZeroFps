@@ -825,6 +825,7 @@ void P_CharacterProperty::UpdateStats()
 		return;	
 	}
 	
+	DebugSet("Health: ",m_kCharacterStats.GetTotal("Health"));
 	
 	//check if character is dead
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
@@ -1504,7 +1505,6 @@ void P_CharacterProperty::Update()
 		//reset chat msg
 		if(m_pkZeroFps->GetEngineTime() > m_fChatTime + 10.0)
 			m_strChatMsg = "";						
-		
 	}
 	else if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
@@ -1523,8 +1523,35 @@ void P_CharacterProperty::Update()
 				}
 			}
 		}	
+
+		if(m_pkZeroFps->m_bEditMode)
+			DrawEditor();
+
 	}		
 }
+
+void P_CharacterProperty::DrawEditor()
+{
+	if(!m_pkEntityManager->m_bAiShowInfo)
+		return;
+
+	string strText;
+	float fDistance;
+	fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(GetEntity()->GetWorldPosV());
+
+	for(int i=0; i<kDebugVar.size(); i++)
+	{
+		strText = kDebugVar[i].m_Variable + ": " + kDebugVar[i].m_Value;		
+		if(fDistance < 20)
+		{
+			Vector3 kOffset = Vector3(0,1.0,0) + (0.2 * i);
+			
+			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
+							kOffset,0.2,strText,m_pkTextMaterial,m_pkFont,false);													
+		}
+	}
+}
+
 
 void P_CharacterProperty::CreateSpawner()
 {

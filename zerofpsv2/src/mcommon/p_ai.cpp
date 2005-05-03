@@ -14,9 +14,11 @@ using namespace std;
 
 P_AI::P_AI()
 {
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+
 	strcpy(m_acName,"P_AI");
-	m_iSide		= PROPERTY_SIDE_SERVER;
-	m_iType		= PROPERTY_TYPE_NORMAL;
+	m_iSide		= PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
+	m_iType		= PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_bNetwork 	= false;
 	m_iVersion	= 2;
 	
@@ -50,12 +52,47 @@ void P_AI::Init()
 
 }
 
+void P_AI::DrawCircle(float fRadius, char* szEditColor)
+{
+	Vector3	kVertex;
+	vector<Vector3>	kVertexList;
+	Vector3 kCenterPos = GetEntity()->GetIWorldPosV();
+
+	for(int i=0; i<360; i+=(int)12.25) 
+	{
+		kVertex.x = float( cos(DegToRad( float(i) )) * fRadius );
+		kVertex.z = float( sin(DegToRad( float(i) )) * fRadius );
+		kVertex.y = 0;
+		
+		kVertex += kCenterPos;
+		kVertexList.push_back(kVertex);
+	}
+
+	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor(szEditColor) );
+
+}
+
+void P_AI::DrawEditor()
+{
+	if(!m_pkEntityManager->m_bAiShowInfo)
+		return;
+
+	DrawCircle(m_fStrikeRange,		"ai/rngstrike");
+	DrawCircle(m_fAttackDistance, "ai/rngattack");
+	DrawCircle(m_fSeeDistance,		"ai/rngsee");
+}
+
 
 void P_AI::Update() 
 {
 	if(!m_pkEntity->InActiveZone())
 		return;
 
+	if(m_pkZeroFps->m_bEditMode && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
+	{
+		DrawEditor();
+		return;
+	}
 
 	//get character control
 	if(!m_pkCharacterControl)
@@ -83,11 +120,14 @@ void P_AI::Update()
 			
 	m_fStrikeRange = GetOffensiveRange();
 	
+
 	switch(m_iState)
 	{
 		//guard
 		case eAI_STATE_GUARD:
 		{	
+			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");
+
 			//look for enemy
 			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
 			{
@@ -110,6 +150,7 @@ void P_AI::Update()
 		//random walk
 		case eAI_STATE_RANDOMWALK:
 		{			
+			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_RANDOMWALK");
 			if(m_bWalk)
 			{
 				float fRot = m_pkCharacterControl->GetYAngle();				
@@ -141,6 +182,7 @@ void P_AI::Update()
 			//look for enemy , and attack
 			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
 			{
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");
 				m_fFindTime = m_pkZeroFps->GetEngineTime();
 			
 				int iEnemy = FindClosestEnemy(m_fAttackDistance);
@@ -160,6 +202,7 @@ void P_AI::Update()
 		//look at
 		case eAI_STATE_LOOKAT:
 		{
+			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_LOOKAT");
 			if(!ValidTarget(m_iTarget))
 			{
 				m_iState = 1;
@@ -197,6 +240,7 @@ void P_AI::Update()
 		//chase
 		case eAI_STATE_CHASE:
 		{
+			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_CHASE");
 			if(!ValidTarget(m_iTarget))
 			{
 				m_iState = eAI_STATE_RANDOMWALK;
@@ -239,6 +283,7 @@ void P_AI::Update()
 		//attack
 		case eAI_STATE_ATTACK:
 		{
+			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_ATTACK");
 			if(!ValidTarget(m_iTarget))
 			{
 				m_iState = eAI_STATE_RANDOMWALK;
@@ -270,6 +315,7 @@ void P_AI::Update()
 		//dead	
 		case eAI_STATE_DEAD:
 		{
+			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_DEAD");
 			// hello, I'm dead, not much too do..not much AI
 			//cout << "im so dead" << endl;
          break;							
