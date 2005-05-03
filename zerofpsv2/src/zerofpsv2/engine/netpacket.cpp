@@ -202,6 +202,8 @@ void NetPacket::SetTarget(const char* szIp)
 
 void NetPacket::WriteNp(NetPacket* pkNp)
 {
+	ZFAssert((m_iPos + pkNp->m_iLength) < MAX_PACKETDATA_SIZE, "NetPacket::Write_Str");
+	
 	unsigned char * add = &m_kData.m_acData[m_iPos];
 
 	memcpy(add, &pkNp->m_kData.m_acData[0], pkNp->m_iLength);
@@ -215,6 +217,9 @@ void NetPacket::WriteNp(NetPacket* pkNp,int iStart,int iSize)
 	if( ( pkNp->m_iLength - iStart ) < iSize)
 		iSize = ( pkNp->m_iLength - iStart );
 
+	ZFAssert((m_iPos + iSize) < MAX_PACKETDATA_SIZE, "NetPacket::Write_Str");
+		
+		
 	unsigned char * add = &m_kData.m_acData[m_iPos];
 	
 	memcpy(add, &pkNp->m_kData.m_acData[iStart], iSize);
@@ -226,6 +231,8 @@ void NetPacket::WriteNp(NetPacket* pkNp,int iStart,int iSize)
 
 void NetPacket::Write_Str(const string& strString)
 {
+	ZFAssert((m_iPos + strString.size() + 1) < MAX_PACKETDATA_SIZE, "NetPacket::Write_Str");
+
 	Write(strString.size()+1);
 	Write((void*)strString.c_str(),strString.size()+1);
 }
@@ -244,7 +251,7 @@ void NetPacket::Read_Str(string& strString)
 
 void NetPacket::Write_Str(const char* szString)
 {
-// 	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKET_SIZE, "NetPacket::Write_Str");
+ 	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKETDATA_SIZE, "NetPacket::Write_Str");
 
 	unsigned char * add = &m_kData.m_acData[m_iPos];
 	strcpy((char*)add, szString);
@@ -289,7 +296,7 @@ void NetPacket::Read_NetStr  (char* szString)
 
 void NetPacket::Write(void* ptr, int iSize)
 {
-//	ZFAssert((m_iPos + iSize) < MAX_PACKET_SIZE, "NetPacket::Write");
+	ZFAssert((m_iPos + iSize) < MAX_PACKETDATA_SIZE, "NetPacket::Write");
 
 	unsigned char * add = &m_kData.m_acData[m_iPos];
 	memcpy(add, ptr, iSize);
