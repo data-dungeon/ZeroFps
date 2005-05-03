@@ -609,6 +609,10 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iBelt			= -1;		
 	m_iFeets			= -1;
 		
+	
+	//setup skillbar
+	for(int i=0;i<19;i++)
+		m_kSkillBar.push_back(string(""));
 		
 	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
@@ -748,10 +752,6 @@ void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
 
 void P_CharacterProperty::UpdateSkillQueue()
 {
-	//not in combat mode
-// 	if(!m_bCombatMode)
-// 		return;
-
 	float fTime = m_pkZeroFps->GetEngineTime();
 		
 	if(fTime > m_fCombatTimer + 0.5)
@@ -1461,7 +1461,11 @@ void P_CharacterProperty::Update()
 				}	
 				
 				//setup spawn pos
-				SetupSpawnPos();			
+				SetupSpawnPos();		
+				
+				//send skillbar
+				if(m_iConID != -1)
+					SendSkillbar();
 			}
 		
 			//if not dead
@@ -1773,7 +1777,7 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 		if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 		{	
 			//check if its a combat skill, if so are we in combat mode?
-			if(pkSkill->m_iSkillType == eOFFENSIVE && !m_bCombatMode)
+			if(pkSkill->GetSkillType() == eOFFENSIVE && !m_bCombatMode)
 				return 9;
 		
 			return pkSkill->Use(iTarget,kPos,kDir);
@@ -1799,6 +1803,9 @@ void  P_CharacterProperty::LockSkillUsage(float fTime)
 
 Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 {
+	if(strSkillName.empty())
+		return NULL;
+
 	static string strSkill;
 	 
 	for(int i =0;i<m_kSkills.size();i++)
@@ -1966,7 +1973,7 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 		pkPackage->Write_Str(m_kSkills[i]->GetParent());
 		pkPackage->Write(m_kSkills[i]->GetLevel());
 		
-		pkPackage->Write(m_kSkills[i]->m_fTimeLeft);
+		pkPackage->Write(m_kSkills[i]->GetTimeLeft());
 	}
 	
 /*	//save container settings
@@ -2248,6 +2255,53 @@ bool P_CharacterProperty::UseStamina(float fStamina)
 }
 
 
+void P_CharacterProperty::AddSkillToSkillbar(const string& strSkill,int iPos)
+{	
+	if(iPos < 0  || iPos >= m_kSkillBar.size())
+		return;
+		
+	m_kSkillBar[iPos]  = strSkill;
+
+	SendSkillbar();
+}
+
+void P_CharacterProperty::RemoveItemFromSkillbar(int iPos)
+{
+	if(iPos < 0  || iPos >= m_kSkillBar.size())
+		return;
+	
+	m_kSkillBar[iPos] = "";
+	
+	SendSkillbar();
+}
+
+void P_CharacterProperty::SendSkillbar()
+{
+	if(m_iConID == -1)
+		return;
+
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_SKILLBAR);	
+		
+	int iSize = m_kSkillBar.size();
+	kNp.Write(iSize);
+	for(int i = 0;i<iSize;i++)
+	{
+		if(Skill* pkSkill = GetSkillPointer(m_kSkillBar[i]))
+		{
+			kNp.Write_Str(m_kSkillBar[i]);	
+			kNp.Write_Str(pkSkill->GetName());
+			kNp.Write_Str(pkSkill->GetIcon());
+			kNp.Write(pkSkill->GetTimeLeft());
+		}
+		else	
+			kNp.Write_Str(string(""));	
+	}
+	
+	//send package
+	kNp.TargetSetClient(m_iConID);
+	m_pkApp->SendAppMessage(&kNp);	
+}
 
 bool P_CharacterProperty::IsEnemy(int iCharacterID)
 {

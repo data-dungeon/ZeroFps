@@ -792,6 +792,23 @@ void MistClient::Input()
 		if(!DelayCommand() )
 			SendSit();
 
+	if(m_pkInputHandle->Pressed(KEY_P))
+		if(!DelayCommand() )
+		{
+			SendAddSkillToSkillbar("skill-fireball.lua",0);
+			SendAddSkillToSkillbar("skill-speed.lua",1);
+			SendAddSkillToSkillbar("skill-heal.lua",2);
+			SendAddSkillToSkillbar("skill-basic_attack.lua",3);
+			SendAddSkillToSkillbar("skill-bow.lua",4);
+			SendAddSkillToSkillbar("skill-resurrect.lua",5);
+			SendAddSkillToSkillbar("skill-bolt.lua",6);
+		}
+	
+	if(m_pkInputHandle->Pressed(KEY_O))
+		if(!DelayCommand() )
+			SendRemoveItemFromSkillbar(1);
+			
+			
 	//fireball test
 	if(m_pkInputHandle->Pressed(KEY_1))
 		if(!DelayCommand() )
@@ -1159,7 +1176,7 @@ void MistClient::OnSystem()
 	CloseActiveContainer();
 
 
-	m_pkSkillBar->Update();
+// 	m_pkSkillBar->Update();
 
 }
 
@@ -1229,7 +1246,38 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
+			
+		case MLNM_SC_SKILLBAR:
+		{
+			cout<<"Got skillbar from server"<<endl;
+			
+			int iSize;			
+			
+			vector<SkillInfo>	kSkillList;
+			SkillInfo temp;
+			
+			pkNetMessage->Read(iSize);
+			for(int i =0;i<iSize;i++)
+			{
+				pkNetMessage->Read_Str(temp.m_strSkillName);
+				
+				if(!temp.m_strSkillName.empty())
+				{
+					cout<<"got skill "<<temp.m_strSkillName<<endl;
+				
+					pkNetMessage->Read_Str(temp.m_strSkillScreenName);
+					pkNetMessage->Read_Str(temp.m_strSkillIcon);
+					pkNetMessage->Read(temp.m_fReloadTimeLeft);				
+				}
+				
+				kSkillList.push_back(temp);
+			}
 		
+		
+			m_pkSkillBar->UpdateList(kSkillList);
+			
+			break;			
+		}
 	
 		case MLNM_SC_CHARACTERID:
 		{
@@ -1995,6 +2043,29 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 // 	{
 // 		m_pkGui->ShowCursor(false);
 // 	}
+}
+
+void MistClient::SendAddSkillToSkillbar(const string& strSkill,int iPos)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_ADDSKILLTOSKILLBAR);
+	
+	kNp.Write_Str(strSkill);
+	kNp.Write(iPos);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
+}
+
+void MistClient::SendRemoveItemFromSkillbar(int iPos)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REMOVEITEMFROMSKILLBAR);
+	
+	kNp.Write(iPos);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);
 }
 
 void MistClient::SendSit()

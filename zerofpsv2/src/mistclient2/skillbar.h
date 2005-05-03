@@ -13,8 +13,8 @@ using namespace std;
 class SkillInfo
 {
 	public:
-		bool		m_bInUse;
 		string	m_strSkillName;
+		string	m_strSkillScreenName;
 		string	m_strSkillIcon;
 
 		float		m_fReloadTimeLeft;
@@ -33,8 +33,7 @@ class SkillBar
 		SkillBar();
 		
 		void Init();
-
-		void Update();
+		void UpdateList(vector<SkillInfo> kSkillInfo);
 };
 
 

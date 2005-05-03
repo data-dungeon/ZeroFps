@@ -20,7 +20,6 @@ void SkillBar::Init()
 	SkillInfo temp;
 	for(int i =0;i<19;i++)
 	{
-		temp.m_bInUse = false;
 		temp.m_strSkillName = "";
 		temp.m_strSkillIcon = "emptyskill.bmp";
 		temp.m_fReloadTimeLeft = -1;
@@ -57,13 +56,28 @@ void SkillBar::Init()
 	bHaveBeenInitialized = true;
 }
 
-void SkillBar::Update()
+void SkillBar::UpdateList(vector<SkillInfo> kSkillInfo)
 {
-	if(m_kSkills.empty())
+	static string strIconDir = "skills/";
+
+	if(kSkillInfo.size() != m_kSkills.size())
+	{
+		cout<<"ERROR: bad size on skilllist"<<endl;
 		return;
-
-
-	m_kSkills[0].m_pkButton->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/basic_attack.tga");
+	}
+	
+	for(int i = 0;i<kSkillInfo.size();i++)
+	{
+		m_kSkills[i].m_strSkillName = kSkillInfo[i].m_strSkillName;
+		m_kSkills[i].m_strSkillIcon = kSkillInfo[i].m_strSkillIcon;
+		m_kSkills[i].m_fReloadTimeLeft = kSkillInfo[i].m_fReloadTimeLeft;
+		
+		
+		if(m_kSkills[i].m_strSkillName.empty())
+			m_kSkills[i].m_pkButton->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
+		else
+			m_kSkills[i].m_pkButton->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes((strIconDir+m_kSkills[i].m_strSkillIcon).c_str());
+	}
 }
 
 

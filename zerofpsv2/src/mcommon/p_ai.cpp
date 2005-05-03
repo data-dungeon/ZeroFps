@@ -304,12 +304,12 @@ float P_AI::GetOffensiveRange()
 	
 	for(int i =0;i<kSkills->size();i++)
 	{
-		if((*kSkills)[i]->m_iSkillType == eOFFENSIVE)
+		if((*kSkills)[i]->GetSkillType() == eOFFENSIVE)
 		{
-			if((*kSkills)[i]->m_fTimeLeft == 0)
+			if((*kSkills)[i]->GetTimeLeft() == 0)
 			{
-				if((*kSkills)[i]->m_fRange > fRange)
-					fRange = (*kSkills)[i]->m_fRange;
+				if((*kSkills)[i]->GetRange() > fRange)
+					fRange = (*kSkills)[i]->GetRange();
 			}
 		}
 	}	
@@ -323,9 +323,9 @@ void P_AI::UseOffensiveSkill()
 	
 	for(int i =0;i<kSkills->size();i++)
 	{
-		if((*kSkills)[i]->m_iSkillType == eOFFENSIVE)
+		if((*kSkills)[i]->GetSkillType() == eOFFENSIVE)
 		{
-			if((*kSkills)[i]->m_fTimeLeft == 0)
+			if((*kSkills)[i]->GetTimeLeft() == 0)
 			{
 				(*kSkills)[i]->Use(m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
 				return;

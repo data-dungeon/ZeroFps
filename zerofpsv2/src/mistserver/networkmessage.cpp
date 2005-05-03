@@ -81,6 +81,33 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		
 		// -------------------------------------------
 		
+		case MLNM_CS_ADDSKILLTOSKILLBAR:
+		{
+			string strSkill;
+			int iPos;
+		
+			PkNetMessage->Read_Str(strSkill);
+			PkNetMessage->Read(iPos);
+
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->AddSkillToSkillbar(strSkill,iPos);
+			
+			break;
+		}
+		
+		case MLNM_CS_REMOVEITEMFROMSKILLBAR:
+		{
+			int iPos;
+			PkNetMessage->Read(iPos);
+
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->RemoveItemFromSkillbar(iPos);
+
+			break;
+		}				
+		
 		case MLNM_CS_SIT:
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))

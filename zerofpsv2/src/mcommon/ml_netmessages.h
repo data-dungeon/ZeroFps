@@ -24,6 +24,8 @@ enum MLNM_ClientToServer
 	MLNM_CS_COMBATMODE,
 	MLNM_CS_ADDSKILLTOQUEUE,
 	MLNM_CS_SIT,
+	MLNM_CS_ADDSKILLTOSKILLBAR,
+	MLNM_CS_REMOVEITEMFROMSKILLBAR,
 };
 
 //	A network message from the server to the client.
@@ -41,7 +43,7 @@ enum MLNM_ServerToClient
 	MLNM_SC_DEAD,
 	MLNM_SC_ALIVE,
 	MLNM_SC_POINTTEXT,
-	
+	MLNM_SC_SKILLBAR,
 };
 
 //mistlands chatmessages ID's

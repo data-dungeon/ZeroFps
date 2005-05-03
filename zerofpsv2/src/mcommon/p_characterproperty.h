@@ -12,6 +12,7 @@ using namespace std;
 
 class P_Buff;
 
+
 enum MCOMMON_API TargetType
 {
 	ePASSIVE				=	0,
@@ -63,12 +64,14 @@ class MCOMMON_API Skill
 		float		m_fStaminaUsage;
 		float		m_fManaUsage;
 				
-		void UpdateFromScript();			
-
-	public:			
 		int		m_iSkillType;		
 		float		m_fTimeLeft;
 		float		m_fRange;
+		
+		
+		void UpdateFromScript();			
+
+	public:			
 		
 	
 		Skill(const string& strScriptFile,const string& strParent, int iOwnerID);
@@ -85,8 +88,12 @@ class MCOMMON_API Skill
 		
 		//gets
 		string GetName()									{	return m_strSkillScript;					};
+		string GetIcon()									{	return m_strIcon;								};
 		int	 GetLevel()									{	return m_iLevel;								};
 		string GetParent()								{	return m_strParentSkill;					};		
+		int	 GetSkillType()							{	return m_iSkillType;							};
+		float	 GetTimeLeft()								{	return m_fTimeLeft;							};
+		float	 GetRange()									{	return m_fRange;								};
 };
 
 
@@ -175,6 +182,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		vector<Skill*>	m_kSkills;				//what skills do we have
 		float				m_fSkillTimer;			//last skill's update
 		float				m_fSkillLockTime;		//lock skill usage until
+		vector<string>	m_kSkillBar;
 		
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
@@ -216,6 +224,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendAliveInfo();
 		void SendTextToClient(const string& strText);
 		void SendPointText(const string& strText,const Vector3& kPos,int iType);
+		void SendSkillbar();
 		
 		void UpdateStats();					//updates character stats
 		void UpdateSkillQueue();			//updates combat, updates and performs combat queue
@@ -307,6 +316,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void	RemoveAllSkills();		
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
 		void  LockSkillUsage(float fTime);
+		
+		void	AddSkillToSkillbar(const string& strSkill,int iPos);
+		void  RemoveItemFromSkillbar(int iPos);
 		
 		//experience and level
 		void  GiveExperience(int iXP);
