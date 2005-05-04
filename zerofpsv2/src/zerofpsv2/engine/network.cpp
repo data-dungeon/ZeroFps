@@ -774,46 +774,46 @@ void NetWork::SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp)
 
 bool NetWork::Send2(NetPacket* pkNetPacket)
 {
-	static int iSpliceSize = 1000;
+	static int iSpliceSize = 1018;
 
+	//is package to big?
 	if(pkNetPacket->m_iLength > iSpliceSize)
 	{
-		//cout<<"This package is to big"<<endl;	
+		//is this a reliable package?
 		if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == ZF_NETTYPE_REL)
-		{
+		{		
 			int iTotalSize = pkNetPacket->m_iLength;
+			static NetPacket kSplit;			
 		
 			//cout<<"package is a reliable package, splitting it  , total size "<<iTotalSize<<endl;						
-			//int iSplices = 0;	
-			
-			static NetPacket kSplit;			
-			
+
+			//step trough the package data and send the parts seperatly			
 			for(int i = 0;i<iTotalSize;i+=iSpliceSize)
 			{
+				//clear and setup package
 				kSplit.Clear();			
 				kSplit.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_REL;
 				kSplit.m_iTargetClients = pkNetPacket->m_iTargetClients;
 
-				//set this as a split package if there is more then 1000 bytes left
+				//set this as a split package if there is more then iSpliceSize bytes left
 				if(iTotalSize - i > iSpliceSize)
 					kSplit.m_kData.m_kHeader.m_iSplit = true;
 				else
 					kSplit.m_kData.m_kHeader.m_iSplit = false;
 							
+				//copy data to split package
  				kSplit.WriteNp(pkNetPacket,i,iSpliceSize);
 			
-				RealSend2(&kSplit);	
-				
-				//iSplices++;		
+ 				//send splice
+				RealSend2(&kSplit);					
 			}
 			
-			//cout<<"splitet package in "<<iSplices<< " splices"<<endl;
-			
+			//cout<<"splitet package in "<<iSplices<< " splices"<<endl;			
 			return true;	
 		}
 		else
 		{
-			cout<<"this is not a reliable package, skipping it"<<endl;
+			cout<<"WARNING: none reliable package is to big"<<endl;
 			return false;
 		}
 	}
