@@ -98,10 +98,9 @@ void SkillBar::UpdateList(vector<SkillInfo> kSkillInfo)
 void SkillBar::HandleCommand(const string& strCommand)
 {
 	int iButton = atoi(&strCommand.c_str()[11]);
-	cout<<"Skillbutton "<<iButton<<endl;	
-	cout<<m_kSkills[iButton].m_strSkillName<<endl;
-	
-	g_kMistClient.SendAddSkillToQueue(m_kSkills[iButton].m_strSkillName,g_kMistClient.GetCurrentTargetID());
+
+	if(!m_kSkills[iButton].m_strSkillName.empty())
+		g_kMistClient.SendAddSkillToQueue(m_kSkills[iButton].m_strSkillName,g_kMistClient.GetCurrentTargetID());
 }
 
 
