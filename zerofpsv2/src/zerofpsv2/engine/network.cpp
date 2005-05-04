@@ -778,15 +778,15 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 
 	if(pkNetPacket->m_iLength > iSpliceSize)
 	{
-		cout<<"This package is to big"<<endl;	
+		//cout<<"This package is to big"<<endl;	
 		if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == ZF_NETTYPE_REL)
 		{
 			int iTotalSize = pkNetPacket->m_iLength;
 		
-			cout<<"package is a reliable package, splitting it  , total size "<<iTotalSize<<endl;			
+			//cout<<"package is a reliable package, splitting it  , total size "<<iTotalSize<<endl;						
+			//int iSplices = 0;	
 			
-			int iSplices = 0;	
-			NetPacket kSplit;			
+			static NetPacket kSplit;			
 			
 			for(int i = 0;i<iTotalSize;i+=iSpliceSize)
 			{
@@ -804,10 +804,10 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 			
 				RealSend2(&kSplit);	
 				
-				iSplices++;		
+				//iSplices++;		
 			}
 			
-			cout<<"splitet package in "<<iSplices<< " splices"<<endl;
+			//cout<<"splitet package in "<<iSplices<< " splices"<<endl;
 			
 			return true;	
 		}
@@ -1273,22 +1273,21 @@ void NetWork::Run()
 				{
 					// Check if it is the correct packet.
 					if(m_RemoteNodes[iClientID]->m_iReliableRecvOrder == NetP.m_kData.m_kHeader.m_iOrder)
-					{
-					
+					{					
 						static NetPacket temp;
 						static bool bHaveSplit = false;
 						
 						//are we waiting for new package splices?
 						if(bHaveSplit)
 						{
-							cout<<"got another spliced package, size "<<NetP.m_iLength<<endl;
+							//cout<<"got another spliced package, size "<<NetP.m_iLength<<endl;
 							//add this package to the split package
 							temp.WriteNp(&NetP);
 													
 							//is this package a split to? if not handle package
 							if(NetP.m_kData.m_kHeader.m_iSplit == false)
 							{
-								cout<<"got the final package in the spliced package, total size "<<temp.m_iLength<<endl;
+								//cout<<"got the final package in the spliced package, total size "<<temp.m_iLength<<endl;
 								temp.m_iPos = 0;
 								m_pkZeroFps->HandleNetworkPacket(&temp);
 								bHaveSplit = false;
@@ -1299,7 +1298,7 @@ void NetWork::Run()
 							//is this package a spliced package?
 							if(NetP.m_kData.m_kHeader.m_iSplit == true)
 							{
-								cout<<"got the first package in a spliced package, size "<<NetP.m_iLength<<endl;
+								//cout<<"got the first package in a spliced package, size "<<NetP.m_iLength<<endl;
 								bHaveSplit = true;
 							
 								temp.Clear();							
