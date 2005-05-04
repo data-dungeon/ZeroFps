@@ -12,6 +12,20 @@
 
 using namespace std;
 
+#define EVENT_Update			1
+#define EVENT_Enter			2
+#define EVENT_Exit			3
+
+#define BeginStateMachine	if(iState < 0){if(0){
+#define EndStateMachine		return(true);}}else{ZFAssert(0, "Unknown AI State"); \
+									return(false);}return(false);
+#define State(a)				return(true);}}else if(a == iState){if(0){
+#define OnEvent(a)			return(true);}else if(a == iEvent){
+#define OnUpdate				OnEvent(EVENT_Update)
+#define OnEnter				OnEvent(EVENT_Enter)
+#define OnExit					OnEvent(EVENT_Exit)
+
+
 P_AI::P_AI()
 {
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
@@ -26,7 +40,10 @@ P_AI::P_AI()
 	m_pkCharacterControl = NULL;
 	m_pkCharacterProperty = NULL;
 	
-	m_iState = 1;
+	m_iState				= 1;
+	m_iNextState		= 0;
+	m_bStateChanged	= false;
+
 
 	m_fSeeDistance = 		15;
 	m_fAttackDistance =	10;
@@ -82,7 +99,6 @@ void P_AI::DrawEditor()
 	DrawCircle(m_fSeeDistance,		"ai/rngsee");
 }
 
-
 void P_AI::Update() 
 {
 	if(!m_pkEntity->InActiveZone())
@@ -116,212 +132,208 @@ void P_AI::Update()
 		}
 		
 	}
-	
-			
+				
 	m_fStrikeRange = GetOffensiveRange();
 	
+	Process(EVENT_Update);
+}
 
-	switch(m_iState)
+
+void P_AI::Process(int iEvent)
+{
+	States(iEvent, m_iState);	
+
+	// Check if state has changed and send events
+	int iSaftyCount = 10;
+	while(m_bStateChanged && (--iSaftyCount >= 0))
 	{
-		//guard
-		case eAI_STATE_GUARD:
-		{	
-			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");
-
-			//look for enemy
-			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
-			{
-				m_fFindTime = m_pkZeroFps->GetEngineTime();
-			
-				int iEnemy = FindClosestEnemy(m_fSeeDistance);
-				if(iEnemy != -1)
-				{
-					//set look att state
-					m_iState = eAI_STATE_LOOKAT;
-					m_iTarget = iEnemy;
-					m_pkCharacterProperty->SetCombatMode(false);
-				}	
-			
-			}	
+		ZFAssert( iSaftyCount > 0, "AI States are unstable");
 		
-			break;
-		}
-	
-		//random walk
-		case eAI_STATE_RANDOMWALK:
-		{			
-			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_RANDOMWALK");
-			if(m_bWalk)
-			{
-				float fRot = m_pkCharacterControl->GetYAngle();				
-				fRot += Randomf(20)-10;
-				//fRot +=4;
-				m_pkCharacterProperty->SetCombatMode(false);
-				m_pkCharacterControl->SetYAngle(fRot);								
-				m_pkCharacterControl->SetControl(eUP,true);
-				m_pkCharacterControl->SetControl(eCRAWL,true);											
-			
-				if(m_pkZeroFps->GetEngineTime() > m_fTime + 2)
-				{
-					m_bWalk = false;
-					m_fTime = m_pkZeroFps->GetEngineTime();
-				}
-			}
-			else
-			{
-				m_pkCharacterControl->SetControl(eUP,false);					
-			
-				if(m_pkZeroFps->GetEngineTime() > m_fTime + 5)
-				{
-					m_bWalk = true;
-					m_fTime = m_pkZeroFps->GetEngineTime();					
-				}			
-			}
-		
-		
-			//look for enemy , and attack
-			if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
-			{
-				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");
-				m_fFindTime = m_pkZeroFps->GetEngineTime();
-			
-				int iEnemy = FindClosestEnemy(m_fAttackDistance);
-				if(iEnemy != -1)
-				{
-					//set attack state
-					m_iState = eAI_STATE_CHASE;
-					m_iTarget = iEnemy;
-					
-				}
-			}
-			
-				 					
-			break;
-		}
-	
-		//look at
-		case eAI_STATE_LOOKAT:
-		{
-			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_LOOKAT");
-			if(!ValidTarget(m_iTarget))
-			{
-				m_iState = 1;
-				break;
-			}		
-		
-			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
-			{
-				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
-			
-				if(fDistance > m_fSeeDistance)
-				{
-					cout<<"target went out of sight"<<endl;
-					m_iState = eAI_STATE_RANDOMWALK;
-					break;
-				}
-			
-				//look at
-				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
-				m_pkCharacterControl->SetControl(eUP,false);						
-				//m_pkCharacterControl->SetControl(eCRAWL,true);						
-				
-				if(fDistance < m_fAttackDistance)
-				{
-					m_iState = eAI_STATE_CHASE;
-					break;
-				}
-				
-			}
-
-			
-			break;
-		}
-			
-		//chase
-		case eAI_STATE_CHASE:
-		{
-			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_CHASE");
-			if(!ValidTarget(m_iTarget))
-			{
-				m_iState = eAI_STATE_RANDOMWALK;
-				break;
-			}		
-		
-			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
-			{
-				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
-			
-				if(fDistance > m_fSeeDistance)
-				{
-					cout<<"target went out of attack/see distance"<<endl;
-					m_iState = eAI_STATE_RANDOMWALK; //return to random walk
-					break;
-				}
-			
-				
-				if(fDistance < m_fStrikeRange )
-				{
-					m_iState = eAI_STATE_ATTACK;
-					break;				
-				}
-				
-				//chase
-				m_pkCharacterProperty->SetCombatMode(true);
-				m_pkCharacterProperty->SetTarget(m_iTarget);
-				
-				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
-				m_pkCharacterControl->SetControl(eUP,true);
-				m_pkCharacterControl->SetControl(eCRAWL,false);						
-				
-			
-			}
-	
-			
-			break;
-		}
-		
-		//attack
-		case eAI_STATE_ATTACK:
-		{
-			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_ATTACK");
-			if(!ValidTarget(m_iTarget))
-			{
-				m_iState = eAI_STATE_RANDOMWALK;
-				break;
-			}
-			
-			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
-			{
-				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
-			
-				if(fDistance > m_fStrikeRange && m_fStrikeRange != -1)
-				{
-					m_iState = eAI_STATE_CHASE;
-					break;
-				}
-						
-				m_pkCharacterProperty->SetCombatMode(true);
-				m_pkCharacterProperty->SetTarget(m_iTarget);
-				m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
-				m_pkCharacterControl->SetControl(eUP,false);
-								
-				//UseOffensiveSkill();
-	
-			}
-			
-			break;							
-		}	
-		
-		//dead	
-		case eAI_STATE_DEAD:
-		{
-			m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_DEAD");
-			// hello, I'm dead, not much too do..not much AI
-			//cout << "im so dead" << endl;
-         break;							
-		}
+		m_bStateChanged = false;
+		States(EVENT_Exit, m_iState);
+		m_iState = m_iNextState;
+		States(EVENT_Enter, m_iState);
 	}
 }
+
+bool P_AI::States(int iEvent, int iState)
+{
+	BeginStateMachine
+		State(eAI_STATE_RANDOMWALK)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_RANDOMWALK");
+
+			OnUpdate
+				if(m_bWalk)
+				{
+					float fRot = m_pkCharacterControl->GetYAngle();				
+					fRot += Randomf(20)-10;
+					m_pkCharacterProperty->SetCombatMode(false);
+					m_pkCharacterControl->SetYAngle(fRot);								
+					m_pkCharacterControl->SetControl(eUP,true);
+					m_pkCharacterControl->SetControl(eCRAWL,true);											
+				
+					if(m_pkZeroFps->GetEngineTime() > m_fTime + 2)
+					{
+						m_bWalk = false;
+						m_fTime = m_pkZeroFps->GetEngineTime();
+					}
+				}
+				else
+				{
+					m_pkCharacterControl->SetControl(eUP,false);					
+				
+					if(m_pkZeroFps->GetEngineTime() > m_fTime + 5)
+					{
+						m_bWalk = true;
+						m_fTime = m_pkZeroFps->GetEngineTime();					
+					}			
+				}
+
+				//look for enemy , and attack
+				if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
+				{
+					m_fFindTime = m_pkZeroFps->GetEngineTime();
+				
+					int iEnemy = FindClosestEnemy(m_fAttackDistance);
+					if(iEnemy != -1)
+					{
+						//set attack state
+						SetState( eAI_STATE_CHASE );
+						m_iTarget = iEnemy;
+						
+					}
+				}
+
+		State(eAI_STATE_LOOKAT)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_LOOKAT");
+
+			OnUpdate
+				if(!ValidTarget(m_iTarget))
+				{
+					m_iState = 1;
+					return false;
+				}		
+			
+				if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
+				{
+					float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
+				
+					if(fDistance > m_fSeeDistance)
+					{
+						cout<<"target went out of sight"<<endl;
+						m_iState = eAI_STATE_RANDOMWALK;
+						return false;
+					}
+				
+					//look at
+					m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
+					m_pkCharacterControl->SetControl(eUP,false);						
+					//m_pkCharacterControl->SetControl(eCRAWL,true);						
+					
+					if(fDistance < m_fAttackDistance)
+					{
+						SetState( eAI_STATE_CHASE );
+						return false;
+					}
+				}
+
+		State(eAI_STATE_CHASE)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_CHASE");
+
+			OnUpdate
+				if(!ValidTarget(m_iTarget))
+				{
+					SetState( eAI_STATE_RANDOMWALK );
+					return false;
+				}		
+			
+				if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
+				{
+					float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
+				
+					if(fDistance > m_fSeeDistance)
+					{
+						cout<<"target went out of attack/see distance"<<endl;
+						SetState( eAI_STATE_RANDOMWALK ); //return to random walk
+						return false;
+					}
+				
+					
+					if(fDistance < m_fStrikeRange )
+					{
+						SetState (eAI_STATE_ATTACK );
+						return false;
+					}
+					
+					//chase
+					m_pkCharacterProperty->SetCombatMode(true);
+					m_pkCharacterProperty->SetTarget(m_iTarget);
+					
+					m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
+					m_pkCharacterControl->SetControl(eUP,true);
+					m_pkCharacterControl->SetControl(eCRAWL,false);						
+				}
+
+		State(eAI_STATE_ATTACK)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_ATTACK");
+
+			OnUpdate
+				if(!ValidTarget(m_iTarget))
+				{
+					SetState(eAI_STATE_RANDOMWALK);
+					return false;
+				}
+				
+				if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
+				{
+					float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
+				
+					if(fDistance > m_fStrikeRange && m_fStrikeRange != -1)
+					{
+						SetState(eAI_STATE_CHASE);
+						return false;
+					}
+							
+					m_pkCharacterProperty->SetCombatMode(true);
+					m_pkCharacterProperty->SetTarget(m_iTarget);
+					m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
+					m_pkCharacterControl->SetControl(eUP,false);
+									
+					//UseOffensiveSkill();
+				}
+
+		State(eAI_STATE_GUARD)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");
+
+			OnUpdate
+				//look for enemy
+				if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
+				{
+					m_fFindTime = m_pkZeroFps->GetEngineTime();
+				
+					int iEnemy = FindClosestEnemy(m_fSeeDistance);
+					if(iEnemy != -1)
+					{
+						//set look att state
+						SetState(eAI_STATE_LOOKAT);
+						m_iTarget = iEnemy;
+						m_pkCharacterProperty->SetCombatMode(false);
+					}	
+				}	
+
+		State(eAI_STATE_DEAD)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_DEAD");
+
+			OnUpdate
+	EndStateMachine
+}
+
 
 bool P_AI::ValidTarget(int iTarget)
 {
@@ -447,6 +459,17 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 	return iEnemy;
 }
 
+void P_AI::ChangeState(int iNewState)
+{
+	m_iNextState		= iNewState;
+	m_bStateChanged	= true;
+}
+
+void P_AI::SetState(int iNewState)
+{
+	m_iNextState		= iNewState;
+	m_bStateChanged	= true;
+}
 
 vector<PropertyValues> P_AI::GetPropertyValues()
 {

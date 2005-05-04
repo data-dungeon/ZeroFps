@@ -35,6 +35,8 @@ class MCOMMON_API P_AI: public Property
 		P_CharacterProperty*	m_pkCharacterProperty;
 		
 		int	m_iState;
+		int	m_iNextState;
+		bool	m_bStateChanged;
 		
 		
 		float m_fSeeDistance;
@@ -64,9 +66,13 @@ class MCOMMON_API P_AI: public Property
 		P_AI();
       ~P_AI();
 
-		void SetState (int iNewState)			{ m_iState = iNewState; }
+		void ChangeState(int iNewState);
+		void SetState (int iNewState);
       void SetTarget (int iNewTarget)		{ m_iTarget = iNewTarget; }
 		
+		bool States(int iEvent, int iState);
+		void Process(int iEvent);
+
 		void Init();
 	   void Update();
 		void DrawEditor();

@@ -358,7 +358,7 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("conn","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) 
 	{
-		for(int i=0; i<4; i++) 
+		for(int i=0; i<m_kClient.size(); i++) 
 		{
 			DevPrintf("conn","Client[%d]: %s", i, m_kClient[i].m_strLogin.c_str());
 			// Server gives upp object a time after connection
