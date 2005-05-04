@@ -74,11 +74,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		else
 		if(strMainWnd == "SkillBar")
 		{
-			cout<<"skillbar"<<endl;
-			if(strController == "SkillButton0")
-			{
-				cout<<"Pressed skillbutton 0"<<endl;
-			}
+			g_kMistClient.m_pkSkillBar->HandleCommand(strController);
 		}
 	}
 

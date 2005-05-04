@@ -802,7 +802,7 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-bow.lua",4);
 			SendAddSkillToSkillbar("skill-resurrect.lua",5);
 			SendAddSkillToSkillbar("skill-bolt.lua",6);
-			
+/*			
 			SendAddSkillToSkillbar("skill-fireball.lua",7);
 			SendAddSkillToSkillbar("skill-fireball.lua",8);
 			SendAddSkillToSkillbar("skill-fireball.lua",9);
@@ -814,7 +814,7 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-fireball.lua",15);
 			SendAddSkillToSkillbar("skill-fireball.lua",16);
 			SendAddSkillToSkillbar("skill-fireball.lua",17);
-			SendAddSkillToSkillbar("skill-fireball.lua",18);
+			SendAddSkillToSkillbar("skill-fireball.lua",18);*/
 		}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))

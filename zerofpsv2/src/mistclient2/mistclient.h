@@ -136,7 +136,6 @@ class MistClient :public Application, public ZGuiApp {
 		void SendAddSkillToSkillbar(const string& strSkill,int iPos);
 		void SendRemoveItemFromSkillbar(int iPos);
 		void SendSit();
-		void SendAddSkillToQueue(const string& strSkill,int iTargetID);
 		void SendSetTarget(int iTargetID);
 		void SendCombatMode(bool bCombatMode);
 		void SendAction(int iEntityID,const string& strAction);
@@ -219,6 +218,13 @@ class MistClient :public Application, public ZGuiApp {
 		void DeleteChar(string strChar);
 		void AddChar(string strChar, string strMod);
 
+		
+		int	GetCurrentTargetID()														{	return m_iTargetID;	}
+		//public send stuff
+		void SendAddSkillToQueue(const string& strSkill,int iTargetID);
+		
+		
+		
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgIngameScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );

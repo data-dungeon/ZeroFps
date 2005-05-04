@@ -34,6 +34,8 @@ class SkillBar
 		
 		void Init();
 		void UpdateList(vector<SkillInfo> kSkillInfo);
+		
+		void HandleCommand(const string& strCommand);
 };
 
 
