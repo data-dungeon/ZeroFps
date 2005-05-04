@@ -32,7 +32,7 @@ bool EnvList::Load(const string& strFile)
 				}
 				else
 				{
-					cout<<"key:"<<strEnviroment<<" not found"<<endl;
+					//cout<<"key:"<<strEnviroment<<" not found"<<endl;
 					break;
 				}
 			}

@@ -76,8 +76,8 @@ void Skill::Update()
 	//update last update time
 	m_fLastUpdate = m_pkEntityManager->GetSimTime();
 	
-	if(m_fTimeLeft == 0)
-		cout<<"skill reloaded:"<<GetName()<<endl;
+// 	if(m_fTimeLeft == 0)
+// 		cout<<"skill reloaded:"<<GetName()<<endl;
 
 }
 
