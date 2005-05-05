@@ -32,6 +32,11 @@ void ZeroEd::SetupGuiEnviroment()
 	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");
 	BuildFileTree("ObjectTree", "data/script/objects", ".lua");
 
+	
+	//disable shortkey thingy for enviroment listbox
+	if(ZGuiListbox* pkLB = (ZGuiListbox*)GetWnd("EnviromentPresetList"))
+		pkLB->m_bCanHaveKeyboarFocus =false;
+	
 	// Fill enviroment listbox.
 	vector<string> vkFileNames;
 	m_pkZFVFileSystem->ListDir(&vkFileNames, "/data/enviroments", false);
