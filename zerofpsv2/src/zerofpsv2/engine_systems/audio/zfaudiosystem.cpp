@@ -707,7 +707,14 @@ void ZFAudioSystem::Update()
 {
 	if(m_bEnableSound == false)
 		return;
-
+	
+	//dvoid waz here and hacked a bit =D
+	//sätter ljudvolym till noll om applicationen är minimerad
+	if(m_pkZeroFps->GetMinimized())
+		alListenerf(AL_GAIN, 0.0);
+	else	
+		alListenerf(AL_GAIN, 1.0);
+	
 	UpdateAmbientSound();
 
 	// Temporär vektor som fylls med det ljud som inte längre kan höras
