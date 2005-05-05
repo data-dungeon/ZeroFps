@@ -278,10 +278,10 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	
 	//use mana & stamina
 	if(!pkCP->UseMana(m_fManaUsage))
-		return 1;
+		return 10;
 		
 	if(!pkCP->UseStamina(m_fStaminaUsage))
-		return 1;
+		return 11;
 		
 	
 	static Vector3 kPosCopy,kDirCopy;
@@ -793,6 +793,10 @@ void P_CharacterProperty::UpdateSkillQueue()
 					SendTextToClient("You need to equip a sertain item");break;										
 				case 9:
 					SendTextToClient("You cant use that skill when not in combat mode");break;										
+				case 10:
+					SendTextToClient("Not enough mana");break;										
+				case 11:
+					SendTextToClient("Not enough stamina");break;										
 										
 			}	
 		}
@@ -888,11 +892,18 @@ void P_CharacterProperty::UpdateStats()
 		if(m_kCharacterStats.GetTotal(strMana) < 0)
 			m_kCharacterStats.SetStat(strMana,0);
 				
-			
-		//setup basic damage, and attack
-		m_kCharacterStats.SetStat("HealthMax",m_kCharacterStats.GetTotal("Vitality") / 1.0 );
+		//maximum values
+		m_kCharacterStats.SetStat("HealthMax",		m_kCharacterStats.GetTotal("Vitality") );
+		m_kCharacterStats.SetStat("HealthRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.0125);
+		
+		m_kCharacterStats.SetStat("ManaMax",		m_kCharacterStats.GetTotal("Intelligence") );
+		m_kCharacterStats.SetStat("ManaRegen",		m_kCharacterStats.GetTotal("Intelligence") * 0.0125 );
+ 		
+ 		m_kCharacterStats.SetStat("StaminaMax",	m_kCharacterStats.GetTotal("Vitality") * 5.0 );
+ 		m_kCharacterStats.SetStat("StaminaRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.15 );
 
-		m_kCharacterStats.SetStat("Attack",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
+		//setup basic damage, and attack		
+		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
 		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
 			
 		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
@@ -941,6 +952,10 @@ void P_CharacterProperty::MakeAlive()
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 		m_kCharacterStats.SetStat("Health",1);
 	
+	//set characters XP value to 0
+	m_kCharacterStats.SetStat("ExperienceValue",0); 
+	
+				
 	//enable character movement
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
 	{
