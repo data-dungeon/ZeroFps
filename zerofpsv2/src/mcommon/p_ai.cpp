@@ -212,7 +212,7 @@ bool P_AI::States(int iEvent, int iState)
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
-					m_iState = 1;
+					SetState( eAI_STATE_RANDOMWALK );
 					return false;
 				}		
 			
@@ -223,7 +223,7 @@ bool P_AI::States(int iEvent, int iState)
 					if(fDistance > m_fSeeDistance)
 					{
 						cout<<"target went out of sight"<<endl;
-						m_iState = eAI_STATE_RANDOMWALK;
+						SetState(eAI_STATE_RANDOMWALK);
 						return false;
 					}
 				
@@ -505,6 +505,8 @@ void P_AI::Load(ZFIoInterface* pkPackage,int iVersion)
 	if(iVersion == 2)
 	{
 		pkPackage->Read(m_iState);
+		
+		
 	}
 }
 // 
