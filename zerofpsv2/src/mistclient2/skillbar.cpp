@@ -21,8 +21,9 @@ void SkillBar::Init()
 	for(int i =0;i<19;i++)
 	{
 		temp.m_strSkillName = "";
-		temp.m_strSkillIcon = "empty.tga";
+// 		temp.m_strSkillIcon = "empty.tga";
 		temp.m_fReloadTimeLeft = -1;
+		temp.m_fReloadTimeTotal = -1;
 		
 		
 		string name = "SkillButton"+IntToString(i);
@@ -44,8 +45,8 @@ void SkillBar::Init()
 			pkSkin->m_afBkColor[1] = 0.5;
 			pkSkin->m_afBkColor[2] = 0.5;
 			
-		pkSkin = temp.m_pkButton->GetButtonHighLightSkin();
-			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
+ 		pkSkin = temp.m_pkButton->GetButtonHighLightSkin();
+ 			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
 /*			pkSkin->m_afBkColor[0] = 1;
 			pkSkin->m_afBkColor[1] = 0.8;
 			pkSkin->m_afBkColor[2] = 0.8;	*/		
@@ -62,34 +63,38 @@ void SkillBar::Init()
 	bHaveBeenInitialized = true;
 }
 
-void SkillBar::UpdateList(vector<SkillInfo> kSkillInfo)
+void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 {
 	static string strIconDir = "skills/";
 
-	if(kSkillInfo.size() != m_kSkills.size())
-	{
-		cout<<"ERROR: bad size on skilllist"<<endl;
-		return;
-	}
+// 	if(kSkillInfo.size() != m_kSkills.size())
+// 	{
+// 		cout<<"ERROR: bad size on skilllist"<<endl;
+// 		return;
+// 	}
 	
+	int iPos;
 	for(int i = 0;i<kSkillInfo.size();i++)
 	{
-		m_kSkills[i].m_strSkillName = kSkillInfo[i].m_strSkillName;
-		m_kSkills[i].m_strSkillIcon = kSkillInfo[i].m_strSkillIcon;
-		m_kSkills[i].m_fReloadTimeLeft = kSkillInfo[i].m_fReloadTimeLeft;
+		iPos = kSkillInfo[i].m_iPos;
+	
+		m_kSkills[iPos].m_strSkillName = kSkillInfo[i].m_strSkillName;
+// 		m_kSkills[iPos].m_strSkillIcon = kSkillInfo[i].m_strSkillIcon;
+		m_kSkills[iPos].m_fReloadTimeLeft = kSkillInfo[i].m_fReloadTimeLeft;
+		m_kSkills[iPos].m_fReloadTimeTotal = kSkillInfo[i].m_fReloadTimeTotal;
 		
 		
-		if(m_kSkills[i].m_strSkillName.empty())
+		if(m_kSkills[iPos].m_strSkillName.empty())
 		{
-			m_kSkills[i].m_pkButton->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
-			m_kSkills[i].m_pkButton->GetButtonDownSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
-			m_kSkills[i].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
+			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
+			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
+			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
 		}
 		else
 		{
-			m_kSkills[i].m_pkButton->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes((strIconDir+m_kSkills[i].m_strSkillIcon).c_str());
-			m_kSkills[i].m_pkButton->GetButtonDownSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes((strIconDir+m_kSkills[i].m_strSkillIcon).c_str());
-			m_kSkills[i].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes((strIconDir+m_kSkills[i].m_strSkillIcon).c_str());
+			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
+			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
+			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 		}
 	}
 }
@@ -101,6 +106,55 @@ void SkillBar::HandleCommand(const string& strCommand)
 
 	if(!m_kSkills[iButton].m_strSkillName.empty())
 		g_kMistClient.SendAddSkillToQueue(m_kSkills[iButton].m_strSkillName,g_kMistClient.GetCurrentTargetID());
+}
+
+void SkillBar::Update(float fTimeDiff)
+{
+	ZGuiSkin* pkSkin;
+
+	for(int i = 0;i<m_kSkills.size();i++)
+	{
+		if(!m_kSkills[i].m_strSkillName.empty() && m_kSkills[i].m_fReloadTimeLeft > 0)
+		{
+			m_kSkills[i].m_fReloadTimeLeft -= fTimeDiff;
+			
+			//has been reloaded
+			if(m_kSkills[i].m_fReloadTimeLeft <= 0)
+			{								
+				pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+				pkSkin->m_afBkColor[0] = 1.0;
+				pkSkin->m_afBkColor[1] = 1.0;
+				pkSkin->m_afBkColor[2] = 1.0;				
+			
+				pkSkin = m_kSkills[i].m_pkButton->GetButtonHighLightSkin();							
+				pkSkin->m_afBkColor[0] = 1.0;
+				pkSkin->m_afBkColor[1] = 1.0;
+				pkSkin->m_afBkColor[2] = 1.0;				
+			
+			}
+			else
+			{	
+			//still reloading
+				float fT = 1 - m_kSkills[i].m_fReloadTimeLeft / m_kSkills[i].m_fReloadTimeTotal;
+			
+				pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+				pkSkin->m_afBkColor[0] = fT;
+				pkSkin->m_afBkColor[1] = fT;
+				pkSkin->m_afBkColor[2] = fT;							
+					
+				pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
+				pkSkin->m_afBkColor[0] = fT;
+				pkSkin->m_afBkColor[1] = fT;
+				pkSkin->m_afBkColor[2] = fT;					
+				
+				pkSkin = m_kSkills[i].m_pkButton->GetButtonHighLightSkin();							
+				pkSkin->m_afBkColor[0] = fT;
+				pkSkin->m_afBkColor[1] = fT;
+				pkSkin->m_afBkColor[2] = fT;							
+					
+			}
+		}
+	}
 }
 
 

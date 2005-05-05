@@ -802,24 +802,14 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-bow.lua",4);
 			SendAddSkillToSkillbar("skill-resurrect.lua",5);
 			SendAddSkillToSkillbar("skill-bolt.lua",6);
-/*			
-			SendAddSkillToSkillbar("skill-fireball.lua",7);
-			SendAddSkillToSkillbar("skill-fireball.lua",8);
-			SendAddSkillToSkillbar("skill-fireball.lua",9);
-			SendAddSkillToSkillbar("skill-fireball.lua",10);
-			SendAddSkillToSkillbar("skill-fireball.lua",11);
-			SendAddSkillToSkillbar("skill-fireball.lua",12);
-			SendAddSkillToSkillbar("skill-fireball.lua",13);
-			SendAddSkillToSkillbar("skill-fireball.lua",14);
-			SendAddSkillToSkillbar("skill-fireball.lua",15);
-			SendAddSkillToSkillbar("skill-fireball.lua",16);
-			SendAddSkillToSkillbar("skill-fireball.lua",17);
-			SendAddSkillToSkillbar("skill-fireball.lua",18);*/
 		}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))
 		if(!DelayCommand() )
-			SendRemoveItemFromSkillbar(1);
+		{
+			for(int i =0;i<19;i++)
+				SendRemoveItemFromSkillbar(i);
+		}
 			
 			
 	//fireball test
@@ -1190,8 +1180,8 @@ void MistClient::OnSystem()
 	SendControlInfo();
 	CloseActiveContainer();
 
-
-// 	m_pkSkillBar->Update();
+	if(m_iCharacterID != -1)
+ 		m_pkSkillBar->Update(m_pkZeroFps->GetSystemUpdateFpsDelta());
 
 }
 
@@ -1264,26 +1254,28 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 		case MLNM_SC_SKILLBAR:
 		{
-			int iSize;			
+			vector<SkillNetInfo>	kSkillList;
+			SkillNetInfo temp;
 			
-			vector<SkillInfo>	kSkillList;
-			SkillInfo temp;
-			
-			pkNetMessage->Read(iSize);
-			for(int i =0;i<iSize;i++)
+			while(true)
 			{
-				pkNetMessage->Read_Str(temp.m_strSkillName);
+				pkNetMessage->Read(temp.m_iPos);
 				
+				//break if reaching pos -1
+				if(temp.m_iPos == -1)
+					break;
+				
+				pkNetMessage->Read_Str(temp.m_strSkillName);								
 				if(!temp.m_strSkillName.empty())
 				{
 					pkNetMessage->Read_Str(temp.m_strSkillScreenName);
 					pkNetMessage->Read_Str(temp.m_strSkillIcon);
 					pkNetMessage->Read(temp.m_fReloadTimeLeft);				
+					pkNetMessage->Read(temp.m_fReloadTimeTotal);				
 				}
 				
 				kSkillList.push_back(temp);
 			}
-		
 		
 			m_pkSkillBar->UpdateList(kSkillList);
 			

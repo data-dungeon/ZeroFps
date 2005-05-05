@@ -74,6 +74,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		else
 		if(strMainWnd == "SkillBar")
 		{
+		
 			g_kMistClient.m_pkSkillBar->HandleCommand(strController);
 		}
 	}

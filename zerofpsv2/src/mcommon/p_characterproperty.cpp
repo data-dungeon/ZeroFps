@@ -1465,8 +1465,7 @@ void P_CharacterProperty::Update()
 				SetupSpawnPos();		
 				
 				//send skillbar
-				if(m_iConID != -1)
-					SendSkillbar();
+				SendSkillbar();
 			}
 		
 			//if not dead
@@ -1807,7 +1806,13 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 			if(pkSkill->GetSkillType() == eOFFENSIVE && !m_bCombatMode)
 				return 9;
 		
-			return pkSkill->Use(iTarget,kPos,kDir);
+			int iVal = pkSkill->Use(iTarget,kPos,kDir);
+			
+			//send skillbar
+			if(iVal == 0)
+				SendSkillbar(strSkillScript);
+			
+			return iVal;
 		}
 		else
 		{
@@ -2351,7 +2356,7 @@ void P_CharacterProperty::AddSkillToSkillbar(const string& strSkill,int iPos)
 		
 	m_kSkillBar[iPos]  = strSkill;
 
-	SendSkillbar();
+	SendSkillbar(strSkill);
 }
 
 void P_CharacterProperty::RemoveItemFromSkillbar(int iPos)
@@ -2364,42 +2369,45 @@ void P_CharacterProperty::RemoveItemFromSkillbar(int iPos)
 	SendSkillbar();
 }
 
-void P_CharacterProperty::SendSkillbar()
+void P_CharacterProperty::SendSkillbar(const string& strSkill)
 {
 	if(m_iConID == -1)
 		return;
 
+	cout<<"sending skillba "<<strSkill<<endl;
+		
 	NetPacket kNp;
 	kNp.Write((char) MLNM_SC_SKILLBAR);	
-// 	kNp.Write(int(0));
-	
-	int iSize = m_kSkillBar.size();
-	kNp.Write(iSize);
+ 	
+ 	int iSize = m_kSkillBar.size();
 	for(int i = 0;i<iSize;i++)
 	{
-// 		//is list to big, send package and prepare another one
-// 		if(kNp.m_iPos >= 900)
-// 		{
-// 			cout<<"SKILL LIST TO BIG"<<endl;
-// 			
-// 			//send package
-// 			kNp.TargetSetClient(m_iConID);				
-// 			m_pkApp->SendAppMessage(&kNp);	
-// 			
-// 			kNp.Clear();
-// 						
-// 		}
+		//send only a specific skill?
+		if(!strSkill.empty())
+			if(m_kSkillBar[i] != strSkill)
+				continue;
 	
+		//is there a skill at this position?
 		if(Skill* pkSkill = GetSkillPointer(m_kSkillBar[i]))
 		{
+			kNp.Write(i);						
 			kNp.Write_Str(m_kSkillBar[i]);	
 			kNp.Write_Str(pkSkill->GetName());
 			kNp.Write_Str(pkSkill->GetIcon());
 			kNp.Write(pkSkill->GetTimeLeft());
+			kNp.Write(pkSkill->GetReloadTime());
 		}
-		else	
-			kNp.Write_Str(string(""));				
+ 		else
+ 		{
+ 			kNp.Write(i);
+ 			kNp.Write_Str(string(""));				
+ 		}
 	}
+			
+	//end package with -1
+	kNp.Write(int(-1));						
+	
+	
 
 	//send package
 	kNp.TargetSetClient(m_iConID);				

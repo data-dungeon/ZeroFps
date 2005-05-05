@@ -92,6 +92,7 @@ class MCOMMON_API Skill
 		int	 GetSkillType()							{	return m_iSkillType;							};
 		float	 GetTimeLeft()								{	return m_fTimeLeft;							};
 		float	 GetRange()									{	return m_fRange;								};
+		float	 GetReloadTime()							{	return m_fReloadTime;						};
 };
 
 
@@ -228,7 +229,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendAliveInfo();
 		void SendTextToClient(const string& strText);
 		void SendPointText(const string& strText,const Vector3& kPos,int iType);
-		void SendSkillbar();
+		void SendSkillbar(const string& strSkill = "");
 		
 		void UpdateStats();					//updates character stats
 		void UpdateSkillQueue();			//updates combat, updates and performs combat queue

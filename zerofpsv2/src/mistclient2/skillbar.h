@@ -15,13 +15,27 @@ class SkillInfo
 	public:
 		string	m_strSkillName;
 		string	m_strSkillScreenName;
-		string	m_strSkillIcon;
+// 		string	m_strSkillIcon;
 
 		float		m_fReloadTimeLeft;
+		float		m_fReloadTimeTotal;
 		
 		ZGuiButton*	m_pkButton;
 	
 };
+
+class SkillNetInfo
+{
+	public:
+		int		m_iPos;
+		string	m_strSkillName;
+		string	m_strSkillScreenName;
+		string	m_strSkillIcon;
+
+		float		m_fReloadTimeLeft;
+		float		m_fReloadTimeTotal;
+};
+
 
 class SkillBar
 {
@@ -33,7 +47,8 @@ class SkillBar
 		SkillBar();
 		
 		void Init();
-		void UpdateList(vector<SkillInfo> kSkillInfo);
+		void Update(float fTimeDiff);
+		void UpdateList(vector<SkillNetInfo> kSkillInfo);
 		
 		void HandleCommand(const string& strCommand);
 };
