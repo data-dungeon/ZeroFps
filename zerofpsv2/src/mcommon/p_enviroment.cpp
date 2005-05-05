@@ -102,6 +102,9 @@ void P_Enviroment::Init()
 		m_pkEnviroment->Register(this);
 	}
 
+	
+	//check zone on load	
+	ZoneChange(-1,m_pkEntity->GetCurrentZone());
 }
 
 void P_Enviroment::Update()
