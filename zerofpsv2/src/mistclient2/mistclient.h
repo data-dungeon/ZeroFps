@@ -219,7 +219,9 @@ class MistClient :public Application, public ZGuiApp {
 		void AddChar(string strChar, string strMod);
 
 		
-		int	GetCurrentTargetID()														{	return m_iTargetID;	}
+		int	GetCurrentTargetID()														{	return m_iTargetID;		}
+		bool	GetCombatMode()															{	return m_bCombatMode;	}
+		
 		//public send stuff
 		void SendAddSkillToQueue(const string& strSkill,int iTargetID);
 		

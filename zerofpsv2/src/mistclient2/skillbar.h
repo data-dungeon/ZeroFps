@@ -15,25 +15,26 @@ class SkillInfo
 	public:
 		string	m_strSkillName;
 		string	m_strSkillScreenName;
-// 		string	m_strSkillIcon;
 
 		float		m_fReloadTimeLeft;
 		float		m_fReloadTimeTotal;
 		
-		ZGuiButton*	m_pkButton;
-	
+		int		m_iSkillType;
+		
+		ZGuiButton*	m_pkButton;	
 };
 
 class SkillNetInfo
 {
 	public:
-		int		m_iPos;
+		char		m_cPos;
 		string	m_strSkillName;
 		string	m_strSkillScreenName;
 		string	m_strSkillIcon;
 
 		float		m_fReloadTimeLeft;
 		float		m_fReloadTimeTotal;
+		char		m_cSkillType;
 };
 
 

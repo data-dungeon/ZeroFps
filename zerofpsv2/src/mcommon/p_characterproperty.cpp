@@ -2374,8 +2374,6 @@ void P_CharacterProperty::SendSkillbar(const string& strSkill)
 	if(m_iConID == -1)
 		return;
 
-	cout<<"sending skillba "<<strSkill<<endl;
-		
 	NetPacket kNp;
 	kNp.Write((char) MLNM_SC_SKILLBAR);	
  	
@@ -2390,22 +2388,23 @@ void P_CharacterProperty::SendSkillbar(const string& strSkill)
 		//is there a skill at this position?
 		if(Skill* pkSkill = GetSkillPointer(m_kSkillBar[i]))
 		{
-			kNp.Write(i);						
+			kNp.Write((char)i);						
 			kNp.Write_Str(m_kSkillBar[i]);	
 			kNp.Write_Str(pkSkill->GetName());
 			kNp.Write_Str(pkSkill->GetIcon());
 			kNp.Write(pkSkill->GetTimeLeft());
 			kNp.Write(pkSkill->GetReloadTime());
+			kNp.Write((char)pkSkill->GetSkillType());
 		}
  		else
  		{
- 			kNp.Write(i);
+ 			kNp.Write((char)i);
  			kNp.Write_Str(string(""));				
  		}
 	}
 			
 	//end package with -1
-	kNp.Write(int(-1));						
+	kNp.Write((unsigned char)-1);						
 	
 	
 

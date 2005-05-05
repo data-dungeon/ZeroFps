@@ -1,6 +1,7 @@
 #include "skillbar.h"
 #include "mistclient.h"
 #include <iostream>
+#include "../mcommon/p_characterproperty.h"
 
 extern MistClient	g_kMistClient;
 
@@ -21,7 +22,6 @@ void SkillBar::Init()
 	for(int i =0;i<19;i++)
 	{
 		temp.m_strSkillName = "";
-// 		temp.m_strSkillIcon = "empty.tga";
 		temp.m_fReloadTimeLeft = -1;
 		temp.m_fReloadTimeTotal = -1;
 		
@@ -30,9 +30,9 @@ void SkillBar::Init()
 		temp.m_pkButton = (ZGuiButton*)g_kMistClient.CreateWnd(Button,(char*)name.c_str(), "SkillBar", "", 96 + i*32, 0, 32, 32, 0);
 		temp.m_pkButton->SetButtonUpSkin(new ZGuiSkin());
 		temp.m_pkButton->SetButtonDownSkin(new ZGuiSkin());
-  		temp.m_pkButton->SetButtonHighLightSkin(new ZGuiSkin());		
+		temp.m_pkButton->SetButtonHighLightSkin(temp.m_pkButton->GetButtonUpSkin());		
+//   		temp.m_pkButton->SetButtonHighLightSkin(new ZGuiSkin());		
 		temp.m_pkButton->SetFocus(true);
-// 		temp.m_pkButton->Enable();
 		
 		
 		ZGuiSkin* pkSkin;
@@ -41,19 +41,9 @@ void SkillBar::Init()
 
 		pkSkin = temp.m_pkButton->GetButtonDownSkin();
 			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
-			pkSkin->m_afBkColor[0] = 0.5;
-			pkSkin->m_afBkColor[1] = 0.5;
-			pkSkin->m_afBkColor[2] = 0.5;
 			
- 		pkSkin = temp.m_pkButton->GetButtonHighLightSkin();
- 			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
-/*			pkSkin->m_afBkColor[0] = 1;
-			pkSkin->m_afBkColor[1] = 0.8;
-			pkSkin->m_afBkColor[2] = 0.8;	*/		
-// 			pkSkin->m_afBorderColor[0] = 0;
-// 			pkSkin->m_afBorderColor[1] = 0;
-// 			pkSkin->m_afBorderColor[2] = 0;
-// 			pkSkin->m_unBorderSize = 2;	
+//  		pkSkin = temp.m_pkButton->GetButtonHighLightSkin();
+//  			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
 			
 			
 		m_kSkills.push_back(temp);	
@@ -67,34 +57,28 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 {
 	static string strIconDir = "skills/";
 
-// 	if(kSkillInfo.size() != m_kSkills.size())
-// 	{
-// 		cout<<"ERROR: bad size on skilllist"<<endl;
-// 		return;
-// 	}
-	
+
 	int iPos;
 	for(int i = 0;i<kSkillInfo.size();i++)
 	{
-		iPos = kSkillInfo[i].m_iPos;
+		iPos = kSkillInfo[i].m_cPos;
 	
 		m_kSkills[iPos].m_strSkillName = kSkillInfo[i].m_strSkillName;
-// 		m_kSkills[iPos].m_strSkillIcon = kSkillInfo[i].m_strSkillIcon;
 		m_kSkills[iPos].m_fReloadTimeLeft = kSkillInfo[i].m_fReloadTimeLeft;
 		m_kSkills[iPos].m_fReloadTimeTotal = kSkillInfo[i].m_fReloadTimeTotal;
-		
+		m_kSkills[iPos].m_iSkillType = kSkillInfo[i].m_cSkillType;
 		
 		if(m_kSkills[iPos].m_strSkillName.empty())
 		{
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
 			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
-			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
+// 			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
 		}
 		else
 		{
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
-			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
+// 			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 		}
 	}
 }
@@ -111,48 +95,84 @@ void SkillBar::HandleCommand(const string& strCommand)
 void SkillBar::Update(float fTimeDiff)
 {
 	ZGuiSkin* pkSkin;
+	bool bCombatMode = g_kMistClient.GetCombatMode();
 
 	for(int i = 0;i<m_kSkills.size();i++)
 	{
-		if(!m_kSkills[i].m_strSkillName.empty() && m_kSkills[i].m_fReloadTimeLeft > 0)
+		if(!m_kSkills[i].m_strSkillName.empty())
 		{
-			m_kSkills[i].m_fReloadTimeLeft -= fTimeDiff;
-			
-			//has been reloaded
-			if(m_kSkills[i].m_fReloadTimeLeft <= 0)
-			{								
-				pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
-				pkSkin->m_afBkColor[0] = 1.0;
-				pkSkin->m_afBkColor[1] = 1.0;
-				pkSkin->m_afBkColor[2] = 1.0;				
-			
-				pkSkin = m_kSkills[i].m_pkButton->GetButtonHighLightSkin();							
-				pkSkin->m_afBkColor[0] = 1.0;
-				pkSkin->m_afBkColor[1] = 1.0;
-				pkSkin->m_afBkColor[2] = 1.0;				
-			
-			}
-			else
-			{	
 			//still reloading
+			if( m_kSkills[i].m_fReloadTimeLeft > 0)
+			{		
+				m_kSkills[i].m_fReloadTimeLeft -= fTimeDiff;				
 				float fT = 1 - m_kSkills[i].m_fReloadTimeLeft / m_kSkills[i].m_fReloadTimeTotal;
 			
-				pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
-				pkSkin->m_afBkColor[0] = fT;
-				pkSkin->m_afBkColor[1] = fT;
-				pkSkin->m_afBkColor[2] = fT;							
-					
-				pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
-				pkSkin->m_afBkColor[0] = fT;
-				pkSkin->m_afBkColor[1] = fT;
-				pkSkin->m_afBkColor[2] = fT;					
-				
-				pkSkin = m_kSkills[i].m_pkButton->GetButtonHighLightSkin();							
-				pkSkin->m_afBkColor[0] = fT;
-				pkSkin->m_afBkColor[1] = fT;
-				pkSkin->m_afBkColor[2] = fT;							
-					
+				//disable unused skilles
+				if(!bCombatMode && m_kSkills[i].m_iSkillType == eOFFENSIVE)
+				{
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+					pkSkin->m_afBkColor[0] = fT;
+					pkSkin->m_afBkColor[1] = 0;
+					pkSkin->m_afBkColor[2] = 0;							
+							
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
+					pkSkin->m_afBkColor[0] = fT;
+					pkSkin->m_afBkColor[1] = 0;
+					pkSkin->m_afBkColor[2] = 0;					
+				}				
+				else
+				{
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+					pkSkin->m_afBkColor[0] = fT;
+					pkSkin->m_afBkColor[1] = fT;
+					pkSkin->m_afBkColor[2] = fT;							
+							
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
+					pkSkin->m_afBkColor[0] = fT;
+					pkSkin->m_afBkColor[1] = fT;
+					pkSkin->m_afBkColor[2] = fT;											
+				}
 			}
+			else
+			{
+			
+				if(!bCombatMode && m_kSkills[i].m_iSkillType == eOFFENSIVE)
+				{			
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+					pkSkin->m_afBkColor[0] = 1.0;
+					pkSkin->m_afBkColor[1] = 0.0;
+					pkSkin->m_afBkColor[2] = 0.0;				
+					
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
+					pkSkin->m_afBkColor[0] = 0.5;
+					pkSkin->m_afBkColor[1] = 0.0;
+					pkSkin->m_afBkColor[2] = 0.0;										
+				}
+				else
+				{			
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+					pkSkin->m_afBkColor[0] = 1.0;
+					pkSkin->m_afBkColor[1] = 1.0;
+					pkSkin->m_afBkColor[2] = 1.0;				
+					
+					pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
+					pkSkin->m_afBkColor[0] = 0.5;
+					pkSkin->m_afBkColor[1] = 0.5;
+					pkSkin->m_afBkColor[2] = 0.5;							
+				}			
+			}			
+		}
+		else
+		{
+			pkSkin = m_kSkills[i].m_pkButton->GetButtonUpSkin();							
+			pkSkin->m_afBkColor[0] = 1;
+			pkSkin->m_afBkColor[1] = 1;
+			pkSkin->m_afBkColor[2] = 1;							
+					
+			pkSkin = m_kSkills[i].m_pkButton->GetButtonDownSkin();							
+			pkSkin->m_afBkColor[0] = 1;
+			pkSkin->m_afBkColor[1] = 1;
+			pkSkin->m_afBkColor[2] = 1;						
 		}
 	}
 }

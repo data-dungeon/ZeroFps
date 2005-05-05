@@ -1259,10 +1259,10 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 			while(true)
 			{
-				pkNetMessage->Read(temp.m_iPos);
+				pkNetMessage->Read(temp.m_cPos);
 				
 				//break if reaching pos -1
-				if(temp.m_iPos == -1)
+				if(temp.m_cPos == -1)
 					break;
 				
 				pkNetMessage->Read_Str(temp.m_strSkillName);								
@@ -1272,6 +1272,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					pkNetMessage->Read_Str(temp.m_strSkillIcon);
 					pkNetMessage->Read(temp.m_fReloadTimeLeft);				
 					pkNetMessage->Read(temp.m_fReloadTimeTotal);				
+					pkNetMessage->Read(temp.m_cSkillType);				
 				}
 				
 				kSkillList.push_back(temp);
