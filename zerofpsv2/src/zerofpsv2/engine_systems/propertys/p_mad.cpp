@@ -254,9 +254,20 @@ void P_Mad::DoAnimationUpdate()
 
 void P_Mad::SetBase(const char* acName)
 {
+	//dvoid addat, byter inte modell om det redan är den modellen
+	if(m_kMadFile == acName)
+		return;
+
 	SetBasePtr(string(acName));		
 	m_pkEntity->SetRadius(GetRadius());
 	SetNetUpdateFlag(true);
+	
+	//dvoid hax, resetar vertex buffer object
+	if(m_pkVBO)
+	{
+		delete m_pkVBO;		
+		m_pkVBO = NULL;
+	}
 }
 
 void P_Mad::SetScale(float fScale)
