@@ -346,12 +346,14 @@ bool P_AI::ValidTarget(int iTarget)
 
 void P_AI::Touch(int iID)
 {
-	float fRot = m_pkCharacterControl->GetYAngle();				
-	//fRot += Randomf(20)-10;
-	fRot +=180;
-	m_pkCharacterControl->SetYAngle(fRot);								
-
-
+	if(m_pkCharacterControl)
+	{
+	
+		float fRot = m_pkCharacterControl->GetYAngle();				
+		//fRot += Randomf(20)-10;
+		fRot +=180;
+		m_pkCharacterControl->SetYAngle(fRot);								
+	}
 }
 
 float P_AI::GetOffensiveRange()
