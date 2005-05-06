@@ -1100,6 +1100,9 @@ void P_CharacterProperty::AddStatPoint(int iStat)
 		case 4: m_kCharacterStats.ChangeStat("Wizdom",1);		break;
 		case 5: m_kCharacterStats.ChangeStat("Charisma",1);	break;	
 	}
+	
+	//send updated stats to client, removes some laggy feeling when adding statpoints
+	SendStats();
 }
 
 void P_CharacterProperty::OnLevelUP()
