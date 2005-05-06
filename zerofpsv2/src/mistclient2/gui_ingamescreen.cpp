@@ -77,6 +77,17 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		
 			g_kMistClient.m_pkSkillBar->HandleCommand(strController);
 		}
+		else
+		if(strMainWnd == "StatsWnd")
+		{
+			if(strController == "AddStrengthBn") g_kMistClient.SendAddStatPoint(0);
+			else if(strController == "AddDexterityBn") g_kMistClient.SendAddStatPoint(1);
+			else if(strController == "AddVitalityBn") g_kMistClient.SendAddStatPoint(2);
+			else if(strController == "AddIntelligenceBn") g_kMistClient.SendAddStatPoint(3);
+			else if(strController == "AddWizdomBn") g_kMistClient.SendAddStatPoint(4);
+			else if(strController == "AddCharismaBn") g_kMistClient.SendAddStatPoint(5);
+			
+		}
 	}
 
 	if(msg == ZGM_SELECTLISTITEM)

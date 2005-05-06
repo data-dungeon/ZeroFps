@@ -81,6 +81,19 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		
 		// -------------------------------------------
 		
+		case MLNM_CS_ADDSTATPOINT:
+		{
+			int iStat;
+		
+			PkNetMessage->Read(iStat);
+
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->AddStatPoint(iStat);
+			
+			break;
+		}		
+		
 		case MLNM_CS_ADDSKILLTOSKILLBAR:
 		{
 			string strSkill;

@@ -1408,6 +1408,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fPrevLevel;
 			float fNextLevel;
 			
+			float fStatPoints;
+			
 			float fStrength;
 			float fDexterity;
 			float fVitality;
@@ -1433,6 +1435,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fXP);
 			pkNetMessage->Read(fPrevLevel);
  			pkNetMessage->Read(fNextLevel);
+ 			pkNetMessage->Read(fStatPoints);
 			
  			pkNetMessage->Read(fStrength);
  			pkNetMessage->Read(fDexterity);
@@ -1476,7 +1479,9 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkP->SetText(((char*)IntToString(int(fXP)).c_str()));
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatNextLevel"))
 				pkP->SetText((char*)IntToString(int(fNextLevel)).c_str());
-
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatStatPoints"))
+				pkP->SetText((char*)IntToString(int(fStatPoints)).c_str());
+				
 			//XP BAR
 			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StatXPBar"))
 			{
@@ -2047,6 +2052,17 @@ void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 // 	{
 // 		m_pkGui->ShowCursor(false);
 // 	}
+}
+
+void MistClient::SendAddStatPoint(int iStat)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_ADDSTATPOINT);
+	
+	kNp.Write(iStat);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
 }
 
 void MistClient::SendAddSkillToSkillbar(const string& strSkill,int iPos)

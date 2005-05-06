@@ -133,6 +133,8 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);
 		
 		//general network sends
+		void SendAddSkillToQueue(const string& strSkill,int iTargetID);		
+		void SendAddStatPoint(int iStat);
 		void SendAddSkillToSkillbar(const string& strSkill,int iPos);
 		void SendRemoveItemFromSkillbar(int iPos);
 		void SendSit();
@@ -222,10 +224,6 @@ class MistClient :public Application, public ZGuiApp {
 		int	GetCurrentTargetID()														{	return m_iTargetID;		}
 		bool	GetCombatMode()															{	return m_bCombatMode;	}
 		
-		//public send stuff
-		void SendAddSkillToQueue(const string& strSkill,int iTargetID);
-		
-		
 		
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
@@ -239,6 +237,7 @@ class MistClient :public Application, public ZGuiApp {
 		friend class ActionMenu;
 		friend class InventoryDlg;
 		friend class EquipmentDlg;
+		friend class SkillBar;
 };
 
 

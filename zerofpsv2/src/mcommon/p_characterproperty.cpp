@@ -682,6 +682,9 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("PrevLevel"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
 	
+	m_kCharacterStats.AddStat("StatPoints"		,0,0);
+	m_kCharacterStats.AddStat("SkillPoints"	,0,0);
+	
 	m_kCharacterStats.AddStat("ExperienceValue",0,0);
 	
 	m_kCharacterStats.AddStat("Speed"			,0,0);
@@ -1077,18 +1080,42 @@ void P_CharacterProperty::GiveExperience(int iXP)
 	}
 }
 
+void P_CharacterProperty::AddStatPoint(int iStat)
+{
+	if(iStat < 0 || iStat > 5)
+		return;
+	
+	if(m_kCharacterStats.GetStat("StatPoints") <= 0)
+		return;
+
+		
+	m_kCharacterStats.ChangeStat("StatPoints",-1);
+		
+	switch(iStat)
+	{
+		case 0: m_kCharacterStats.ChangeStat("Strength",1);	break;
+		case 1: m_kCharacterStats.ChangeStat("Dexterity",1);	break;
+		case 2: m_kCharacterStats.ChangeStat("Vitality",1);	break;
+		case 3: m_kCharacterStats.ChangeStat("Intelligence",1);break;
+		case 4: m_kCharacterStats.ChangeStat("Wizdom",1);		break;
+		case 5: m_kCharacterStats.ChangeStat("Charisma",1);	break;	
+	}
+}
+
 void P_CharacterProperty::OnLevelUP()
 {
 // 	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV(),3);
 	SendTextToClient("You are now level "+IntToString(m_kCharacterStats.GetTotal("Level")));	
 
+	m_kCharacterStats.ChangeStat("StatPoints",8);	
+	
 	//tillfälligt test
-	m_kCharacterStats.ChangeStat("Strength",3);
-	m_kCharacterStats.ChangeStat("Dexterity",3);
-	m_kCharacterStats.ChangeStat("Vitality",3);
-	m_kCharacterStats.ChangeStat("Wisdom",3);
-	m_kCharacterStats.ChangeStat("Intelligence",3);
-	m_kCharacterStats.ChangeStat("Charisma",3);
+// 	m_kCharacterStats.ChangeStat("Strength",3);
+// 	m_kCharacterStats.ChangeStat("Dexterity",3);
+// 	m_kCharacterStats.ChangeStat("Vitality",3);
+// 	m_kCharacterStats.ChangeStat("Wisdom",3);
+// 	m_kCharacterStats.ChangeStat("Intelligence",3);
+// 	m_kCharacterStats.ChangeStat("Charisma",3);
 }
 
 void P_CharacterProperty::SendPointText(const string& strText,const Vector3& kPos,int iType)
@@ -1736,6 +1763,8 @@ void P_CharacterProperty::SendStats()
 	kNp.Write(m_kCharacterStats.GetTotal("PrevLevel"));	
  	kNp.Write(m_kCharacterStats.GetTotal("NextLevel"));	
 
+ 	kNp.Write(m_kCharacterStats.GetTotal("StatPoints"));	 	
+ 	
  	kNp.Write(m_kCharacterStats.GetTotal("Strength"));	
  	kNp.Write(m_kCharacterStats.GetTotal("Dexterity"));	
  	kNp.Write(m_kCharacterStats.GetTotal("Vitality"));	

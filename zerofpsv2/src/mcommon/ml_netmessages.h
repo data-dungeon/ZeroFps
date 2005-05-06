@@ -26,6 +26,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_SIT,
 	MLNM_CS_ADDSKILLTOSKILLBAR,
 	MLNM_CS_REMOVEITEMFROMSKILLBAR,
+	MLNM_CS_ADDSTATPOINT,
 };
 
 //	A network message from the server to the client.
