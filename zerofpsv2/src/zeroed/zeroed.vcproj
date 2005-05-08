@@ -96,7 +96,7 @@
 				OutputFile="..\..\bin\zeroed.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\bin"
+				AdditionalLibraryDirectories="..\..\bin; c:\cppdev\cppdev\"
 				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile=".\Release/zeroed.pdb"
 				SubSystem="1"

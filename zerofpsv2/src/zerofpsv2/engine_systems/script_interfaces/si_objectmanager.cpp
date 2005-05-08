@@ -308,6 +308,26 @@ int AttachToParent(lua_State* pkLua)
 */
 int SetParentObjectLua(lua_State* pkLua)
 {
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs == 2)
+	{
+		double dParent, dChild;
+		g_pkScript->GetArgNumber(pkLua, 0, &dParent);
+		g_pkScript->GetArgNumber(pkLua, 1, &dChild);
+
+		Entity* pkParent = g_pkObjMan->GetEntityByID((int)dParent);
+		Entity* pkChild = g_pkObjMan->GetEntityByID((int)dChild);
+
+		if ( pkParent && pkChild )
+		{
+			cout << "parent set" << endl;
+			pkChild->SetParent(pkParent);
+		}
+
+		return 0;
+	}	
+
 	if(!g_kScriptState.g_pkLastObject)
 		return 0;
 	
@@ -339,6 +359,21 @@ int SetReturnObjectLua(lua_State* pkLua)
 
 int HaveRelativOriLua(lua_State* pkLua)
 {
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs == 1)
+	{
+		double dID;
+		g_pkScript->GetArgNumber(pkLua, 0, &dID);
+
+		Entity* pkEntity = g_pkObjMan->GetEntityByID((int)dID);
+		
+		if ( pkEntity )
+			pkEntity->SetRelativeOri(true);
+
+		return 0;
+	}	
+
 	if(g_kScriptState.g_pkLastObject == NULL)
 		return 0;
 	
@@ -347,33 +382,6 @@ int HaveRelativOriLua(lua_State* pkLua)
 }
 //----end of create
 
-
-
-// Position/Rotations.
-
-
-/**	\fn SetLocalPos(x,y,z)
- 	\relates SIEntityManger
-	\brief Sets the local pos of the last object.
-*/
-int SetLocalPosLua(lua_State* pkLua)
-{
-	if(g_kScriptState.g_pkLastObject == NULL)
-		return 0;
-
-	if(g_pkScript->GetNumArgs(pkLua) != 3)
-		return 0;	
-
-	double x,y,z;
-	
-	g_pkScript->GetArg(pkLua, 0, &x);
-	g_pkScript->GetArg(pkLua, 1, &y);
-	g_pkScript->GetArg(pkLua, 2, &z);
-	
-	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
-	
-	return 0;
-}
 
 int PlaceObjectOnGroundLua(lua_State* pkLua)
 {/*

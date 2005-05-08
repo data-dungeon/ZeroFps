@@ -326,7 +326,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					switch(iRes)
 					{
 						case -1:
-							SayToClients("You dont have that skill","Server",-1,PkNetMessage->m_iClientID);break;
+							SayToClients("You don't have that skill","Server",-1,PkNetMessage->m_iClientID);break;
 						case -2:
 							SayToClients("You are dead","Server",-1,PkNetMessage->m_iClientID);break;						
 // 						case 1:
@@ -340,13 +340,13 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						case 5:
 							SayToClients("You need to target an item","Server",-1,PkNetMessage->m_iClientID);break;										
 						case 6:
-							SayToClients("You are to faar away","Server",-1,PkNetMessage->m_iClientID);break;										
+							SayToClients("You are too far away","Server",-1,PkNetMessage->m_iClientID);break;										
 						case 7:
-							SayToClients("You need to equip a sertain item","Server",-1,PkNetMessage->m_iClientID);break;										
+							SayToClients("You need to equip a certain item","Server",-1,PkNetMessage->m_iClientID);break;										
 // 						case 8:
 // 							SayToClients("Still using another skill","Server",-1,PkNetMessage->m_iClientID);break;										
  						case 9:
- 							SayToClients("You cant use that skill when not in combat mode","Server",-1,PkNetMessage->m_iClientID);break;										
+ 							SayToClients("You can't use that skill when not in combat mode","Server",-1,PkNetMessage->m_iClientID);break;										
 							
 							
 					}

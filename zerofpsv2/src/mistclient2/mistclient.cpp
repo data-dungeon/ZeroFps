@@ -802,6 +802,7 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-bow.lua",4);
 			SendAddSkillToSkillbar("skill-resurrect.lua",5);
 			SendAddSkillToSkillbar("skill-bolt.lua",6);
+			SendAddSkillToSkillbar("skill-light.lua",7);
 		}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))
@@ -849,7 +850,12 @@ void MistClient::Input()
 	if(m_pkInputHandle->Pressed(KEY_7))
 		if(!DelayCommand() )
 			SendAddSkillToQueue("skill-bolt.lua",m_iTargetID);
-// 			SendUseSkill("skill-bolt.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+
+	// light
+	if(m_pkInputHandle->Pressed(KEY_8))
+		if(!DelayCommand() )
+			SendAddSkillToQueue("skill-light.lua",m_iTargetID);
+
 
 /*	//list actions
 	if ( m_pkInputHandle->VKIsDown("look") )

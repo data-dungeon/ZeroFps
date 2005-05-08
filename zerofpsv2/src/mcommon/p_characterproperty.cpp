@@ -779,7 +779,7 @@ void P_CharacterProperty::UpdateSkillQueue()
 			switch(iRes)
 			{
 				case -1:
-					SendTextToClient("You dont have that skill");break;
+					SendTextToClient("You don't have that skill");break;
 				case -2:
 					SendTextToClient("You are dead");break;						
 				case 2:
@@ -791,11 +791,11 @@ void P_CharacterProperty::UpdateSkillQueue()
 				case 5:
 					SendTextToClient("You need to target an item");break;										
 				case 6:
-					SendTextToClient("You are to faar away");break;										
+					SendTextToClient("You are too far away");break;										
 				case 7:
-					SendTextToClient("You need to equip a sertain item");break;										
+					SendTextToClient("You need to equip a certain item");break;										
 				case 9:
-					SendTextToClient("You cant use that skill when not in combat mode");break;										
+					SendTextToClient("You can't use that skill when not in combat mode");break;										
 				case 10:
 					SendTextToClient("Not enough mana");break;										
 				case 11:
@@ -1004,7 +1004,7 @@ void P_CharacterProperty::OnDeath()
 	{
 		if(P_CharacterProperty* pkKiller = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iLastDamageFrom,"P_CharacterProperty"))
 		{
-			SendTextToClient(string("You was killed by ")+pkKiller->GetName());
+			SendTextToClient(string("You were killed by ")+pkKiller->GetName()+". Press backspace to resurrect.");
 		
 			//only give player characters XP
 			if(pkKiller->GetIsPlayerCharacter())

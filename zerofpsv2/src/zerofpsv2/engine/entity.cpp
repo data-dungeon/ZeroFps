@@ -2618,6 +2618,35 @@ int SetObjectPosLua(lua_State* pkLua)
 	return 1;
 }
 
+
+// Position/Rotations.
+
+
+/**	\fn SetLocalPos(x,y,z)
+ 	\relates SIEntityManger
+	\brief Sets the local pos of the last object.
+*/
+
+int SetLocalPosLua(lua_State* pkLua)
+{
+	if(g_kScriptState.g_pkLastObject == NULL)
+		return 0;
+
+	if(g_pkScript->GetNumArgs(pkLua) != 3)
+		return 0;	
+
+	double x,y,z;
+	
+	g_pkScript->GetArg(pkLua, 0, &x);
+	g_pkScript->GetArg(pkLua, 1, &y);
+	g_pkScript->GetArg(pkLua, 2, &z);
+	
+	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
+	
+	return 0;
+}
+
+
 /**	\fn SetVelTo( Entity)
  	\relates SIEntity
    \brief Sets velocity of entity
@@ -2801,6 +2830,7 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetLocalString",		SI_Entity::SetLocalString);
 
 	g_pkScript->ExposeFunction("SetObjectPos",		SI_Entity::SetObjectPosLua);
+	g_pkScript->ExposeFunction("SetObjectLocalPos",		SI_Entity::SetLocalPosLua);
 	g_pkScript->ExposeFunction("SetObjectRotFromObject",		SI_Entity::SetObjectRotFromObjectLua);
 	g_pkScript->ExposeFunction("SetObjectRotToIdentity",		SI_Entity::SetObjectRotToIdentityLua);
 	

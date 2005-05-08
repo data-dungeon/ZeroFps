@@ -55,12 +55,6 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);
 	
-	// Position/Orientation.
-	int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
-
-	int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API PlaceObjectOnGroundLua(lua_State* pkLua);
 
 // 	int ENGINE_SYSTEMS_API SetObjectRotFromObjectLua(lua_State* pkLua);
