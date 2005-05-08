@@ -142,7 +142,8 @@ void Read3DSString(FILE *fp, char *name, int len)
 {
 	int c;
 
-	for(int i=0; (c =fgetc(fp)) != EOF && c != 0; i++) {
+	int i;
+	for(i=0; (c =fgetc(fp)) != EOF && c != 0; i++) {
 		if(i < len) name[i]=c;
 		}
 
@@ -202,8 +203,8 @@ int Modell3DS::Chunk_CHUNK3DS_FACE_ARRAY(FILE *fp, long FileStart, long FileLen,
 	part->surface = new surface_s [num_faces];
 	part->texture = new int [num_faces];
 
-
-	for(int i = 0; i<num_faces; i++) {
+	int i;
+	for(i = 0; i<num_faces; i++) {
 		ReadShort(fp, part->surface[i].index[0]);
 		ReadShort(fp, part->surface[i].index[1]);
 		ReadShort(fp, part->surface[i].index[2]);

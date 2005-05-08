@@ -10,7 +10,7 @@
 
 #include <cstring>
 #include <iostream>
-#include <conio.h>
+//#include <conio.h>
 #include <string>
 #include <stdio.h>
 #include <stdarg.h>
@@ -151,21 +151,21 @@ bool MadMake::Parse_CmdLine(int argc, char* argv[])
 		// Check if its a option switch.
         if( *argv[ iCurArg ] == '-' ) 
 		{
-            if( !stricmp( argv[ iCurArg ], "-?" ) ||
-				!stricmp( argv[ iCurArg ], "-h" ) ||
-				!stricmp( argv[ iCurArg ], "-help" ) )
+            if( !strcmp( argv[ iCurArg ], "-?" ) ||
+				!strcmp( argv[ iCurArg ], "-h" ) ||
+				!strcmp( argv[ iCurArg ], "-help" ) )
 			{
 				Print_Help();
 				bQuit = true;
 			}
 	
-			else if (!stricmp( argv[ iCurArg ], "-d" ) ) 
+			else if (!strcmp( argv[ iCurArg ], "-d" ) ) 
 			{
                 cout << "Developer Mode = On" << endl;
 				g_bDeveloper = true;
 			}
 
-			else if (!stricmp( argv[ iCurArg ], "-c" ) ) 
+			else if (!strcmp( argv[ iCurArg ], "-c" ) ) 
 			{
                 cout << "Ett -c :)" << endl;
 			}
@@ -255,7 +255,9 @@ int HATASDL(int argc, char* argv[])
 {
 	MadMake	mad;
 	mad.Run(argc, argv);
-	_getch();
+//	_getch();
+
+
 	return 0;
 }
 

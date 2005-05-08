@@ -16,7 +16,11 @@ all:
 	cd tools/tool/madview/; $(MAKE) $@
 	cd tools/tool/zguiresed/; $(MAKE) $@
 	cd tools/tool/zfmaster/; $(MAKE) $@	
+	cd tools/tool/madmake/; $(MAKE) $@
+
 	./gengdbinit.sh
+
+
 
 clean:
 	cd zerofpsv2/; $(MAKE) $@
@@ -33,6 +37,7 @@ clean:
 	cd tools/tool/madview/; $(MAKE) $@
 	cd tools/tool/zguiresed/; $(MAKE) $@
 	cd tools/tool/zfmaster/; $(MAKE) $@	
+	cd tools/tool/madmake/; $(MAKE) $@
 	
 clean_engine:
 	cd zerofpsv2/; $(MAKE) clean	
@@ -45,5 +50,5 @@ clean_apps:
 	cd tools/tool/madview/; $(MAKE) clean	
 	cd stopemup/; $(MAKE) clean
 	cd tools/tool/zfmaster/; $(MAKE) $@	
-		
+	cd tools/tool/madmake/; $(MAKE) $@		
 	
