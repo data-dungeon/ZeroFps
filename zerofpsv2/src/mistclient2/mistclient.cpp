@@ -1599,7 +1599,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(iPlayers);
 			
 			//m_pkConsole->Printf("Listing Players : %d",iPlayers);
-			AddStringToChatBox("Requesting playerlist");
+			AddStringToChatBox("* Playerlist *");
 			
 			for(int i = 0;i<iPlayers;i++)
 			{

@@ -249,6 +249,9 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				{
 					g_kMistClient.RegBeginPlay(string(szSelItem));
 					g_kMistClient.LoadInGameGui();
+				
+					//request playerlist on join
+					g_kMistClient.SendRequestPlayerList();				
 				}
 
 			/*	string strLogin, strPassword,	strServerName,	strServerIP;
