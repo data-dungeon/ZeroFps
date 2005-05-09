@@ -243,6 +243,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int*	m_pkBakupIndexPointer;
 		Vector4*			m_pkBakupColorPointer;		
 		
+		//current fog default setting
+		bool			m_bFogSetting;
+		
 		//nr of vertexs
 		int			m_iNrOfVertexs;
 		int			m_iNrOfIndexes;

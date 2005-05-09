@@ -233,6 +233,7 @@ void Camera::InitView()//int iWidth,int iHeight)
 	m_pkZShaderSystem->SetClearColor(m_kClearColor);
 	m_pkZShaderSystem->SetFog(m_kFogColor,m_fFogNear,m_fFogFar,m_bFogEnabled);
 
+	
 	//lighing
 	m_pkZShaderSystem->ForceLighting(m_iForceLighing);
 	

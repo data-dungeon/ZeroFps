@@ -21,6 +21,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_bOcclusion = 					false;
 	m_iOcQuery =						0;
 	
+	m_bFogSetting = 					true;
+	
 	m_fRedGamma							= 1.0;
 	m_fGreenGamma						= 1.0;
 	m_fBlueGamma						= 1.0;
@@ -432,9 +434,14 @@ void ZShaderSystem::SetupPass(int iPass)
       glDisable (GL_DEPTH_TEST);
 		
 	
-	//enable /disable fog
+	//this will disable fog if wanted, but it will not enable fog if the default setting is disabled
 	if(pkSettings->m_bFog)
-		glEnable(GL_FOG);
+	{
+		if(m_bFogSetting)
+			glEnable(GL_FOG);
+		else
+			glDisable(GL_FOG);
+	}
 	else
 		glDisable(GL_FOG);
 	
@@ -1714,6 +1721,7 @@ void ZShaderSystem::SetFog(const Vector4& kColor,float fStart,float fStop,bool b
 {
 	if(bEnabled)
 	{
+		m_bFogSetting = true;		
 		glEnable(GL_FOG);
 		glFogfv(GL_FOG_COLOR,&kColor.x);
 		glFogf(GL_FOG_START,fStart);
@@ -1721,6 +1729,7 @@ void ZShaderSystem::SetFog(const Vector4& kColor,float fStart,float fStop,bool b
 	} 
 	else 
 	{
+		m_bFogSetting = false;
 		glDisable(GL_FOG);
 	}	
 }
