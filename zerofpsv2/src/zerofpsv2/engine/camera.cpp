@@ -150,8 +150,9 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	//Disable color writes, and use flat shading for speed
   	m_pkZShaderSystem->ForceColorMask(0);
-// 	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
-	glDepthRange (0.003, 1.0);
+//  	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
+//  	glDepthRange (0.003, 1.0);	//offset depthrange   default
+ 	glDepthRange (0.001, 1.0);	//offset depthrange 
 	
 	//reload last material
 	m_pkZShaderSystem->ReloadMaterial();		
@@ -634,6 +635,9 @@ void Camera::DrawWorld()
 		else
 			kLightPos =  kCenter + Vector3(0,100,0);		
 
+// 		kLightPos.x += Randomf(0.3) - 1.5;
+// 		kLightPos.y += Randomf(0.3) - 1.5;
+// 		kLightPos.z += Randomf(0.3) - 1.5;
 		
 		//create shadow map	
 		//cout<<"pos:"<<kLightPos.x<<" "<<kLightPos.y<<" "<<kLightPos.z<<"   "<< kCenter.DistanceTo(kLightPos)<<endl;
@@ -758,13 +762,13 @@ void Camera::DrawShadowedScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GEQUAL);
 	
 	//Shadow comparison should generate an INTENSITY result
-	//glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
-	//glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
-	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);
+// 	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
+// 	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
+ 	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);
 
 	
 	//Set alpha test to discard false comparisons
-	m_pkZShaderSystem->ForceAlphaTest(2);
+ 	m_pkZShaderSystem->ForceAlphaTest(2);
 		
 	
 	//reload last material
