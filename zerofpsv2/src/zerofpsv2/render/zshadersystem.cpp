@@ -600,7 +600,8 @@ void ZShaderSystem::SetupPass(int iPass)
 	{
  		glEnable(GL_ALPHA_TEST);
 //   		glAlphaFunc(GL_GREATER, 0.01);	  //default
-  		glAlphaFunc(GL_GREATER, 0.3);	
+   		glAlphaFunc(GL_GREATER, 0.3);	
+//    		glAlphaFunc(GL_LESS, 0.99);	
 		//glAlphaFunc(GL_EQUAL, 1.0);	
 	}
 	

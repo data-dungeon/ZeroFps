@@ -813,48 +813,48 @@ void MistClient::Input()
 		}
 			
 			
-	//fireball test
-	if(m_pkInputHandle->Pressed(KEY_1))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-fireball.lua",m_iTargetID);
-
-	// speed	
-	if(m_pkInputHandle->Pressed(KEY_2))
-		if(!DelayCommand() )
-//  			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-			SendAddSkillToQueue("skill-speed.lua",m_iTargetID);
-
-	// heal
-	if(m_pkInputHandle->Pressed(KEY_3))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-heal.lua",m_iTargetID);
-// 			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-
-	// normal attack
-	if(m_pkInputHandle->Pressed(KEY_4))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-basic_attack.lua",m_iTargetID);		
-
-	// bow				
-	if(m_pkInputHandle->Pressed(KEY_5))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-bow.lua",m_iTargetID);		
-
-	// resurrect
-	if(m_pkInputHandle->Pressed(KEY_6))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-resurrect.lua",m_iTargetID);
-// 			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-
-	// bolt
-	if(m_pkInputHandle->Pressed(KEY_7))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-bolt.lua",m_iTargetID);
-
-	// light
-	if(m_pkInputHandle->Pressed(KEY_8))
-		if(!DelayCommand() )
-			SendAddSkillToQueue("skill-light.lua",m_iTargetID);
+// 	//fireball test
+// 	if(m_pkInputHandle->Pressed(KEY_1))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-fireball.lua",m_iTargetID);
+// 
+// 	// speed	
+// 	if(m_pkInputHandle->Pressed(KEY_2))
+// 		if(!DelayCommand() )
+// //  			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+// 			SendAddSkillToQueue("skill-speed.lua",m_iTargetID);
+// 
+// 	// heal
+// 	if(m_pkInputHandle->Pressed(KEY_3))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-heal.lua",m_iTargetID);
+// // 			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+// 
+// 	// normal attack
+// 	if(m_pkInputHandle->Pressed(KEY_4))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-basic_attack.lua",m_iTargetID);		
+// 
+// 	// bow				
+// 	if(m_pkInputHandle->Pressed(KEY_5))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-bow.lua",m_iTargetID);		
+// 
+// 	// resurrect
+// 	if(m_pkInputHandle->Pressed(KEY_6))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-resurrect.lua",m_iTargetID);
+// // 			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+// 
+// 	// bolt
+// 	if(m_pkInputHandle->Pressed(KEY_7))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-bolt.lua",m_iTargetID);
+// 
+// 	// light
+// 	if(m_pkInputHandle->Pressed(KEY_8))
+// 		if(!DelayCommand() )
+// 			SendAddSkillToQueue("skill-light.lua",m_iTargetID);
 
 
 /*	//list actions
