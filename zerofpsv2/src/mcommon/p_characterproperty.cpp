@@ -677,7 +677,7 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 
 void P_CharacterProperty::SetupCharacterStats()
 {
-	m_kCharacterStats.AddStat("Level"			,0,0);
+	m_kCharacterStats.AddStat("Level"			,1,0);		//alla karaktärer börjar på lvl 1 
 	m_kCharacterStats.AddStat("Experience"		,0,0);
 	m_kCharacterStats.AddStat("PrevLevel"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
@@ -694,8 +694,8 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("ManaMax"			,0,0);
 	m_kCharacterStats.AddStat("ManaRegen"		,0,0);	
 	
-	m_kCharacterStats.AddStat("Health"			,0,0);
-	m_kCharacterStats.AddStat("HealthMax"		,0,0);
+	m_kCharacterStats.AddStat("Health"			,1,0);		//failsafe så inte karaktären dör direkt
+	m_kCharacterStats.AddStat("HealthMax"		,1,0);		//
 	m_kCharacterStats.AddStat("HealthRegen"	,0,0);
 
 	m_kCharacterStats.AddStat("Stamina"			,0,0);
