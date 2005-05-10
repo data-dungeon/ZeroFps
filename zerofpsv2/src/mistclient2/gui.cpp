@@ -228,6 +228,7 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageGame", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("RestartMsgBox", GuiMsgOptionsDlg));
 	
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("CombatWnd", GuiMsgIngameScreen));	
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("StatsWnd", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("SkillBar", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionBar", GuiMsgIngameScreen));

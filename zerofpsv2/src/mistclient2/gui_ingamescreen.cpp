@@ -6,6 +6,7 @@
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
+
 extern MistClient	g_kMistClient;
 
 
@@ -88,6 +89,17 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			else if(strController == "AddCharismaBn") g_kMistClient.SendAddStatPoint(5);
 			
 		}
+		else
+		if(strMainWnd == "CombatWnd")
+		{
+			if(strController == "ToggleCombatBn")
+			{
+				if(g_kMistClient.m_bCombatMode)
+					g_kMistClient.SendCombatMode(false);
+				else
+					g_kMistClient.SendCombatMode(true);
+			}
+		}		
 	}
 
 	if(msg == ZGM_SELECTLISTITEM)

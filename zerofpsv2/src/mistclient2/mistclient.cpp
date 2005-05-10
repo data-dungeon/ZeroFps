@@ -2120,13 +2120,33 @@ void MistClient::SendAddSkillToQueue(const string& strSkill,int iTargetID)
 void MistClient::SendCombatMode(bool bCombatMode)
 {
 	if(bCombatMode)
+	{
 		AddStringToChatBox("Entering combat mode");
+	
+		//toggle button texture
+		if(ZGuiButton* pkBtn = (ZGuiButton*)g_kMistClient.GetWnd("ToggleCombatBn"))
+		{
+			pkBtn->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("combaton_up.bmp");
+			pkBtn->GetButtonHighLightSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("combaton_up.bmp");
+			pkBtn->GetButtonDownSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("combaton_down.bmp");
+		}		
+	}
 	else
+	{
 		AddStringToChatBox("Leaving combat mode");
-
+		
+		if(ZGuiButton* pkBtn = (ZGuiButton*)g_kMistClient.GetWnd("ToggleCombatBn"))
+		{
+			pkBtn->GetButtonUpSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("combatoff_up.bmp");
+			pkBtn->GetButtonHighLightSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("combatoff_up.bmp");
+			pkBtn->GetButtonDownSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("combatoff_down.bmp");
+		}			
+	}
+	
+	//save new mode in client, 
 	m_bCombatMode = bCombatMode;
 	
-
+	//send toggle to server
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_COMBATMODE);
 	
