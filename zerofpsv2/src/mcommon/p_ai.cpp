@@ -54,6 +54,8 @@ P_AI::P_AI()
 	m_iTarget	= -1;
 	
 	m_fFindTime = 0;
+	
+	SetState(eAI_STATE_GUARD);
 }
 
 P_AI::~P_AI()
@@ -162,7 +164,7 @@ bool P_AI::States(int iEvent, int iState)
 		State(eAI_STATE_RANDOMWALK)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_RANDOMWALK");
-
+				
 			OnUpdate
 				if(m_bWalk)
 				{
@@ -222,7 +224,6 @@ bool P_AI::States(int iEvent, int iState)
 				
 					if(fDistance > m_fSeeDistance)
 					{
-						cout<<"target went out of sight"<<endl;
 						SetState(eAI_STATE_RANDOMWALK);
 						return false;
 					}
@@ -242,7 +243,7 @@ bool P_AI::States(int iEvent, int iState)
 		State(eAI_STATE_CHASE)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_CHASE");
-
+				
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
@@ -256,7 +257,6 @@ bool P_AI::States(int iEvent, int iState)
 				
 					if(fDistance > m_fSeeDistance)
 					{
-						cout<<"target went out of attack/see distance"<<endl;
 						SetState( eAI_STATE_RANDOMWALK ); //return to random walk
 						return false;
 					}
@@ -280,7 +280,7 @@ bool P_AI::States(int iEvent, int iState)
 		State(eAI_STATE_ATTACK)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_ATTACK");
-
+				
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
@@ -403,10 +403,21 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 	int iEnemy = -1;
 	float fRange = 999999999;
 	
+	Entity* pkZone = NULL;
+	
+	//does this entity use zones?
+	if(m_pkEntity->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent();
+	}
+	else if(m_pkEntity->GetParent()->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent()->GetParent();
+	}
 	
 	
 	//we assume that parent is a zone
-	if(Entity* pkZone = GetEntity()->GetParent())
+	if(pkZone)
 	{
 		pkZone->GetZoneNeighbours(&kZones);
 		

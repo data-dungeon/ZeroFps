@@ -49,7 +49,7 @@ void P_LinkToJoint::Update()
 			kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint);				
 			kRot = pkMad->GetJointRotation(m_strToJoint);
 			
-			m_pkEntity->SetLocalPosV(kPos);
+			m_pkEntity->SetWorldPosV(kPos);
 			m_pkEntity->SetLocalRotM(kRot);
 			m_pkEntity->SetInterpolate(false);
 				
