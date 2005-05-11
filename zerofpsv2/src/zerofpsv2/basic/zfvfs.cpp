@@ -113,7 +113,8 @@ ZFVFileSystem::ZFVFileSystem()
 
 bool ZFVFileSystem::StartUp()
 { 
-	
+	char* strDir = m_pkBasicFS->GetCWD();	
+	cout << "WorkingDir is: " << strDir << endl;
 	return true;
 }
 

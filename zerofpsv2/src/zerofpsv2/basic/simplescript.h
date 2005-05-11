@@ -46,6 +46,8 @@ public:
 	bool	SkipWhiteSpaces(void);
 	bool  SkipLine();
 
+	char*	GetTokenUntilEOL(void);
+
 };
 
 #endif

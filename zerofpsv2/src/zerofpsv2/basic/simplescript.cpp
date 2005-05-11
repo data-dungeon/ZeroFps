@@ -110,7 +110,6 @@ char* SimpleScriptFile::GetToken(void)
 
 	while(!bIsTokenReady)
 	{
-		// Skip spaces
 		if(!SkipWhiteSpaces())
 			return NULL;
 
@@ -135,6 +134,43 @@ char* SimpleScriptFile::GetToken(void)
 	return NULL;
 }
 
+char*	SimpleScriptFile::GetTokenUntilEOL(void)
+{
+	char* cpToken;
+
+	while(!bIsTokenReady)
+	{
+		// Skip spaces
+		// Skip spaces
+		while(*ucpScript <= 32)
+		{
+			// If end of script
+			if(ucpScript >= ucpScriptEnd)
+				return false;
+			if(*ucpScript == '\n')
+				return NULL;
+			ucpScript++;
+		}
+
+
+		cpToken = ucToken;
+
+		while(*ucpScript > 32)
+		{
+			*cpToken = *ucpScript;
+			cpToken++;
+			ucpScript++;
+			if(ucpScript == ucpScriptEnd)
+				break;
+		}
+		
+		*cpToken = 0;
+		return ucToken;
+
+	}
+
+	return NULL;
+}
 
 
 

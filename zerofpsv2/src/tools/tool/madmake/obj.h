@@ -13,6 +13,7 @@ class MayaMtl
 public:
 	string	m_strName;
 	string	m_strDiffuseColorTexture;
+	Vector3	m_kAmbientColor;
 };
 
 /** \brief	Import for Obj files from maya.
@@ -48,6 +49,15 @@ private:
 	void ReadMtlFile(char* szFileName);
 	void HandleMtlCommand(SimpleScriptFile* pkScript, char* ucpToken);
 	void HandleObjCommand(SimpleScriptFile* pkScript, char* ucpToken);
+	void SaveMaterials();
+
+	void AddFace(int iVertex1, int iTexture1, int iNormal1,
+		int iVertex2, int iTexture2, int iNormal2,
+		int iVertex3, int iTexture3, int iNormal3);
+
+	Mad_CoreSubMesh			m_kSubMesh;
+
+	bool	m_bWarningTriangulate;
 };
 
 #endif
