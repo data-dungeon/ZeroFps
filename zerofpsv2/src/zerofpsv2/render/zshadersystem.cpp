@@ -950,9 +950,14 @@ void ZShaderSystem::DrawArray()
 	SetupArrayClientStates();
 	
 	if(m_pkCurrentMaterial->GetNrOfPasses() == 1)
-	{
+	{		
 		SetupTUClientStates(0);
+	
+		//update glsl program parameter information
+		if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
+			UpdateGLSLProgramParameters(0);
 		
+			
 		if(m_bIndexPointer)
 		{
 			m_iTotalVertises += m_iNrOfIndexes;
@@ -972,6 +977,11 @@ void ZShaderSystem::DrawArray()
 			SetupPass(i);
 			SetupTUClientStates(i);
 	
+			//update glsl program parameter information
+			if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
+				UpdateGLSLProgramParameters(i);
+			
+			
 			if(m_bIndexPointer)
 			{
 				m_iTotalVertises += m_iNrOfIndexes;
@@ -1412,6 +1422,28 @@ int ZShaderSystem::GetStencilBits()
 	glGetIntegerv(GL_STENCIL_BITS, &iBits);
 	
 	return iBits;
+}
+
+void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
+{	
+	//time
+	GLint iTimeLocation  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fTime");
+	glUniform1fARB(iTimeLocation, (float(SDL_GetTicks()) /1000.0));
+
+/*
+	//textures	
+	static GLint iTexLoc[4];
+	
+	iTexLoc[0]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture0");
+	iTexLoc[1]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture1");
+	iTexLoc[2]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture2");
+	iTexLoc[3]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture3");	
+		
+	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->GetPass(iPass);	
+	for(int i = 0;i<4;i++)	
+		if(pkSettings->m_kTUs[i]->IsValid())
+ 			glUniform1iARB( iTexLoc[i], ((ResTexture*)pkSettings->m_kTUs[i]->GetResourcePtr())->m_iTextureID);*/
+
 }
 
 void ZShaderSystem::UpdateFragmentProgramParameters()

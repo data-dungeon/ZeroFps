@@ -287,6 +287,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//hardware shaders
 		void SetupGLSLProgram(ZMaterialSettings* pkSettings);
+		void UpdateGLSLProgramParameters(int iPass);
+		
 		void SetupVertexProgram(ZMaterialSettings* pkSettings);
 		void SetupFragmentProgram(ZMaterialSettings* pkSettings);
 		void UpdateFragmentProgramParameters();		
