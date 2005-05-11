@@ -1,4 +1,5 @@
 #include "zshadersystem.h"
+#include "glslprogram.h"
 
 ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 {
@@ -17,6 +18,9 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_bSupportFragmentProgram = 	false;
 	m_iCurrentVertexProgram = 		-1;
 	m_iCurrentFragmentProgram = 	-1;
+	
+	m_bSupportGLSLProgram = 		false;
+	m_iCurrentGLSLProgramID = 		0;
 	
 	m_bOcclusion = 					false;
 	m_iOcQuery =						0;
@@ -64,6 +68,14 @@ bool ZShaderSystem::StartUp()
 	if(!(m_bSupportFragmentProgram = HaveExtension("GL_ARB_fragment_program")))
 		cout<<"ZSHADER: No fragment program support"<<endl;
 	
+	//check for glsl support
+	m_bSupportGLSLProgram  =HaveExtension("GL_ARB_shader_objects") &&
+									HaveExtension("GL_ARB_shading_language_100") &&
+									HaveExtension("GL_ARB_vertex_shader") &&
+									HaveExtension("GL_ARB_fragment_shader");
+	if(!m_bSupportGLSLProgram)
+		cout<<"ZSHADER: No GLSL program support"<<endl;
+									
 	//check for vertexbuffer support	
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
 		cout<<"ZSHADER: No vertexbuffer support"<<endl;
@@ -624,7 +636,11 @@ void ZShaderSystem::SetupPass(int iPass)
 	SetupVertexProgram(pkSettings);
 
 	//setup fragment program
-	SetupFragmentProgram(pkSettings);		
+	SetupFragmentProgram(pkSettings);
+	
+	//setup glsl program
+	SetupGLSLProgram(pkSettings);
+	
 }
 
 void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
@@ -1429,6 +1445,41 @@ void ZShaderSystem::UpdateVertexProgramParameters()
 	}
 }
 
+void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
+{
+	static GLenum iProgram;
+	
+	if(!m_bSupportGLSLProgram)
+		return;
+
+		
+	if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
+		iProgram = pkRt->m_iProgramID;
+	else
+		iProgram = 0;
+
+ 	if(iProgram == m_iCurrentGLSLProgramID)
+ 		return;
+	
+// 	glGetError(); 		
+ 		
+	//bind program
+	glUseProgramObjectARB(iProgram);			
+	
+	//set current program
+	m_iCurrentGLSLProgramID = iProgram;
+	
+// 	switch(glGetError())
+// 	{
+// 		case GL_INVALID_VALUE: cout<<"glUseProgramObjectARB: ivalid value"<<endl;break;
+// 		case GL_INVALID_OPERATION: cout<<"glUseProgramObjectARB: ivalid operation"<<endl;break;
+// 	}	
+// 	
+	
+	
+	
+}
+
 void ZShaderSystem::SetupVertexProgram(ZMaterialSettings* pkSettings)
 {
 	if(!m_bSupportVertexProgram)
@@ -1456,6 +1507,7 @@ void ZShaderSystem::SetupFragmentProgram(ZMaterialSettings* pkSettings)
 		SetFragmentProgram(pkRt->m_iId);
 			
 }
+
 
 void ZShaderSystem::SetVertexProgram(const int& iVPID)
 {

@@ -16,6 +16,8 @@ ZMaterialSettings::ZMaterialSettings()
 	m_pkVP = new ZFResourceHandle();					// LEAK - MistClient, Level loaded.
 	m_pkFP = new ZFResourceHandle();
 	
+	m_pkSLP = new ZFResourceHandle();
+	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
 	m_iTUTexCords[2] = CORDS_FROM_ARRAY_2;	
@@ -80,9 +82,12 @@ ZMaterialSettings::~ZMaterialSettings()
 	if(m_pkFP)
 		delete m_pkFP;
 		
+	if(m_pkSLP)
+		delete m_pkSLP;
 			
 	m_pkVP = NULL;
 	m_pkFP = NULL;
+	m_pkSLP = NULL;
 }
 
 ZMaterial::ZMaterial()
@@ -257,11 +262,21 @@ bool ZMaterial::LoadPass(int iPass)
 
 	if(m_kIni.KeyExist(passname.c_str(),"vertexprogram"))
 		newpass->m_pkVP->SetRes(m_kIni.GetValue(passname.c_str(),"vertexprogram"));
-
 	if(m_kIni.KeyExist(passname.c_str(),"fragmentprogram"))
 		newpass->m_pkFP->SetRes(m_kIni.GetValue(passname.c_str(),"fragmentprogram"));
 
-				
+		
+	string strSLVS;
+	string strSLFS;
+	if(m_kIni.KeyExist(passname.c_str(),"slvertexshader"))
+		strSLVS = m_kIni.GetValue(passname.c_str(),"slvertexshader");
+	if(m_kIni.KeyExist(passname.c_str(),"slfragmentshader"))
+		strSLFS = m_kIni.GetValue(passname.c_str(),"slfragmentshader");
+
+	if(!strSLVS.empty() || !strSLFS.empty())
+	{
+		newpass->m_pkSLP->SetRes(strSLVS+string("#")+strSLFS+string(".glsl"));
+	}			
 			
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords0"))
 		newpass->m_iTUTexCords[0] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexcords0"));

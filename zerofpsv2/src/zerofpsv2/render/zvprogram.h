@@ -28,7 +28,6 @@ class RENDER_API ZVProgram : public ZFResource
 		bool	SetupShaderPointer();
 		
 	public:
-		string	m_sFileName;
 		int		m_iId;
 
 

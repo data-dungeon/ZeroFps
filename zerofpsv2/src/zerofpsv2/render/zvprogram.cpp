@@ -4,7 +4,6 @@
 ZVProgram::ZVProgram()
 {
 	m_iId = NO_VPROGRAM;
-	m_sFileName = "";
 	m_pkShader = NULL;
 }
 

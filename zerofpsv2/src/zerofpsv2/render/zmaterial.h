@@ -25,6 +25,8 @@ class RENDER_API ZMaterialSettings
 		ZFResourceHandle*	m_pkVP;
 		ZFResourceHandle*	m_pkFP;
 		
+		ZFResourceHandle*	m_pkSLP;
+		
 		int				m_iTUTexCords[4];
 		
 		Vector4			m_kVertexColor;

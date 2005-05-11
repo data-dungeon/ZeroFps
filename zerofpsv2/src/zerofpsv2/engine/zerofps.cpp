@@ -16,6 +16,7 @@
 #include "../basic/zfbasicfs.h"
 #include "astar.h"
 
+#include "../render/glslprogram.h"
 //#include "../basic/zfresourcedb.h"
 
 //#include "../engine_systems/audio/zfaudiosystem.h"
@@ -1747,6 +1748,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".zvp"), Create__ZVProgram	);
 	m_pkResourceDB->RegisterResource( string(".zfp"), Create__ZFProgram	);	
 	m_pkResourceDB->RegisterResource( string(".lua"), Create__ZFScript  	);
+	m_pkResourceDB->RegisterResource( string(".glsl"), Create__GLSLProgram 	);
 }
 
 void ZeroFps::RegisterPropertys()

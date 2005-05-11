@@ -192,6 +192,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int				m_iCurrentVertexProgram;
 		int				m_iCurrentFragmentProgram; 
 		
+		bool				m_bSupportGLSLProgram;
+		GLenum			m_iCurrentGLSLProgramID;				
+		
 		//have occulusion support
 		bool				m_bOcclusion;
 		unsigned int	m_iOcQuery;
@@ -283,6 +286,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetupTU(ZMaterialSettings* pkSettings,int iTU);
 		
 		//hardware shaders
+		void SetupGLSLProgram(ZMaterialSettings* pkSettings);
 		void SetupVertexProgram(ZMaterialSettings* pkSettings);
 		void SetupFragmentProgram(ZMaterialSettings* pkSettings);
 		void UpdateFragmentProgramParameters();		
@@ -366,6 +370,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool SupportVertexProgram() 							{	return m_bSupportVertexProgram;		}
 		bool SupportFragmentProgram() 						{	return m_bSupportFragmentProgram;	}
 		bool SupportOcculusion()								{	return m_bOcclusion;						}
+		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}
 		
 		//arrays
 		void ResetPointers();
