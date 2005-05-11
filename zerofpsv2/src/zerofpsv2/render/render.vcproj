@@ -156,6 +156,9 @@
 				RelativePath=".\glguirender.cpp">
 			</File>
 			<File
+				RelativePath=".\glslprogram.cpp">
+			</File>
+			<File
 				RelativePath=".\landscape.cpp">
 			</File>
 			<File
@@ -194,6 +197,9 @@
 			</File>
 			<File
 				RelativePath=".\glguirender.h">
+			</File>
+			<File
+				RelativePath=".\glslprogram.h">
 			</File>
 			<File
 				RelativePath=".\light.h">
