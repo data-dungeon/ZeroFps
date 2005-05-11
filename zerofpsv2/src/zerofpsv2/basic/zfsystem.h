@@ -204,6 +204,7 @@ public:
 
 	void SetPreLogName(string strPreLogName);
 
+
 	friend class CmdSystem;
 };
 

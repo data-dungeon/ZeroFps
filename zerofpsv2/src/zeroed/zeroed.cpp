@@ -25,6 +25,9 @@
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
+
+
+
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
 	switch(msg)

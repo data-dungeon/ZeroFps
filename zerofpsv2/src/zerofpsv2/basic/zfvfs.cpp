@@ -576,6 +576,12 @@ string ZFVFileSystem::GetRealName(const string& strName)
 	return strName;
 }
 
+class I_NameGenerator
+{
+public:
+	virtual string GetName() = 0;
+};
+
 void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 //	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
@@ -619,7 +625,20 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		}
 			
 		case FID_DIR:	
-		{		
+		{
+			I_NameGenerator* pkGenerator = dynamic_cast<I_NameGenerator*>(GetSystem().GetObjectPtr("NameGenerator"));
+			if(!pkGenerator)
+			{
+				GetSystem().Printf(" Namegenerator not found\n ");
+			}
+			else
+			{
+				GetSystem().Printf(" Namegenerator is active: %s\n ", pkGenerator->GetName().c_str());
+
+			}
+
+			break;
+
 			bool bDirOnly = false;
 		
 			if(kCommand->m_kSplitCommand.size() == 2) 

@@ -4,6 +4,10 @@
 #include "globals.h"
 #include "zfini.h"
 
+#if defined(WIN32) 
+#include <windows.h> 
+#endif
+
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") 
 {
@@ -14,6 +18,9 @@ CmdSystem::CmdSystem()
 	Register_Cmd("commands",	FID_COMMANDS,				CSYS_FLAG_SRC_ALL);
 	Register_Cmd("sys",			FID_SYS,						CSYS_FLAG_SRC_ALL);
 	Register_Cmd("exec",			FID_EXECUTECOMMANDS,		CSYS_FLAG_SRC_ALL);
+	Register_Cmd("pload",		FID_PLUGINLOAD,			CSYS_FLAG_SRC_ALL);
+	Register_Cmd("punload",		FID_PLUGINUNLOAD,			CSYS_FLAG_SRC_ALL);
+	Register_Cmd("plist",		FID_PLUGINLIST,			CSYS_FLAG_SRC_ALL);
 }
 
 bool CmdSystem::StartUp()	
@@ -57,6 +64,18 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_VARLIST:		GetSystem().PrintVariables();	break;
 		case FID_COMMANDS:	GetSystem().PrintCommands();	break;
 
+		case FID_PLUGINLOAD:	
+			Plugin_LoadSubSystem(kCommand->m_kSplitCommand[1]);
+			break;
+
+		case FID_PLUGINUNLOAD:	
+			Plugin_UnLoadSubSystem(kCommand->m_kSplitCommand[1]);
+			break;
+
+		case FID_PLUGINLIST:	Plugin_List();	break;
+		
+
+
 		case FID_SYS:
 			// Draw All Systems to console.
 			for(map<string,NameObject>::iterator it = m_pkSystem->m_kObjectNames.begin();it != m_pkSystem->m_kObjectNames.end();it++)
@@ -76,3 +95,89 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	}
 }
+
+
+
+
+
+
+
+
+/*
+class	ModuleInfo
+{
+public:
+#if defined(WIN32) 
+	HMODULE	m_kModule;
+#else if
+	void*		m_kModule;
+#endif
+	string	m_strModuleName;
+};
+
+map<string,ModuleInfo>	g_kModule;			
+
+typedef bool (CALLBACK *ZPF_PluginLoad)();
+typedef bool (CALLBACK *ZPF_PluginUnLoad)();
+
+void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
+{
+	ModuleInfo	kInfo;
+	kInfo.m_kModule = LoadLibrary( strPluginName.c_str() );
+	kInfo.m_strModuleName = strPluginName;
+		
+	if(!kInfo.m_kModule)
+	{
+		GetSystem().Printf("Failed to load module '%s'\n", strPluginName.c_str());
+		return;
+	}
+
+	// Call plugin load function.
+	ZPF_PluginLoad pkPluginLoad = (ZPF_PluginLoad) GetProcAddress(kInfo.m_kModule, "Plugin_Load");
+	if(!pkPluginLoad)
+	{
+		GetSystem().Printf("Failed to init module '%s'\n", strPluginName.c_str());
+		FreeLibrary( kInfo.m_kModule );
+		return;
+	}
+
+	pkPluginLoad();
+	g_kModule.insert(map<const char*,ModuleInfo>::value_type(kInfo.m_strModuleName.c_str(),kInfo));
+}
+
+void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
+{
+	// First we check so module is really loaded.
+	static map<string,ModuleInfo>::iterator it;
+	it = g_kModule.find(strPluginName);
+
+	if(it == g_kModule.end())
+	{
+		GetSystem().Printf("Module '%s' is not loaded.\n", strPluginName.c_str());
+		return;
+	}
+
+	// Call Unload function
+	ZPF_PluginUnLoad pkPluginUnLoad = (ZPF_PluginUnLoad) GetProcAddress(it->second.m_kModule, "Plugin_Unload");
+	if(pkPluginUnLoad)
+		pkPluginUnLoad();
+
+	// Unload Module
+	FreeLibrary(it->second.m_kModule);
+	g_kModule.erase(it);
+}
+
+void CmdSystem::Plugin_List()
+{
+	GetSystem().Printf("Loaded Modules\n");
+
+	map<string,ModuleInfo>::iterator itModule;
+	for(itModule = g_kModule.begin(); itModule != g_kModule.end(); itModule++)
+	{
+		GetSystem().Printf(" %s", (*itModule).second.m_strModuleName.c_str());
+	}
+}*/
+
+void CmdSystem::Plugin_LoadSubSystem(string strPluginName)		{ }
+void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)	{ }
+void CmdSystem::Plugin_List()												{ }

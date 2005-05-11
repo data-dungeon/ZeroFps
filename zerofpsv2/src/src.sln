@@ -91,14 +91,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zguiresed", "tools\tool\zgu
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zfpmlserver", "plugin\zfpmlserver\zfpmlserver.vcproj", "{118752D9-E47B-4627-A5A5-DB9EA36148BF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 1
-		SccProjectUniqueName0 = src.vcproj
-		SccProjectName0 = src
-		SccLocalPath0 = .
-		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-	EndGlobalSection
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Release = Release
@@ -155,6 +152,10 @@ Global
 		{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}.Debug.Build.0 = Debug|Win32
 		{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}.Release.ActiveCfg = Release|Win32
 		{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}.Release.Build.0 = Release|Win32
+		{118752D9-E47B-4627-A5A5-DB9EA36148BF}.Debug.ActiveCfg = Debug|Win32
+		{118752D9-E47B-4627-A5A5-DB9EA36148BF}.Debug.Build.0 = Debug|Win32
+		{118752D9-E47B-4627-A5A5-DB9EA36148BF}.Release.ActiveCfg = Release|Win32
+		{118752D9-E47B-4627-A5A5-DB9EA36148BF}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

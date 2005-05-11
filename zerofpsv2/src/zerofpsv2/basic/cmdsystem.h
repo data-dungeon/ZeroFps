@@ -27,6 +27,9 @@ class BASIC_API CmdSystem : public ZFSubSystem
 			FID_COMMANDS,
 			FID_SYS,
 			FID_EXECUTECOMMANDS, // Run Commands from Ini file
+			FID_PLUGINLOAD,
+			FID_PLUGINUNLOAD,
+			FID_PLUGINLIST,
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
@@ -40,6 +43,10 @@ class BASIC_API CmdSystem : public ZFSubSystem
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
+
+		void Plugin_LoadSubSystem(string strPluginName);
+		void Plugin_UnLoadSubSystem(string strPluginName);
+		void Plugin_List();
 };
 
 
