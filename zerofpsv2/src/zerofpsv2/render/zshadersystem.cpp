@@ -676,7 +676,14 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 		glEnable(GL_TEXTURE_2D);
 		m_pkTexMan->BindTexture(((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr())->m_iTextureID);
 		
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+		switch(pkSettings->m_iTUTexEnvMode[iTU])
+		{
+			case TEXENV_MODE_MODULATE: glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	break;
+			case TEXENV_MODE_DECAL: 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);		break;
+			case TEXENV_MODE_BLEND: 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_BLEND);		break;
+			case TEXENV_MODE_REPLACE:	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);	break;
+		}
+
 			
 		switch(pkSettings->m_iTUTexCords[iTU])
 		{
@@ -693,12 +700,26 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 				glEnable(GL_TEXTURE_GEN_T);				
 				break;			
 			case CORDS_OBJECT_LINEAR:
+			{
+				static float s[] = {1,0,1,0};
+				static float t[] = {0,1,1,0};
+
+				s[0] = pkSettings->m_fTUTexGenScale[iTU];
+				s[2] = pkSettings->m_fTUTexGenScale[iTU];
+				t[1] = pkSettings->m_fTUTexGenScale[iTU];
+				t[2] = pkSettings->m_fTUTexGenScale[iTU];							
+			
+				
 				glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);
-				glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);				
+ 				glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);				
 				glEnable(GL_TEXTURE_GEN_S);
-				glEnable(GL_TEXTURE_GEN_T);				
+ 				glEnable(GL_TEXTURE_GEN_T);				
+
+  				glTexGenfv(GL_S,GL_OBJECT_PLANE,s);				 								
+  				glTexGenfv(GL_T,GL_OBJECT_PLANE,t);				 								
+				
 				break;			
-		
+			}
 			
 			default:	//if no automatic generation, make sure its disabled
 				glDisable(GL_TEXTURE_GEN_S);

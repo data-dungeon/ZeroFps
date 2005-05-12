@@ -23,6 +23,16 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iTUTexCords[2] = CORDS_FROM_ARRAY_2;	
 	m_iTUTexCords[3] = CORDS_FROM_ARRAY_3;	
 	
+	m_iTUTexEnvMode[0] = TEXENV_MODE_MODULATE;
+	m_iTUTexEnvMode[1] = TEXENV_MODE_MODULATE;
+	m_iTUTexEnvMode[2] = TEXENV_MODE_MODULATE;
+	m_iTUTexEnvMode[3] = TEXENV_MODE_MODULATE;
+	
+	m_fTUTexGenScale[0] = 1.0;
+	m_fTUTexGenScale[1] = 1.0;
+	m_fTUTexGenScale[2] = 1.0;
+	m_fTUTexGenScale[3] = 1.0;
+	
 	m_iPolygonModeFront = FILL_POLYGON;
 	m_iPolygonModeBack =	FILL_POLYGON;			
 	
@@ -287,7 +297,25 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords3"))
 		newpass->m_iTUTexCords[3] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexcords3"));
 	
-	
+	if(m_kIni.KeyExist(passname.c_str(),"tutexenvmode0"))
+		newpass->m_iTUTexEnvMode[0] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexenvmode0"));
+	if(m_kIni.KeyExist(passname.c_str(),"tutexenvmode1"))
+		newpass->m_iTUTexEnvMode[1] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexenvmode1"));
+	if(m_kIni.KeyExist(passname.c_str(),"tutexenvmode2"))
+		newpass->m_iTUTexEnvMode[2] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexenvmode2"));
+	if(m_kIni.KeyExist(passname.c_str(),"tutexenvmode3"))
+		newpass->m_iTUTexEnvMode[3] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexenvmode3"));
+			
+	if(m_kIni.KeyExist(passname.c_str(),"tutexgenscale0"))
+		newpass->m_fTUTexGenScale[0] = m_kIni.GetFloatValue(passname.c_str(),"tutexgenscale0");
+	if(m_kIni.KeyExist(passname.c_str(),"tutexgenscale1"))
+		newpass->m_fTUTexGenScale[1] = m_kIni.GetFloatValue(passname.c_str(),"tutexgenscale1");
+	if(m_kIni.KeyExist(passname.c_str(),"tutexgenscale2"))
+		newpass->m_fTUTexGenScale[2] = m_kIni.GetFloatValue(passname.c_str(),"tutexgenscale2");
+	if(m_kIni.KeyExist(passname.c_str(),"tutexgenscale3"))
+		newpass->m_fTUTexGenScale[3] = m_kIni.GetFloatValue(passname.c_str(),"tutexgenscale3");
+				
+
 	if(m_kIni.KeyExist(passname.c_str(),"polygonmodefront"))
 		newpass->m_iPolygonModeFront = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"polygonmodefront"));
 	if(m_kIni.KeyExist(passname.c_str(),"polygonmodeback"))
@@ -444,6 +472,12 @@ void ZMaterial::SetupEnums()
 	m_kEnums["AUTO_OBJLIN"] = 						4;
 	m_kEnums["AUTO_EYELIN"] = 						5;
 	m_kEnums["AUTO_SPHERE"] = 						6;
+	
+	//texture env mode
+	m_kEnums["TEXENV_MODE_MODULATE"] = 			0;
+	m_kEnums["TEXENV_MODE_DECAL"] = 				1;
+	m_kEnums["TEXENV_MODE_BLEND"] = 				2;
+	m_kEnums["TEXENV_MODE_REPLACE"] = 			3;
 	
 	//polygon mode
 	m_kEnums["FILL"] = 								0;

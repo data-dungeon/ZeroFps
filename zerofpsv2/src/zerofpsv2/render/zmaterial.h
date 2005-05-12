@@ -28,6 +28,8 @@ class RENDER_API ZMaterialSettings
 		ZFResourceHandle*	m_pkSLP;
 		
 		int				m_iTUTexCords[4];
+		int				m_iTUTexEnvMode[4];
+		float				m_fTUTexGenScale[4];
 		
 		Vector4			m_kVertexColor;
 		
