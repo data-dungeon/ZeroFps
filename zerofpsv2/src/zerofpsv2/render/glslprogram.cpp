@@ -155,9 +155,11 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 
 bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
 {
+	static string strGLSLdir = "/data/glsl/";
+
 	ZFVFile kFile;
 	
-	if(!kFile.Open(strFile,0,false))
+	if(!kFile.Open(strGLSLdir+strFile,0,false))
 	{	
 		cout<<"ERROR: could not open shader "<<strFile<<endl;
 		return false;
