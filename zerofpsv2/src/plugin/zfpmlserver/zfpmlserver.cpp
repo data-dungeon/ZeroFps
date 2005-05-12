@@ -50,13 +50,13 @@ NameGenerator	g_CoolSubSystem;
 
 extern "C" 
 {
-	void __declspec(dllexport) Plugin_Load()
+	void Plugin_Load()
 	{
 		cout << "Loading plugin" << endl;
-		Register_P_FogPlane( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
+		Register_P_Ost( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
 	}
 
-	void __declspec(dllexport) Plugin_Unload()
+	void  Plugin_Unload()
 	{
 		cout << "Unloading plugin" << endl;
 	}

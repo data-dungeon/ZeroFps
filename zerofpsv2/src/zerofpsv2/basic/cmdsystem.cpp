@@ -6,7 +6,11 @@
 
 #if defined(WIN32) 
 #include <windows.h> 
+#else
+#include <dlfcn.h>
 #endif
+
+
 
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") 
@@ -103,27 +107,34 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 
 
-/*
+
 class	ModuleInfo
 {
 public:
-#if defined(WIN32) 
+#ifdef WIN32
 	HMODULE	m_kModule;
-#else if
+#else
 	void*		m_kModule;
 #endif
+	
 	string	m_strModuleName;
 };
 
 map<string,ModuleInfo>	g_kModule;			
 
-typedef bool (CALLBACK *ZPF_PluginLoad)();
-typedef bool (CALLBACK *ZPF_PluginUnLoad)();
+typedef bool (*ZPF_PluginLoad)();
+typedef bool (*ZPF_PluginUnLoad)();
 
 void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
 {
 	ModuleInfo	kInfo;
+	
+#ifdef WIN32
 	kInfo.m_kModule = LoadLibrary( strPluginName.c_str() );
+#else
+	kInfo.m_kModule = dlopen( strPluginName.c_str(), RTLD_NOW);
+#endif
+
 	kInfo.m_strModuleName = strPluginName;
 		
 	if(!kInfo.m_kModule)
@@ -133,11 +144,21 @@ void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
 	}
 
 	// Call plugin load function.
+#ifdef WIN32
 	ZPF_PluginLoad pkPluginLoad = (ZPF_PluginLoad) GetProcAddress(kInfo.m_kModule, "Plugin_Load");
+#else
+	ZPF_PluginLoad pkPluginLoad = (ZPF_PluginLoad) dlsym(kInfo.m_kModule, "Plugin_Load");
+#endif
 	if(!pkPluginLoad)
 	{
 		GetSystem().Printf("Failed to init module '%s'\n", strPluginName.c_str());
+		
+#ifdef WIN32
 		FreeLibrary( kInfo.m_kModule );
+#else
+		dlclose( kInfo.m_kModule );
+#endif
+		
 		return;
 	}
 
@@ -158,12 +179,22 @@ void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
 	}
 
 	// Call Unload function
+#ifdef WIN32	
 	ZPF_PluginUnLoad pkPluginUnLoad = (ZPF_PluginUnLoad) GetProcAddress(it->second.m_kModule, "Plugin_Unload");
+#else
+	ZPF_PluginUnLoad pkPluginUnLoad = (ZPF_PluginUnLoad) dlsym(it->second.m_kModule, "Plugin_Unload");
+#endif	
+	
 	if(pkPluginUnLoad)
 		pkPluginUnLoad();
 
 	// Unload Module
-	FreeLibrary(it->second.m_kModule);
+#ifdef WIN32
+		FreeLibrary( it->second.m_kModule );
+#else
+		dlclose( it->second.m_kModule );
+#endif	
+	
 	g_kModule.erase(it);
 }
 
@@ -176,8 +207,8 @@ void CmdSystem::Plugin_List()
 	{
 		GetSystem().Printf(" %s", (*itModule).second.m_strModuleName.c_str());
 	}
-}*/
+}
 
-void CmdSystem::Plugin_LoadSubSystem(string strPluginName)		{ }
-void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)	{ }
-void CmdSystem::Plugin_List()												{ }
+// void CmdSystem::Plugin_LoadSubSystem(string strPluginName)		{ }
+// void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)	{ }
+// void CmdSystem::Plugin_List()												{ }

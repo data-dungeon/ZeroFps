@@ -37,8 +37,8 @@ class P_Ost : public Property
 
 };
 
-Property* Create_P_FogPlane();
-void Register_P_FogPlane(ZeroFps* pkZeroFps);
+Property* Create_P_Ost();
+void Register_P_Ost(ZeroFps* pkZeroFps);
 
 #endif
 

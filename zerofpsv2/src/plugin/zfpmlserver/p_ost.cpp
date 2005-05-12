@@ -128,15 +128,15 @@ void P_Ost::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 }
 
 
-Property* Create_P_FogPlane()
+Property* Create_P_Ost()
 {
 	return new P_Ost;
 }
 
-void Register_P_FogPlane(ZeroFps* pkZeroFps)
+void Register_P_Ost(ZeroFps* pkZeroFps)
 {
 	// Register Property
-	pkZeroFps->m_pkPropertyFactory->Register("P_Ost", Create_P_FogPlane);					
+	pkZeroFps->m_pkPropertyFactory->Register("P_Ost", Create_P_Ost);					
 
 	// Register Property Script Interface
 
