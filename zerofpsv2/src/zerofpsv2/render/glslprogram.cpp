@@ -111,14 +111,6 @@ bool GLSLProgram::Load(string  strFile)
 
 GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType)
 {
-	ZFVFile kFile;
-	
-	if(!kFile.Open(strFile,0,false))
-	{
-		cout<<"ERROR: could not open shader "<<strFile<<endl;
-		return NO_GLSLPROGRAM;
-	}
-		
 	GLenum iShaderID;
 
 	//create shader object
@@ -127,15 +119,20 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 	else
 		iShaderID = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);		
 			
-	//load source from file
-	int iSize = kFile.GetSize();
-	char* pkData = new char[iSize+1];		
-	kFile.Read(pkData,iSize,1);
-	pkData[iSize] = 0;	
+		
+	string strData;
 	
-	//load source to shader object
-	glShaderSourceARB(iShaderID, 1, (const char**)&pkData, NULL);
+	//load shader
+	if(!LoadDataFromFile(&strData,strFile))
+	{
+		glDeleteObjectARB(iShaderID);
+		return NO_GLSLPROGRAM;
+	}
 
+	//load source to shader object	
+	const char* pkData = strData.c_str();
+ 	glShaderSourceARB(iShaderID, 1, (const char**)&pkData, NULL);
+	
 	//compile shader
 	glCompileShaderARB(iShaderID);	
 	
@@ -149,17 +146,73 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 		cout<<"ERROR: While compiling shader "<<strFile<<endl;
 		cout<<log<<endl;
 		
-		delete pkData;
 		glDeleteObjectARB(iShaderID);
 		return NO_GLSLPROGRAM;
 	}
 	
-	
-	//delete data buffert
-	delete pkData;
-	
 	return iShaderID;
 }
+
+bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
+{
+	ZFVFile kFile;
+	
+	if(!kFile.Open(strFile,0,false))
+	{	
+		cout<<"ERROR: could not open shader "<<strFile<<endl;
+		return false;
+	}
+		
+	//load to buffert	
+	int iSize = kFile.GetSize();
+	char* pkData = new char[iSize+1];		
+	kFile.Read(pkData,iSize,1);
+	
+	kFile.Close();
+	
+	//insert to total buffert
+	pkString->insert(0,pkData,iSize);
+	
+	//deallocate temporary buffert
+	delete pkData;
+	
+
+	//find include files
+	vector<string>	kIncludes;
+			
+	int iPos = 0;
+	int iEnd;
+	while(1)
+	{
+		//find includes
+		iPos = pkString->find("#include",iPos);
+		
+		//no more includes found
+		if(iPos == -1)
+			break;
+		
+		//find line size
+		iEnd = pkString->find('\n',iPos);
+ 		
+		//add include file to include list
+ 		kIncludes.push_back(pkString->substr(iPos + 9,iEnd-10));
+ 		
+ 		//erase include statement from buffrt
+ 		pkString->erase(iPos,iEnd);
+	}
+	
+	//append includes on the top
+	for(int i =0;i<kIncludes.size();i++)
+	{		
+ 		if(!LoadDataFromFile(pkString,kIncludes[i]))
+ 		{
+ 			cout<<"ERROR while including: "<<kIncludes[i]<<endl;
+ 		}
+	}
+	
+	return true;
+}
+
 
 bool GLSLProgram::UnLoad()
 {

@@ -32,6 +32,9 @@ class RENDER_API GLSLProgram : public ZFResource
 		
 		GLenum LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType);
 		
+		bool LoadDataFromFile(string* pkString,const string& strFile);
+// 		char* GetLine(ZFVFile* pkFile);
+		
 	public:
 		GLenum	m_iProgramID;	
 
