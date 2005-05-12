@@ -191,14 +191,22 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
 		if(iPos == -1)
 			break;
 		
+		//check for comment
+		if(iPos != 0)
+			if(pkString->rfind('\n',iPos) != iPos -1)
+			{
+				iPos++;
+				continue;
+			}
+		
 		//find line size
-		iEnd = pkString->find('\n',iPos);
- 		
+		iEnd = pkString->find('\n',iPos); 		
+
 		//add include file to include list
- 		kIncludes.push_back(pkString->substr(iPos + 9,iEnd-10));
+ 		kIncludes.push_back(pkString->substr(iPos + 9,iEnd - iPos - 10 ));//) iEnd-11));
  		
  		//erase include statement from buffrt
- 		pkString->erase(iPos,iEnd);
+ 		pkString->erase(iPos,iEnd - iPos);
 	}
 	
 	//append includes on the top
@@ -206,7 +214,7 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
 	{		
  		if(!LoadDataFromFile(pkString,kIncludes[i]))
  		{
- 			cout<<"ERROR while including: "<<kIncludes[i]<<endl;
+ 			cout<<"ERROR while including: "<<kIncludes[i]<<"|"<<endl;
  		}
 	}
 	
