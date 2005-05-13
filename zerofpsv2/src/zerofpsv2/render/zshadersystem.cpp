@@ -1451,20 +1451,12 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	GLint iTimeLocation  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fTime");
 	glUniform1fARB(iTimeLocation, (float(SDL_GetTicks()) /1000.0));
 
-/*
-	//textures	
-	static GLint iTexLoc[4];
-	
-	iTexLoc[0]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture0");
-	iTexLoc[1]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture1");
-	iTexLoc[2]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture2");
-	iTexLoc[3]  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iTexture3");	
+	//Textures
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture0") , 0);
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture1") , 1);
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture2") , 2);
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture3") , 3);
 		
-	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->GetPass(iPass);	
-	for(int i = 0;i<4;i++)	
-		if(pkSettings->m_kTUs[i]->IsValid())
- 			glUniform1iARB( iTexLoc[i], ((ResTexture*)pkSettings->m_kTUs[i]->GetResourcePtr())->m_iTextureID);*/
-
 }
 
 void ZShaderSystem::UpdateFragmentProgramParameters()
