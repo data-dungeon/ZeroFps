@@ -411,6 +411,12 @@ void ModellObj::Read( const char* filename )
 		ucpToken = kMMScipt.GetToken();
 	}
 
+	if(m_kSubMesh.iNumOfTriangles != -1)
+	{
+		m_kSubMesh.iNumOfTriangles = iNumOfTri - m_kSubMesh.iFirstTriangle;
+		pkRawMesh->PushBackSubMeshes(m_kSubMesh);
+	}
+
 	for(int i=0; i<m_kMayaMat.size(); i++)
 	{
 		char szArghh[128];

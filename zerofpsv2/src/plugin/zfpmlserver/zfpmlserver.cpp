@@ -16,7 +16,7 @@ public:
 class NameGenerator : public ZFSubSystem, public I_NameGenerator  
 {
 private:
-
+  
 protected:
 
 public:
@@ -48,15 +48,28 @@ string NameGenerator::GetName()
 
 NameGenerator	g_CoolSubSystem;
 
+#if defined(WIN32) 
+
+#ifdef ZPGPLUGIN_EXPORTS
+#define ZPGPLUGIN_API __declspec(dllexport)
+#else
+#define ZPGPLUGIN_API __declspec(dllimport)
+#endif
+
+#endif
+
+#if !defined(WIN32) 
+#define ZPGPLUGIN_API 
+#endif
 extern "C" 
 {
-	void Plugin_Load()
+	void ZPGPLUGIN_API Plugin_Load()
 	{
 		cout << "Loading plugin" << endl;
 		Register_P_Ost( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
 	}
 
-	void  Plugin_Unload()
+	void ZPGPLUGIN_API Plugin_Unload()
 	{
 		cout << "Unloading plugin" << endl;
 	}
