@@ -627,7 +627,7 @@ void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 		Vector3 Vert = pkVertex[i];
 		Vector3 Norm = pkNormals[i];
 		glVertex3f(Vert.x, Vert.y, Vert.z);
-		Vert += Norm * 1;
+		Vert += Norm * 0.25;
 		glVertex3f(Vert.x, Vert.y, Vert.z);		
 
 		}
