@@ -363,9 +363,20 @@ void MistClient::RenderInterface(void)
 	//draw under cursor marker
 	if(m_iPickedEntityID != -1 && m_bGuiCapture)
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item") ) 		
-				DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
-		
+			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item"))
+			{
+				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+				{
+					if(pkItem->GetEntity()->GetParent()->IsZone())
+						DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
+				}
+				else
+				{			
+					DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
+				}
+			}
+
+							
 	m_pkPointText->Draw();
 		
 // 	Vector3 kPos = m_pkCamera->GetPos() + Get3DMouseDir(true);
@@ -908,8 +919,8 @@ void MistClient::Input()
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
-					//cout<<"trying pickup"<<endl;
-					RequestPickup(m_iPickedEntityID);
+					if(pkItem->GetEntity()->GetParent()->IsZone())					
+						RequestPickup(m_iPickedEntityID);
 				}
 				else 
 				// if not an item do first action
