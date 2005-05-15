@@ -106,8 +106,12 @@ void P_CharacterControl::Update()
 	SetNoClientRotation(false);
 
 	
-	if(!m_bEnabled || m_pkEntityManager->GetSimTime() < m_fLockTime)
+	if(!m_bEnabled || (m_pkEntityManager->GetSimTime() < m_fLockTime) )
 	{
+// 		if(m_fLockTime != -1)
+// 			if(m_pkEntityManager->GetSimTime() >= m_fLockTime)
+// 				m_fLockTime = -1;
+	
 		if(m_iConnectionID != -1)
 		{
 	 		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,false);
@@ -331,6 +335,10 @@ void P_CharacterControl::Sit()
 
 void P_CharacterControl::Lock(float fTime)
 {
+	//dont lock if we already have a longer lock time
+	if( m_pkEntityManager->GetSimTime() + fTime < m_fLockTime)
+		return;
+
 	m_fLockTime = m_pkEntityManager->GetSimTime() + fTime;
 	
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))

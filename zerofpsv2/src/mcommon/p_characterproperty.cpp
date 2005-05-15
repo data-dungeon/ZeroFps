@@ -949,7 +949,7 @@ void P_CharacterProperty::UpdateStats()
 
 void P_CharacterProperty::MakeAlive()
 {		
-	m_bDead = false;
+	m_bDead = false;ResetAllNetUpdateFlags();
 
 	//make sure character has some life
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
@@ -982,6 +982,14 @@ void P_CharacterProperty::MakeAlive()
 		{
 			pkAI->SetState(eAI_STATE_GUARD);
 		}				
+		
+		//set inventory owner again, disables looting
+		if(P_Container* pkInv = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iInventory,"P_Container"))
+		{
+			pkInv->SetStaticOwner(true);
+			pkInv->SetOwnerID(m_pkEntity->GetEntityID());
+			pkInv->SetContainerType(eInventory);
+		}		
 	}
 	else
 	{
@@ -994,7 +1002,7 @@ void P_CharacterProperty::MakeAlive()
 
 void P_CharacterProperty::OnDeath()
 {
-	m_bDead = true;
+	m_bDead = true;ResetAllNetUpdateFlags();
 	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Death");
 	
@@ -1051,6 +1059,15 @@ void P_CharacterProperty::OnDeath()
 			pkAI->SetState(eAI_STATE_DEAD);
 		}
 		
+		//reset inventory owner, to allow other players to loot
+		if(P_Container* pkInv = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iInventory,"P_Container"))
+		{
+			cout<<"disabling static owner of inventory to allow looting"<<endl;
+			pkInv->SetStaticOwner(false);
+			pkInv->SetOwnerID(-1);
+			pkInv->SetContainerType(eNormal);
+		}
+				
 		//create spawner, could be evil if this character is rewived
 		CreateSpawner();				
 	}
@@ -1876,6 +1893,10 @@ int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const
 
 void  P_CharacterProperty::LockSkillUsage(float fTime)
 {
+	//dont lock if new time is shorter
+	if(m_pkZeroFps->GetEngineTime() + fTime < m_fSkillLockTime)
+		return;
+
 	//lock skill usage
 	m_fSkillLockTime = m_pkZeroFps->GetEngineTime() + fTime;
 }
@@ -2324,6 +2345,7 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_fMarkerSize);
 		
 	pkNetPacket->Write(m_bCombatMode);
+	pkNetPacket->Write(m_bDead);
 	
 	pkNetPacket->Write(m_bWalkSound);
 		
@@ -2363,6 +2385,7 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_fMarkerSize);
 	
 	pkNetPacket->Read(m_bCombatMode);	
+	pkNetPacket->Read(m_bDead);	
 	
 	pkNetPacket->Read(m_bWalkSound);
 	
@@ -2414,6 +2437,21 @@ void P_CharacterProperty::RemoveItemFromSkillbar(int iPos)
 	m_kSkillBar[iPos] = "";
 	
 	SendSkillbar();
+}
+
+void P_CharacterProperty::SendCloseContainer(int iContainerID)
+{
+	if(m_iConID == -1)
+		return;
+
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_CLOSECONTAINER);	
+
+	kNp.Write(iContainerID);	
+	
+	//send package
+	kNp.TargetSetClient(m_iConID);				
+	m_pkApp->SendAppMessage(&kNp);	
 }
 
 void P_CharacterProperty::SendSkillbar(const string& strSkill)
@@ -2567,6 +2605,24 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 	
+	
+	int LockSkillUsageLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;		
+
+			
+		int iCharcterID;
+		double dLockTime;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgNumber(pkLua, 1,&dLockTime);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			pkCP->LockSkillUsage((float)dLockTime);		
+	
+		return 0;			
+	}	
 // 	int SetupSkillLua(lua_State* pkLua)
 // 	{
 // 		if(g_pkScript->GetNumArgs(pkLua) != 9)
@@ -3086,6 +3142,8 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	//skills
 	g_pkScript->ExposeFunction("AddSkill",			SI_P_CharacterProperty::AddSkillLua);
 	g_pkScript->ExposeFunction("ChangeSkill",		SI_P_CharacterProperty::ChangeSkillLua);
+	g_pkScript->ExposeFunction("LockSkillUsage",	SI_P_CharacterProperty::LockSkillUsageLua);
+	
 // 	g_pkScript->ExposeFunction("SetupSkill",		SI_P_CharacterProperty::SetupSkillLua);
 // 	g_pkScript->ExposeFunction("Needs",		SI_P_CharacterProperty::SetupSkillLua);
 	

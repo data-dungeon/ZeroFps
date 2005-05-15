@@ -26,6 +26,8 @@
 
 #include "../mcommon/mainmcommon.h"
 
+class P_Item;
+
 using namespace ObjectManagerLua;
  
 MistServer g_kMistServer("MistServer", 0, 0, 0);
@@ -924,26 +926,50 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 					}
 				
 				
-					//is this a inventory container
-					if(pkContainerP->GetContainerType() == eInventory)
+					//is this a inventory container, always send iventtory containers
+// 					if(pkContainerP->GetContainerType() == eInventory)
+// 						SendContainer(iContainerID,iClientID,true);
+// 					pkContainerP->SetOwnerID(pkData->m_iCharacterID);							 
+// 					SendContainer(iContainerID,iClientID,true);									
+// 					return;
+
+					P_Item* pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item");
+
+					//this container has a static owner, dont worry about distance
+					if(pkContainerP->GetStaticOwner())
 					{
-						SendContainer(iContainerID,iClientID,true);
+						 SayToClients("Opening container","Server",-1,iClientID);						 
+						 SendContainer(iContainerID,iClientID,true);									
 					}
-					else
+					//check if its inside another container
+					else if( pkItem && (pkItem->GetInContainerID() != -1)  )
 					{
-						//check if its in a container or if its close enoguth
-						if( (!pkContainerEnt->GetParent()->IsZone()) || (pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0) )
+						cout<<"inside another container, no distance check"<<endl;
+						 SayToClients("Opening container","Server",-1,iClientID);
+						pkContainerP->SetOwnerID(pkData->m_iCharacterID);
+						SendContainer(iContainerID,iClientID,true);									
+					}	
+					
+					//check if its in the world
+					else if( pkContainerEnt->GetParent()->IsZone() &&  
+								( pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0 ) )
+						{
+							 SayToClients("Opening container","Server",-1,iClientID);							 
+							 pkContainerP->SetOwnerID(pkData->m_iCharacterID);							 
+							 SendContainer(iContainerID,iClientID,true);						
+						}
+					else if( pkContainerEnt->GetParent()->GetParent()->IsZone() &&
+								(pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetParent()->GetWorldPosV()) < 2.0) )
 						{
 							 SayToClients("Opening container","Server",-1,iClientID);
 							 
 							 //set new owner of this container
-							 pkContainerP->SetOwnerID(pkData->m_iCharacterID);
-							 
+							 pkContainerP->SetOwnerID(pkData->m_iCharacterID);							 
 							 SendContainer(iContainerID,iClientID,true);
 						}
-						else
-							SayToClients("You are to far away","Server",-1,iClientID);
-					}
+					else
+						SayToClients("You are to far away","Server",-1,iClientID);
+				
 				}
 			}
 		}
@@ -1063,11 +1089,6 @@ void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)
 				kNp.Write(kItemList[i].m_iStackSize);				
 				kNp.Write(kItemList[i].m_bIsContainer);	
 				
-// 				if(kNp.m_iPos > 1000)
-// 				{
-// 					cout<<"container to big, lets krash =P"<<endl;
-// 					
-// 				}
 			}
 			
 			kNp.TargetSetClient(iClientID);

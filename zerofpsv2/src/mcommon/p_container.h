@@ -11,10 +11,8 @@ using namespace std;
 
 enum MCOMMON_API ContainerTypes
 {
-	eNormal,
-	
-	eInventory,
-	
+	eNormal,	
+	eInventory,	
 	eLeftHand,
 	eRightHand,
 	eHead,
@@ -93,6 +91,7 @@ class MCOMMON_API P_Container: public Property
 		bool SetupTwohanded(bool bEnable);
 		bool SetDisabled(bool bDisabled);		//will disable this container if its empty		
 		
+		void CloseContainer();
 		
 	public:		
 		P_Container();		
@@ -115,6 +114,7 @@ class MCOMMON_API P_Container: public Property
 		int  GetOwnerID()								{return m_iOwnerID;				};
 		void SetOwnerID(int iOwner)				{m_iOwnerID = iOwner;			};								
 		void SetStaticOwner(bool bStatic)		{m_bStaticOwner = bStatic;		};
+		bool GetStaticOwner()						{return m_bStaticOwner;			};
 		void SetJoint(const string& strBone)	{m_strAttachToJoint = strBone;};
 		
 		bool GetWeaponHand()							{return m_bWeaponHand;			};

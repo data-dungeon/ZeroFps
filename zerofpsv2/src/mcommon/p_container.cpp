@@ -63,20 +63,44 @@ void P_Container::Update()
 		{
 			if(Entity* pkOwner = m_pkEntMan->GetEntityByID(m_iOwnerID))
 			{
-				if(pkOwner->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > 2)
+				Entity* pkPos = NULL;
+				
+				//check if this is attached to a zone, or if it's parent is
+				if(m_pkEntity->GetParent()->IsZone())
+					pkPos = m_pkEntity;
+				else if(m_pkEntity->GetParent()->GetParent()->IsZone())
+					pkPos = m_pkEntity->GetParent();
+				else if(m_pkEntity->GetParent()->GetParent()->GetParent()->IsZone())
+					pkPos = m_pkEntity->GetParent()->GetParent();
+			
+				if(pkOwner->GetWorldPosV().DistanceTo(pkPos->GetWorldPosV()) > 2)
 				{
-					m_iOwnerID = -1;
+					CloseContainer();	
 					cout<<"Container owner out of distance, reseting owner to -1"<<endl;
 				} 
+			
 			}
 			else
 			{
-				m_iOwnerID = -1;
+				CloseContainer();
 				cout<<"container owner does not exist anymore, reseting owner to -1"<<endl;
 				
 			}
 		}
 	}
+}
+
+void P_Container::CloseContainer()
+{
+	if(m_iOwnerID == -1)
+		return;
+
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
+	{
+		pkCP->SendCloseContainer(m_pkEntity->GetEntityID());		
+	}
+	
+	m_iOwnerID = -1;
 }
 
 vector<PropertyValues> P_Container::GetPropertyValues()

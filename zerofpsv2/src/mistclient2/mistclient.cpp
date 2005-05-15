@@ -915,8 +915,8 @@ void MistClient::Input()
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
 				//remove current target
-				int iOldTarget = m_iTargetID;
-				m_iTargetID = -1;
+// 				int iOldTarget = m_iTargetID;
+// 				m_iTargetID = -1;
 
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
@@ -945,12 +945,22 @@ void MistClient::Input()
 					{
 						m_iTargetID = m_iPickedEntityID;
 						SendSetTarget(	m_iTargetID );
+					}else
+					{
+						//if character is dead loot it
+						if(pkCP->IsDead())
+							SendRequestContainer(pkCP->m_iInventory);
 					}
+				}
+				else
+				{
+					m_iTargetID = -1;
+					SendSetTarget(	m_iTargetID );
 				}
 								
 				//send new target if it has changed
-				if(m_iTargetID != iOldTarget)
-					SendSetTarget(	m_iTargetID );
+// 				if(m_iTargetID != iOldTarget)
+// 					SendSetTarget(	m_iTargetID );
 			}
 			else
 			{
@@ -1197,7 +1207,7 @@ void MistClient::OnSystem()
 {
 	UpdateCharacter();
 	SendControlInfo();
-	CloseActiveContainer();
+// 	CloseActiveContainer();
 
 	if(m_iCharacterID != -1)
  		m_pkSkillBar->Update(m_pkZeroFps->GetSystemUpdateFpsDelta());
@@ -1270,7 +1280,25 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
-			
+		case MLNM_SC_CLOSECONTAINER:
+		{
+			int iID;
+			pkNetMessage->Read(iID);
+
+			if(m_pkInventoryDlg == NULL)
+				return;
+
+			if(!m_pkInventoryDlg->IsVisible())
+				return;
+	
+			if(m_pkInventoryDlg->m_iActiveContainerID != iID)
+				return;
+				
+			m_pkInventoryDlg->CloseContainerWnd();
+		
+			break;
+		}
+					
 		case MLNM_SC_SKILLBAR:
 		{
 			vector<SkillNetInfo>	kSkillList;
@@ -2279,13 +2307,13 @@ void MistClient::CloseActiveContainer()
 	if(!m_pkInventoryDlg->IsVisible())
 		return;
 	
-	if(Entity* pkContainer = m_pkEntityManager->GetEntityByID(m_pkInventoryDlg->m_iActiveContainerID))
-		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
-		{
-			Vector3 dist = pkCharacter->GetWorldPosV() - pkContainer->GetWorldPosV();
-			if(dist.Length() > 2)
-				m_pkInventoryDlg->CloseContainerWnd(); 
-		}
+// 	if(Entity* pkContainer = m_pkEntityManager->GetEntityByID(m_pkInventoryDlg->m_iActiveContainerID))
+// 		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+// 		{
+// 			Vector3 dist = pkCharacter->GetWorldPosV() - pkContainer->GetWorldPosV();
+// 			if(dist.Length() > 2)
+// 				m_pkInventoryDlg->CloseContainerWnd(); 
+// 		}
 }
 
 void MistClient::RegBeginPlay(string strChar)

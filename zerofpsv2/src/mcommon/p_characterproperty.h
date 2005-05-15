@@ -272,6 +272,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void DrawEditor();
 
 				
+		//public network stuff
+		void SendCloseContainer(int iContainerID);
+		
 		
 		//alive
 		void MakeAlive();
