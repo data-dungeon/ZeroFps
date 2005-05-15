@@ -115,6 +115,7 @@ namespace SI_PMad
 	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AddMesh(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API GetMadOffsetLua(lua_State* pkLua);
 	
 }
 

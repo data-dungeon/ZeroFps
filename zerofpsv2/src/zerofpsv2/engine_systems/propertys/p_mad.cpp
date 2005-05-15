@@ -418,6 +418,7 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_iNextAnimation );
 	pkNetPacket->Write( m_kOffset );
 	pkNetPacket->Write( m_iShadowGroup );
+	pkNetPacket->Write( m_iSortPlace);
 	
 	
 	unsigned char ucNumOfMesh = m_kActiveMesh.size();
@@ -452,6 +453,7 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 	pkNetPacket->Read( m_kOffset );
 	pkNetPacket->Read( m_iShadowGroup );
+	pkNetPacket->Read( m_iSortPlace );
 	
 	unsigned char ucNumOfMesh;
 	int iMesh;
@@ -958,8 +960,6 @@ int SetDrawingOrderLua(lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
-
-      // caster
       double dOrder;
       g_pkScript->GetArgNumber(pkLua, 0, &dOrder);
 
@@ -976,6 +976,61 @@ int SetDrawingOrderLua(lua_State* pkLua)
    return 0;
 }
 
+/**	\fn GetOffsetValueLua(EntityID)
+		\brief changes MadFile??
+		\relates Property??
+*/
+int GetMadOffsetLua(lua_State* pkLua)
+{
+
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+
+      // caster
+      double dEntity;
+      g_pkScript->GetArgNumber(pkLua, 0, &dEntity);
+
+      Entity* pkEntity = g_pkObjMan->GetEntityByID(int(dEntity));
+
+		if (!pkEntity)
+			return 0;
+
+  		P_Mad* pkMAD = (P_Mad*)pkEntity->GetProperty("P_Mad");
+
+      if ( pkMAD )
+		{
+      	Vector3 pos = pkMAD->GetOffset();
+
+			vector<TABLE_DATA> vkData;
+
+			TABLE_DATA temp;
+
+			temp.bNumber = true;
+			temp.pData = new double;
+			(*(double*) temp.pData) = pos.x;
+			vkData.push_back(temp);
+
+			temp.bNumber = true;
+			temp.pData = new double;
+			(*(double*) temp.pData) = pos.y;
+			vkData.push_back(temp);
+
+			temp.bNumber = true;
+			temp.pData = new double;
+			(*(double*) temp.pData) = pos.z;
+			vkData.push_back(temp);
+
+			g_pkScript->AddReturnValueTable(pkLua, vkData);
+			return 1;
+		}
+      else
+         cout << "Warning! Tried to get offsetvalue on a non-MAD object." << endl;
+	}
+
+   return 0;
+}
+
+// end of scripts
 }
 
 
@@ -995,6 +1050,7 @@ void Register_MadProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("AddMesh",				SI_PMad::AddMesh);
 	g_pkScript->ExposeFunction("SetMad",				SI_PMad::SetMadfileLua);
 	g_pkScript->ExposeFunction("SetDrawingOrder",	SI_PMad::SetMadfileLua);
+	g_pkScript->ExposeFunction("GetMadOffset",		SI_PMad::GetMadOffsetLua);
 }
 
 
