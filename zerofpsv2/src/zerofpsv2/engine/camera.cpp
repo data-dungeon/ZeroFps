@@ -650,40 +650,58 @@ void Camera::DrawWorld()
 		m_iCurrentRenderMode = RENDER_SHADOWMAP;
 		MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
 				
-	
-		//draw LIT light				
+		//init tha damn view
 		InitView();	
-		m_iCurrentRenderMode = RENDER_NORMAL;
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);		
+
+				
+// 		if(m_pkZShaderSystem->SupportGLSLProgram())
+// 		{		
+// 			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
+// 			
+// 			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
+// 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#clean.frag.glsl");
+// 			
+// 			m_iCurrentRenderMode = RENDER_NORMAL;			
+// 			DrawShadowedScene();
+// 			
+// 			m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+// 		}
+// 		else
+// 		{
 		
-		//draw shadowed scene
-		if(pkLight)
-		{
-			//disable diffuse and specular lighting for the shadowcasting lightsource
-			Vector4 kDiffuseBak  = pkLight->kDiffuse;
-			Vector4 kSpecularBak = pkLight->kSpecular;;			
-			pkLight->kDiffuse = kDiffuseBak*0.2;
-			pkLight->kSpecular = kSpecularBak*0.2;
+			//draw LIT light				
+			m_iCurrentRenderMode = RENDER_NORMAL;
+ 			m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);		
 		
-			m_iCurrentRenderMode = RENDER_SHADOW;
-			DrawShadowedScene();			
+		
+			//draw shadowed scene
+			if(pkLight)
+			{
+				//disable diffuse and specular lighting for the shadowcasting lightsource
+				Vector4 kDiffuseBak  = pkLight->kDiffuse;
+				Vector4 kSpecularBak = pkLight->kSpecular;;			
+				pkLight->kDiffuse = kDiffuseBak*0.2;
+				pkLight->kSpecular = kSpecularBak*0.2;
 			
-			pkLight->kDiffuse = kDiffuseBak;
-			pkLight->kSpecular = kSpecularBak;		
-		}
-		else
-		{
-			m_pkLight->SetAmbientOnly(true);		
-			m_iCurrentRenderMode = RENDER_SHADOW;
-			DrawShadowedScene();
-			m_pkLight->SetAmbientOnly(false);				
-		}
-		
+				m_iCurrentRenderMode = RENDER_SHADOW;
+				DrawShadowedScene();			
+				
+				pkLight->kDiffuse = kDiffuseBak;
+				pkLight->kSpecular = kSpecularBak;		
+			}
+			else
+			{
+				m_pkLight->SetAmbientOnly(true);		
+				m_iCurrentRenderMode = RENDER_SHADOW;
+				DrawShadowedScene();
+				m_pkLight->SetAmbientOnly(false);				
+			}
+// 		}		
 			
 		//Draw unshadows scene
-		m_iCurrentRenderMode = RENDER_NOSHADOWED;
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
-	
+ 		m_iCurrentRenderMode = RENDER_NOSHADOWED;
+ 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+ 	
 		m_iCurrentRenderMode = RENDER_NONE;		
 		
 	}

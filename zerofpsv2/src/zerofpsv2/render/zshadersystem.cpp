@@ -33,6 +33,9 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 		
 	m_bSupportVertexBuffers =		false;
 	
+	m_pkDefaultGLSLProgram	=		NULL;
+	m_bUseDefaultGLSLProgram = 	false;
+	
 	//register console/ini variables (this will also load the variable if it exist in the ini file
 	RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
 	RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
@@ -61,6 +64,9 @@ bool ZShaderSystem::StartUp()
 
 	SetupOpenGL();
 	BindMaterial(NULL);
+	
+	//create a default shader resource
+	m_pkDefaultGLSLProgram	= new ZFResourceHandle();	
 	
 	//check for vertex and fragment program support
 	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
@@ -1497,12 +1503,16 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 	if(!m_bSupportGLSLProgram)
 		return;
 
+	iProgram = 0;	
 		
 	if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
 		iProgram = pkRt->m_iProgramID;
-	else
-		iProgram = 0;
+	else if(m_bUseDefaultGLSLProgram)
+			if(GLSLProgram* pkRt = (GLSLProgram*)m_pkDefaultGLSLProgram->GetResourcePtr())
+				iProgram = pkRt->m_iProgramID;
 
+		
+		
  	if(iProgram == m_iCurrentGLSLProgramID)
  		return;
 	

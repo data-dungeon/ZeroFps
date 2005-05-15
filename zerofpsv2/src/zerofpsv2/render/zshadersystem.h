@@ -203,6 +203,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool				m_bSupportGLSLProgram;
 		GLenum			m_iCurrentGLSLProgramID;				
 		
+		ZFResourceHandle* m_pkDefaultGLSLProgram;
+		bool					m_bUseDefaultGLSLProgram;
+		
 		//have occulusion support
 		bool				m_bOcclusion;
 		unsigned int	m_iOcQuery;
@@ -342,7 +345,13 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 											m_iTotalVertises = 	0;
 											m_iRenderedVBOs =		0;
 											};
-															
+
+		//hardware shader stuff
+		void UseDefaultGLSLProgram(bool bUse)					{	m_bUseDefaultGLSLProgram = bUse;	}
+		ZFResourceHandle* GetDefaultGLSLProgramResource()	{	return m_pkDefaultGLSLProgram;	}
+		
+										
+																										
 		//basic
 		void Push(const char* czNote);
 		void Pop();		
