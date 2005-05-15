@@ -269,6 +269,18 @@ BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
 	
 	// last but not least convert the key to a zerofps key instead of a sdl key =)
 	kTemp.m_iKey = SDLToZeroFpsKey(kTemp.m_iKey);
+
+#ifdef WIN32
+
+	if(kTemp.m_iKey == KEY_SLASH) // Måste tolkas om eftersom underscore blir slash i windows av nån underlig anledning.
+	{
+		if(kTemp.m_iModifiers & MODIFIER_SHIFT) 
+			kTemp.m_iKey='_';
+		else
+			kTemp.m_iKey='-';
+	}
+
+#endif WIN32
 	
 	return kTemp;
 }
