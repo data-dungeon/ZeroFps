@@ -549,7 +549,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	// culling test-type
 	if ( m_kIniLoader.KeyExist("remove_on_death", "value") )
-		pkPSType->m_kPSystemBehaviour.m_kCullingTest = m_kIniLoader.GetBoolValue("remove_on_death", "value");
+		pkPSType->m_kPSystemBehaviour.m_bRemoveParentOnFinish = m_kIniLoader.GetBoolValue("remove_on_death", "value");
 	else
 		pkPSType->m_kPSystemBehaviour.m_bRemoveParentOnFinish = true;
    

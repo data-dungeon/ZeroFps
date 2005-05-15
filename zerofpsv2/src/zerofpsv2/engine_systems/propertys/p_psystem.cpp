@@ -17,6 +17,8 @@ void P_PSystem::Update()
 
 	Matrix4 kMat;
 	kMat = m_pkEntity->GetWorldRotM();
+
+	int iFinishedPS = 0;
 	
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
@@ -25,15 +27,11 @@ void P_PSystem::Update()
 			// returns true if the PSystem is finished
 			if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV(), kMat ) )
 			{
-				if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)	//dvoid la till denna så inte ljus testet körs i onödan
-				{
-				
+				m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
+
+				if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
 					if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
-					{
-						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
 						m_kPSystems[i].m_pkPSystem->Draw();
-					}
-				}
  			}
 			else
 			{
@@ -50,6 +48,7 @@ void P_PSystem::Update()
 			}
 		}
 	}
+
 	//m_pkZShaderSystem->Pop();
 	
 // 	StopProfileTimer("r___PSystem");	
