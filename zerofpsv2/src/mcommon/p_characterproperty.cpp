@@ -2478,7 +2478,7 @@ void P_CharacterProperty::SendSkillbar(const string& strSkill)
 		{
 			kNp.Write((char)i);						
 			kNp.Write_Str(m_kSkillBar[i]);	
-			kNp.Write_Str(pkSkill->GetName());
+			kNp.Write_Str(pkSkill->GetScreenName());
 			kNp.Write_Str(pkSkill->GetIcon());
 			kNp.Write(pkSkill->GetTimeLeft());
 			kNp.Write(pkSkill->GetReloadTime());

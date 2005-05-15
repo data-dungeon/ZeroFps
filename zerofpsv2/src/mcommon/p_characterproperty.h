@@ -85,6 +85,7 @@ class MCOMMON_API Skill
 		void SetTimeLeft(float fTime)	{	m_fTimeLeft = fTime;				}
 		
 		//gets
+		string GetScreenName()							{	return m_strInGameName;						};
 		string GetName()									{	return m_strSkillScript;					};
 		string GetIcon()									{	return m_strIcon;								};
 		int	 GetLevel()									{	return m_iLevel;								};

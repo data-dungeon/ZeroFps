@@ -63,10 +63,11 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 	{
 		iPos = kSkillInfo[i].m_cPos;
 	
-		m_kSkills[iPos].m_strSkillName = kSkillInfo[i].m_strSkillName;
-		m_kSkills[iPos].m_fReloadTimeLeft = kSkillInfo[i].m_fReloadTimeLeft;
-		m_kSkills[iPos].m_fReloadTimeTotal = kSkillInfo[i].m_fReloadTimeTotal;
-		m_kSkills[iPos].m_iSkillType = kSkillInfo[i].m_cSkillType;
+		m_kSkills[iPos].m_strSkillName = 		kSkillInfo[i].m_strSkillName;
+		m_kSkills[iPos].m_strSkillScreenName = kSkillInfo[i].m_strSkillScreenName;
+		m_kSkills[iPos].m_fReloadTimeLeft = 	kSkillInfo[i].m_fReloadTimeLeft;
+		m_kSkills[iPos].m_fReloadTimeTotal = 	kSkillInfo[i].m_fReloadTimeTotal;
+		m_kSkills[iPos].m_iSkillType = 			kSkillInfo[i].m_cSkillType;
 		
 		if(m_kSkills[iPos].m_strSkillName.empty())
 		{
@@ -79,7 +80,7 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 			if(m_kSkills[iPos].m_pkButton)
 				g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(m_kSkills[iPos].m_pkButton);
 
-			g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(m_kSkills[iPos].m_pkButton, m_kSkills[iPos].m_strSkillName, 50.0f);
+			g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(m_kSkills[iPos].m_pkButton, m_kSkills[iPos].m_strSkillScreenName, 50.0f);
 
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
