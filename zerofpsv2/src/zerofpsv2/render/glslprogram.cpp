@@ -81,19 +81,22 @@ bool GLSLProgram::Load(string  strFile)
 	glLinkProgramARB(m_iProgramID);
 	
 	
-	//get log
-	static char log[1024];
-	int iLogSize = 0;
-	glGetInfoLogARB(m_iProgramID,1024,&iLogSize,log);
-	
-	if(iLogSize != 0)
+	if(glGetError() != GL_NO_ERROR)
 	{
-		cout<<"ERROR: While linking program "<<strFile<<endl;
-		cout<<log<<endl;
+		//get log
+		static char log[1024];
+		int iLogSize = 0;
+		glGetInfoLogARB(m_iProgramID,1024,&iLogSize,log);
 		
-		glDeleteObjectARB(m_iProgramID);
-		m_iProgramID = NO_GLSLPROGRAM;
-	}	
+		if(iLogSize != 0)
+		{
+			cout<<"ERROR: While linking program "<<strFile<<endl;
+			cout<<log<<endl;
+			
+			glDeleteObjectARB(m_iProgramID);
+			m_iProgramID = NO_GLSLPROGRAM;
+		}
+	}
 
 	//remove shader objects
 	if(iVSID != NO_GLSLPROGRAM)
