@@ -686,6 +686,7 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("SkillPoints"	,0,0);
 	
 	m_kCharacterStats.AddStat("ExperienceValue",0,0);
+	m_kCharacterStats.AddStat("Money"			,0,0);
 	
 	m_kCharacterStats.AddStat("Speed"			,0,0);
 	m_kCharacterStats.AddStat("Jump"				,0,0);
@@ -1783,6 +1784,8 @@ void P_CharacterProperty::SendStats()
 	kNp.Write(m_kCharacterStats.GetTotal("PrevLevel"));	
  	kNp.Write(m_kCharacterStats.GetTotal("NextLevel"));	
 
+ 	kNp.Write(m_kCharacterStats.GetTotal("Money"));	
+ 	
  	kNp.Write(m_kCharacterStats.GetTotal("StatPoints"));	 	
  	
  	kNp.Write(m_kCharacterStats.GetTotal("Strength"));	
@@ -2833,6 +2836,7 @@ namespace SI_P_CharacterProperty
 			return 0;		
 		}
 					
+		
 		int iCharcterID;
 		double dValue;
 		string strStat;
@@ -2840,7 +2844,10 @@ namespace SI_P_CharacterProperty
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
 		g_pkScript->GetArgString(pkLua, 1,strStat);
 		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
+
+		cout<<"blub "<<strStat<<" "<<dValue<<endl;
 		
+				
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
 			pkCP->m_kCharacterStats.ChangeStat(strStat,float(dValue));		

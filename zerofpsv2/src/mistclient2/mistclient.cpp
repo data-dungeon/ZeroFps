@@ -1455,6 +1455,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fPrevLevel;
 			float fNextLevel;
 			
+			float fMoney;
 			float fStatPoints;
 			
 			float fStrength;
@@ -1482,6 +1483,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fXP);
 			pkNetMessage->Read(fPrevLevel);
  			pkNetMessage->Read(fNextLevel);
+ 			pkNetMessage->Read(fMoney);
  			pkNetMessage->Read(fStatPoints);
 			
  			pkNetMessage->Read(fStrength);
@@ -1528,6 +1530,10 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkP->SetText((char*)IntToString(int(fNextLevel)).c_str());
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatStatPoints"))
 				pkP->SetText((char*)IntToString(int(fStatPoints)).c_str());
+				
+			//money
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatMoney"))
+				pkP->SetText((char*)IntToString(int(fMoney)).c_str());			
 				
 			//XP BAR
 			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StatXPBar"))
