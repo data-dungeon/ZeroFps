@@ -316,6 +316,21 @@ void MistClient::SetupGUI()
 	}
 
 
+	// Create tooltip
+	ZGuiSkin* pkToolTipSkin = new ZGuiSkin();
+	pkToolTipSkin->m_unBorderSize = 8;
+
+	pkToolTipSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("textbox.bmp");
+	pkToolTipSkin->m_iVertBorderTexID = g_kMistClient.LoadGuiTextureByRes("wndborder_top.bmp");
+	pkToolTipSkin->m_iHorzBorderTexID = g_kMistClient.LoadGuiTextureByRes("wndborder_left.bmp");
+	pkToolTipSkin->m_iBorderCornerTexID = g_kMistClient.LoadGuiTextureByRes("wndborder_corner.bmp");
+	  
+	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetFont(
+			g_kMistClient.m_pkGuiMan->Font("book_antiqua_outlined10"));
+	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetTextColor(255,255,255); 
+
+	g_kMistClient.m_pkGui->GetToolTip()->SetSkin(pkToolTipSkin);
+
 
 
 

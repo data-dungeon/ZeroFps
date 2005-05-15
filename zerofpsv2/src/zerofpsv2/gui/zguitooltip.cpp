@@ -128,6 +128,9 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 				if(y + h > screen_h)
 					y = screen_h-h-2;
 
+				if(y < 0)
+					y = 0;
+
 				m_pkToolTipWnd->SetPos( x, y, true, true);
 
 

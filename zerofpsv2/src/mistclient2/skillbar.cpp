@@ -76,6 +76,11 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 		}
 		else
 		{
+			if(m_kSkills[iPos].m_pkButton)
+				g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(m_kSkills[iPos].m_pkButton);
+
+			g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(m_kSkills[iPos].m_pkButton, m_kSkills[iPos].m_strSkillName, 50.0f);
+
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 // 			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
