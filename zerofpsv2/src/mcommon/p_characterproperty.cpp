@@ -2697,7 +2697,7 @@ namespace SI_P_CharacterProperty
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
-			if(strContainerName == "Inventory") g_pkScript->AddReturnValue(pkLua,pkCP->m_iHead);
+			if(strContainerName == "Inventory") g_pkScript->AddReturnValue(pkLua,pkCP->m_iInventory);
 			if(strContainerName == "Head") 		g_pkScript->AddReturnValue(pkLua,pkCP->m_iHead);
 			if(strContainerName == "Gloves") 	g_pkScript->AddReturnValue(pkLua,pkCP->m_iGloves);
 			if(strContainerName == "Cape") 		g_pkScript->AddReturnValue(pkLua,pkCP->m_iCape);
