@@ -128,18 +128,21 @@ typedef bool (*ZPF_PluginUnLoad)();
 void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
 {
 	ModuleInfo	kInfo;
-	
-#ifdef WIN32
-	kInfo.m_kModule = LoadLibrary( strPluginName.c_str() );
-#else
-	kInfo.m_kModule = dlopen( strPluginName.c_str(), RTLD_NOW);
-#endif
-
 	kInfo.m_strModuleName = strPluginName;
+
+	string strFullPluginName;
+
+#ifdef WIN32
+	strFullPluginName = strPluginName + string(".dll");
+	kInfo.m_kModule = LoadLibrary( strFullPluginName.c_str() );
+#else
+	strFullPluginName = strPluginName + string(".so");
+	kInfo.m_kModule = dlopen( strFullPluginName.c_str(), RTLD_NOW);
+#endif
 		
 	if(!kInfo.m_kModule)
 	{
-		GetSystem().Printf("Failed to load module '%s'\n", strPluginName.c_str());
+		GetSystem().Printf("Failed to load plugin '%s'\n", strPluginName.c_str());
 		return;
 	}
 
@@ -149,21 +152,22 @@ void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
 #else
 	ZPF_PluginLoad pkPluginLoad = (ZPF_PluginLoad) dlsym(kInfo.m_kModule, "Plugin_Load");
 #endif
+
 	if(!pkPluginLoad)
 	{
-		GetSystem().Printf("Failed to init module '%s'\n", strPluginName.c_str());
-		
+		GetSystem().Printf("Failed to init plugin '%s'\n", strPluginName.c_str());
 #ifdef WIN32
 		FreeLibrary( kInfo.m_kModule );
 #else
 		dlclose( kInfo.m_kModule );
 #endif
-		
 		return;
 	}
 
 	pkPluginLoad();
 	g_kModule.insert(map<const char*,ModuleInfo>::value_type(kInfo.m_strModuleName.c_str(),kInfo));
+
+	GetSystem().Printf("Plugin '%s' is now loaded.\n", strPluginName.c_str());
 }
 
 void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
@@ -196,6 +200,7 @@ void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
 #endif	
 	
 	g_kModule.erase(it);
+	GetSystem().Printf("Plugin '%s' is now unloaded.\n", strPluginName.c_str());
 }
 
 void CmdSystem::Plugin_List()
