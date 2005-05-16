@@ -441,10 +441,28 @@ void MistClient::OnHud(void)
 // 			if(!m_bFrontView)
 // 				DrawCrossHair();
 
- 	if(m_bDead)
+
+	if(m_pkZShaderSystem->SupportGLSLProgram())
 	{
- 		DrawHUDEffect(HUD_DEAD);			
-		DrawHUDEffect(HUD_FOG);			
+		static bool bLast = false;
+		if(m_bDead != bLast)
+		{
+			bLast = m_bDead;			
+			if(m_bDead)
+			{
+				m_pkCamera->SetFSSEnabled(true);
+				m_pkCamera->SetFSSGLSLShader("#fssblackwhite.frag");
+			}
+			else
+			{
+				m_pkCamera->SetFSSEnabled(false);	
+			}
+		}
+	}
+	else
+	{
+  		DrawHUDEffect(HUD_DEAD);			
+ 		DrawHUDEffect(HUD_FOG);			
 	}
 }
 
@@ -1255,6 +1273,8 @@ void MistClient::UpdateCharacter()
 				
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
+				
+				
 			}			
 		}
 		

@@ -51,7 +51,33 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_bShadowMap	=		true;
 	m_iCurrentRenderMode=RENDER_NONE;
 	
+	m_bFSSEnabled		=	false;
 	
+	//create fsstexture
+	float fFSSSize = GetMaxSize(Max(m_pkRender->GetWidth(),m_pkRender->GetHeight()));
+	
+	m_iFSSTexture = -1;
+	glGenTextures(1, &m_iFSSTexture);
+	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, fFSSSize, fFSSSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	//create fssprojection matrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
+	m_pkZShaderSystem->MatrixGenerateOrtho(-1,1,-1,1,0,2);
+	m_pkZShaderSystem->MatrixSave(&m_kFSSProjMatrix);			
+
+	//default fss
+	m_pkFSSMaterial = new ZMaterial;
+ 	m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes("#fssblackwhite.frag.glsl");
+	m_pkFSSMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
+	m_pkFSSMaterial->GetPass(0)->m_bLighting = false;
+	m_pkFSSMaterial->GetPass(0)->m_bDepthTest = false;
+	
+	//create shadowmap texture	
 	if(	(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || 
 			(!m_pkZShaderSystem->HaveExtension("GL_ARB_depth_texture")) )
 	{
@@ -95,6 +121,12 @@ Camera::~Camera()
 	if(m_iShadowTexture != -1)
 		glDeleteTextures(1,&m_iShadowTexture);
 
+	if(m_iFSSTexture != -1)
+		glDeleteTextures(1,&m_iFSSTexture);
+
+		
+	if(m_pkFSSMaterial)
+		delete m_pkFSSMaterial;
 }
 
 int Camera::GetMaxSize(int iRes)
@@ -111,6 +143,72 @@ int Camera::GetMaxSize(int iRes)
 	return 128;
 }
 
+void Camera::SetFSSGLSLShader(const string& strShader)
+{
+	m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes(strShader+string(".glsl"));
+}
+
+void Camera::FullScreenShader()
+{
+	static float data[]= {	-1,-1,-1,
+									 1,-1,-1,
+							 		 1, 1,-1,
+									-1, 1,-1};
+
+	static float uvdata[]= {0,0,
+									1,0,
+							 		1,0.75,
+									0,0.75};
+									
+	//save screen surface to fss texture									
+	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_pkRender->GetWidth(), m_pkRender->GetHeight());
+	
+	
+	//setup fss orthogonal projection matrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixLoad(&m_kFSSProjMatrix);
+	
+	//identity
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixIdentity();
+	
+	//bind fss material
+	m_pkZShaderSystem->BindMaterial(m_pkFSSMaterial);
+	
+	//setup vertex data
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,data);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,uvdata);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+	
+		
+// 	m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER);
+// 	m_pkZShaderSystem->ClearBuffer(DEPTH_BUFFER);
+	
+  	//we dont wan to write any depth data
+  	m_pkZShaderSystem->SetDepthMask(false);
+  	
+  	//ugly haxk to force another texture then the one specified in the material
+// 	glActiveTextureARB(GL_TEXTURE0_ARB);
+// 	glEnable(GL_TEXTURE_2D);	
+	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+  	
+	//draw scree surface
+  	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
+  	
+  	//reenable depth mask
+	m_pkZShaderSystem->SetDepthMask(true);
+  	
+  	
+  	//pop matrices
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);	
+	m_pkZShaderSystem->MatrixPop();	
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
+	m_pkZShaderSystem->MatrixPop();	
+}
 
 void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,unsigned int iTexture)
 {
@@ -595,6 +693,10 @@ void Camera::RenderView()
 	//draw world
 	DrawWorld();
 	
+	
+	//apply fss
+	if(m_bFSSEnabled)
+		FullScreenShader();
 		
 	if(m_bDrawInterface) 
 	{

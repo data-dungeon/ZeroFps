@@ -361,6 +361,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//other stuff
 		void ClearBuffer(const int& iBuffert);
 		void SetClearColor(const Vector4& kColor);
+		void SetDepthMask(bool bMask)							{	if(bMask) glDepthMask(GL_TRUE); else glDepthMask(GL_FALSE);}
 		void SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		unsigned int GetDepth(int iX,int iY);
 		

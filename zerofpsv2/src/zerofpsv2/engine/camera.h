@@ -122,6 +122,12 @@ class ENGINE_API Camera : public I_Camera
 		bool			m_bRootOnly;					// Render only rootentity. 
 		P_Camera*	m_pkCameraProp;				
 		
+		//fullscreen shader
+		unsigned int	m_iFSSTexture;
+		Matrix4			m_kFSSProjMatrix;
+		ZMaterial*		m_pkFSSMaterial;
+		bool				m_bFSSEnabled;
+		
 		//shadow hack
 		unsigned int	m_iShadowTexture;
 		int				m_iShadowTexWidth;
@@ -140,6 +146,8 @@ class ENGINE_API Camera : public I_Camera
 		void		DrawShadowedScene();		
 		void		DrawGrid();		
 		void		DrawWorld();
+		
+		void		FullScreenShader();
 		
 	public:
 		bool				m_bForceFullScreen;	// Ignore own settings and render to fullscreen.
@@ -220,6 +228,12 @@ class ENGINE_API Camera : public I_Camera
 		Vector3	GetViewPortSize();
 		Vector3	GetViewPortCorner();
 
+		//fullscreen shader stuff
+		
+		void SetFSSEnabled(bool bEn)				{	m_bFSSEnabled = bEn;			}
+		void SetFSSGLSLShader(const string& strShader);
+		
+		
 		friend	class P_Camera;
 };
 
