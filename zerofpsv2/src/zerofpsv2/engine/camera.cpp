@@ -54,12 +54,14 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_bFSSEnabled		=	false;
 	
 	//create fsstexture
-	float fFSSSize = GetMaxSize(Max(m_pkRender->GetWidth(),m_pkRender->GetHeight()));
+  	m_iFSSTextureWidth = GetMinSize(m_pkRender->GetWidth());
+ 	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
+  	cout<<"size:"<<m_iFSSTextureWidth<<" "<<m_iFSSTextureHeight<<endl;
 	
 	m_iFSSTexture = -1;
 	glGenTextures(1, &m_iFSSTexture);
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, fFSSSize, fFSSSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_iFSSTextureWidth, m_iFSSTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -72,7 +74,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 	//default fss
 	m_pkFSSMaterial = new ZMaterial;
- 	m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes("#fssblackwhite.frag.glsl");
+	//m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes("#fssblackwhite.frag.glsl");
 	m_pkFSSMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
 	m_pkFSSMaterial->GetPass(0)->m_bLighting = false;
 	m_pkFSSMaterial->GetPass(0)->m_bDepthTest = false;
@@ -143,6 +145,20 @@ int Camera::GetMaxSize(int iRes)
 	return 128;
 }
 
+int Camera::GetMinSize(int iRes)
+{
+	if(iRes <= 256 )
+		return 256;
+	else if(iRes <= 512)
+		return 512;
+	else if(iRes <= 1024)
+		return 1024;
+	else if(iRes <= 2048)
+		return 2048;
+		
+	return 256;
+}
+
 void Camera::SetFSSGLSLShader(const string& strShader)
 {
 	m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes(strShader+string(".glsl"));
@@ -157,12 +173,21 @@ void Camera::FullScreenShader()
 
 	static float uvdata[]= {0,0,
 									1,0,
-							 		1,0.75,
-									0,0.75};
+							 		1,1,
+									0,1};
 									
+	//calculate how to stretch the texture									
+	float xs = 	float(m_pkRender->GetWidth()) / float(m_iFSSTextureWidth);								
+	float ys = 	float(m_pkRender->GetHeight()) / float(m_iFSSTextureHeight);
+
+ 	uvdata[2] = xs;
+ 	uvdata[4] = xs;
+ 	uvdata[5] = ys;
+ 	uvdata[7] = ys;
+	
 	//save screen surface to fss texture									
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_pkRender->GetWidth(), m_pkRender->GetHeight());
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
 	
 	
 	//setup fss orthogonal projection matrix
@@ -185,15 +210,10 @@ void Camera::FullScreenShader()
 	m_pkZShaderSystem->SetNrOfVertexs(4);
 	
 		
-// 	m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER);
-// 	m_pkZShaderSystem->ClearBuffer(DEPTH_BUFFER);
-	
   	//we dont wan to write any depth data
   	m_pkZShaderSystem->SetDepthMask(false);
   	
   	//ugly haxk to force another texture then the one specified in the material
-// 	glActiveTextureARB(GL_TEXTURE0_ARB);
-// 	glEnable(GL_TEXTURE_2D);	
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
   	
 	//draw scree surface

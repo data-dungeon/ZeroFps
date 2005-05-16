@@ -126,7 +126,9 @@ class ENGINE_API Camera : public I_Camera
 		unsigned int	m_iFSSTexture;
 		Matrix4			m_kFSSProjMatrix;
 		ZMaterial*		m_pkFSSMaterial;
-		bool				m_bFSSEnabled;
+		bool				m_bFSSEnabled;		
+		int				m_iFSSTextureWidth;
+		int				m_iFSSTextureHeight;
 		
 		//shadow hack
 		unsigned int	m_iShadowTexture;
@@ -142,6 +144,7 @@ class ENGINE_API Camera : public I_Camera
 		
 		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, unsigned int iTexture);
 		int		GetMaxSize(int iRes);
+		int		GetMinSize(int iRes);
 
 		void		DrawShadowedScene();		
 		void		DrawGrid();		

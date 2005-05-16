@@ -1274,7 +1274,8 @@ void MistClient::UpdateCharacter()
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
 				
-				
+// 				m_pkCamera->SetFSSGLSLShader("#bloom.frag");
+// 				m_pkCamera->SetFSSEnabled(true);
 			}			
 		}
 		
