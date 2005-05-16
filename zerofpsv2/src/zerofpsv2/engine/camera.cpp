@@ -641,9 +641,6 @@ void Camera::DrawWorld()
 		else
 			kLightPos =  kCenter + Vector3(0,100,0);		
 
-// 		kLightPos.x += Randomf(0.3) - 1.5;
-// 		kLightPos.y += Randomf(0.3) - 1.5;
-// 		kLightPos.z += Randomf(0.3) - 1.5;
 		
 		//create shadow map	
 		//cout<<"pos:"<<kLightPos.x<<" "<<kLightPos.y<<" "<<kLightPos.z<<"   "<< kCenter.DistanceTo(kLightPos)<<endl;
@@ -754,8 +751,6 @@ void Camera::DrawShadowedScene()
 	
 	
 	//Bind & enable shadow map texture
-	//int iTexture = m_pkTexMan->GetTextureID(m_pkTexMan->GetIndex("data/textures/coke.tga"));
-	//m_pkTexMan->BindTexture("c#data/textures/hora.tga",0);
 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
 	glEnable(GL_TEXTURE_2D);
 	
