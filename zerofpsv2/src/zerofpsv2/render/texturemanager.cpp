@@ -31,7 +31,12 @@ bool TextureManager::StartUp()
  	m_bSupportARBTC = m_pkZShaderSystem->HaveExtension("ARB_texture_compression");
  	m_bSupportS3TC = m_pkZShaderSystem->HaveExtension("EXT_texture_compression_s3tc");
 	
-	
+	if(!m_bSupportARBTC)
+		cout<<"TextureManager: No ARB_texture_compression support"<<endl;
+
+	if(!m_bSupportS3TC)
+		cout<<"TextureManager: No EXT_texture_compression_s3tc support"<<endl;
+		 	
 	return true;
 }	
 

@@ -455,6 +455,9 @@ void MistClient::OnHud(void)
 			}
 			else
 			{
+//  				m_pkCamera->SetFSSGLSLShader("#bloom.frag");
+//  				m_pkCamera->SetFSSEnabled(true);
+
 				m_pkCamera->SetFSSEnabled(false);	
 			}
 		}
@@ -1274,8 +1277,8 @@ void MistClient::UpdateCharacter()
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
 				
-// 				m_pkCamera->SetFSSGLSLShader("#bloom.frag");
-// 				m_pkCamera->SetFSSEnabled(true);
+//  				m_pkCamera->SetFSSGLSLShader("#bloom.frag");
+//  				m_pkCamera->SetFSSEnabled(true);
 			}			
 		}
 		
