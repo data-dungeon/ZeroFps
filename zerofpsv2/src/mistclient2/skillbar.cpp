@@ -73,18 +73,16 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 		{
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
 			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
-// 			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
 		}
 		else
 		{
-			if(m_kSkills[iPos].m_pkButton)
-				g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(m_kSkills[iPos].m_pkButton);
-
-			g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(m_kSkills[iPos].m_pkButton, m_kSkills[iPos].m_strSkillScreenName, 50.0f);
+//				av nån anledning så försvinner knapparna när man stänger inventory fönstret =/ om detta är på		
+// 			if(m_kSkills[iPos].m_pkButton)
+// 				g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(m_kSkills[iPos].m_pkButton);
+// 			g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(m_kSkills[iPos].m_pkButton, m_kSkills[iPos].m_strSkillScreenName, 50.0f);
 
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 			m_kSkills[iPos].m_pkButton->GetButtonDownSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
-// 			m_kSkills[iPos].m_pkButton->GetButtonHighLightSkin()->m_iBkTexID =g_kMistClient.LoadGuiTextureByRes((strIconDir+kSkillInfo[i].m_strSkillIcon).c_str());
 		}
 	}
 }
