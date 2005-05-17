@@ -74,6 +74,8 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		bool					m_bSupportARBTC;
 		bool					m_bSupportS3TC;
 		
+		bool					m_bUseTC;
+		
 		int					m_iCurrentTexture;
 		vector<texture*>	m_iTextures;
 		vector<int>			m_iFreeID;

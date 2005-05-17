@@ -16,11 +16,15 @@ TextureManager::TextureManager()
 
 	m_bSupportS3TC 		= false;
 	m_bSupportARBTC 		= false;
+	m_bUseTC					= true;
 	
 	Register_Cmd("t_list",		FID_LISTTEXTURES);
 	Register_Cmd("t_reload",	FID_FORCERELOAD);
 	Register_Cmd("t_testload",	FID_TESTLOADER);
 	Register_Cmd("t_unload",	FID_UNLOAD);
+	
+	
+	RegisterVariable("r_usetc",	&m_bUseTC,	CSYS_BOOL);	
 }	
 
 bool TextureManager::StartUp()	
@@ -245,7 +249,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 // 		}
 // 	}	
 // 	else 	
-	if(m_bSupportARBTC)
+	if(m_bUseTC && m_bSupportARBTC)
 	{		
 		switch(iInternalFormat)
 		{
