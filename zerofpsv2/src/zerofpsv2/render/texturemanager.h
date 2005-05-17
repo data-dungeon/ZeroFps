@@ -17,6 +17,8 @@
 
 using namespace std;
 
+class ZShaderSystem;
+
 enum OPTIONS 
 {
 	T_NOMIPMAPPING	=	1,		// No mipmapping on this texture.
@@ -68,11 +70,16 @@ class RENDER_API TextureManager : public ZFSubSystem {
 			FID_UNLOAD,
 		};
 
+		
+		bool					m_bSupportARBTC;
+		bool					m_bSupportS3TC;
+		
 		int					m_iCurrentTexture;
 		vector<texture*>	m_iTextures;
 		vector<int>			m_iFreeID;
-		ZFVFileSystem*	m_pkZFFileSystem;
-
+		
+		ZFVFileSystem*		m_pkZFFileSystem;
+		ZShaderSystem*		m_pkZShaderSystem;
 
 		texture*	GetFreeTexture();												// Returns a free texture manger texture object.
       void FreeTexture(texture* pkTex);									// Free texture manger texture object.

@@ -56,7 +56,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	//create fsstexture
   	m_iFSSTextureWidth = GetMinSize(m_pkRender->GetWidth());
  	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
-  	cout<<"size:"<<m_iFSSTextureWidth<<" "<<m_iFSSTextureHeight<<endl;
+  	//cout<<"size:"<<m_iFSSTextureWidth<<" "<<m_iFSSTextureHeight<<endl;
 	
 	m_iFSSTexture = -1;
 	glGenTextures(1, &m_iFSSTexture);

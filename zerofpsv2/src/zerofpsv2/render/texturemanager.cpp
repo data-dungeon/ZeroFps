@@ -5,7 +5,7 @@
 #include "../basic/image.h"
 #include "render.h"
 #include "../basic/basicconsole.h"
- 
+#include "zshadersystem.h"
 
 
 TextureManager::TextureManager()
@@ -14,6 +14,9 @@ TextureManager::TextureManager()
 	m_iCurrentTexture		= NO_TEXTURE;
 	m_iEditLastTextureID = NO_TEXTURE;
 
+	m_bSupportS3TC 		= false;
+	m_bSupportARBTC 		= false;
+	
 	Register_Cmd("t_list",		FID_LISTTEXTURES);
 	Register_Cmd("t_reload",	FID_FORCERELOAD);
 	Register_Cmd("t_testload",	FID_TESTLOADER);
@@ -23,6 +26,11 @@ TextureManager::TextureManager()
 bool TextureManager::StartUp()	
 {
 	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(GetSystem().GetObjectPtr("ZFVFileSystem"));		
+	m_pkZShaderSystem =  static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));		
+	
+ 	m_bSupportARBTC = m_pkZShaderSystem->HaveExtension("ARB_texture_compression");
+ 	m_bSupportS3TC = m_pkZShaderSystem->HaveExtension("EXT_texture_compression_s3tc");
+	
 	
 	return true;
 }	
@@ -210,7 +218,8 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0)
 	{
 		//cout << "Setting Tga format" << endl;
-		iInternalFormat=GL_RGBA8;
+// 		iInternalFormat=GL_RGBA8;
+ 		iInternalFormat=GL_RGBA;	
 	}
 
 	//is this a alphaonly textre
@@ -220,6 +229,28 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		iInternalFormat=GL_ALPHA;
 	}
 	
+	//texture compression
+// 	if(m_bSupportS3TC)
+// 	{
+// 		switch(iInternalFormat)
+// 		{
+// 			case GL_RGB: iInternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+// 			case GL_RGBA: iInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
+// 			case GL_ALPHA: iInternalFormat = GL_COMPRESSED_ALPHA_ARB; break;	
+// 		}
+// 	}	
+// 	else 	
+	if(m_bSupportARBTC)
+	{		
+		switch(iInternalFormat)
+		{
+			case GL_RGB: iInternalFormat = GL_COMPRESSED_RGB_ARB; break;
+			case GL_RGBA: iInternalFormat = GL_COMPRESSED_RGBA_ARB; break;
+			case GL_ALPHA: iInternalFormat = GL_COMPRESSED_ALPHA_ARB; break;	
+		}
+	}
+
+				
 	//setup clamping
 	if(pkTex->b_bClamp)
 	{				
@@ -253,6 +284,9 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		else
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
 	}
+	
+	
+	
 	
 	//create texture
 	if(pkTex->m_bMipMapping)

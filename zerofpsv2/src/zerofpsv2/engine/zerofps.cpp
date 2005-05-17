@@ -64,6 +64,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkBasicFS					= new ZFBasicFS;	
 	m_pkAStar					= new AStar;
+	m_pkTexMan					= new TextureManager;
 	m_pkZShaderSystem			= new ZShaderSystem;
 	m_pkEntityManager			= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
@@ -79,7 +80,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkFrustum					= new Frustum;	
 	m_pkPropertyFactory		= new PropertyFactory;
 	m_pkInput					= new Input;		
-	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkPSystemManager		= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
