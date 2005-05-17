@@ -247,8 +247,8 @@ void ZeroEd::CreateEditCameras()
 		}
 	}
 
-//   	m_pkCamera[0]->SetFSSEnabled(true);
-//   	m_pkCamera[0]->SetFSSGLSLShader("#bloom.frag");
+//    	m_pkCamera[0]->SetFSSEnabled(true);
+//    	m_pkCamera[0]->SetFSSGLSLShader("#bloom.frag");
 	
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
