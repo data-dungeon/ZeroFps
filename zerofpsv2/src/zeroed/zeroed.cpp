@@ -247,9 +247,18 @@ void ZeroEd::CreateEditCameras()
 		}
 	}
 
-//    	m_pkCamera[0]->SetFSSEnabled(true);
-//    	m_pkCamera[0]->SetFSSGLSLShader("#bloom.frag");
-	
+  	m_pkCamera[0]->SetFSSEnabled(true);
+  	m_pkCamera[0]->SetFSSGLSLShader("#dvoids.frag");
+ 	
+ 	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_bBlend = true;
+ 	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_iBlendSrc = ONE_BLEND_SRC;//ONE_MINUS_DST_COLOR_BLEND_SRC;
+ 	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_COLOR_BLEND_DST;//ONE_MINUS_SRC_COLOR_BLEND_DST;
+//   	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_iBlendSrc = ONE_BLEND_SRC;
+//   	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_COLOR_BLEND_DST;
+//  	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+//  	m_pkCamera[0]->GetFSSMaterial()->GetPass(0)->m_iBlendDst = ONE_BLEND_DST;
+ 	
+    	
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
 

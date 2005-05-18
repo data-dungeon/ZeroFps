@@ -462,7 +462,7 @@ void MistClient::OnHud(void)
 			}
 		}
 	}
-	else
+	else if(m_bDead)
 	{
   		DrawHUDEffect(HUD_DEAD);			
  		DrawHUDEffect(HUD_FOG);			
@@ -1277,8 +1277,13 @@ void MistClient::UpdateCharacter()
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
 				
-//  				m_pkCamera->SetFSSGLSLShader("#bloom.frag");
-//  				m_pkCamera->SetFSSEnabled(true);
+// 				m_pkCamera->SetFSSEnabled(true);
+// 				m_pkCamera->SetFSSGLSLShader("#dvoids.frag");
+// 				
+// 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_bBlend = true;
+// 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_iBlendSrc = ONE_BLEND_SRC;
+// 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_iBlendDst = ONE_BLEND_DST;
+
 			}			
 		}
 		

@@ -235,6 +235,7 @@ class ENGINE_API Camera : public I_Camera
 		
 		void SetFSSEnabled(bool bEn)				{	m_bFSSEnabled = bEn;			}
 		void SetFSSGLSLShader(const string& strShader);
+		ZMaterial* GetFSSMaterial()				{	return m_pkFSSMaterial;		}
 		
 		
 		friend	class P_Camera;
