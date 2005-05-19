@@ -1277,8 +1277,9 @@ void MistClient::UpdateCharacter()
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
 				
-// 				m_pkCamera->SetFSSEnabled(true);
-// 				m_pkCamera->SetFSSGLSLShader("#dvoids.frag");
+//  				m_pkCamera->SetFSSEnabled(true);
+//  				m_pkCamera->SetFSSGLSLShader("#bloom2.frag");
+//   				m_pkCamera->SetFSSGLSLShader("diffuse.vert#diffuse.frag");
 // 				
 // 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_bBlend = true;
 // 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_iBlendSrc = ONE_BLEND_SRC;

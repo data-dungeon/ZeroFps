@@ -216,8 +216,10 @@ void Camera::FullScreenShader()
   	//ugly haxk to force another texture then the one specified in the material
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
   	
+  	
 	//draw scree surface
-  	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
+  	
   	
   	//reenable depth mask
 	m_pkZShaderSystem->SetDepthMask(true);
