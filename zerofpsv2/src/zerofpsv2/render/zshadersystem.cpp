@@ -1462,7 +1462,11 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture1") , 1);
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture2") , 2);
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture3") , 3);
-		
+
+	
+	//force alpha
+// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iForceAlphaTest") , m_iForceAlphaTest);
+			
 }
 
 void ZShaderSystem::UpdateFragmentProgramParameters()
