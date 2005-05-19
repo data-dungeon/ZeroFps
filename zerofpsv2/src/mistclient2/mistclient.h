@@ -53,6 +53,8 @@ class MistClient :public Application, public ZGuiApp {
 		//music
 		string		m_strMenuMusic;
 		
+		bool			m_bBloom;
+		
 		//point text handler
 		PointText*	m_pkPointText;
 		

@@ -44,6 +44,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iPickedEntityID 	= 	-1;
 	m_fDelayTime  			=	0;
 
+	m_bBloom					=	false;
 	m_iCharacterID 		=	-1;
 	m_iTargetID 			=	-1;
 	m_bFrontView 			=	false;
@@ -68,6 +69,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	RegisterVariable("ap_quickstartadress",	&m_strQuickStartAddress,	CSYS_STRING);
 	RegisterVariable("ap_targetrotate",			&m_bTargetRotate,				CSYS_BOOL);
 
+	RegisterVariable("ap_bloom",					&m_bBloom,				CSYS_BOOL);
+	
+	
 	m_bGuiCapture = false;
 	m_iNumBuffIcons = 0;
 	
@@ -455,10 +459,13 @@ void MistClient::OnHud(void)
 			}
 			else
 			{
-//  				m_pkCamera->SetFSSGLSLShader("#bloom.frag");
-//  				m_pkCamera->SetFSSEnabled(true);
-
-				m_pkCamera->SetFSSEnabled(false);	
+			 	if(m_bBloom)
+ 				{
+ 					m_pkCamera->SetFSSEnabled(true);
+ 					m_pkCamera->SetFSSGLSLShader("#bloom2.frag");
+ 				}
+ 				else
+					m_pkCamera->SetFSSEnabled(false);	
 			}
 		}
 	}
@@ -1277,8 +1284,11 @@ void MistClient::UpdateCharacter()
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
 				
-//  				m_pkCamera->SetFSSEnabled(true);
-//  				m_pkCamera->SetFSSGLSLShader("#bloom2.frag");
+ 				if(m_bBloom)
+ 				{
+ 					m_pkCamera->SetFSSEnabled(true);
+ 					m_pkCamera->SetFSSGLSLShader("#bloom2.frag");
+ 				}
 //   				m_pkCamera->SetFSSGLSLShader("diffuse.vert#diffuse.frag");
 // 				
 // 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_bBlend = true;
