@@ -170,6 +170,16 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 
 void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText, float fLifeTimeInSec)
 {
+	if(pkWnd == NULL)
+		return;
+
+	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
+		if(pkWnd == m_vkWindowList[i].pkWnd)
+		{
+			m_vkWindowList[i].strText = strText;
+			return;
+		}
+
 	TOOLTIP_INFO ttinfo;
 
 	ttinfo.pkWnd = pkWnd;
@@ -181,11 +191,14 @@ void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText, float fLifeTimeInSe
 
 void ZGuiToolTip::CloseAll()
 {
-	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
-		m_vkWindowList[i].pkWnd->Hide();
+	//for(unsigned int i=0; i<m_vkWindowList.size(); i++)
+	//	m_vkWindowList[i].pkWnd->Hide();
 
 	m_pkLastToolTipWnd = NULL;
-	m_pkToolTipWnd->Hide();
+
+	if(m_pkToolTipWnd)
+		m_pkToolTipWnd->Hide();
+
 	m_fToolTipDisplayTime = 0.0f;
 }
 

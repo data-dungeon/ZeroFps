@@ -662,7 +662,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		if(pkWnd->GetSkin())
 			delete pkWnd->GetSkin();
 		
-		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd);
+		//g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd);
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
