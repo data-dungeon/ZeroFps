@@ -1457,6 +1457,8 @@ int ZShaderSystem::GetStencilBits()
 
 void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 {	
+	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->GetPass(iPass);
+
 	//time
 	GLint iTimeLocation  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fTime");
 	glUniform1fARB(iTimeLocation, (float(SDL_GetTicks()) /1000.0));
@@ -1467,10 +1469,13 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture2") , 2);
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture3") , 3);
 
+	//have textures?	
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture0") , pkSettings->m_kTUs[0]->IsValid());
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture1") , pkSettings->m_kTUs[1]->IsValid());
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture2") , pkSettings->m_kTUs[2]->IsValid());
+	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture3") , pkSettings->m_kTUs[3]->IsValid());
 	
-	//force alpha
-// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iForceAlphaTest") , m_iForceAlphaTest);
-			
+	
 }
 
 void ZShaderSystem::UpdateFragmentProgramParameters()
