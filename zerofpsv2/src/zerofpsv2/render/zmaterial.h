@@ -150,11 +150,11 @@ class RENDER_API ZMaterial : public ZFResource
 
 namespace SI_ZMATERIAL
 {
-	extern ZMaterial*	g_pkCurrentMaterial;	
-	extern int			g_iCurrentMaterialPass;	
+	extern RENDER_API ZMaterial*	g_pkCurrentMaterial;	
+	extern RENDER_API int			g_iCurrentMaterialPass;	
 	
-	int PassBeginLua(lua_State* pkLua);
-	int PassEndLua(lua_State* pkLua);
+	int RENDER_API PassBeginLua(lua_State* pkLua);
+	int RENDER_API PassEndLua(lua_State* pkLua);
 }
 
 RENDER_API ZFResource* Create__Material();
