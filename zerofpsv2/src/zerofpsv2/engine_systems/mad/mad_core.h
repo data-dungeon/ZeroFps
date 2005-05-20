@@ -222,7 +222,7 @@ public:
 	Mad_CoreTexture* GetTextureInfo(int iTextureIndex);
 	void SetTextureID(int iTextureIndex, int iID);
 	int GetTextureID(int iTextureIndex);
-	void					SetTextureHandle(int iTextureIndex, string strName);
+	bool					SetTextureHandle(int iTextureIndex, string strName);
 	ZFResourceHandle*	GetTextureHandle(int iTextureIndex);
 
 	vector<Mad_Face>* GetFacesPointer()							{return &akFaces;		};

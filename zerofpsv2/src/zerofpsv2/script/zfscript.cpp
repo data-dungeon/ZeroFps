@@ -456,24 +456,24 @@ ZFScript::~ZFScript()
 		m_szScriptName = NULL;
 	}
 
-	if(m_pkLuaState != NULL)
+	if(m_pkLuaState != NULL)	
 	{
-		lua_close(m_pkLuaState);
+ 		lua_close(m_pkLuaState);
 		m_pkLuaState = NULL;
 	}
 }
 
 bool ZFScript::Create(string strName)
-{
-	m_pkLuaState = lua_open();
-		
+{		
 	if(strName.empty())
 	{
 		printf("Failed to create script resource, bad filename!\n");
 		return false;
 	}
-
-	m_szScriptName = new char[strName.size()+1];				// LEAK - MistServer, Nothing loaded. (SKALL F�ST�AS MEN G�S EJ EFTERSOM EXPIRE KITTET INTE FUNKAR �)
+	
+	m_pkLuaState = lua_open();	
+	
+	m_szScriptName = new char[strName.size()+1];				
 	strcpy(m_szScriptName, strName.c_str());
 
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
@@ -535,7 +535,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 
 	if( strPath.empty() )
 	{
-		printf("Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
+		//printf("Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
 		return false;
 	}
 
@@ -556,11 +556,23 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
 									vector<ScriptFuncArg>& vkParams)
 {
-	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
-
-	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
-		return false;	
+	if(!pkResHandle->IsValid())
+		return false;
 	
+	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+	Call(pkScript,szFuncName,vkParams);
+}
+
+bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
+									vector<ScriptFuncArg>& vkParams)
+{
+// 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+
+// 	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
+// 		return false;	
+ 	if(pkScript->m_pkLuaState == NULL)
+ 		return false;		
+
 	//cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;	
 		
 	lua_getglobal( pkScript->m_pkLuaState, szFuncName);
@@ -635,12 +647,23 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName,
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
 								  int iNumParams, int iNumResults)
 {	
-		
-
-	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
-
-	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
+	if(!pkResHandle->IsValid())
 		return false;
+	
+	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+	Call(pkScript,szFuncName,iNumParams,iNumResults);
+
+}
+
+bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
+								  int iNumParams, int iNumResults)
+{	
+// 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+// 
+// 	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
+// 		return false;
+ 	if(pkScript->m_pkLuaState == NULL)
+ 		return false;
 
 	// F�s� att hitta s�v�en via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);

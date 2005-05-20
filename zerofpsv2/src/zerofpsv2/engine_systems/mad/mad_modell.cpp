@@ -396,22 +396,23 @@ void Mad_Modell::LoadTextures()
 
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
-	for(int iM = 0; iM <iNumOfMesh; iM++) {
+	for(int iM = 0; iM <iNumOfMesh; iM++) 
+	{
 		SelectMesh(iM);
 
 		iNumOfSubMesh = GetNumOfSubMesh(iM);
 		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
 
-		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
+		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
+		{
 			SelectSubMesh(iSubM);
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 			
 			sprintf(szFullTexName,"data/material/%s.zmt",pkTexInfo->ucTextureName);
-
-			 m_pkMesh->GetLODMesh(0)->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);			
-			}
+			m_pkMesh->GetLODMesh(0)->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);
 		}
+	}
 }
 
 

@@ -1744,6 +1744,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".zmt"), Create__Material	);
+	m_pkResourceDB->RegisterResource( string(".zlm"), Create__Material	);
 	m_pkResourceDB->RegisterResource( string(".wav"), Create__WavSound	);
 	m_pkResourceDB->RegisterResource( string(".zvp"), Create__ZVProgram	);
 	m_pkResourceDB->RegisterResource( string(".zfp"), Create__ZFProgram	);	

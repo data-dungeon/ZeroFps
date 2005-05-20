@@ -418,9 +418,9 @@ int Mad_RawMesh::GetTextureID(int iTextureIndex)
 	return iTextureID[iTextureIndex];
 }
 
-void Mad_RawMesh::SetTextureHandle(int iTextureIndex, string strName)
+bool Mad_RawMesh::SetTextureHandle(int iTextureIndex, string strName)
 {
-	akTexturesHandles[iTextureIndex].SetRes(strName);
+	return akTexturesHandles[iTextureIndex].SetRes(strName);
 }
 
 ZFResourceHandle*	Mad_RawMesh::GetTextureHandle(int iTextureIndex)

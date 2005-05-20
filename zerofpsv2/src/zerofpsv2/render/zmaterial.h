@@ -11,7 +11,10 @@
 #include "../basic/zfresource.h"
 #include "../basic/vector4.h"
 
+#include "../script/zfscript.h"
 
+
+class ZShaderSystem;
 
 using namespace std;
 
@@ -62,9 +65,6 @@ class RENDER_API ZMaterialSettings
 		bool				m_bColorMask;
 		bool				m_bDepthMask;
 		
-		//software effects
-		int				m_iTextureColorEffect;
-		
 	
 		ZMaterialSettings();
 		~ZMaterialSettings();
@@ -93,8 +93,12 @@ options can be givven to manipulate a texture by entering them like "[Options]#[
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:		
+		ZFScriptSystem*				m_pkScript;
+		
 		vector<ZMaterialSettings*> m_kPasses;		//material passes
 		ZFIni								m_kIni;			//inifile
+		ZFScript*						m_pkMaterialScript;
+		
 		static map<string,int> 		m_kEnums;		//enums for loading
 		
 		
@@ -108,6 +112,7 @@ class RENDER_API ZMaterial : public ZFResource
 		bool LoadPass(int iPass);		
 		int GetTranslateEnum(string strEnum);
 		void SetupEnums();
+		
 		
 	public:		
 		//global material settings
@@ -129,16 +134,31 @@ class RENDER_API ZMaterial : public ZFResource
 		ZMaterialSettings* GetPass(int iPass);
 		ZMaterialSettings* AddPass();
 				
-		bool LoadShader(const char* acFile);
+		bool LoadIniMaterial(const char* acFile);
+		bool LoadLuaMaterial(const char* acFile);
+		
 		void Clear();
 	
 		
-		
+		//material loading stuff 
+		void LuaMaterialEndPass(int iPass);
+
+				
 	friend class ZShaderSystem;
+
 };
 
-RENDER_API ZFResource* Create__Material();
+namespace SI_ZMATERIAL
+{
+	extern ZMaterial*	g_pkCurrentMaterial;	
+	extern int			g_iCurrentMaterialPass;	
+	
+	int PassBeginLua(lua_State* pkLua);
+	int PassEndLua(lua_State* pkLua);
+}
 
+RENDER_API ZFResource* Create__Material();
+RENDER_API void RegisterSI_Material();
 
 #endif
 

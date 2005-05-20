@@ -59,6 +59,9 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 
 bool ZShaderSystem::StartUp()
 {
+	//register material script interface
+	RegisterSI_Material();
+
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
 
@@ -79,9 +82,10 @@ bool ZShaderSystem::StartUp()
 									HaveExtension("GL_ARB_shading_language_100") &&
 									HaveExtension("GL_ARB_vertex_shader") &&
 									HaveExtension("GL_ARB_fragment_shader");
+	
 	if(!m_bSupportGLSLProgram)
 		cout<<"ZSHADER: No GLSL program support"<<endl;
-									
+											
 	//check for vertexbuffer support	
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
 		cout<<"ZSHADER: No vertexbuffer support"<<endl;

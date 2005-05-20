@@ -142,7 +142,9 @@ protected:
 	friend class ZFScript;
 
 public:
-
+	bool Call(ZFScript *pkScript, const char* szFuncName, vector<ScriptFuncArg>& vkParams);
+	bool Call(ZFScript *pkScript, const char* szFuncName, int iNumParams, int iNumResults);
+	
 	bool Call(ZFResourceHandle* pkResHandle, const char* szFuncName, vector<ScriptFuncArg>& vkParams);
 	bool Call(ZFResourceHandle* pkResHandle, const char* szFuncName, int iNumParams, int iNumResults);
 	//bool Run(ZFResourceHandle* pkResHandle);
