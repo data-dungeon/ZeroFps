@@ -56,7 +56,8 @@ struct PSystemTypeData
 		m_kCreateStyle;
 
 	bool 
-      m_bRemoveParentOnFinish;
+      m_bRemoveParentOnFinish,
+		m_bInheritPosFromJoint;
 
 	vector<string> m_kProperties;
 };

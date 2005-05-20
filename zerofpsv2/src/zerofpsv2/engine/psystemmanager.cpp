@@ -630,6 +630,13 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kParticleBehaviour.m_bRandomUV_V = false;
 
+	// Get position from rootjoint
+	if ( m_kIniLoader.KeyExist("inherit_jointpos", "value") )
+		pkPSType->m_kPSystemBehaviour.m_bInheritPosFromJoint = m_kIniLoader.GetBoolValue("inherit_jointpos", "value");
+	else
+		pkPSType->m_kPSystemBehaviour.m_bInheritPosFromJoint = false;
+
+
 	// close the file
 	//m_kIniLoader.Close();
 

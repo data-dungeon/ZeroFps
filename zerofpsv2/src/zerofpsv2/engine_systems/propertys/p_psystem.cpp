@@ -1,5 +1,6 @@
 #include "../../engine/psystemmanager.h"
 #include "p_psystem.h"
+#include "p_mad.h"
 #include "../../engine/entity.h"
 #include "../../engine/entitymanager.h"
 #include "../script_interfaces/si_objectmanager.h" 
@@ -24,10 +25,20 @@ void P_PSystem::Update()
 	{
 		if ( m_kPSystems[i].m_pkPSystem )
 		{
-			// returns true if the PSystem is finished
-			if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV(), kMat ) )
+			Vector3 kJointPos = Vector3(0,0,0);
+			// lol!!!1111 l0l! ugly h4c|<
+			if ( m_kPSystems[i].m_pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_bInheritPosFromJoint )
 			{
-				m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
+				P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad");
+
+				pkMad->UpdateBones();
+				kJointPos = pkMad->GetJointPosition("root");
+			}
+
+			// returns true if the PSystem is finished
+			if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat ) )
+			{
+				m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());
 
 				if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
 					if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))

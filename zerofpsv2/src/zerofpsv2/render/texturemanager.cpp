@@ -239,17 +239,17 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	}
 	
 	//texture compression
-// 	if(m_bSupportS3TC)
-// 	{
-// 		switch(iInternalFormat)
-// 		{
-// 			case GL_RGB: iInternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
-// 			case GL_RGBA: iInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
-// 			case GL_ALPHA: iInternalFormat = GL_COMPRESSED_ALPHA_ARB; break;	
-// 		}
-// 	}	
-// 	else 	
-	if(m_bUseTC && m_bSupportARBTC)
+ 	if(m_bSupportS3TC)
+ 	{
+ 		switch(iInternalFormat)
+ 		{
+ 			case GL_RGB: iInternalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+ 			case GL_RGBA: iInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
+ 			case GL_ALPHA: iInternalFormat = GL_COMPRESSED_ALPHA_ARB; break;	
+ 		}
+ 	}	
+ 	else 	
+	if(m_bSupportS3TC)
 	{		
 		switch(iInternalFormat)
 		{
