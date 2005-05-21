@@ -844,16 +844,18 @@ ZFResource* Create__Material()
 
 
 
-#include "../engine_systems/script_interfaces/si_objectmanager.h" 
-using namespace ObjectManagerLua;
+// #include "../engine_systems/script_interfaces/si_objectmanager.h" 
+// using namespace ObjectManagerLua;
 // extern ZFScriptSystem* 	g_pkScript;
 
 //MATERIAL LUA INTERFACE
 namespace SI_ZMATERIAL
 {
-	ZMaterial*	g_pkCurrentMaterial = NULL;
-	int			g_iCurrentMaterialPass = -1;
-	bool			g_bHaveGLSLSupport;
+	ZMaterial*			g_pkCurrentMaterial = NULL;
+	int					g_iCurrentMaterialPass = -1;
+	bool					g_bHaveGLSLSupport;
+	ZFScriptSystem*	g_pkScript = NULL;
+	
 	
 	int PassBeginLua(lua_State* pkLua)
 	{
@@ -921,10 +923,11 @@ namespace SI_ZMATERIAL
 
 void RegisterSI_Material()
 {
-	g_pkScript->ExposeFunction("PassBegin",		SI_ZMATERIAL::PassBeginLua);
-	g_pkScript->ExposeFunction("PassEnd",			SI_ZMATERIAL::PassEndLua);
-
-	g_pkScript->ExposeFunction("SupportGLSLProgram",	SI_ZMATERIAL::SupportGLSLProgramLua);
+	SI_ZMATERIAL::g_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassBegin",		SI_ZMATERIAL::PassBeginLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassEnd",			SI_ZMATERIAL::PassEndLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportGLSLProgram",	SI_ZMATERIAL::SupportGLSLProgramLua);
 
 };
 
