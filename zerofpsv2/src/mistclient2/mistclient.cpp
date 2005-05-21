@@ -455,7 +455,7 @@ void MistClient::OnHud(void)
 			if(m_bDead)
 			{
 				m_pkCamera->SetFSSEnabled(true);
-				m_pkCamera->SetFSSGLSLShader("#fssblackwhite.frag");
+				m_pkCamera->SetFSSGLSLShader("#dead.frag");
 			}
 			else
 			{
