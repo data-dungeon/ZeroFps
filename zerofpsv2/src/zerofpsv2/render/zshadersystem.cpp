@@ -30,6 +30,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_fRedGamma							= 1.0;
 	m_fGreenGamma						= 1.0;
 	m_fBlueGamma						= 1.0;
+	
+	m_kEyePosition						=	Vector3(0,0,0);
 		
 	m_bSupportVertexBuffers =		false;
 	
@@ -1460,8 +1462,7 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->GetPass(iPass);
 
 	//time
-	GLint iTimeLocation  = glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fTime");
-	glUniform1fARB(iTimeLocation, (float(SDL_GetTicks()) /1000.0));
+	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fTime"), (float(SDL_GetTicks()) /1000.0));
 
 	//Textures
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture0") , 0);
@@ -1475,7 +1476,13 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture2") , pkSettings->m_kTUs[2]->IsValid());
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture3") , pkSettings->m_kTUs[3]->IsValid());
 	
-	
+	//eye position
+ 	glUniform3fvARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kEyePosition") ,1, &m_kEyePosition.x);
+ 	
+ 	//nr of active lights
+ 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iActiveLights") , m_pkLight->GetNrOfActiveLights());
+ 
+
 }
 
 void ZShaderSystem::UpdateFragmentProgramParameters()
@@ -1529,7 +1536,7 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
  	if(iProgram == m_iCurrentGLSLProgramID)
  		return;
 	
-// 	glGetError(); 		
+	glGetError(); 		
  		
 	//bind program
 	glUseProgramObjectARB(iProgram);			
@@ -1537,12 +1544,12 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 	//set current program
 	m_iCurrentGLSLProgramID = iProgram;
 	
-// 	switch(glGetError())
-// 	{
-// 		case GL_INVALID_VALUE: cout<<"glUseProgramObjectARB: ivalid value"<<endl;break;
-// 		case GL_INVALID_OPERATION: cout<<"glUseProgramObjectARB: ivalid operation"<<endl;break;
-// 	}	
-// 	
+	switch(glGetError())
+	{
+		case GL_INVALID_VALUE: cout<<"glUseProgramObjectARB: ivalid value"<<endl;break;
+		case GL_INVALID_OPERATION: cout<<"glUseProgramObjectARB: ivalid operation"<<endl;break;
+	}	
+	
 	
 	
 	

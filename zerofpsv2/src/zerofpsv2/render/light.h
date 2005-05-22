@@ -95,6 +95,8 @@ class RENDER_API Light : public ZFSubSystem
 		ZeroFps*	m_pkZeroFps;
 	
 		Vector3 m_kCamPos;
+		
+		int		m_iCurrentActiveLights;
 
 		vector<LightSource*> m_kLights;
 		vector<LightSource*> m_kSorted;
@@ -126,9 +128,11 @@ class RENDER_API Light : public ZFSubSystem
 
 		void SetLighting(bool bOn);
 		void SetStartUpValues();
-
-		void SetAmbientOnly(bool bAmbient)	{	m_bAmbientOnly = bAmbient;	}
 		
+
+		void SetAmbientOnly(bool bAmbient)	{	m_bAmbientOnly = bAmbient;		}
+		
+		int  GetNrOfActiveLights()				{	return m_iCurrentActiveLights;}
 		void GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional = false);
 		LightSource* GetFirstDirectionalLight();
 

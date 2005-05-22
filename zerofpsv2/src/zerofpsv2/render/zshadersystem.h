@@ -190,7 +190,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//current selected material
 		ZMaterial*		m_pkCurrentMaterial;
-		
+
+		//eye position
+		Vector3			m_kEyePosition;
+				
 		//empty material, used when pushing 
 		ZMaterial		m_kEmptyMaterial;
 
@@ -357,6 +360,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void Pop();		
 		void BindMaterial(ZMaterial* pkMaterial,bool bForceReload = false);
 		void ReloadMaterial();
+		
+		void SetEyePosition(const Vector3& kEyePos)		{	m_kEyePosition = kEyePos;				}
 		
 		//other stuff
 		void ClearBuffer(const int& iBuffert);

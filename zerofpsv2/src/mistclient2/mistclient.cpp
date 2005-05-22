@@ -92,7 +92,7 @@ void MistClient::OnInit()
 			
 	
 	//initiate our mainview camera
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),85,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),85,1.333,0.1,250);	
 	m_pkCamera->SetName("Main camera");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 

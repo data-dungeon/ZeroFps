@@ -44,6 +44,7 @@ Light::Light()
 	m_bAmbientOnly =	false;
 	m_bEnabled = 		true;
 	m_iVersion = 		0;
+	m_iCurrentActiveLights = 0;
 	
 	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
 	
@@ -217,12 +218,13 @@ void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 		
 	}
 	
-	
+	m_iCurrentActiveLights = 0;
 	//activate lights in light list
 	for(int i = 0;i<8;i++)
 	{		
 		if(pkLightProfile->m_aiLights[i] != -1)
 		{
+			m_iCurrentActiveLights++;
 			//cout<<"enabling lightsource: "<<pkLightProfile->m_aiLights[i]<<" as gl light "<<i<<endl;
 			EnableLight(m_kLights[pkLightProfile->m_aiLights[i]],i);
 		}
@@ -277,11 +279,11 @@ void Light::Update(Vector3 kRefPos)
 
 	sort(m_kSorted.begin(),m_kSorted.end(),More_Light);
 
-	int max = m_kSorted.size();
-	if(max>m_iNrOfLights)
-		max=m_iNrOfLights;
-
-	for(int i=0;i<max;i++)
+	m_iCurrentActiveLights = m_kSorted.size();
+	if(m_iCurrentActiveLights > m_iNrOfLights)
+		m_iCurrentActiveLights = m_iNrOfLights;
+		
+	for(int i=0;i<m_iCurrentActiveLights;i++)
 	{
 		EnableLight(m_kSorted[i],i);
 		//cout<<"inte: "<<m_kSorted[i]->fIntensity<<endl;

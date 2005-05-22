@@ -68,36 +68,46 @@ bool GLSLProgram::Load(string  strFile)
 	//attach shaders to program
 	if(iVSID != NO_GLSLPROGRAM)
 	{
+		glGetError();
 		glAttachObjectARB(m_iProgramID, iVSID);
+		if(glGetError() != GL_NO_ERROR)
+		{
+			cout<<"error while attaching vertex program: "<<strVShader<<endl;
+		}
 	}
 	
 	if(iFSID != NO_GLSLPROGRAM)
 	{
+		glGetError();
 		glAttachObjectARB(m_iProgramID, iFSID);
+		if(glGetError() != GL_NO_ERROR)
+		{
+			cout<<"error while attaching fragment program: "<<iFSID<<endl;
+		}		
 	}
 
 	// Link The Program Object
-	glGetError();
 	glLinkProgramARB(m_iProgramID);
 	
-	
-	if(glGetError() != GL_NO_ERROR)
-	{
+	GLint iRet;
+	glGetObjectParameterivARB(m_iProgramID,GL_OBJECT_LINK_STATUS_ARB,&iRet);
+	if(iRet == GL_FALSE)
+	{	
+		cout<<"ERROR: While linking GLSL program: "<<strFile<<endl;		
+			
 		//get log
 		static char log[1024];
 		int iLogSize = 0;
 		glGetInfoLogARB(m_iProgramID,1024,&iLogSize,log);
 		
 		if(iLogSize != 0)
-		{
-			cout<<"ERROR: While linking program "<<strFile<<endl;
-			cout<<log<<endl;
-			
-			glDeleteObjectARB(m_iProgramID);
-			m_iProgramID = NO_GLSLPROGRAM;
-		}
+			cout<<log<<endl;			
+	
+		glDeleteObjectARB(m_iProgramID);
+		m_iProgramID = NO_GLSLPROGRAM;	
 	}
-
+	
+	
 	//remove shader objects
 	if(iVSID != NO_GLSLPROGRAM)
 		glDeleteObjectARB(iVSID);
@@ -106,9 +116,10 @@ bool GLSLProgram::Load(string  strFile)
 	
 	
 	if(m_iProgramID == NO_GLSLPROGRAM)
+	{
 		return false;
-		
-// 	cout<<"GLSL program created:"<<strFile<<" id "<<m_iProgramID<<endl;
+	}	
+//  	cout<<"GLSL program created:"<<strFile<<" id "<<m_iProgramID<<endl;
 	return true;
 }
 
@@ -139,20 +150,24 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 	//compile shader
 	glCompileShaderARB(iShaderID);	
 	
-	//get log
-	static char log[1024];
-	int iLogSize = 0;
-	glGetInfoLogARB(iShaderID,1024,&iLogSize,log);
-	
-	if(iLogSize != 0)
-	{
-		cout<<"ERROR: While compiling shader "<<strFile<<endl;
-		cout<<log<<endl;
+	GLint iRet;
+	glGetObjectParameterivARB(iShaderID,GL_OBJECT_COMPILE_STATUS_ARB,&iRet);
+	if(iRet == GL_FALSE)
+	{	
+		cout<<"ERROR: While compiling shader "<<strFile<<endl;			
 		
+		//get log
+		static char log[1024];
+		int iLogSize = 0;
+		glGetInfoLogARB(iShaderID,1024,&iLogSize,log);
+		
+		if(iLogSize != 0)
+			cout<<log<<endl;
+ 	
 		glDeleteObjectARB(iShaderID);
-		return NO_GLSLPROGRAM;
-	}
-	
+		return NO_GLSLPROGRAM; 	
+ 	}
+			
 	return iShaderID;
 }
 

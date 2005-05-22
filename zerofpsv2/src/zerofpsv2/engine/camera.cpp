@@ -335,12 +335,14 @@ void Camera::InitView()//int iWidth,int iHeight)
 		
 	//reset modelview matrix and setup the newone
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
-	m_pkZShaderSystem->MatrixIdentity();									
-	m_pkZShaderSystem->MatrixMult(m_kRotM);	
+ 	m_pkZShaderSystem->MatrixLoad(&m_kRotM);	
 	m_pkZShaderSystem->MatrixTranslate(-m_kPos);	 	
 
 	//save render position (camera position may change during renderpass)
 	m_kRenderPos = m_kPos;
+	
+	//set eye position in shadersystem
+	m_pkZShaderSystem->SetEyePosition(m_kRenderPos);
 	
 	//save modelview matrix for future use =)
 	m_pkZShaderSystem->MatrixSave(&m_kCamModelViewMatrix);
