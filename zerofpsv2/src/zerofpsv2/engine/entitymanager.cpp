@@ -434,7 +434,7 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 		m_iNormalUpdates += m_akPropertys.size();
 	
 	//update render propertys update counter	
-	if((iType & PROPERTY_TYPE_RENDER) || (iType & PROPERTY_TYPE_RENDER) )
+	if((iType & PROPERTY_TYPE_RENDER) || (iType & PROPERTY_TYPE_RENDER_NOSHADOW) )
 		m_iRenderUpdates += m_akPropertys.size();
 
 	//run update in all propertys
