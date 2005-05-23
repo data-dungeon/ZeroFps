@@ -187,6 +187,9 @@ void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial,bool bForceReload)
 				return;
 			}
 
+
+// 	cout<<"setting material: "<<pkMaterial->m_iID<<endl;
+			
 	//set corrent material
 	m_pkCurrentMaterial = pkMaterial;
 

@@ -395,7 +395,6 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 {
 	if(bUpdateList)
 	{
-	
 		m_iUpdateFlags = iType | iSide;
 		
 		//clear property  list
@@ -417,11 +416,9 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 				m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
 		}
 		
-		//logg stuff		
-		m_iNrOfActivePropertys = m_akPropertys.size();	
-
-		m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
-			GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
+		//crapp
+		//m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
+		//	GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 	
 		//sort all propertys
 		if(bSort)
@@ -432,18 +429,19 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 		}
 	}
 		
+	//update normal propertys update counter
+	if(iType & PROPERTY_TYPE_NORMAL)
+		m_iNormalUpdates += m_akPropertys.size();
 	
+	//update render propertys update counter	
+	if((iType & PROPERTY_TYPE_RENDER) || (iType & PROPERTY_TYPE_RENDER) )
+		m_iRenderUpdates += m_akPropertys.size();
+
 	//run update in all propertys
 	int iPropertys = m_akPropertys.size();
 	for(int i = 0;i<iPropertys;i++)
 		m_akPropertys[i]->Update();
 
-/*			
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++)
-	{ 
-		//cout<<(*it)->m_acName<<endl;
-		(*it)->Update();
-	}*/
 }
 
 bool EntityManager::IsUpdate(int iFlags)
@@ -1125,7 +1123,6 @@ char* EntityManager::GetPropertyTypeName(int iType)
 		case PROPERTY_TYPE_ALL: 		pkName = "PROPERTY_TYPE_ALL";	break;
 		case PROPERTY_TYPE_NORMAL: 		pkName = "PROPERTY_TYPE_NORMAL";	break;
 		case PROPERTY_TYPE_RENDER: 		pkName = "PROPERTY_TYPE_RENDER";	break;
-		case PROPERTY_TYPE_PHYSIC: 		pkName = "PROPERTY_TYPE_PHYSIC";	break;
 		}
 
 	return pkName;

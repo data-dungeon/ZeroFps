@@ -19,9 +19,8 @@ ZFResourceInfo::ZFResourceInfo()
 
 ZFResourceInfo::~ZFResourceInfo()
 {
-	if(m_pkResource) {
+	if(m_pkResource) 
 		delete m_pkResource;
-		}
 }
 
 // ZFResourceHandle ***********************************************************
@@ -60,9 +59,7 @@ ZFResourceHandle::~ZFResourceHandle()
 bool ZFResourceHandle::SetRes(const string& strName)
 {
 	FreeRes();
-//	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::SetRes %d to  %s\n", m_iHandleID, strName.c_str());
-//	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
-	m_strName = strName;
+
    m_pkResDB->GetResource(*this,strName);
 
 	if(m_iID == -1)
@@ -76,21 +73,12 @@ void ZFResourceHandle::FreeRes()
 	if(m_iID == -1)
 		return;
 
-//	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::FreeRes %d %s\n", m_iHandleID, m_strName.c_str());
 	m_pkResDB->FreeResource(*this);
 	m_iID = -1;
 	m_strName = "";
 	m_pkResource = NULL;
 }
 
-ZFResource* ZFResourceHandle::GetResourcePtr()
-{
-	if(m_iID == -1)
-		return NULL;
-	
-// 	return m_pkResDB->GetResourcePtr(*this);
-	return m_pkResource;
-}
 
 
 // ZFResourceDB ***********************************************************

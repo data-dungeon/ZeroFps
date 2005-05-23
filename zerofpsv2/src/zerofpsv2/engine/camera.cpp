@@ -256,7 +256,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
  	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
  	m_pkZShaderSystem->MatrixLoad(&m_kLightViewMatrix);
 	
-	
+
 	
 	m_kRenderPos = kLightPos;
 	m_kFrustum.GetFrustum(m_kLightProjMatrix,m_kLightViewMatrix);	
@@ -289,9 +289,12 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
+
 	
-	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
+	//save texture	
+	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);	
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+
 	//glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, 1024,1024,0);
 	
 	
@@ -749,7 +752,7 @@ void Camera::DrawWorld()
 	
 
 	
-	//shuld be render shadowmaps?		
+	//shuld we render shadowmaps?		
 	if((m_bShadowMap && m_pkZeroFps->GetShadowMap() && (m_iForceLighing != 0) ))
 	{	
 		//scene center (use entity pos if any)
@@ -769,9 +772,9 @@ void Camera::DrawWorld()
 
 		
 		//create shadow map	
-		//cout<<"pos:"<<kLightPos.x<<" "<<kLightPos.y<<" "<<kLightPos.z<<"   "<< kCenter.DistanceTo(kLightPos)<<endl;
 		m_iCurrentRenderMode = RENDER_SHADOWMAP;
 		MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
+
 				
 		//init tha damn view
 		InitView();	
@@ -779,22 +782,22 @@ void Camera::DrawWorld()
 				
 // 		if(m_pkZShaderSystem->SupportGLSLProgram())
 // 		{		
-// 			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
-// 			
-// 			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
-// 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#clean.frag.glsl");
-// 			
+// //  			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
+// // 			
+// // 			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
+// // 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#shadowmap.frag.glsl");
+// // 			
 // 			m_iCurrentRenderMode = RENDER_NORMAL;			
 // 			DrawShadowedScene();
 // 			
-// 			m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+// // 			m_pkZShaderSystem->UseDefaultGLSLProgram(false);
 // 		}
 // 		else
 // 		{
 		
 			//draw LIT light				
 			m_iCurrentRenderMode = RENDER_NORMAL;
- 			m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);		
+  			m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);		
 		
 		
 			//draw shadowed scene

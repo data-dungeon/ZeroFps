@@ -377,7 +377,9 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common","  Sim Time: %f",m_pkEntityManager->GetSimTime());		
 	DevPrintf("common","  Num Objects     : %d", m_pkEntityManager->GetNumOfEntitys());
 	DevPrintf("common","  NextEntityID    : %d", m_pkEntityManager->GetNextEntityID());
-	DevPrintf("common","  Active Propertys: %d",m_pkEntityManager->GetActivePropertys());		
+	DevPrintf("common","  Render Updates  : %d", m_pkEntityManager->GetRenderUpdates());		
+	DevPrintf("common","  Normal Updates  : %d", m_pkEntityManager->GetNormalUpdates());		
+	m_pkEntityManager->ResetUpdateCounters();
 	
 	DevPrintf("common","RESOURCEMAN:");
 	DevPrintf("common","  Res Size    : %d", m_pkResourceDB->GetResSizeInBytes());
@@ -738,7 +740,6 @@ void ZeroFps::MainLoop(void)
 
 	while(m_iState!=state_exit) 
 	{
-
 		// check if app is iconized
 		if(m_bAlwaysWork == false && !(SDL_GetAppState() & SDL_APPACTIVE))
 		{
@@ -747,7 +748,6 @@ void ZeroFps::MainLoop(void)
 		else
 		{
 			//current time
-// 			m_fEngineTime = GetTicks();
 			m_fEngineTime = float((SDL_GetTicks()/1000.0));
 			 			 
 			//check if application is minimized

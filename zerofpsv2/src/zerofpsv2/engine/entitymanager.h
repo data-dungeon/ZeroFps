@@ -100,7 +100,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		string					m_strLoadDirectory;		
 		
 		vector<Property*>		m_akPropertys;												///< List of Active Propertys.	
-		int						m_iNrOfActivePropertys;									///> Size of akProperty list.
+		int						m_iNormalUpdates;
+		int						m_iRenderUpdates;
 		
 		//entity stuff
 		map<int,Entity*>		m_akEntitys;									//hash map of entitys, for fast entity trough ID access				
@@ -226,7 +227,11 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		int	GetNextEntityID()		{	return m_iNextEntityID;				};
 		int	GetNumOfEntitys()		{	return int(m_akEntitys.size());	}
-		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
+		
+		int	GetNormalUpdates() 			{	return m_iNormalUpdates;	}
+		int	GetRenderUpdates() 			{	return m_iRenderUpdates;	}
+		void  ResetUpdateCounters()		{	m_iNormalUpdates = 0;
+														m_iRenderUpdates = 0;		}
 		
 		void 		GetAllEntitys(vector<Entity*> *pakEntity);
 		Entity*	GetEntityByType(const char* czType);

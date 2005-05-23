@@ -63,11 +63,11 @@ public:
 	ZFResourceHandle& operator=(const ZFResourceHandle& kOther);
 
 	bool SetRes(const string& strName);
-	string GetRes() 							{return m_strName;	};
+	string GetRes() 							{return m_strName;	}
 	void FreeRes();
-	bool IsValid()								{return m_iID != -1;	};
+	bool IsValid()								{return m_iID != -1;	}
 
-	ZFResource*	GetResourcePtr();
+	ZFResource*	GetResourcePtr() const	{return m_pkResource;}
 
 	friend class ZFResourceDB;
 };
