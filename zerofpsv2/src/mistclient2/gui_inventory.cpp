@@ -662,7 +662,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		if(pkWnd->GetSkin())
 			delete pkWnd->GetSkin();
 		
-		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd->GetName());	//krashar utan denna *gråta*
+		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd->GetName());
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
@@ -687,7 +687,12 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 			szItemName, text, m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 
-		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(/*pkNewSlot*/szItemName, vkItemList[i].m_strName, 50.0f);
+		string strToolTip = vkItemList[i].m_strName;
+
+		if(vkItemList[i].m_bIsContainer == true)
+			strToolTip += "\n(double click to open, left click to close)";
+
+		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(/*pkNewSlot*/szItemName, strToolTip, 50.0f);
 		
 		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
 
