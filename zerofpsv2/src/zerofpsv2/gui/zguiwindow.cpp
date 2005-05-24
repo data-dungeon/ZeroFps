@@ -751,7 +751,7 @@ const bool ZGuiWnd::IsVisible(bool bSearchParents)
 	   ZGuiWnd* pkParent = GetParent();
 
 	   if(pkParent)
-	   	return pkParent->IsVisible();
+		   	return pkParent->IsVisible();
    }
 	
 	return m_bVisible; 

@@ -14,6 +14,7 @@
 ZGuiToolTip::ZGuiToolTip(float fDisplayTime) : m_fDisplayTime(fDisplayTime)
 {
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
+	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkToolTipWnd = NULL;
 
 	m_pkLastToolTipWnd = NULL;
@@ -60,8 +61,13 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 
 	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
 	{
-		ZGuiWnd* pkWnd = m_vkWindowList[i].pkWnd;
+		ZGuiWnd* pkWnd = m_pkResMan->Wnd( m_vkWindowList[i].strWnd ); //m_vkWindowList[i].pkWnd;
 //		ZGuiWnd* pkParent = pkWnd->GetParent();
+
+		if(pkWnd == NULL)
+			continue;
+
+		m_pkResMan->Wnd( m_vkWindowList[i].strWnd );
 
 		if(pkWnd->IsVisible() )
 		{
@@ -168,13 +174,13 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 	m_iPrevCursorY = mouse_y;
 }
 
-void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText, float fLifeTimeInSec)
+void ZGuiToolTip::AddToolTip(/*ZGuiWnd* pkWnd*/string strWnd, string strText, float fLifeTimeInSec)
 {
-	if(pkWnd == NULL)
-		return;
+	//if(pkWnd == NULL)
+	//	return;
 
 	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
-		if(pkWnd == m_vkWindowList[i].pkWnd)
+		if(strWnd == m_vkWindowList[i].strWnd)
 		{
 			m_vkWindowList[i].strText = strText;
 			return;
@@ -182,7 +188,8 @@ void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText, float fLifeTimeInSe
 
 	TOOLTIP_INFO ttinfo;
 
-	ttinfo.pkWnd = pkWnd;
+	//ttinfo.pkWnd = pkWnd;
+	ttinfo.strWnd = strWnd;
 	ttinfo.strText = strText;
 	ttinfo.fLifeTimeInSec = fLifeTimeInSec;
 
@@ -202,12 +209,13 @@ void ZGuiToolTip::CloseAll()
 	m_fToolTipDisplayTime = 0.0f;
 }
 
-void ZGuiToolTip::RemoveToolTip(ZGuiWnd* pkWnd)
+void ZGuiToolTip::RemoveToolTip(/*ZGuiWnd* pkWnd*/string strWnd)
 {
 	vector<TOOLTIP_INFO>::iterator it = m_vkWindowList.begin();
 	for( ; it != m_vkWindowList.end(); it++ )
 	{
-		if((*it).pkWnd == pkWnd)
+		//if((*it).pkWnd == pkWnd)
+		if((*it).strWnd == strWnd)
 		{
 		/*	if(m_pkLastToolTipWnd == pkWnd)
 				m_pkLastToolTipWnd = NULL;*/

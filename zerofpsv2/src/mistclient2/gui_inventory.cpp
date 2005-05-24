@@ -687,7 +687,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 			szItemName, text, m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 
-		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(pkNewSlot, vkItemList[i].m_strName, 50.0f);
+		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(/*pkNewSlot*/szItemName, vkItemList[i].m_strName, 50.0f);
 		
 		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
 
@@ -731,7 +731,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 	{
 		ZGuiWnd* pkWnd = m_vkContainerItemList[i].pkWnd;
 		delete pkWnd->GetSkin();
-		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd);
+		g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(pkWnd->GetName());
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
 
@@ -759,7 +759,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		g_kMistClient.SetFont(szItemName, "small7", 255, 255, 255, 0);
 		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
-		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(pkNewSlot, vkItemList[i].m_strName, 50.0f);
+		g_kMistClient.m_pkGui->GetToolTip()->AddToolTip(/*pkNewSlot*/szItemName, vkItemList[i].m_strName, 50.0f);
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;

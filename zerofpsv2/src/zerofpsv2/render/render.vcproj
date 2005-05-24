@@ -104,7 +104,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="glee.lib  basic_debug.lib glu32.lib opengl32.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="engine.lib script_debug.lib glee.lib  basic_debug.lib glu32.lib opengl32.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\bin\render_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
