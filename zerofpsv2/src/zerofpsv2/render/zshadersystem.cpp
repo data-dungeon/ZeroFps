@@ -188,8 +188,6 @@ void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial,bool bForceReload)
 			}
 
 
-// 	cout<<"setting material: "<<pkMaterial->m_iID<<endl;
-			
 	//set corrent material
 	m_pkCurrentMaterial = pkMaterial;
 
@@ -250,7 +248,7 @@ void ZShaderSystem::SetupArrayClientStates()
 
 void ZShaderSystem::SetupPass(int iPass)
 {
-	if(m_pkCurrentMaterial->m_kPasses.size() < (iPass + 1))
+	if(m_pkCurrentMaterial->m_kPasses.size() <= iPass)
 		return;
 		
 	m_iGLupdates++;
@@ -751,7 +749,7 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 
 void ZShaderSystem::SetupTUClientStates(const int& iPass)
 {
-	if(m_pkCurrentMaterial->m_kPasses.size() < (iPass + 1))
+	if(m_pkCurrentMaterial->m_kPasses.size() <= iPass)
 		return;
 		
 	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->m_kPasses[iPass];	

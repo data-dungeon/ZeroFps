@@ -52,43 +52,42 @@ P_Mad::P_Mad()
 
 void P_Mad::Update()
 {
-	Mad_Core* pkCore = static_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
-		
-		
-// TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
-// find lowpoly mesh, if exist
+	
 
-// and MOVE to somewhere else..shouldn't need to be every update.. = ugly
-	if (pkCore->NumOfMeshes() > 1)
-		m_iCollisionMeshID = 1;
-	else
-		m_iCollisionMeshID = 0;
-/*	
-	for (int i = 0; i < pkCore->NumOfMeshes(); i++)
-	{
-		if ( strcmp(pkCore->GetMeshByID(i)->m_acName, "lowpoly") == 0 )
-			m_iCollisionMeshID = i;
-	}
-*/	
-	 
+
 	//if no rendering is done, update animation in normal updates
-	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) && ( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ) )
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
-		DoAnimationUpdate();
+		// TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
+		// find lowpoly mesh, if exist
+		if (pkCore->NumOfMeshes() > 1)
+			m_iCollisionMeshID = 1;
+		else
+			m_iCollisionMeshID = 0;
+	
+		//update animations if no render is enabled
+		if(( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ))
+		{
+			DoAnimationUpdate();
+		}
 	}
+	
+
 
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
- 		//StartProfileTimer("r___mad");				
+		static Vector3 kPos;
+		kPos = m_pkEntity->GetIWorldPosV();
 				
 		DoAnimationUpdate();
 		
 		
 		//Cull against sphere
-		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
+		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(kPos,GetRadius()))
 		{
  			//StopProfileTimer("r___mad");
 			return;
@@ -101,16 +100,13 @@ void P_Mad::Update()
 		//passed sphere, do AABB test
 		if(m_bHaveAABB)
 		{
+			//have up to date AABB?			
 			if(GetCurrentAnimation() == MAD_NOANIMINDEX &&
 				m_fScale == m_fOldScale &&
 				m_kLastRot == kRot)		
 			{
-				//have up to date AABB
-				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + m_pkEntity->GetIWorldPosV(),m_AABBMax + m_pkEntity->GetIWorldPosV()))
-				{
- 					//StopProfileTimer("r___mad");
+				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + kPos,m_AABBMax + kPos))
 					return;
-				}								
 			}
 			else
 			{
@@ -151,13 +147,15 @@ void P_Mad::Update()
 			}
 			
 			//update lighting
-			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());						
+			m_pkLight->Update(&m_kLightProfile,kPos);						
 		
 			m_pkZShaderSystem->MatrixPush();
-			
-				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
+							
+				m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
 				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 				m_pkZShaderSystem->MatrixScale(m_fScale);									
+				
+				//draw mad
 				Draw_All(m_pkZeroFps->m_iMadDraw);
 				
 			m_pkZShaderSystem->MatrixPop();
@@ -169,23 +167,19 @@ void P_Mad::Update()
 				
 				if(m_bHaveAABB)
 				{
-					m_pkRender->DrawAABB(m_AABBMin + m_pkEntity->GetIWorldPosV(),m_AABBMax + m_pkEntity->GetIWorldPosV(),Vector3(1,1,1));				
+					m_pkRender->DrawAABB(m_AABBMin + kPos,m_AABBMax + kPos,Vector3(1,1,1));				
 				}
 				else
 				{
-					m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);					
+					m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);					
 					m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);				
 				}
 				
-			m_pkZShaderSystem->MatrixPop();
-			
-			
+			m_pkZShaderSystem->MatrixPop();						
 		}
 				
 		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
-				
-// 		StopProfileTimer("r___mad");			
 	}	
 }
 
@@ -242,7 +236,6 @@ void P_Mad::DoAnimationUpdate()
 {
 	if(m_iLastAnimationUpdateFrame != m_pkZeroFps->GetCurrentFrame())
 	{
-//    		float fCurrentTime = m_pkEntityManager->GetSimTime();		
   		float fCurrentTime = m_pkZeroFps->GetEngineTime();
 				
 		UpdateAnimation(fCurrentTime - m_fLastAnimationUpdateTime);

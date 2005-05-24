@@ -31,6 +31,7 @@ class RENDER_API LightProfile
 		float		m_fLastTime;	
 		int		m_aiLights[8];		
 		
+		
 	LightProfile()
 	{
 		m_iLastVersion =	-1;
@@ -123,7 +124,7 @@ class RENDER_API Light : public ZFSubSystem
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update(Vector3 kPos);
-		void Update(LightProfile* pkLightProfile,Vector3 kRefPos);
+		void Update(LightProfile* pkLightProfile,const Vector3& kRefPos);
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { } 
 
 		void SetLighting(bool bOn);

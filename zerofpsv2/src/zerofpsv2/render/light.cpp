@@ -134,7 +134,7 @@ bool comp(LightSource* x, LightSource* y)
 }
 
 
-void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
+void Light::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 {
 	//disable all lights
 	TurnOffAll();
@@ -152,14 +152,13 @@ void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 		bUpdate = true;
 
 	if(fCurrentTime - pkLightProfile->m_fLastTime > 1)
-		bUpdate = true;	
+		bUpdate = true;
 		
 	//want to update current active lights
 	if(bUpdate)
 	{	
 		pkLightProfile->m_iLastVersion = m_iVersion;
 		pkLightProfile->m_fLastTime = fCurrentTime;
-	
 	
 		vector<LightSource*> kSorted;
 	
