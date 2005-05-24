@@ -487,6 +487,26 @@ void ZeroFps::UpdateGuiInput()
 	if(!m_pkGui->IsActive())
 		return;
 
+	//update gui
+	int mx, my;
+	if(m_pkGui->m_bUseHardwareMouse == true)
+		m_pkGuiInputHandle->SDLMouseXY(mx,my);
+	else
+	{
+		float x,y;
+		m_pkGuiInputHandle->MouseXY(x,y);
+		mx = x;
+		my = y;
+	}
+		
+	m_pkGui->UpdateMouse(mx, my,
+		m_pkGuiInputHandle->Pressed(MOUSELEFT),
+		m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
+		GetEngineTime());			
+		
+		
+		
 	vector<ZGui::KEY_INFO> vkKeyInfo;
 
 	while(m_pkGuiInputHandle->SizeOfQueue() > 0)
