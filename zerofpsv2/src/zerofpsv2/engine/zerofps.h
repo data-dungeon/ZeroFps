@@ -192,6 +192,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		void UpdateDevPages();
 		void UpdateGuiInput();
+		void UpdateMouse();
 		
 		void SetApp(void);
 		void Swap(void);											//	swap gl buffers		

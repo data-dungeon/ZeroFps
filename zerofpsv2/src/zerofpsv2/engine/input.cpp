@@ -289,7 +289,7 @@ void Input::Update(void)
 {
 
 	UpdateInputHandles();
-	UpdateMousePos();
+	// 	UpdateMousePos();
 	
 	//release mousewheel buttons (to make sure mousewheels are pressed atleast one frame
 	if(m_bHaveReleasedMWUP)

@@ -132,7 +132,6 @@ class ENGINE_API Input : public ZFSubSystem {
 		
 		
 		void AddQueuedKey(BasicKey* pkKey,bool bPressed);		
-		void UpdateMousePos();		
 		void UpdateInputHandles();
 
 		
@@ -161,6 +160,7 @@ public:
 		bool ShutDown()		{return true;};
 		bool IsValid()			{return true;};
 			
+		void UpdateMousePos();		
 		void Update(void);
 
 		void ShowCursor(bool bShow);				

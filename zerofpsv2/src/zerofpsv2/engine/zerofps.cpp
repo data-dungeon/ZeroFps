@@ -455,28 +455,37 @@ void ZeroFps::UpdateDevPages()
 	
 }
 
+void ZeroFps::UpdateMouse()
+{
+	//update mouse position 
+	m_pkInput->UpdateMousePos();
+
+	if(m_pkGui->IsActive())
+	{
+		//update gui
+		int mx, my;
+		if(m_pkGui->m_bUseHardwareMouse == true)
+			m_pkGuiInputHandle->SDLMouseXY(mx,my);
+		else
+		{
+			float x,y;
+			m_pkGuiInputHandle->MouseXY(x,y);
+			mx = x;
+			my = y;
+		}
+			
+		m_pkGui->UpdateMouse(mx, my,
+			m_pkGuiInputHandle->Pressed(MOUSELEFT),
+			m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+			m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
+			GetEngineTime());	
+	}
+}
+
 void ZeroFps::UpdateGuiInput()
 {
 	if(!m_pkGui->IsActive())
 		return;
-
-	// Updata Gui input
-	int mx, my;
-	if(m_pkGui->m_bUseHardwareMouse == true)
-		m_pkGuiInputHandle->SDLMouseXY(mx,my);
-	else
-	{
-		float x,y;
-		m_pkGuiInputHandle->MouseXY(x,y);
-		mx = x;
-		my = y;
-	}
-		
-	m_pkGui->UpdateMouse(mx, my,
-		m_pkGuiInputHandle->Pressed(MOUSELEFT),
-		m_pkGuiInputHandle->Pressed(MOUSERIGHT),
-		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
-		GetEngineTime());
 
 	vector<ZGui::KEY_INFO> vkKeyInfo;
 
@@ -511,7 +520,7 @@ void ZeroFps::Run_EngineShell()
 	m_pkApp->OnIdle();	
 	
 	// Update Local Input.
-	m_pkInput->Update();
+ 	m_pkInput->Update();
 
 	// backquote Always handle console.
 	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
@@ -526,11 +535,7 @@ void ZeroFps::Run_EngineShell()
 	}
    else
    {
-// 		StartProfileTimer("s__input");	
-	
-			UpdateGuiInput();
-
-// 		StopProfileTimer("s__input");	
+		UpdateGuiInput();
    }
 
 	//update delete
@@ -715,6 +720,9 @@ void ZeroFps::Draw_EngineShell()
 	m_pkApp->OnHud();
 			
 
+	//update mouse position just before doing gui render to minimize mouse latency
+	UpdateMouse();
+	
 	//render gui
 	if(!m_bMinimized)	
 		m_pkGui->Render((int)m_fAvrageFps);
