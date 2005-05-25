@@ -76,10 +76,6 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 		}
 		else
 		{
-//				av nån anledning så försvinner knapparna när man stänger inventory fönstret =/ om detta är på		
-// 			if(m_kSkills[iPos].m_pkButton)
-// 				g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(m_kSkills[iPos].m_pkButton);
-
 			if(m_kSkills[iPos].m_pkButton)
 				g_kMistClient.m_pkGui->GetToolTip()->RemoveToolTip(m_kSkills[iPos].m_pkButton->GetName());
 

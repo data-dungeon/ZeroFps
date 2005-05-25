@@ -756,10 +756,15 @@ void Camera::DrawWorld()
 	if((m_bShadowMap && m_pkZeroFps->GetShadowMap() && (m_iForceLighing != 0) ))
 	{	
 		//scene center (use entity pos if any)
-		Matrix4 kTrans = m_kRotM;
+		static Matrix4 kTrans;
+		static Vector3 kCenter = Vector3(0,0,0);
+		kTrans = m_kRotM;
 		kTrans.Transponse();	
-		Vector3 kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;			
-			
+
+// 		if(m_pkZeroFps->GetShadowMapFrag())
+// 			kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;
+//  		else
+ 			kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;						
 						
 		//setup light
 		LightSource* pkLight= m_pkLight->GetFirstDirectionalLight();		
@@ -780,20 +785,21 @@ void Camera::DrawWorld()
 		InitView();	
 
 				
-// 		if(m_pkZShaderSystem->SupportGLSLProgram())
-// 		{		
-// //  			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
-// // 			
-// // 			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
-// // 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#shadowmap.frag.glsl");
-// // 			
-// 			m_iCurrentRenderMode = RENDER_NORMAL;			
-// 			DrawShadowedScene();
-// 			
-// // 			m_pkZShaderSystem->UseDefaultGLSLProgram(false);
-// 		}
-// 		else
-// 		{
+		if(m_pkZShaderSystem->SupportGLSLProgram() && m_pkZeroFps->GetShadowMapFrag())
+		{		
+ 			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
+			
+			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
+//  				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("shadowmap.vert#shadowmap.frag.glsl");
+					m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#shadowmap.frag.glsl");
+			
+			m_iCurrentRenderMode = RENDER_NORMAL;			
+			DrawShadowedScene();
+			
+			m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+		} 
+		else
+		{
 		
 			//draw LIT light				
 			m_iCurrentRenderMode = RENDER_NORMAL;
@@ -822,7 +828,7 @@ void Camera::DrawWorld()
 				DrawShadowedScene();
 				m_pkLight->SetAmbientOnly(false);				
 			}
-// 		}		
+		}		
 			
 		//Draw unshadows scene
  		m_iCurrentRenderMode = RENDER_NOSHADOWED;
