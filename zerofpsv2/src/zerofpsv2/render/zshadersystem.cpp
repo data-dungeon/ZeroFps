@@ -788,6 +788,11 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 					glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer0);						
 				}
+				else
+				{
+					cout<<"ERROR: trying to use UV array 0 ,but pointer is missing"<<endl;
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				}
 				break;						
 			case CORDS_FROM_ARRAY_1:
 				if(m_bTexturePointer1)
@@ -795,12 +800,22 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 					glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer1);						
 				}
+				else
+				{
+					cout<<"ERROR: trying to use UV array 1 ,but pointer is missing"<<endl;
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				}				
 				break;			
 			case CORDS_FROM_ARRAY_2:
 				if(m_bTexturePointer2)
 				{			
 					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 					glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer2);						
+				}
+				else
+				{
+					cout<<"ERROR: trying to use UV array 2 ,but pointer is missing"<<endl;
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 				}
 				break;			
 			case CORDS_FROM_ARRAY_3:
@@ -809,6 +824,11 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 					glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 					glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer3);						
 				}					
+				else
+				{
+					cout<<"ERROR: trying to use UV array 3 ,but pointer is missing"<<endl;
+					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+				}
 				break;			
 			
 			default:

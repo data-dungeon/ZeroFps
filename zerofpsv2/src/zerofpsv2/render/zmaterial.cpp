@@ -19,9 +19,9 @@ ZMaterialSettings::ZMaterialSettings()
 	m_pkSLP = new ZFResourceHandle();
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
-	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
-	m_iTUTexCords[2] = CORDS_FROM_ARRAY_2;	
-	m_iTUTexCords[3] = CORDS_FROM_ARRAY_3;	
+	m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;	
+	m_iTUTexCords[2] = CORDS_FROM_ARRAY_0;	
+	m_iTUTexCords[3] = CORDS_FROM_ARRAY_0;	
 	
 	m_iTUTexEnvMode[0] = TEXENV_MODE_MODULATE;
 	m_iTUTexEnvMode[1] = TEXENV_MODE_MODULATE;
