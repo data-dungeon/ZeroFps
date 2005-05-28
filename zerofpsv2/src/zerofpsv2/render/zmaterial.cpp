@@ -213,180 +213,202 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 	//GLSL program
 	string strSLVS;
 	string strSLFS;
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"slvertexshader",ctemp))
+	if(PassGetLuaChar("slvertexshader",ctemp))
 		strSLVS = ctemp;
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"slfragmentshader",ctemp))
+	if(PassGetLuaChar("slfragmentshader",ctemp))
 		strSLFS = ctemp;
 	if(!strSLVS.empty() || !strSLFS.empty())
 		newpass->m_pkSLP->SetRes(strSLVS+string("#")+strSLFS+string(".glsl"));
 
 	// ARB vertex program
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"vertexprogram",ctemp))
+	if(PassGetLuaChar("vertexprogram",ctemp))
 		newpass->m_pkVP->SetRes(ctemp);		
 	// ARB fragment program	
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"fragmentprogram",ctemp))
+	if(PassGetLuaChar("fragmentprogram",ctemp))
 		newpass->m_pkFP->SetRes(ctemp);
 	
 			
 	//textures
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texture0",ctemp))
+	if(PassGetLuaChar("texture0",ctemp))
 		newpass->m_kTUs[0]->SetRes(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texture1",ctemp))
+	if(PassGetLuaChar("texture1",ctemp))
 		newpass->m_kTUs[1]->SetRes(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texture2",ctemp))
+	if(PassGetLuaChar("texture2",ctemp))
 		newpass->m_kTUs[2]->SetRes(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texture3",ctemp))
+	if(PassGetLuaChar("texture3",ctemp))
 		newpass->m_kTUs[3]->SetRes(ctemp);
 
 	//texutre cordinats
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texcords0",ctemp))
+	if(PassGetLuaChar("texcords0",ctemp))
 		newpass->m_iTUTexCords[0] = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texcords1",ctemp))
+	if(PassGetLuaChar("texcords1",ctemp))
 		newpass->m_iTUTexCords[1] = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texcords2",ctemp))
+	if(PassGetLuaChar("texcords2",ctemp))
 		newpass->m_iTUTexCords[2] = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texcords3",ctemp))
+	if(PassGetLuaChar("texcords3",ctemp))
 		newpass->m_iTUTexCords[3] = GetTranslateEnum(ctemp);
 
 	
 	//texutre enviroment mode
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texenvmode0",ctemp))
+	if(PassGetLuaChar("texenvmode0",ctemp))
 		newpass->m_iTUTexEnvMode[0] = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texenvmode1",ctemp))
+	if(PassGetLuaChar("texenvmode1",ctemp))
 		newpass->m_iTUTexEnvMode[1] = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texenvmode2",ctemp))
+	if(PassGetLuaChar("texenvmode2",ctemp))
 		newpass->m_iTUTexEnvMode[2] = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texenvmode3",ctemp))
+	if(PassGetLuaChar("texenvmode3",ctemp))
 		newpass->m_iTUTexEnvMode[3] = GetTranslateEnum(ctemp);
 
 		
 	//texture generation scale
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texgenscale0",dtemp))
+	if(PassGetLuaDouble("texgenscale0",dtemp))
 		newpass->m_fTUTexGenScale[0] = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texgenscale1",dtemp))
+	if(PassGetLuaDouble("texgenscale1",dtemp))
 		newpass->m_fTUTexGenScale[1] = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texgenscale2",dtemp))
+	if(PassGetLuaDouble("texgenscale2",dtemp))
 		newpass->m_fTUTexGenScale[2] = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"texgenscale3",dtemp))
+	if(PassGetLuaDouble("texgenscale3",dtemp))
 		newpass->m_fTUTexGenScale[3] = float(dtemp);
 
 		
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"polygonmodefront",ctemp))
+	if(PassGetLuaChar("polygonmodefront",ctemp))
 		newpass->m_iPolygonModeFront = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"polygonmodeback",ctemp))
+	if(PassGetLuaChar("polygonmodeback",ctemp))
 		newpass->m_iPolygonModeBack = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"depthfunc",ctemp))
+	if(PassGetLuaChar("depthfunc",ctemp))
 		newpass->m_iDepthFunc = GetTranslateEnum(ctemp);
 
 	//lots a bools
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"fog",ctemp))
+	if(PassGetLuaChar("fog",ctemp))
 		newpass->m_bFog = bool(GetTranslateEnum(ctemp));
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"colormask",ctemp))
+	if(PassGetLuaChar("colormask",ctemp))
 		newpass->m_bColorMask = bool(GetTranslateEnum(ctemp));
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"depthmask",ctemp))
+	if(PassGetLuaChar("depthmask",ctemp))
 		newpass->m_bDepthMask = bool(GetTranslateEnum(ctemp));		
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"depthtest",ctemp))
+	if(PassGetLuaChar("depthtest",ctemp))
 		newpass->m_bDepthTest = bool(GetTranslateEnum(ctemp));
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stenciltest",ctemp))
+	if(PassGetLuaChar("stenciltest",ctemp))
 		newpass->m_bStencilTest = bool(GetTranslateEnum(ctemp));		
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"lighting",ctemp))
+	if(PassGetLuaChar("lighting",ctemp))
 		newpass->m_bLighting = bool(GetTranslateEnum(ctemp));
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"cullface",ctemp))
+	if(PassGetLuaChar("cullface",ctemp))
 		newpass->m_iCullFace = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"alphatest",ctemp))
+	if(PassGetLuaChar("alphatest",ctemp))
 		newpass->m_bAlphaTest = bool(GetTranslateEnum(ctemp));		
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"colormaterial",ctemp))
+	if(PassGetLuaChar("colormaterial",ctemp))
 		newpass->m_bColorMaterial = bool(GetTranslateEnum(ctemp));		
 				
 		
 		
 	//blending
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"blend",ctemp))
+	if(PassGetLuaChar("blend",ctemp))
 		newpass->m_bBlend = bool(GetTranslateEnum(ctemp));
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"blendsrc",ctemp))
+	if(PassGetLuaChar("blendsrc",ctemp))
 		newpass->m_iBlendSrc = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"blenddst",ctemp))
+	if(PassGetLuaChar("blenddst",ctemp))
 		newpass->m_iBlendDst = GetTranslateEnum(ctemp);
 
 		
 	//stencil stuff
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stencilop-fail",ctemp))
+	if(PassGetLuaChar("stencilop-fail",ctemp))
 		newpass->m_iStencilOpFail = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stencilop-zfail",ctemp))
+	if(PassGetLuaChar("stencilop-zfail",ctemp))
 		newpass->m_iStencilOpZFail = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stencilop-zpass",ctemp))
+	if(PassGetLuaChar("stencilop-zpass",ctemp))
 		newpass->m_iStencilOpZPass = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stencilfunc",ctemp))
+	if(PassGetLuaChar("stencilfunc",ctemp))
 		newpass->m_iStencilFunc = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stencilfunc-ref",ctemp))
+	if(PassGetLuaChar("stencilfunc-ref",ctemp))
 		newpass->m_iStencilFuncRef = GetTranslateEnum(ctemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"stencilfunc-mask",ctemp))
+	if(PassGetLuaChar("stencilfunc-mask",ctemp))
 		newpass->m_iStencilFuncMask = GetTranslateEnum(ctemp);
 
 
 	//line width
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"linewidth",dtemp))
+	if(PassGetLuaDouble("linewidth",dtemp))
 		newpass->m_fLineWidth = float(dtemp);
 	
 
 	//get vertexcolor R G B A values
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"vertexcolor-r",dtemp))
+	if(PassGetLuaDouble("vertexcolor-r",dtemp))
 		newpass->m_kVertexColor.x = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"vertexcolor-g",dtemp))
+	if(PassGetLuaDouble("vertexcolor-g",dtemp))
 		newpass->m_kVertexColor.y = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"vertexcolor-b",dtemp))
+	if(PassGetLuaDouble("vertexcolor-b",dtemp))
 		newpass->m_kVertexColor.z = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"vertexcolor-a",dtemp))
+	if(PassGetLuaDouble("vertexcolor-a",dtemp))
 		newpass->m_kVertexColor.w = float(dtemp);
 
 	
 	//material settings
 	//ambient
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matambient-r",dtemp))
+	if(PassGetLuaDouble("matambient-r",dtemp))
 		newpass->m_kMatAmbient.x = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matambient-g",dtemp))
+	if(PassGetLuaDouble("matambient-g",dtemp))
 		newpass->m_kMatAmbient.y = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matambient-b",dtemp))
+	if(PassGetLuaDouble("matambient-b",dtemp))
 		newpass->m_kMatAmbient.z = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matambient-a",dtemp))
+	if(PassGetLuaDouble("matambient-a",dtemp))
 		newpass->m_kMatAmbient.w = float(dtemp);
 	
 	//diffuse
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matdiffuse-r",dtemp))
+	if(PassGetLuaDouble("matdiffuse-r",dtemp))
 		newpass->m_kMatDiffuse.x = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matdiffuse-g",dtemp))
+	if(PassGetLuaDouble("matdiffuse-g",dtemp))
 		newpass->m_kMatDiffuse.y = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matdiffuse-b",dtemp))
+	if(PassGetLuaDouble("matdiffuse-b",dtemp))
 		newpass->m_kMatDiffuse.z = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matdiffuse-a",dtemp))
+	if(PassGetLuaDouble("matdiffuse-a",dtemp))
 		newpass->m_kMatDiffuse.w = float(dtemp);
 
 	
 	//specular
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matspecular-r",dtemp))
+	if(PassGetLuaDouble("matspecular-r",dtemp))
 		newpass->m_kMatSpecular.x = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matspecular-g",dtemp))
+	if(PassGetLuaDouble("matspecular-g",dtemp))
 		newpass->m_kMatSpecular.y = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matspecular-b",dtemp))
+	if(PassGetLuaDouble("matspecular-b",dtemp))
 		newpass->m_kMatSpecular.z = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matspecular-a",dtemp))
+	if(PassGetLuaDouble("matspecular-a",dtemp))
 		newpass->m_kMatSpecular.w = float(dtemp);
 	
 	//emission
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matemission-r",dtemp))
+	if(PassGetLuaDouble("matemission-r",dtemp))
 		newpass->m_kMatEmission.x = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matemission-g",dtemp))
+	if(PassGetLuaDouble("matemission-g",dtemp))
 		newpass->m_kMatEmission.y = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matemission-b",dtemp))
+	if(PassGetLuaDouble("matemission-b",dtemp))
 		newpass->m_kMatEmission.z = float(dtemp);
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matemission-a",dtemp))
+	if(PassGetLuaDouble("matemission-a",dtemp))
 		newpass->m_kMatEmission.w = float(dtemp);
 
 				
 	//shininess
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,"matshininess",dtemp))
+	if(PassGetLuaDouble("matshininess",dtemp))
 		newpass->m_fShininess = float(dtemp);
 		
+}
+
+bool ZMaterial::PassGetLuaDouble(char* czName,double& dTemp)
+{
+	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,czName,dTemp))
+	{
+		m_pkScript->RemoveGlobal(m_pkMaterialScript->m_pkLuaState,czName);
+		return true;
+	}
+	
+	return false;
+}
+
+bool ZMaterial::PassGetLuaChar(char* czName,char* cTemp)
+{
+	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,czName,cTemp))
+	{
+		m_pkScript->RemoveGlobal(m_pkMaterialScript->m_pkLuaState,czName);
+		return true;
+	}
+	
+	return false;
 }
 
 bool ZMaterial::LoadIniMaterial(const char* acFile)

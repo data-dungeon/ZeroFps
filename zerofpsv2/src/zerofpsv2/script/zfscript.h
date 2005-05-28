@@ -158,6 +158,8 @@ public:
 	bool GetGlobal(lua_State* state, char* szTable, char* szVar, char* data);
 	bool GetGlobal(lua_State* state, char* szTable, char* szVar, double& data);
 	bool GetGlobal(lua_State* state, char* szName, char* data);
+	
+	bool RemoveGlobal(lua_State* state,const char* szName);
 
 	int GetNumArgs(lua_State* state);
 	bool GetArg(lua_State* state, int iNumber, void* data);

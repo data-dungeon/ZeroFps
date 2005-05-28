@@ -335,6 +335,19 @@ bool ZFScriptSystem::GetGlobal(lua_State* state, char* szName, double& data)
 	return false;
 }
 
+bool ZFScriptSystem::RemoveGlobal(lua_State* state,const char* szName)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_pushstring(state,szName);
+	lua_pushnil(state);
+	lua_settable(state,LUA_GLOBALSINDEX);
+
+	return false;
+
+}
+
 bool ZFScriptSystem::GetGlobal(lua_State* state, char* szName, char* data)
 {
 	if(state == NULL)

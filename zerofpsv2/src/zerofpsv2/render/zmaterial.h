@@ -113,6 +113,8 @@ class RENDER_API ZMaterial : public ZFResource
 		int GetTranslateEnum(string strEnum);
 		void SetupEnums();
 		
+		bool PassGetLuaDouble(char* czName,double& dTemp);
+		bool PassGetLuaChar(char* czName,char* cTemp);
 		
 	public:		
 		//global material settings
