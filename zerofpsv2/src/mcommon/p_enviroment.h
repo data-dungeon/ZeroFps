@@ -58,9 +58,16 @@ class MCOMMON_API P_Enviroment: public Property {
 		float				m_fPosOfPart;		//0-1 interpolated factor, position in part, 
 		
 		
+		//rain stuff
+		ZMaterial*			m_pkRainSplashMat;
+		vector<Vector3> 	m_kDrops;
+		
 		void UpdateEnviroment();		
 		void DrawSky();
 		void DrawSun();
+		void DrawRainSplashes();
+		
+		void MakeRainSplashes();
 		
 		void UpdateTime();
 								

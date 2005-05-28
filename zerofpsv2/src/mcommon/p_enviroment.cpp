@@ -43,8 +43,17 @@ P_Enviroment::P_Enviroment()
 	m_fPosOfDay = 						0;
 	m_fPosOfPart =						0;
 	
-	
-	
+	m_pkRainSplashMat = new ZMaterial;
+		m_pkRainSplashMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/rainsplash.tga");
+		m_pkRainSplashMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		m_pkRainSplashMat->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;		
+		m_pkRainSplashMat->GetPass(0)->m_bLighting = 			true;			
+		m_pkRainSplashMat->GetPass(0)->m_bFog = 					true;		
+		m_pkRainSplashMat->GetPass(0)->m_bDepthTest = 			true;		
+		m_pkRainSplashMat->GetPass(0)->m_bBlend = 				true;		
+		m_pkRainSplashMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
+		m_pkRainSplashMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
+
 	m_pkSunMat = new ZMaterial;
 		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sun.tga");
 		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
@@ -68,6 +77,8 @@ P_Enviroment::P_Enviroment()
 		m_pkSunFlareMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
 		m_pkSunFlareMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;	
 	
+		
+		
 	/*
 	if(!m_pkEnviroment)
 	{
@@ -112,17 +123,25 @@ void P_Enviroment::Update()
 	if(m_bEnabled)
 	{
 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NORMAL)
-		{
-		
+		{		
 			UpdateTime();
+			
+			
 			
 			DrawSky();
 			UpdateEnviroment();
 		}
 
-		if(m_kCurrentEnvSetting.m_bSunFlare)
-		{
-			if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWED)		
+		
+		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWED)		
+		{		
+			if(m_kCurrentEnvSetting.m_iRain != 0)
+			{
+				MakeRainSplashes();
+				DrawRainSplashes();
+			}
+		
+			if(m_kCurrentEnvSetting.m_bSunFlare)
 				DrawSun();
 		}
 	}
@@ -769,6 +788,132 @@ void P_Enviroment::DrawSun()
 		//m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
 	}
 }
+
+
+void P_Enviroment::MakeRainSplashes()
+{
+// 	static float fTime = 0;
+// 	if(m_pkZeroFps->GetEngineTime() > fTime +0.1)
+// 	{
+// 		fTime = m_pkZeroFps->GetEngineTime();
+
+
+		vector<Entity*> kObjects;		
+		m_pkEntityManager->GetAllEntitys(&kObjects);
+				
+		static Vector3 kCenterPos,kDropStart,kPos;
+		kCenterPos = m_pkEntity->GetWorldPosV(); 
+
+							
+		static int iLastAmount = 0;
+		if(iLastAmount !=  m_kCurrentEnvSetting.m_iRain)
+		{
+			m_kDrops.clear();
+			
+			for(int j = 0;j < m_kCurrentEnvSetting.m_iRain;j++)
+			{
+				kDropStart = kCenterPos + Vector3(  Randomf(12)-6.0,20,Randomf(12)-6.0);
+				
+				float fTop = -999999;
+				for(unsigned int i = 0;i < kObjects.size() ;i++)
+				{
+					if(kObjects[i]->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV()) > 20)
+						continue;
+				
+					if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+					{	
+						if(pkMad->TestLine(kDropStart,Vector3(0,-1,0)))
+						{	
+							if(pkMad->GetLastColPos().y > fTop)
+							{
+								fTop = pkMad->GetLastColPos().y;
+								kPos = pkMad->GetLastColPos();
+							}
+						}
+					}
+				}
+				
+				if(fTop != -999999)
+				{
+					kPos.y += 0.1;
+					m_kDrops.push_back(kPos);	
+				}		
+			}
+		}
+		else
+		{
+			int iAmount = 10;
+			for(int j = 0;j < iAmount;j++)
+			{
+			
+				kDropStart = kCenterPos + Vector3(  Randomf(12)-6.0,20,Randomf(12)-6.0);
+				
+				float fTop = -999999;
+				for(unsigned int i = 0;i < kObjects.size() ;i++)
+				{
+					if(kObjects[i]->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV()) > 20)
+						continue;
+				
+					if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+					{	
+						if(pkMad->TestLine(kDropStart,Vector3(0,-1,0)))
+						{	
+							if(pkMad->GetLastColPos().y > fTop)
+							{
+								fTop = pkMad->GetLastColPos().y;
+								kPos = pkMad->GetLastColPos();
+							}
+						}
+					}
+				}
+				
+				if(fTop != -999999)
+				{
+					
+					kPos.y += 0.1;
+					
+					
+					m_kDrops[Randomi(m_kDrops.size())] = kPos;
+
+				}		
+			}		
+		}
+		
+		iLastAmount =  m_kCurrentEnvSetting.m_iRain;
+// 	}
+}
+
+
+
+void P_Enviroment::DrawRainSplashes()
+{
+	static Vector3 v1(-0.1,0,0.1);
+	static Vector3 v2( 0.1,0,0.1);
+	static Vector3 v3( 0.1,0,-0.1);
+	static Vector3 v4(-0.1,0,-0.1);
+
+	
+// 	cout<<"drops "<<m_kDrops.size()<<endl;
+	
+	m_pkZShaderSystem->BindMaterial(m_pkRainSplashMat);
+
+	m_pkZShaderSystem->SetNormal(Vector3(0,1,0));
+	m_pkZShaderSystem->ClearGeometry();
+		
+	for(unsigned int i = 0 ;i<m_kDrops.size();i++)
+	{
+		m_pkZShaderSystem->AddQuadV(	m_kDrops[i] + v1,
+ 												m_kDrops[i] + v2,
+ 												m_kDrops[i] + v3,
+ 												m_kDrops[i] + v4);
+		m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1));
+	}
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+	
+}
+
+
+
 
 /*
 	DrawSun();
