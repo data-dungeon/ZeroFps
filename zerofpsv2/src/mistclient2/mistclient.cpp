@@ -454,18 +454,16 @@ void MistClient::OnHud(void)
 			bLast = m_bDead;			
 			if(m_bDead)
 			{
+				m_pkCamera->SetBloomEnabled(false);
 				m_pkCamera->SetFSSEnabled(true);
 				m_pkCamera->SetFSSGLSLShader("#dead.frag");
 			}
 			else
 			{
+				m_pkCamera->SetFSSEnabled(false);	
+			
 			 	if(m_bBloom)
- 				{
- 					m_pkCamera->SetFSSEnabled(true);
- 					m_pkCamera->SetFSSGLSLShader("#bloom2.frag");
- 				}
- 				else
-					m_pkCamera->SetFSSEnabled(false);	
+ 					m_pkCamera->SetBloomEnabled(true); 					
 			}
 		}
 	}
@@ -1285,16 +1283,7 @@ void MistClient::UpdateCharacter()
 				pkCam->SetBone("headjoint1");
 				
  				if(m_bBloom)
- 				{
- 					m_pkCamera->SetFSSEnabled(true);
- 					m_pkCamera->SetFSSGLSLShader("#bloom2.frag");
- 				}
-//   				m_pkCamera->SetFSSGLSLShader("diffuse.vert#diffuse.frag");
-// 				
-// 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_bBlend = true;
-// 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_iBlendSrc = ONE_BLEND_SRC;
-// 				m_pkCamera->GetFSSMaterial()->GetPass(0)->m_iBlendDst = ONE_BLEND_DST;
-
+ 					m_pkCamera->SetBloomEnabled(true);
 			}			
 		}
 		

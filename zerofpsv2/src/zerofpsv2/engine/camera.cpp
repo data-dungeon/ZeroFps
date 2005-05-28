@@ -52,13 +52,13 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iCurrentRenderMode=RENDER_NONE;
 	
 	m_bFSSEnabled		=	false;
+	m_bBloomEnabled	=	false;
 	
 	//create fsstexture
   	m_iFSSTextureWidth = GetMinSize(m_pkRender->GetWidth());
  	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
   	//cout<<"size:"<<m_iFSSTextureWidth<<" "<<m_iFSSTextureHeight<<endl;
 	
-	m_iFSSTexture = -1;
 	glGenTextures(1, &m_iFSSTexture);
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
 	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_iFSSTextureWidth, m_iFSSTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -78,6 +78,31 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_pkFSSMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
 	m_pkFSSMaterial->GetPass(0)->m_bLighting = false;
 	m_pkFSSMaterial->GetPass(0)->m_bDepthTest = false;
+
+	
+	//BLOOM 
+	m_pkBloomMaterial1 = new ZMaterial;
+	m_pkBloomMaterial1->GetPass(0)->m_pkSLP->SetRes("#bloom1.frag.glsl");
+	m_pkBloomMaterial1->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
+	m_pkBloomMaterial1->GetPass(0)->m_bLighting = false;
+	m_pkBloomMaterial1->GetPass(0)->m_bDepthTest = false;
+	
+	m_pkBloomMaterial2 = new ZMaterial;
+	m_pkBloomMaterial2->GetPass(0)->m_pkSLP->SetRes("#bloom2.frag.glsl");
+	m_pkBloomMaterial2->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
+	m_pkBloomMaterial2->GetPass(0)->m_kTUs[1]->SetRes("data/textures/notex.bmp");
+	m_pkBloomMaterial2->GetPass(0)->m_bLighting = false;
+	m_pkBloomMaterial2->GetPass(0)->m_bDepthTest = false;
+	
+		
+	glGenTextures(1, &m_iBloomTexture);
+	glBindTexture(GL_TEXTURE_2D, m_iBloomTexture);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_iFSSTextureWidth, m_iFSSTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
+ 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+ 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	
 	
 	//create shadowmap texture	
 	if(	(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || 
@@ -126,9 +151,17 @@ Camera::~Camera()
 	if(m_iFSSTexture != -1)
 		glDeleteTextures(1,&m_iFSSTexture);
 
-		
+	if(m_iBloomTexture != -1)
+		glDeleteTextures(1,&m_iBloomTexture);
+
+				
 	if(m_pkFSSMaterial)
 		delete m_pkFSSMaterial;
+	if(m_pkBloomMaterial1)
+		delete m_pkBloomMaterial1;
+	if(m_pkBloomMaterial2)
+		delete m_pkBloomMaterial2;
+
 }
 
 int Camera::GetMaxSize(int iRes)
@@ -200,7 +233,7 @@ void Camera::FullScreenShader()
 	m_pkZShaderSystem->MatrixPush();
 	m_pkZShaderSystem->MatrixIdentity();
 	
-	//bind fss material
+	//bind fss material	
 	m_pkZShaderSystem->BindMaterial(m_pkFSSMaterial);
 	
 	//setup vertex data
@@ -220,7 +253,7 @@ void Camera::FullScreenShader()
 	//draw scree surface
 	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
   	
-  	
+
   	//reenable depth mask
 	m_pkZShaderSystem->SetDepthMask(true);
   	
@@ -231,6 +264,87 @@ void Camera::FullScreenShader()
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
 	m_pkZShaderSystem->MatrixPop();	
 }
+
+void Camera::MakeBloom()
+{
+	static float data[]= {	-1,-1,-1,
+									 1,-1,-1,
+							 		 1, 1,-1,
+									-1, 1,-1};
+
+	static float uvdata[]= {0,0,
+									1,0,
+							 		1,1,
+									0,1};
+									
+	//calculate how to stretch the texture									
+	float xs = 	float(m_pkRender->GetWidth()) / float(m_iFSSTextureWidth);								
+	float ys = 	float(m_pkRender->GetHeight()) / float(m_iFSSTextureHeight);
+
+ 	uvdata[2] = xs;
+ 	uvdata[4] = xs;
+ 	uvdata[5] = ys;
+ 	uvdata[7] = ys;
+	
+	//save screen surface to fss texture									
+	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
+	
+	
+	//setup fss orthogonal projection matrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixLoad(&m_kFSSProjMatrix);
+	
+	//identity
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixIdentity();
+	
+	//bind bloom material	1
+	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial1);
+	
+	//setup vertex data
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,data);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,uvdata);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+	
+		
+  	//we dont wan to write any depth data
+  	m_pkZShaderSystem->SetDepthMask(false);
+  	
+  	//ugly haxk to force another texture then the one specified in the material
+	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+  	
+  	
+	//draw scree surface
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
+  	
+  	
+	//save image, and do another draw	
+	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);
+	glBindTexture(GL_TEXTURE_2D, m_iBloomTexture);	
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());	
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);	
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	m_pkZShaderSystem->DrawArray(QUADS_MODE); 
+	
+	
+	
+  	//reenable depth mask
+	m_pkZShaderSystem->SetDepthMask(true);
+  	
+  	
+  	//pop matrices
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);	
+	m_pkZShaderSystem->MatrixPop();	
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
+	m_pkZShaderSystem->MatrixPop();	
+
+}
+
 
 void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,unsigned int iTexture)
 {
@@ -724,6 +838,10 @@ void Camera::RenderView()
 	//apply fss
 	if(m_bFSSEnabled)
 		FullScreenShader();
+		
+	//add bloom effect
+	if(m_bBloomEnabled && m_pkZShaderSystem->SupportGLSLProgram())
+		MakeBloom();
 		
 	if(m_bDrawInterface) 
 	{

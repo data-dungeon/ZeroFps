@@ -130,6 +130,12 @@ class ENGINE_API Camera : public I_Camera
 		int				m_iFSSTextureWidth;
 		int				m_iFSSTextureHeight;
 		
+		//bloom
+		unsigned int	m_iBloomTexture;
+		bool				m_bBloomEnabled;
+		ZMaterial*		m_pkBloomMaterial1;
+		ZMaterial*		m_pkBloomMaterial2;
+		
 		//shadow hack
 		unsigned int	m_iShadowTexture;
 		int				m_iShadowTexWidth;
@@ -151,6 +157,7 @@ class ENGINE_API Camera : public I_Camera
 		void		DrawWorld();
 		
 		void		FullScreenShader();
+		void		MakeBloom();
 		
 	public:
 		bool				m_bForceFullScreen;	// Ignore own settings and render to fullscreen.
@@ -231,8 +238,8 @@ class ENGINE_API Camera : public I_Camera
 		Vector3	GetViewPortSize();
 		Vector3	GetViewPortCorner();
 
-		//fullscreen shader stuff
-		
+		//fullscreen shader stuff		
+		void SetBloomEnabled(bool bEn)			{	m_bBloomEnabled = bEn;			}
 		void SetFSSEnabled(bool bEn)				{	m_bFSSEnabled = bEn;			}
 		void SetFSSGLSLShader(const string& strShader);
 		ZMaterial* GetFSSMaterial()				{	return m_pkFSSMaterial;		}
