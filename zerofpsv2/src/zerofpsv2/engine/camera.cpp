@@ -882,7 +882,7 @@ void Camera::DrawWorld()
 // 		if(m_pkZeroFps->GetShadowMapFrag())
 // 			kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;
 //  		else
- 			kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;						
+ 			kCenter = m_kRenderPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;						
 						
 		//setup light
 		LightSource* pkLight= m_pkLight->GetFirstDirectionalLight();		
