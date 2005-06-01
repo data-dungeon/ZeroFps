@@ -1115,7 +1115,7 @@ void P_CharacterProperty::AddStatPoint(int iStat)
 		case 1: m_kCharacterStats.ChangeStat("Dexterity",1);	break;
 		case 2: m_kCharacterStats.ChangeStat("Vitality",1);	break;
 		case 3: m_kCharacterStats.ChangeStat("Intelligence",1);break;
-		case 4: m_kCharacterStats.ChangeStat("Wizdom",1);		break;
+		case 4: m_kCharacterStats.ChangeStat("Wisdom",1);		break;
 		case 5: m_kCharacterStats.ChangeStat("Charisma",1);	break;	
 	}
 	

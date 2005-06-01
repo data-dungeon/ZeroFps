@@ -310,17 +310,17 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 
 		
 	//stencil stuff
-	if(PassGetLuaChar("stencilop-fail",ctemp))
+	if(PassGetLuaChar("stencilopfail",ctemp))
 		newpass->m_iStencilOpFail = GetTranslateEnum(ctemp);
-	if(PassGetLuaChar("stencilop-zfail",ctemp))
+	if(PassGetLuaChar("stencilopzfail",ctemp))
 		newpass->m_iStencilOpZFail = GetTranslateEnum(ctemp);
-	if(PassGetLuaChar("stencilop-zpass",ctemp))
+	if(PassGetLuaChar("stencilopzpass",ctemp))
 		newpass->m_iStencilOpZPass = GetTranslateEnum(ctemp);
 	if(PassGetLuaChar("stencilfunc",ctemp))
 		newpass->m_iStencilFunc = GetTranslateEnum(ctemp);
-	if(PassGetLuaChar("stencilfunc-ref",ctemp))
+	if(PassGetLuaChar("stencilfuncref",ctemp))
 		newpass->m_iStencilFuncRef = GetTranslateEnum(ctemp);
-	if(PassGetLuaChar("stencilfunc-mask",ctemp))
+	if(PassGetLuaChar("stencilfuncmask",ctemp))
 		newpass->m_iStencilFuncMask = GetTranslateEnum(ctemp);
 
 
@@ -330,56 +330,56 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 	
 
 	//get vertexcolor R G B A values
-	if(PassGetLuaDouble("vertexcolor-r",dtemp))
+	if(PassGetLuaDouble("vertexcolorr",dtemp))
 		newpass->m_kVertexColor.x = float(dtemp);
-	if(PassGetLuaDouble("vertexcolor-g",dtemp))
+	if(PassGetLuaDouble("vertexcolorg",dtemp))
 		newpass->m_kVertexColor.y = float(dtemp);
-	if(PassGetLuaDouble("vertexcolor-b",dtemp))
+	if(PassGetLuaDouble("vertexcolorb",dtemp))
 		newpass->m_kVertexColor.z = float(dtemp);
-	if(PassGetLuaDouble("vertexcolor-a",dtemp))
+	if(PassGetLuaDouble("vertexcolora",dtemp))
 		newpass->m_kVertexColor.w = float(dtemp);
 
 	
 	//material settings
 	//ambient
-	if(PassGetLuaDouble("matambient-r",dtemp))
+	if(PassGetLuaDouble("matambientr",dtemp))
 		newpass->m_kMatAmbient.x = float(dtemp);
-	if(PassGetLuaDouble("matambient-g",dtemp))
+	if(PassGetLuaDouble("matambientg",dtemp))
 		newpass->m_kMatAmbient.y = float(dtemp);
-	if(PassGetLuaDouble("matambient-b",dtemp))
+	if(PassGetLuaDouble("matambientb",dtemp))
 		newpass->m_kMatAmbient.z = float(dtemp);
-	if(PassGetLuaDouble("matambient-a",dtemp))
+	if(PassGetLuaDouble("matambienta",dtemp))
 		newpass->m_kMatAmbient.w = float(dtemp);
 	
 	//diffuse
-	if(PassGetLuaDouble("matdiffuse-r",dtemp))
+	if(PassGetLuaDouble("matdiffuser",dtemp))
 		newpass->m_kMatDiffuse.x = float(dtemp);
-	if(PassGetLuaDouble("matdiffuse-g",dtemp))
+	if(PassGetLuaDouble("matdiffuseg",dtemp))
 		newpass->m_kMatDiffuse.y = float(dtemp);
-	if(PassGetLuaDouble("matdiffuse-b",dtemp))
+	if(PassGetLuaDouble("matdiffuseb",dtemp))
 		newpass->m_kMatDiffuse.z = float(dtemp);
-	if(PassGetLuaDouble("matdiffuse-a",dtemp))
+	if(PassGetLuaDouble("matdiffusea",dtemp))
 		newpass->m_kMatDiffuse.w = float(dtemp);
 
 	
 	//specular
-	if(PassGetLuaDouble("matspecular-r",dtemp))
+	if(PassGetLuaDouble("matspecularr",dtemp))
 		newpass->m_kMatSpecular.x = float(dtemp);
-	if(PassGetLuaDouble("matspecular-g",dtemp))
+	if(PassGetLuaDouble("matspecularg",dtemp))
 		newpass->m_kMatSpecular.y = float(dtemp);
-	if(PassGetLuaDouble("matspecular-b",dtemp))
+	if(PassGetLuaDouble("matspecularb",dtemp))
 		newpass->m_kMatSpecular.z = float(dtemp);
-	if(PassGetLuaDouble("matspecular-a",dtemp))
+	if(PassGetLuaDouble("matspeculara",dtemp))
 		newpass->m_kMatSpecular.w = float(dtemp);
 	
 	//emission
-	if(PassGetLuaDouble("matemission-r",dtemp))
+	if(PassGetLuaDouble("matemissionr",dtemp))
 		newpass->m_kMatEmission.x = float(dtemp);
-	if(PassGetLuaDouble("matemission-g",dtemp))
+	if(PassGetLuaDouble("matemissiong",dtemp))
 		newpass->m_kMatEmission.y = float(dtemp);
-	if(PassGetLuaDouble("matemission-b",dtemp))
+	if(PassGetLuaDouble("matemissionb",dtemp))
 		newpass->m_kMatEmission.z = float(dtemp);
-	if(PassGetLuaDouble("matemission-a",dtemp))
+	if(PassGetLuaDouble("matemissiona",dtemp))
 		newpass->m_kMatEmission.w = float(dtemp);
 
 				

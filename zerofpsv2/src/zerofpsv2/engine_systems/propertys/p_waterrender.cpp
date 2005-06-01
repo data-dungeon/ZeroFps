@@ -41,7 +41,7 @@ void P_WaterRender::SetMaterial(const string& strMaterial)
 
 void P_WaterRender::Update() 
 {	
-	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWMAP)
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
 		return;
 		
 

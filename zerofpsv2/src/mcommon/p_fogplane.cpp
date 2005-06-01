@@ -41,6 +41,9 @@ P_FogPlane::~P_FogPlane()
 
 void P_FogPlane::Update()
 {
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NOSHADOWLAST)
+		return;
+
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fSize*0.5))
 		return;
 

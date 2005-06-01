@@ -12,7 +12,7 @@ P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
 	
-	m_iType=			PROPERTY_TYPE_RENDER|PROPERTY_TYPE_RENDER_NOSHADOW;
+	m_iType=			PROPERTY_TYPE_RENDER;
 	m_iSide=			PROPERTY_SIDE_CLIENT;
 		
 	m_iSortPlace=	-10;	
@@ -25,6 +25,7 @@ P_Enviroment::P_Enviroment()
 	m_pkAudioSystem =		static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_pkEnviroment =		static_cast<ZSSEnviroment*>(g_ZFObjSys.GetObjectPtr("ZSSEnviroment"));
 	m_pkMLTime =			static_cast<ZSSMLTime*>(g_ZFObjSys.GetObjectPtr("ZSSMLTime"));
+	m_pkLight = 			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
 	
 	m_bEnabled = 						false;	
 	m_strCurrentZoneEnviroment =	"Default";
@@ -122,7 +123,7 @@ void P_Enviroment::Update()
 {
 	if(m_bEnabled)
 	{
-		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NORMAL)
+		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWFIRST)
 		{		
 			UpdateTime();
 			
@@ -133,7 +134,7 @@ void P_Enviroment::Update()
 		}
 
 		
-		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWED)		
+		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)		
 		{		
 			if(m_kCurrentEnvSetting.m_iRain != 0)
 			{
@@ -183,9 +184,9 @@ void P_Enviroment::UpdateEnviroment()
 	static Vector4 kCurrentDiffuse(0,0,0,0);
 	static Vector4 kCurrentAmbient(0,0,0,0);
 	
-	P_Light* pkLight;
-	if( !(pkLight = (P_Light*)GetEntity()->GetProperty("P_Light")) )
-		pkLight = (P_Light*)GetEntity()->AddProperty("P_Light");
+// 	P_Light* pkLight;
+// 	if( !(pkLight = (P_Light*)GetEntity()->GetProperty("P_Light")) )
+// 		pkLight = (P_Light*)GetEntity()->AddProperty("P_Light");
 	
 	
 	if(m_kCurrentEnvSetting.m_kSunDiffuseColor.x == -1)
@@ -208,10 +209,14 @@ void P_Enviroment::UpdateEnviroment()
 		kCurrentAmbient.Lerp(kCurrentAmbient,m_kCurrentEnvSetting.m_kSunAmbientColor,fIf);
 	}
 	
-	pkLight->SetType(DIRECTIONAL_LIGHT);
-	pkLight->SetDiffuse(kCurrentDiffuse);
-	pkLight->SetAmbient(kCurrentAmbient);		
-	pkLight->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
+	LightSource* pkSun = m_pkLight->GetSunPointer();
+// 	pkSun->SetType(DIRECTIONAL_LIGHT);
+	pkSun->kDiffuse = kCurrentDiffuse;
+	pkSun->kAmbient = kCurrentAmbient;
+	pkSun->kRot = m_kCurrentEnvSetting.m_kSunPos;
+// 	pkSun->SetDiffuse(kCurrentDiffuse);
+// 	pkSun->SetAmbient(kCurrentAmbient);		
+// 	pkLigpkSun->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
 			
 
 	//particles
@@ -468,6 +473,9 @@ void P_Enviroment::LoadEnviroment(const char* czEnv)
 
 void P_Enviroment::DrawSky()
 {
+	bool usd = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
+	m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+	
 	// --- SKY's
 	static ZMaterial* pkSkyBackMat = NULL;
 	if(!pkSkyBackMat)
@@ -715,6 +723,8 @@ void P_Enviroment::DrawSky()
 	
 	m_pkZShaderSystem->MatrixPop();
 	
+	
+	m_pkZShaderSystem->UseDefaultGLSLProgram(usd);
 }
 
 void P_Enviroment::FadeGain(bool bOut)

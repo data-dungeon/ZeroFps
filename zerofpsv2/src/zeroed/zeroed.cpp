@@ -67,7 +67,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	
 	// Set Default values	
-	m_bEditSun					=	false;
+	m_bEditSun					=	true;
 	m_bSoloMode					=	true;
 	m_bPlaceObjectsOnGround	=	false;
 	m_bIsEditor					=	true;
@@ -325,7 +325,7 @@ void ZeroEd::Init()
 //	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//enable debug graphics
-	m_pkZeroFps->SetDebugGraph(true);
+// 	m_pkZeroFps->SetDebugGraph(true);
 	
 	//register property b�
 	RegisterPropertys();
@@ -381,14 +381,13 @@ void ZeroEd::Init()
 	
 	
 	// Setup the Edit Sun that are used for simple lightning in the editor.
-	m_kSun.kRot = Vector3(2,4,1);
-	m_kSun.kDiffuse=Vector4(0.8,0.8,0.8,0);
-//  	m_kSun.kDiffuse=Vector4(1,1,1,0);
-	m_kSun.kAmbient=Vector4(0.4,0.4,0.4,0);
+	LightSource* pkSun = m_pkLight->GetSunPointer();
+ 	pkSun->kRot = Vector3(2,2,1);
+	
+	//enable sun as default
+  	ToogleLight();
 
-	m_kSun.iType=DIRECTIONAL_LIGHT;			
-
-
+ 	
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
 
@@ -399,8 +398,6 @@ void ZeroEd::Init()
 
 	m_pkInput->VKBind(string("mus"), string("z"), 0);
 
-	//enable sun as default
-	ToogleLight();
 
 
 }
@@ -1650,12 +1647,16 @@ void ZeroEd::ToogleLight()
 	if(!m_bEditSun)
 	{	
 		m_bEditSun = true;	
-		m_pkLight->Add(&m_kSun);
+		LightSource* pkLight = m_pkLight->GetSunPointer();
+		pkLight->kDiffuse.Set(0,0,0,0);		
+		pkLight->kAmbient.Set(0,0,0,0);
 	}
 	else
 	{
 		m_bEditSun = false;	
-		m_pkLight->Remove(&m_kSun);
+		LightSource* pkLight = m_pkLight->GetSunPointer();
+ 		pkLight->kDiffuse=Vector4(0.8,0.8,0.8,0);
+ 		pkLight->kAmbient=Vector4(0.6,0.6,0.6,0);
 	}
 }
 

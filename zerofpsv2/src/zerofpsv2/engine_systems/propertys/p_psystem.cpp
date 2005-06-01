@@ -16,53 +16,116 @@ void P_PSystem::Update()
 
 	//m_pkZShaderSystem->Push("P_PSystem::Update");
 
-	Matrix4 kMat;
-	kMat = m_pkEntity->GetWorldRotM();
-
-	int iFinishedPS = 0;
+// 	static Matrix4 kMat;
+// 	kMat = m_pkEntity->GetWorldRotM();
+// 
+// 	int iFinishedPS = 0;
 	
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
 		if ( m_kPSystems[i].m_pkPSystem )
 		{
-			Vector3 kJointPos = Vector3(0,0,0);
-			// lol!!!1111 l0l! ugly h4c|<
-			if ( m_kPSystems[i].m_pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_bInheritPosFromJoint )
-			{
-				P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad");
-
-				pkMad->UpdateBones();
-				kJointPos = pkMad->GetJointPosition("root");
-			}
-
-			// returns true if the PSystem is finished
-			if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat ) )
-			{
-				m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());
-
-				if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
-					if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
-						m_kPSystems[i].m_pkPSystem->Draw();
- 			}
-			else
-			{
-				if ( m_kPSystems[i].m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
-					m_pkEntity->m_eRole == NETROLE_AUTHORITY )
+		
+		
+		
+			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
+			{		
+				if(( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ))
 				{
-					m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
-				}
-
-				delete m_kPSystems[i].m_pkPSystem;
-
-				m_kPSystems[i].m_pkPSystem = 0;
-
+					UpdatePS(i);
+				}		
+				
+				return;
 			}
+
+			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
+			{
+				UpdatePS(i);
+			
+				if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
+				{				
+					m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
+					m_kPSystems[i].m_pkPSystem->Draw();
+				}
+			}
+		
+		
+// 			Vector3 kJointPos = Vector3(0,0,0);
+// 			// lol!!!1111 l0l! ugly h4c|<
+// 			if ( m_kPSystems[i].m_pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_bInheritPosFromJoint )
+// 			{
+// 				P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad");
+// 
+// 				pkMad->UpdateBones();
+// 				kJointPos = pkMad->GetJointPosition("root");
+// 			}
+// 
+// 			// returns true if the PSystem is finished
+// 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
+// 			{
+// 			
+// 			}
+// 			
+// 			
+// 				if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat ) )
+// 				{
+// 						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());
+// 		
+// 						if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER)
+// 							&& m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
+// 								m_kPSystems[i].m_pkPSystem->Draw();
+// 				}
+// 				else
+// 				{
+// 					if ( m_kPSystems[i].m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
+// 						m_pkEntity->m_eRole == NETROLE_AUTHORITY )
+// 					{
+// 						m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
+// 					}
+// 	
+// 					delete m_kPSystems[i].m_pkPSystem;
+// 	
+// 					m_kPSystems[i].m_pkPSystem = 0;
+// 				}
+// 			}
 		}
 	}
 
 	//m_pkZShaderSystem->Pop();
 	
 // 	StopProfileTimer("r___PSystem");	
+}
+
+bool P_PSystem::UpdatePS(int iPS)
+{
+	static Matrix4 kMat;
+	kMat = m_pkEntity->GetWorldRotM();
+
+	Vector3 kJointPos = Vector3(0,0,0);
+	// lol!!!1111 l0l! ugly h4c|<
+	if ( m_kPSystems[iPS].m_pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_bInheritPosFromJoint )
+	{
+		P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad");
+
+		pkMad->UpdateBones();
+		kJointPos = pkMad->GetJointPosition("root");
+	}
+
+	if( m_kPSystems[iPS].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat ) )
+	{	
+		if ( m_kPSystems[iPS].m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
+			m_pkEntity->m_eRole == NETROLE_AUTHORITY )
+		{
+			m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
+		}
+
+		delete m_kPSystems[iPS].m_pkPSystem;
+
+		m_kPSystems[iPS].m_pkPSystem = 0;	
+		return false;
+	}
+	else
+		return true;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -87,7 +150,7 @@ P_PSystem::P_PSystem()
 {
    m_bNetwork = true;
 
-	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	m_iSortPlace =	9;
 	m_iVersion = 3;
@@ -103,7 +166,7 @@ P_PSystem::P_PSystem( string kPSType )
 {
    m_bNetwork = true;
 
-	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;	
 	m_iSortPlace =	9;
 

@@ -38,8 +38,6 @@ LightSource::LightSource()
 Light::Light()
 : ZFSubSystem("Light") 
 {
-
-
 	m_iNrOfLights=		8;							//this shuld never be greater than 8
 	m_bAmbientOnly =	false;
 	m_bEnabled = 		true;
@@ -48,7 +46,12 @@ Light::Light()
 	
 	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
 	
+	m_kSun.kRot = Vector3(2,4,1);
+	m_kSun.kDiffuse=Vector4(0.8,0.8,0.8,0);
+	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
+	m_kSun.iType=DIRECTIONAL_LIGHT;			
 	
+	Add(&m_kSun);
 }
 
 
@@ -62,6 +65,8 @@ bool Light::StartUp()
 
 bool Light::ShutDown()
 { 
+	Remove(&m_kSun);
+
 	return true;
 }
 

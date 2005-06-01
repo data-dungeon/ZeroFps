@@ -26,6 +26,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int		m_iShadowGroup;
 		int		m_iCollisionMeshID;
 		
+		bool		m_bCastShadow;
+		
 		float		m_fLastAnimationUpdateTime;
 		int		m_iLastAnimationUpdateFrame;
 		

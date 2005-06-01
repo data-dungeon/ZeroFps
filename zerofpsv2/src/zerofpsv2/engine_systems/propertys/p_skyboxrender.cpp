@@ -8,7 +8,6 @@ P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop)
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 
-//	m_iType=PROPERTY_TYPE_RENDER_NOSHADOW;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	

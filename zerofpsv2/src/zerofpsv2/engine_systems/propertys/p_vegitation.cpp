@@ -93,7 +93,7 @@ void P_Vegitation::Update()
 		return;
 
 
-	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWMAP)
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
 		return;
 
 	static Vector3 kObjectPos;

@@ -23,6 +23,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetPos(kPos);
 	m_kRotM.Identity();
 	m_kRenderPos.Set(0,0,0);	
+	m_kLastShadowPos.Set(99999,99999,99999);
 	
 	m_kOrthoSize.Set(15,15,0);				// Defualt Size is 15 x 15 meters
 	
@@ -122,7 +123,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		//cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
 		m_iShadowTexture = -1;
-		m_fShadowArea = 15;
+		m_fShadowArea = 30;
 		
 		glGenTextures(1, &m_iShadowTexture);
 		glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
@@ -879,10 +880,8 @@ void Camera::DrawWorld()
 		kTrans = m_kRotM;
 		kTrans.Transponse();	
 
-// 		if(m_pkZeroFps->GetShadowMapFrag())
-// 			kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;
-//  		else
- 			kCenter = m_kRenderPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;						
+// 		kCenter = m_kRenderPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;						
+ 		kCenter = m_kRenderPos;						
 						
 		//setup light
 		LightSource* pkLight= m_pkLight->GetFirstDirectionalLight();		
@@ -895,23 +894,29 @@ void Camera::DrawWorld()
 
 		
 		//create shadow map	
-		m_iCurrentRenderMode = RENDER_SHADOWMAP;
-		MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
-
+		if(m_kLastShadowPos.DistanceTo(kCenter) > 5)
+		{
+			m_kLastShadowPos = kCenter;
+			m_iCurrentRenderMode = RENDER_CASTSHADOW;
+			MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
+		}
 				
 		//init tha damn view
 		InitView();	
 
-				
+		m_iCurrentRenderMode = RENDER_NOSHADOWFIRST;
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);				
+
+						
 		if(m_pkZShaderSystem->SupportGLSLProgram() && m_pkZeroFps->GetShadowMapFrag())
 		{		
  			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
 			
 			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
-//  				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("shadowmap.vert#shadowmap.frag.glsl");
-					m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#shadowmap.frag.glsl");
+ 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("shadowmap.vert#shadowmap.frag.glsl");
+// 					m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#shadowmap.frag.glsl");
 			
-			m_iCurrentRenderMode = RENDER_NORMAL;			
+			m_iCurrentRenderMode = RENDER_SHADOWED;			
 			DrawShadowedScene();
 			
 			m_pkZShaderSystem->UseDefaultGLSLProgram(false);
@@ -920,9 +925,8 @@ void Camera::DrawWorld()
 		{
 		
 			//draw LIT light				
-			m_iCurrentRenderMode = RENDER_NORMAL;
-  			m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);		
-		
+			m_iCurrentRenderMode = RENDER_SHADOWED;
+  			m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);				
 		
 			//draw shadowed scene
 			if(pkLight)
@@ -933,7 +937,7 @@ void Camera::DrawWorld()
 				pkLight->kDiffuse = kDiffuseBak*0.2;
 				pkLight->kSpecular = kSpecularBak*0.2;
 			
-				m_iCurrentRenderMode = RENDER_SHADOW;
+				m_iCurrentRenderMode = RENDER_SHADOWED;
 				DrawShadowedScene();			
 				
 				pkLight->kDiffuse = kDiffuseBak;
@@ -942,15 +946,15 @@ void Camera::DrawWorld()
 			else
 			{
 				m_pkLight->SetAmbientOnly(true);		
-				m_iCurrentRenderMode = RENDER_SHADOW;
+				m_iCurrentRenderMode = RENDER_SHADOWED;
 				DrawShadowedScene();
 				m_pkLight->SetAmbientOnly(false);				
 			}
 		}		
 			
 		//Draw unshadows scene
- 		m_iCurrentRenderMode = RENDER_NOSHADOWED;
- 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+ 		m_iCurrentRenderMode = RENDER_NOSHADOWLAST;
+ 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);
  	
 		m_iCurrentRenderMode = RENDER_NONE;		
 		
@@ -958,15 +962,17 @@ void Camera::DrawWorld()
 	else
 	{		
 		//update all render propertys that shuld be shadowed
-		m_iCurrentRenderMode = RENDER_NORMAL;
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+		m_iCurrentRenderMode = RENDER_NOSHADOWFIRST;
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);		
+		m_iCurrentRenderMode = RENDER_SHADOWED;
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);
 	
 		//update shadow map
 		m_pkZShadow->Update();
 	
 		//update all render propertys that shuld NOT be shadowed
-		m_iCurrentRenderMode = RENDER_NOSHADOWED;
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
+		m_iCurrentRenderMode = RENDER_NOSHADOWLAST;
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);
 		
 		m_iCurrentRenderMode = RENDER_NONE;	
 	}
@@ -980,7 +986,7 @@ void Camera::DrawShadowedScene()
 	//setup some textures
 	glActiveTextureARB(GL_TEXTURE3_ARB);
 	
-
+	
 	static Matrix4 biasMatrix(	0.5f, 0.0f, 0.0f, 0.0f,
 										0.0f, 0.5f, 0.0f, 0.0f,
 										0.0f, 0.0f, 0.5f, 0.0f,
@@ -1000,8 +1006,6 @@ void Camera::DrawShadowedScene()
 	Bias.Transponse();
 
 	textureMatrix=Bias*(Proj*View);									
-
-	
 	
 	//Bind & enable shadow map texture
 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
@@ -1025,7 +1029,6 @@ void Camera::DrawShadowedScene()
 	glTexGenfv(GL_Q, GL_EYE_PLANE, &(textureMatrix.RowCol[3][0]));
 	glEnable(GL_TEXTURE_GEN_Q);
 
-
 	
 	//Enable shadow comparison
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
@@ -1040,7 +1043,8 @@ void Camera::DrawShadowedScene()
 
 	
 	//Set alpha test to discard false comparisons
- 	m_pkZShaderSystem->ForceAlphaTest(2);
+	if((!m_pkZeroFps->GetShadowMapFrag()) || (!m_pkZShaderSystem->SupportGLSLProgram()))
+ 		m_pkZShaderSystem->ForceAlphaTest(2);
 		
 	
 	//reload last material

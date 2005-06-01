@@ -93,12 +93,13 @@ class RENDER_API Light : public ZFSubSystem
 			inline bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
 		} More_Light; 		
 		
-		ZeroFps*	m_pkZeroFps;
-	
+		ZeroFps*	m_pkZeroFps;	
 		Vector3 m_kCamPos;
 		
 		int		m_iCurrentActiveLights;
 
+		LightSource	m_kSun;	
+		
 		vector<LightSource*> m_kLights;
 		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
@@ -119,7 +120,7 @@ class RENDER_API Light : public ZFSubSystem
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
-
+		
 		void Add(LightSource* kNewLight);
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
@@ -131,9 +132,11 @@ class RENDER_API Light : public ZFSubSystem
 		void SetStartUpValues();
 		
 
-		void SetAmbientOnly(bool bAmbient)	{	m_bAmbientOnly = bAmbient;		}
+		void SetAmbientOnly(bool bAmbient)					{	m_bAmbientOnly = bAmbient;		}
 		
-		int  GetNrOfActiveLights()				{	return m_iCurrentActiveLights;}
+		LightSource* GetSunPointer()							{	return &m_kSun;		}		
+		int  GetNrOfActiveLights()								{	return m_iCurrentActiveLights;}
+		
 		void GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional = false);
 		LightSource* GetFirstDirectionalLight();
 

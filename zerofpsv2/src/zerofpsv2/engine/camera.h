@@ -21,11 +21,19 @@ class P_Camera;
 
 enum ENGINE_API RENDERMODE
 {
-	RENDER_NORMAL,
-	RENDER_SHADOWMAP,
-	RENDER_SHADOW,	
-	RENDER_NONE,
-	RENDER_NOSHADOWED
+	RENDER_NONE				=0,
+	RENDER_CASTSHADOW		=1,
+	RENDER_SHADOWED		=2,
+	RENDER_NOSHADOWFIRST	=4,
+	RENDER_NOSHADOWLAST	=8,
+
+
+/*
+	RENDER_NORMAL		=1,
+	RENDER_SHADOWMAP	=2,
+	RENDER_SHADOW		=4,	
+	RENDER_NONE			=8,
+	RENDER_NOSHADOWED	=16,*/
 };
 
 /** \brief	A Camera (ViewPoint) in ZeroFPS
@@ -115,6 +123,8 @@ class ENGINE_API Camera : public I_Camera
 		bool		m_bClearViewPort;
 		bool		m_bDrawInterface;
 		bool		m_bShadowMap;
+		
+		Vector3	m_kLastShadowPos;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
 		int			m_iEntity;						// ID Of entity that this camera is connected to (if any).

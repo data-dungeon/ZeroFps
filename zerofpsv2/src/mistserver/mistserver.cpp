@@ -201,11 +201,15 @@ void MistServer::Init()
 	m_pkInput->ShowCursor(true);
 
 	// Setup the Edit Sun that are used for simple lightning in the editor.
-	m_kSun.kRot = Vector3(2,2,1);
-	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
-	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
-	m_kSun.iType=DIRECTIONAL_LIGHT;			
-	m_pkLight->Add(&m_kSun);
+	LightSource* pkSun = m_pkLight->GetSunPointer();
+ 	pkSun->kRot = Vector3(2,2,1);
+ 	pkSun->kDiffuse=Vector4(0.5,0.5,0.5,0);
+ 	pkSun->kAmbient=Vector4(0.5,0.5,0.5,0);
+//  	pkSun->kRot = Vector3(2,2,1);
+// 	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
+// 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
+// 	m_kSun.iType=DIRECTIONAL_LIGHT;			
+// 	m_pkLight->Add(&m_kSun);
 			
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));

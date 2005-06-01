@@ -26,8 +26,12 @@ P_ShadowBlob::~P_ShadowBlob()
 
 void P_ShadowBlob::Update()
 {
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NOSHADOWLAST)
+		return;
+
 	Vector3 kShadowPos = Vector3::ZERO;
 	float fScale = m_fScale;
+	
 	
 	if(!m_bHaveSet)
 	{
@@ -181,8 +185,7 @@ bool P_ShadowBlob::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "scale") == 0) 
 	{
-		float m_fScale = float(atof(kValue.c_str()));	
-		
+		m_fScale = float(atof(kValue.c_str()));	
 		m_bHaveSet = true;
 		return true;
 	}

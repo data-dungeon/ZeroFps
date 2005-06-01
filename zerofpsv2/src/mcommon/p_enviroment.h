@@ -33,6 +33,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		ZSSEnviroment*	m_pkEnviroment;
 		ZFAudioSystem*	m_pkAudioSystem;
 		ZSSMLTime*		m_pkMLTime;
+		Light*			m_pkLight;
 		
 		bool				m_bEnabled;		
 		string			m_strCurrentZoneEnviroment;

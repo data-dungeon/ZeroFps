@@ -58,12 +58,13 @@ void P_Light::Update()
 		UpdateLightMode();		
 		
 		if(m_pkLightSource->iType == POINT_LIGHT && m_fFlareSize > 0)
-			m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
+			m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 		else
 			m_iType = PROPERTY_TYPE_NORMAL;
 		
 	}
-	else
+	
+	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
 	{
 		m_pkLightSource->kPos = m_pkEntity->GetIWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);			
 		DrawFlare();
@@ -76,7 +77,6 @@ void P_Light::DrawFlare()
 {
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->PointInFrustum(m_pkLightSource->kPos))
 		return;
-
 
 	static ZMaterial* pkTestMat=NULL;
 	

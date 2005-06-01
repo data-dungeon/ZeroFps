@@ -20,7 +20,7 @@ P_Mad::P_Mad()
 		
 	strcpy(m_acName,"P_Mad");
 	m_bNetwork	 = true;
-	m_iVersion = 4;
+	m_iVersion = 5;
 	
 	m_iSortPlace = 0;
 	
@@ -31,7 +31,7 @@ P_Mad::P_Mad()
 	m_bCanBeInvisible = false;
 	m_iShadowGroup = 0;
 
-
+	m_bCastShadow = true;
 	
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
@@ -56,8 +56,6 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 	
-
-
 	//if no rendering is done, update animation in normal updates
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
@@ -80,6 +78,12 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
+		if(!( (m_bCastShadow && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW) ||
+			  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED) )
+			return;
+			
+			
+			
 		static Vector3 kPos;
 		kPos = m_pkEntity->GetIWorldPosV();
 				
@@ -318,6 +322,11 @@ void P_Mad::Save(ZFIoInterface* pkPackage)
 	
 	pkPackage->Write( iActiveAnimation );
 	pkPackage->Write( m_iNextAnimation );	
+	
+	pkPackage->Write( m_bCastShadow );	
+	
+	
+	
 }
 
 void P_Mad::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -391,6 +400,27 @@ void P_Mad::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;			
 		}
 		
+		case 5:
+		{
+			char temp[128];
+			pkPackage->Read((void*)temp,128,1);	
+			SetBase(temp);
+			
+			float scale;
+			pkPackage->Read((void*)&scale,4,1);
+			SetScale(scale);
+			
+			pkPackage->Read((void*)&m_bCanBeInvisible,sizeof(m_bCanBeInvisible),1);
+			pkPackage->Read((void*)&m_iShadowGroup,sizeof(m_iShadowGroup),1);
+			pkPackage->Read((void*)&m_kOffset,sizeof(m_kOffset),1);
+			pkPackage->Read((void*)&m_iSortPlace,sizeof(m_iSortPlace),1);
+			
+			pkPackage->Read( iActiveAnimation );
+			pkPackage->Read( m_iNextAnimation );				
+			
+			pkPackage->Read( m_bCastShadow );		
+			break;			
+		}		
 		
 		default:
 		{
@@ -412,6 +442,7 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_kOffset );
 	pkNetPacket->Write( m_iShadowGroup );
 	pkNetPacket->Write( m_iSortPlace);
+	pkNetPacket->Write( m_bCastShadow);
 	
 	
 	unsigned char ucNumOfMesh = m_kActiveMesh.size();
@@ -447,6 +478,8 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read( m_kOffset );
 	pkNetPacket->Read( m_iShadowGroup );
 	pkNetPacket->Read( m_iSortPlace );
+	pkNetPacket->Read( m_bCastShadow);
+	
 	
 	unsigned char ucNumOfMesh;
 	int iMesh;
@@ -468,7 +501,7 @@ bool P_Mad::AddMesh(int iSId)
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(6);
+	vector<PropertyValues> kReturn(7);
 	
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
@@ -494,6 +527,10 @@ vector<PropertyValues> P_Mad::GetPropertyValues()
 	kReturn[5].iValueType = VALUETYPE_VECTOR3;
 	kReturn[5].pkValue    = (void*)&m_kOffset;
 		
+	kReturn[6].kValueName = "m_bCastShadow";
+	kReturn[6].iValueType = VALUETYPE_BOOL;
+	kReturn[6].pkValue    = (void*)&m_bCastShadow;	
+	
 	return kReturn;
 }
 

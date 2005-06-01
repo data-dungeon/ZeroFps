@@ -1462,6 +1462,12 @@ bool ZShaderSystem::HaveExtension(const string& strExt)
 {
 	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
 
+	if(pcExt == NULL)
+	{
+		cout<<"ERROR: ZShaderSystem::HaveExtension : could not fetch extension list"<<endl;
+		return false;	
+	}
+	
 	if(strstr((const char*)pcExt,strExt.c_str()) != NULL)
 	{
 		return true;	
