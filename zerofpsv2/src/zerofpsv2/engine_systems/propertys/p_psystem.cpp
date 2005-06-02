@@ -40,12 +40,14 @@ void P_PSystem::Update()
 
 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
 			{
-				UpdatePS(i);
+				if(UpdatePS(i))
+				{
 			
-				if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
-				{				
-					m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
-					m_kPSystems[i].m_pkPSystem->Draw();
+					if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
+					{				
+						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
+						m_kPSystems[i].m_pkPSystem->Draw();
+					}
 				}
 			}
 		
