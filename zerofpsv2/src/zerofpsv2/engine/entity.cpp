@@ -164,10 +164,11 @@ bool Entity::DeleteProperty(const char* acName)
 	{
 		if(strcmp((*kIt)->m_acName,acName)==0)
 		{
-			Property* TempProp = (*kIt);
+			//add property to property delete list (will be deleted at the end of this frame)
+			m_pkEntityManager->m_kPropertyDeleteList.push_back(*kIt);
+
 			(*kIt) = m_akPropertys.back();
 			m_akPropertys.pop_back();
-			delete (TempProp);
 			
 			//add property to entity's delete list
 			AddToDeletePropertyList(string(acName));

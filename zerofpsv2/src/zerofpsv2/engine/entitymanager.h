@@ -107,7 +107,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		map<int,Entity*>		m_akEntitys;									//hash map of entitys, for fast entity trough ID access				
 		int						m_iNextEntityID;								///< Next free Entity ID.		
 		vector<int>				m_aiDeleteList;								// contains object that are going to be deleted
-				
+		vector<Property*>		m_kPropertyDeleteList;		
 						
 		// Network 	
 		float						m_fEndTimeForceNet;

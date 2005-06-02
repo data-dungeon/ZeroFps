@@ -365,24 +365,35 @@ void EntityManager::Delete(Entity* pkEntity)
 */
 void EntityManager::UpdateDelete()
 {
-//	int iSize = m_aiDeleteList.size();
-
-	if(m_aiDeleteList.size()==0) 
-		return;
-	
-	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+	if(!m_kPropertyDeleteList.empty())
 	{
-		Entity* pkEntity = GetEntityByID((*it));
-
-		if(pkEntity) { // If i own object mark so we remove it on clients.
-			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-				m_aiNetDeleteList.push_back((*it));*/
-			delete pkEntity;		
-			}
+		int iSize = m_kPropertyDeleteList.size();
+		for(int i = 0;i<iSize;i++)
+		{
+			//cout<<"deleting property "<<m_kPropertyDeleteList[i]->m_acName<<endl;
+			delete m_kPropertyDeleteList[i];
+		}
+		
+		m_kPropertyDeleteList.clear();
 	}
 
-	m_aiDeleteList.clear();
 
+	if(!m_aiDeleteList.empty())
+	{
+	
+		for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+		{
+			Entity* pkEntity = GetEntityByID((*it));
+	
+			if(pkEntity) { // If i own object mark so we remove it on clients.
+				/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+					m_aiNetDeleteList.push_back((*it));*/
+				delete pkEntity;		
+				}
+		}
+	
+		m_aiDeleteList.clear();
+	}
 }
 
 
@@ -434,7 +445,7 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 		m_iNormalUpdates += m_akPropertys.size();
 	
 	//update render propertys update counter	
-	if((iType & PROPERTY_TYPE_RENDER) || (iType & PROPERTY_TYPE_RENDER_NOSHADOW) )
+	if((iType & PROPERTY_TYPE_RENDER))
 		m_iRenderUpdates += m_akPropertys.size();
 
 	//run update in all propertys

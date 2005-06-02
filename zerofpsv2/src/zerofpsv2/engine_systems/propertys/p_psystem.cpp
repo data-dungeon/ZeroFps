@@ -20,17 +20,16 @@ void P_PSystem::Update()
 // 	kMat = m_pkEntity->GetWorldRotM();
 // 
 // 	int iFinishedPS = 0;
-	
+// 	cout<<"crashing"<<endl;
+// 	cout<<"psystemid: "<<m_pkEntity->GetEntityID()<<"   pss: "<<m_kPSystems.size()<<endl;
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
 		if ( m_kPSystems[i].m_pkPSystem )
 		{
 		
-		
-		
 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 			{		
-				if(( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ))
+				if( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() )
 				{
 					UpdatePS(i);
 				}		
@@ -330,7 +329,9 @@ void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 P_PSystem::~P_PSystem()
 {
 	for (int i = 0; i < m_kPSystems.size(); i++)
-		delete m_kPSystems[i].m_pkPSystem;
+		if(m_kPSystems[i].m_pkPSystem)
+			delete m_kPSystems[i].m_pkPSystem;
+			
 }
 
 // ------------------------------------------------------------------------------------------

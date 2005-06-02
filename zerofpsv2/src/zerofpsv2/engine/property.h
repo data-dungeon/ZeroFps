@@ -20,8 +20,7 @@ class GameMessage;
 {
 	PROPERTY_TYPE_NORMAL				= 1,		// Run at normal update.
 	PROPERTY_TYPE_RENDER				= 2,		// Run at render update.
-	PROPERTY_TYPE_RENDER_NOSHADOW = 4,
-	PROPERTY_TYPE_ALL					= 7,		// Run on all.
+	PROPERTY_TYPE_ALL					= 3,		// Run on all.
 };
 
 /* On wich side the propertys should update. */
