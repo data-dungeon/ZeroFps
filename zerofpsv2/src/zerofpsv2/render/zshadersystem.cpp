@@ -19,6 +19,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iCurrentVertexProgram = 		-1;
 	m_iCurrentFragmentProgram = 	-1;
 	
+	m_bUseGLSL						=	true;
 	m_bSupportGLSLProgram = 		false;
 	m_iCurrentGLSLProgramID = 		0;
 	
@@ -42,6 +43,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
 	RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
 	RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
+	
+	RegisterVariable("r_useglsl",	&m_bUseGLSL,		CSYS_BOOL);	
 	
 	//register console commands
 	Register_Cmd("setgamma",FID_SETGAMMA);		
@@ -83,7 +86,7 @@ bool ZShaderSystem::StartUp()
 	m_bSupportGLSLProgram  =HaveExtension("GL_ARB_shader_objects") &&
 									HaveExtension("GL_ARB_shading_language_100") &&
 									HaveExtension("GL_ARB_vertex_shader") &&
-									HaveExtension("GL_ARB_fragment_shader");
+									HaveExtension("GL_ARB_fragment_shader") && m_bUseGLSL;
 	
 	if(!m_bSupportGLSLProgram)
 		cout<<"ZSHADER: No GLSL program support"<<endl;

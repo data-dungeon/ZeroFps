@@ -893,28 +893,42 @@ void Camera::DrawWorld()
 			kLightPos =  kCenter + Vector3(0,100,0);		
 
 		
-		//create shadow map	
-		if(m_kLastShadowPos.DistanceTo(kCenter) > 5)
+		//create shadow map	realtime or not
+		if(m_pkZeroFps->GetShadowMapRealtime())
 		{
-			m_kLastShadowPos = kCenter;
 			m_iCurrentRenderMode = RENDER_CASTSHADOW;
-			MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
+			MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);		
+		}
+		else
+		{
+			if(m_kLastShadowPos.DistanceTo(kCenter) > 5)
+			{
+				m_kLastShadowPos = kCenter;
+				m_iCurrentRenderMode = RENDER_CASTSHADOW;
+				MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
+			}
 		}
 				
 		//init tha damn view
 		InitView();	
 
+		//render no shadowed objects 
 		m_iCurrentRenderMode = RENDER_NOSHADOWFIRST;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);				
 
-						
-		if(m_pkZShaderSystem->SupportGLSLProgram() && m_pkZeroFps->GetShadowMapFrag())
+		//render shadows depending on shadowmode
+		int iShadowMode = m_pkZeroFps->GetShadowMapMode();
+		if(m_pkZShaderSystem->SupportGLSLProgram() && iShadowMode)
 		{		
  			m_pkZShaderSystem->UseDefaultGLSLProgram(true);
 			
-			if(!m_pkZShaderSystem->GetDefaultGLSLProgramResource()->IsValid())
+			//real no spec shadowmaps
+			if(iShadowMode == 1)			
  				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("shadowmap.vert#shadowmap.frag.glsl");
-// 					m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#shadowmap.frag.glsl");
+ 				
+ 			//only darken
+			if(iShadowMode == 2)			
+ 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#fastshadowmap.frag.glsl");
 			
 			m_iCurrentRenderMode = RENDER_SHADOWED;			
 			DrawShadowedScene();
@@ -1043,7 +1057,7 @@ void Camera::DrawShadowedScene()
 
 	
 	//Set alpha test to discard false comparisons
-	if((!m_pkZeroFps->GetShadowMapFrag()) || (!m_pkZShaderSystem->SupportGLSLProgram()))
+	if((!m_pkZeroFps->GetShadowMapMode()) || (!m_pkZShaderSystem->SupportGLSLProgram()))
  		m_pkZShaderSystem->ForceAlphaTest(2);
 		
 	

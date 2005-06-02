@@ -135,8 +135,13 @@ void P_Vegitation::Update()
  	//draw a ball on the server
   	if(m_pkFps->GetDebugGraph())
 	{
+		bool bUse = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
+		m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+		
   		m_pkRender->Sphere(kObjectPos,0.5,1,Vector3(1,1,1),true);
 		m_pkRender->DrawAABB(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax,Vector3(1,1,1),1);
+		
+		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
 	}
 	
 	float fDistance = kObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;

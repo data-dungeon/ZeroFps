@@ -78,8 +78,8 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
-		if(!( (m_bCastShadow && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW) ||
-			  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED) )
+		if(!( (m_pkZeroFps->GetShadowMapRealtime() || m_bCastShadow) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
+			  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
 			return;
 			
 			

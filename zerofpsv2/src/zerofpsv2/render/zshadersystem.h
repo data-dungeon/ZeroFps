@@ -205,6 +205,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		bool				m_bSupportGLSLProgram;
 		GLenum			m_iCurrentGLSLProgramID;				
+		bool				m_bUseGLSL;
 		
 		ZFResourceHandle* m_pkDefaultGLSLProgram;
 		bool					m_bUseDefaultGLSLProgram;
