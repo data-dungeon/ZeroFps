@@ -548,6 +548,8 @@ void P_Enviroment::DrawSky()
 		pkCloudMatLow = new ZMaterial;
 			pkCloudMatLow->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
 			pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/cloud.tga");
+			pkCloudMatLow->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
+			
 			pkCloudMatLow->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
 			pkCloudMatLow->GetPass(0)->m_iCullFace = 			CULL_FACE_NONE;		
 			pkCloudMatLow->GetPass(0)->m_bLighting = 			false;			
@@ -566,6 +568,8 @@ void P_Enviroment::DrawSky()
 		pkCloudMatHi = new ZMaterial;
 			pkCloudMatHi->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
 			pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/cloud2.tga");
+			pkCloudMatHi->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
+			
 			pkCloudMatHi->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
 			pkCloudMatHi->GetPass(0)->m_iCullFace = 		CULL_FACE_NONE;		
 			pkCloudMatHi->GetPass(0)->m_bLighting = 		false;			
@@ -596,7 +600,7 @@ void P_Enviroment::DrawSky()
 											
 	//UV's for moving clouds
 	float fP = m_pkZeroFps->GetEngineTime()* 0.01;
-	float fPS = m_pkZeroFps->GetEngineTime()*0.005;
+	float fPS = m_pkZeroFps->GetEngineTime()*0.001;
 	
 	float afMUVsF[] = { fP,		1,
 							  fP+1,	1,
