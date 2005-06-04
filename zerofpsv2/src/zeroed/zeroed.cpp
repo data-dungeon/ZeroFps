@@ -78,6 +78,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
+	m_bPlaneMovement			=	false;	
 		
 	strcpy(szCoolName , "Guldfisk");	
 
@@ -91,6 +92,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
    RegisterVariable("ap_loginname", 	&m_strLoginName, CSYS_STRING);
    RegisterVariable("ap_loginpw", 	&m_strLoginPW, CSYS_STRING);
+   
+   RegisterVariable("ap_planemovement", 	&m_bPlaneMovement, CSYS_BOOL);
 	
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		

@@ -145,6 +145,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool		m_bSoloMode;
 		float 	m_CamMoveSpeed;		
 		string	m_strActiveViewPort;		//active view port
+		bool		m_bPlaneMovement;
 
 		//zone data
 		string	m_strActiveZoneName;		
