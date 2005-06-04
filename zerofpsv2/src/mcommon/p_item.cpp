@@ -12,7 +12,7 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_bNetwork = true;
-	m_iVersion = 9;
+	m_iVersion = 10;
 
 	// ITEM STUFF
 	m_strBaseName=	"misc";
@@ -29,6 +29,8 @@ P_Item::P_Item()
 	m_iValue		=	1;
 	
 	m_bTwoHanded=	false;
+	
+	m_bActionOnInventoryDrop = false;
 	
 	//item info
 	m_strInfo = 	"Nothing is known about this item";
@@ -55,6 +57,18 @@ void P_Item::Init()
 {
 
 
+}
+
+void P_Item::InventoryDropAction(int m_iOwnerID)
+{
+	//cout<<"P_ITEM: doing action on "<<m_iOwnerID<<endl;
+
+	vector<ScriptFuncArg> args(1);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &m_iOwnerID;
+
+	m_pkEntityManager->CallFunction(m_pkEntity, "InventoryDrop",&args);
+	
 }
 
 void P_Item::Equip(int iEntity)
@@ -144,6 +158,9 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 	
 	pkPackage->Write(m_fWeight);
 	pkPackage->Write(m_iValue);
+	
+	pkPackage->Write(m_bActionOnInventoryDrop);
+	
 	
 	m_kItemStats.Save(pkPackage);
 	
@@ -348,13 +365,48 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_kItemStats.Load(pkPackage);
 			
 			break;
-		}			
+		}		
+			
+		case 10:
+		{
+			pkPackage->Read_Str(m_strBaseName);
+			pkPackage->Read_Str(m_strName);
+			pkPackage->Read_Str(m_strIcon);
+			
+			pkPackage->Read(m_iSizeX);
+			pkPackage->Read(m_iSizeY);		
+			pkPackage->Read(m_iType);
+			
+			pkPackage->Read(m_iStackSize);
+			pkPackage->Read(m_iStackMax);		
+			
+			pkPackage->Read(m_iInContainerID);		
+			pkPackage->Read(m_iInContainerPosX);
+			pkPackage->Read(m_iInContainerPosY);	
+		
+			pkPackage->Read(m_bTwoHanded);									
+			
+			pkPackage->Read_Str(m_strBuffName);			
+		
+			pkPackage->Read_Str(m_strInfo);
+			pkPackage->Read_Str(m_strImage);			
+			
+			pkPackage->Read(m_fWeight);
+			pkPackage->Read(m_iValue);			
+			
+			pkPackage->Read(m_bActionOnInventoryDrop);			
+			
+			
+			m_kItemStats.Load(pkPackage);
+			
+			break;
+		}				
 	}
 }
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(14);
+	vector<PropertyValues> kReturn(15);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -413,6 +465,10 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[13].iValueType = VALUETYPE_BOOL;
 	kReturn[13].pkValue    = &m_bTwoHanded;		
 	
+	kReturn[14].kValueName = "invdropaction";
+	kReturn[14].iValueType = VALUETYPE_BOOL;
+	kReturn[14].pkValue    = &m_bActionOnInventoryDrop;
+		
 	return kReturn;
 }
 

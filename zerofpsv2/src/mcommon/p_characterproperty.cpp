@@ -2845,7 +2845,7 @@ namespace SI_P_CharacterProperty
 		g_pkScript->GetArgString(pkLua, 1,strStat);
 		g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 
-		cout<<"blub "<<strStat<<" "<<dValue<<endl;
+		//cout<<"blub "<<strStat<<" "<<dValue<<endl;
 		
 				
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))

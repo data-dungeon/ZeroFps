@@ -69,6 +69,7 @@ class MCOMMON_API P_Item: public Property
 		int		m_iInContainerPosX;				//last known position in a container this item had
 		int		m_iInContainerPosY;
  		
+		bool		m_bActionOnInventoryDrop;
 		
 		//buff
 		string	m_strBuffName;
@@ -107,6 +108,8 @@ class MCOMMON_API P_Item: public Property
 		
 		void		Equip(int iEntity);
 		void		UnEquip();
+		
+		void		InventoryDropAction(int m_iOwnerID);
 		
 		
 		friend class MLContainer;

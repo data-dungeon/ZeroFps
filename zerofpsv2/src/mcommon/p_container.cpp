@@ -363,6 +363,34 @@ bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 		return false;
 	
 	
+	if(pkItem->m_bActionOnInventoryDrop && m_iContainerType == eInventory)
+	{
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty"))
+		{
+			if(pkCP->GetIsPlayerCharacter())
+			{
+	
+				//get current container, if any, and clear item from its current position
+				if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
+				{
+					//uneqip twohanded
+					if(pkItem->m_bTwoHanded)		
+						if(pkContainer->GetWeaponHand())
+							pkContainer->SetupTwohanded(false);
+				
+					pkContainer->ClearItem(pkItem->GetEntity()->GetEntityID());
+				}	
+			
+				//cout<<"running inv drop action"<<endl;
+				
+				pkItem->InventoryDropAction(m_iOwnerID);
+				m_pkEntityManager->Delete(pkItem->GetEntity());
+				
+				return true;
+			}
+		}
+	}
+	
 	//place on free slot?
 	if(iX == -1)
 	{
