@@ -213,13 +213,19 @@ void ActionMenu::Open()
 		pkButton->GetButtonHighLightSkin()->m_iBkTexID = iTexID ;
 		pkButton->GetSkin()->m_iBkTexID = iTexID ;
 
-		pkButton->GetButtonUpSkin()->m_afBkColor[0] = 0.5f;
-		pkButton->GetButtonUpSkin()->m_afBkColor[1] = 0.5f;
-		pkButton->GetButtonUpSkin()->m_afBkColor[2] = 0.5f;
-
-		pkButton->GetSkin()->m_afBkColor[0] = 0.5f;
-		pkButton->GetSkin()->m_afBkColor[1] = 0.5f;
-		pkButton->GetSkin()->m_afBkColor[2] = 0.5f;
+// 		pkButton->GetButtonUpSkin()->m_afBkColor[0] = 0.5f;
+// 		pkButton->GetButtonUpSkin()->m_afBkColor[1] = 0.5f;
+// 		pkButton->GetButtonUpSkin()->m_afBkColor[2] = 0.5f;
+// 		pkButton->GetSkin()->m_afBkColor[0] = 0.5f;
+// 		pkButton->GetSkin()->m_afBkColor[1] = 0.5f;
+// 		pkButton->GetSkin()->m_afBkColor[2] = 0.5f;
+		pkButton->GetButtonUpSkin()->m_afBkColor[0] = 1.0f;
+		pkButton->GetButtonUpSkin()->m_afBkColor[1] = 1.0f;
+		pkButton->GetButtonUpSkin()->m_afBkColor[2] = 1.0f;
+		pkButton->GetSkin()->m_afBkColor[0] = 1.0f;
+		pkButton->GetSkin()->m_afBkColor[1] = 1.0f;
+		pkButton->GetSkin()->m_afBkColor[2] = 1.0f;		
+		
 		
 		pkButton->SetPos(x, y, false, true); 
 		pkButton->Show();
