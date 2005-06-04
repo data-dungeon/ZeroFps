@@ -2913,6 +2913,34 @@ namespace SI_P_CharacterProperty
 		return 0;				
 	}	
 	
+	
+	int GetTotalStatLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		{
+			cout<<"WARNING: SetStat - wrong number of arguments"<<endl;
+			return 0;		
+		}
+			
+		int iCharcterID;
+		string strStat;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,strStat);
+		
+		
+		double dRet = 0;
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			dRet = pkCP->m_kCharacterStats.GetTotal(strStat);		
+		}
+	
+		g_pkScript->AddReturnValue(pkLua, dRet);
+	
+		return 1;				
+	}		
+	
 /**	\fn AddBuff( EntityID, strBuff )
 		\brief Unkown
 		\relates CharacterProperty
@@ -3136,6 +3164,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	
 	//stats
 	g_pkScript->ExposeFunction("SetStat",			SI_P_CharacterProperty::SetStatLua);
+	g_pkScript->ExposeFunction("GetTotalStat",	SI_P_CharacterProperty::GetTotalStatLua);
 	g_pkScript->ExposeFunction("ChangeStat",		SI_P_CharacterProperty::ChangeStatLua);
 	g_pkScript->ExposeFunction("ChangeStatMod",	SI_P_CharacterProperty::ChangeStatModLua);
 	

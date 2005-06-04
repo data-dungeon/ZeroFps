@@ -1228,7 +1228,7 @@ namespace SI_MistServer
 		g_pkScript->GetArgString(pkLua, 1, strMessage);		
 		
 		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
-			g_kMistServer.SayToClients(strMessage,"Server",-1,pkData->m_iConnectionID);
+			g_kMistServer.SayToClients(strMessage,"->",-1,pkData->m_iConnectionID);
 		else
 			cout<<"WARNING: could not find character ID:"<<id<<endl;
 						

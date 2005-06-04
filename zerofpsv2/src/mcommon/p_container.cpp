@@ -993,6 +993,8 @@ namespace SI_P_Container
 		
 		g_pkScript->GetArgString(pkLua, 1,strItemName);
 	
+	
+	
 		//get cotnainer entity
 		if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(iContainerID))
 		{
@@ -1006,13 +1008,16 @@ namespace SI_P_Container
 					if(pkCP->AddMove(pkEnt->GetEntityID(),-1,-1,-1))
 					{
 						//cout<<"created "<<czItemName<<" in container "<<iContainerID<<endl;
-						return 0;
+						g_pkScript->AddReturnValue(pkLua, 1);
+						return 1;
 					}
 					else
 					{
 						cout<<"WARNING: could not create item "<<strItemName<<" in container "<<iContainerID<<endl;
 						g_pkObjMan->Delete(pkEnt);
-						return 0;
+						
+						g_pkScript->AddReturnValue(pkLua, 0);						
+						return 1;
 					}
 					
 				}
@@ -1021,7 +1026,8 @@ namespace SI_P_Container
 			}
 		}
 		
-		return 0;
+		g_pkScript->AddReturnValue(pkLua, 0);		
+		return 1;
 	}
 }
 

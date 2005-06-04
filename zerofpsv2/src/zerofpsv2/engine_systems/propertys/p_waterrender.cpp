@@ -72,8 +72,13 @@ void P_WaterRender::Update()
 
  	if(m_pkZeroFps->GetDebugGraph())
 	{
+		bool bUse = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
+		m_pkZShaderSystem->UseDefaultGLSLProgram(false);		
+	
  		m_pkRender->Sphere(kPos,0.5,1,Vector3(1,1,1),true);	
 		m_pkRender->DrawAABB(kMin,kMax,Vector3(1,1,1));
+		
+		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
 	}
 
 }
