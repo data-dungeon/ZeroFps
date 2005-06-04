@@ -226,6 +226,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Vector3	Get3DMouseDir(bool bMouse);
 		Entity*	GetTargetObject();		
+		Entity*	GetTargetObject2();		
 		int		GetTargetTCS(Vector3* pkPos);		
 				
 		int			GetZoneID(const Vector3& kPos);

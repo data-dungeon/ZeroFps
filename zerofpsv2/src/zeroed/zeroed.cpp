@@ -538,7 +538,18 @@ void ZeroEd::DrawSelectedEntity()
 						
 				Vector3 kMin = pkEnt->GetWorldPosV() - fRadius;
 				Vector3 kMax = pkEnt->GetWorldPosV() + fRadius;
-	
+
+				P_Mad* mp = (P_Mad*)pkEnt->GetProperty("P_Mad");
+				if(mp)
+				{ 
+					Vector3 kPos, kLocalMin, kLocalMax;
+					if(mp->GetBBox(kLocalMin, kLocalMax, kPos))
+					{
+						kMin = pkEnt->GetWorldPosV() + kLocalMin;
+						kMax = pkEnt->GetWorldPosV() + kLocalMax;
+					}
+				}
+
 				if(m_iCurrentObject == (*itEntity))
 					m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
 				else
@@ -1382,6 +1393,64 @@ int	ZeroEd::GetTargetTCS(Vector3* pkPos)
 	}
 		
 	return -1;
+}
+
+Entity*	ZeroEd::GetTargetObject2()
+{
+	Vector3 start	= m_pkActiveCamera->GetPos();	// + Get3DMousePos(true)*2;
+	Vector3 dir		= Get3DMouseDir(true);
+
+	vector<Entity*> kObjects;
+	kObjects.clear();
+	
+	m_pkEntityManager->TestLine(&kObjects,start,dir);
+	Vector3 cp;
+	float d;
+
+	
+	float closest = 999999999;
+	Entity* pkClosest = NULL;	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{
+		//cout << "Check " << kObjects[i]->GetEntityID() << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
+
+		if(kObjects[i] == m_pkCameraObject[0])		continue;
+		if(kObjects[i] == m_pkCameraObject[1])		continue;
+		if(kObjects[i] == m_pkCameraObject[2])		continue;
+		if(kObjects[i] == m_pkCameraObject[3])		continue;
+		if(kObjects[i] == m_pkZoneMarkerEntity)					continue;
+		if(kObjects[i]->IsZone())										continue;
+		if(kObjects[i]->GetEntityID() <100000)						continue;
+		if(kObjects[i]->GetName() == "StaticEntity")				continue;
+		if(kObjects[i]->GetName() == "A t_serverinfo.lua")		continue;
+		
+		//get mad property and do a linetest		
+		//if(kObjects[i]->GetProperty("P_Tcs") == NULL)			continue;
+
+		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
+		d = 999999999;
+	
+		if(!mp)
+		{
+			d = (start - kObjects[i]->GetWorldPosV()).Length();
+		}
+		else
+		{
+			if(mp->TestLine(start,dir))
+			{	
+				cp = mp->GetLastColPos();
+				d = start.DistanceTo(cp);
+			}
+		}
+
+		if(d < closest)
+		{
+			closest = d;
+			pkClosest = kObjects[i];
+		}
+	}
+	
+	return pkClosest;
 }
 
 Entity* ZeroEd::GetTargetObject()

@@ -187,6 +187,18 @@ void P_Mad::Update()
 	}	
 }
 
+bool P_Mad::GetBBox(Vector3& kMin, Vector3& kMax, Vector3& kPos)
+{
+	if(!m_bHaveAABB)
+		return false;
+
+	kMin = m_AABBMin;
+	kMax = m_AABBMax;
+	kPos = m_pkEntity->GetIWorldPosV();
+	return true;
+}
+
+
 void P_Mad::CreateAABB()
 {
 	static Vector3 kVert;

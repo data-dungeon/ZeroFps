@@ -253,7 +253,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
-		Entity* pkObj =  GetTargetObject();
+		Vector3 kPos;
+		//Entity* pkObj = m_pkEntityManager->GetEntityByID( GetTargetTCS(&kPos) );
+		Entity* pkObj = GetTargetObject2();
 		if(pkObj)
       {
 			int sel_object = m_iCurrentObject;
@@ -412,13 +414,13 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 {
 	if(!m_pkActiveCameraObject)
 		return;
-
+	if(!m_pkActiveCamera)
+		return;
 
 	if(m_pkInputHandle->Pressed(KEY_Z))		SetViewPort("vp1");
 	if(m_pkInputHandle->Pressed(KEY_X))		SetViewPort("vp2");
 	if(m_pkInputHandle->Pressed(KEY_C))		SetViewPort("vp3");
 	if(m_pkInputHandle->Pressed(KEY_V))		SetViewPort("vp4");
-
 
 
 	if(m_pkInputHandle->VKIsDown("fast")){
@@ -427,7 +429,9 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 
 	float fSpeedScale = m_pkZeroFps->GetFrameTime()*m_CamMoveSpeed;
 
-	if(1)//m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) // zeb - krashar för mig här
+	Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
+
+	if(eCamMode == Camera::CAMMODE_PERSP)//m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) // zeb - krashar för mig här
 	{
 
 		Vector3 newpos = m_pkActiveCameraObject->GetLocalPosV();
@@ -441,8 +445,8 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		Vector3 xv = kRm.GetAxis(0);
 		Vector3 zv = kRm.GetAxis(2);
 
-		xv.y = 0;
-		zv.y = 0;
+		xv.y = -xv.y;
+		zv.y = -zv.y;
 		
 		xv.Normalize();
 		zv.Normalize();
