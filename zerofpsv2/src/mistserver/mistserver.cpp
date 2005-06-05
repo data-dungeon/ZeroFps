@@ -205,6 +205,7 @@ void MistServer::Init()
  	pkSun->kRot = Vector3(2,2,1);
  	pkSun->kDiffuse=Vector4(0.5,0.5,0.5,0);
  	pkSun->kAmbient=Vector4(0.5,0.5,0.5,0);
+ 	pkSun->kSpecular=Vector4(1,1,1,0);
 //  	pkSun->kRot = Vector3(2,2,1);
 // 	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
 // 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
