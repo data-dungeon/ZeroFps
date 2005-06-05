@@ -280,8 +280,6 @@ BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
 			kTemp.m_iKey='-';
 	}
 
-	printf("key = %i", kTemp.m_iKey);
-
 #endif WIN32
 
 	// Simpelt sätt att ändra å.ä.ö till a,a,o (istället för cp tecken som är nu)
