@@ -1413,7 +1413,7 @@ void Entity::SetWorldRotV(Vector3 kRot)
 void Entity::SetLocalPosV(const Vector3& kPos)
 {
 	//check new zone
-	if(m_bUseZones)
+	if(m_bUseZones && !m_bRelativeOri)
 	{
 		if(!AttachToZone(kPos))
 			return;
@@ -1440,9 +1440,7 @@ void Entity::SetWorldPosV(const Vector3& kPos)
 {
 	if(m_bRelativeOri)
 	{
-		Vector3 kDiff = kPos - GetWorldPosV();
-		Vector3 newlocalpos = m_kLocalPosV + kDiff;
-		SetLocalPosV(newlocalpos);
+		SetLocalPosV(m_kLocalPosV + (kPos - GetWorldPosV()) );
 	}
 	else
 		SetLocalPosV(kPos);
@@ -2630,21 +2628,38 @@ int SetObjectPosLua(lua_State* pkLua)
 
 int SetLocalPosLua(lua_State* pkLua)
 {
-	if(g_kScriptState.g_pkLastObject == NULL)
+	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	if(g_pkScript->GetNumArgs(pkLua) != 3)
-		return 0;	
-
-	double x,y,z;
+	if(Entity* pkEnt = GetEntityPtr(pkLua, 0))
+	{
+		Vector3 kPos;
+		kPos = GetVectorArg(pkLua, 2);
 	
-	g_pkScript->GetArg(pkLua, 0, &x);
-	g_pkScript->GetArg(pkLua, 1, &y);
-	g_pkScript->GetArg(pkLua, 2, &z);
-	
-	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
-	
+		pkEnt->SetLocalPosV(kPos);
+		return 0;
+	}
+		
 	return 0;
+// 	if(!pkEnt)	return 0;
+// 	
+// 	
+// 
+// 	if(g_kScriptState.g_pkLastObject == NULL)
+// 		return 0;
+// 
+// 	if(g_pkScript->GetNumArgs(pkLua) != 3)
+// 		return 0;	
+// 
+// 	double x,y,z;
+// 	
+// 	g_pkScript->GetArg(pkLua, 0, &x);
+// 	g_pkScript->GetArg(pkLua, 1, &y);
+// 	g_pkScript->GetArg(pkLua, 2, &z);
+// 	
+// 	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
+// 	
+// 	return 0;
 }
 
 
