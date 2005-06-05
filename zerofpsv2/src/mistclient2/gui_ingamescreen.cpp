@@ -10,7 +10,7 @@
 extern MistClient	g_kMistClient;
 
 
-
+	
 void GuiMsgIngameScreen( string strMainWnd, string	strController,	
 								 unsigned int msg, int numparms,	void *params )	
 {
