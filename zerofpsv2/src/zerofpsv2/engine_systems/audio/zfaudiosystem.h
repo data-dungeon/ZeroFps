@@ -116,8 +116,8 @@ public:
 
 	void UnloadAll();
 
-	bool SetSoundVolume(float fVolume);
-	float GetSoundVolume() { return m_fSoundVolume; }
+	//bool SetSoundVolume(float fVolume);
+	//float GetSoundVolume() { return m_fSoundVolume; }
 
 	int PlayAudio(string strName, Vector3 kPos=m_kPos, Vector3 kDir=Vector3(0,0,1), int flags=0, float fGain=1.0f);
 	bool StopAudio(int iID, bool bRelease=true);
@@ -173,12 +173,12 @@ private:
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
 	
-	bool m_bEnableSound; // enable/disable sound
-	bool m_bEnableMusic; // enable/disable music
+	//bool m_bEnableSound; // enable/disable sound
+	//bool m_bEnableMusic; // enable/disable music
 	float m_fReferenceDistance; // ReferenceDistance (ljud styrka)
 
 	bool m_bIsValid;
-	float m_fSoundVolume, m_fMusicVolume;
+//	float m_fSoundVolume, m_fMusicVolume;
 	
 	static Vector3 m_kPos;
 	Vector3 m_kHead;

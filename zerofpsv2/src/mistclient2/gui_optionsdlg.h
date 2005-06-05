@@ -18,8 +18,8 @@ public:
 		bool m_bPrevVegetationState;
 		int m_iCurrentShadowGroup;
 		int m_iCurrentPage;
-		float m_fPrevMusicVolume;
-		float m_fPrevSoundVolume;
+		float m_fPrevVolume;
+		//float m_fPrevSoundVolume;
 		float m_fPrevMouseSens;
 		int m_iPrevNetSpeed;
 		int m_iNewNetSpeed;

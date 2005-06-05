@@ -32,6 +32,8 @@ void OptionsDlg::Open()
 {
 	ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*)m_pkMC->GetWnd("OptionsTabCtlr");
 	pkTabCtrl->SetFont(m_pkMC->m_pkGuiMan->Font("defguifont"));
+
+	((ZGuiSlider*)m_pkMC->GetWnd("AudioVolumeSlider"))->AddBuddyWindow(m_pkMC->GetWnd("AudioVolume"));
 	
 	float unslColor[] = {0.7f,0.7f,0.7f};
 	float selColor[]  = {1,1,1};
@@ -142,9 +144,9 @@ void OptionsDlg::Open()
 	//((ZGuiSlider*)m_pkMC->GetWnd("MusicVolumeSlider"))->SetRange(0,100);
 	//((ZGuiSlider*)m_pkMC->GetWnd("MusicVolumeSlider"))->SetPos(fPos, true); 
 
-	fPos = m_pkAudioSys->GetSoundVolume() * 100.0f;
-	((ZGuiSlider*)m_pkMC->GetWnd("SoundVolumeSlider"))->SetRange(0,100);
-	((ZGuiSlider*)m_pkMC->GetWnd("SoundVolumeSlider"))->SetPos(fPos, true);
+	fPos = m_pkAudioSys->GetMainVolume() * 100.0f;
+	((ZGuiSlider*)m_pkMC->GetWnd("AudioVolumeSlider"))->SetRange(0,100);
+	((ZGuiSlider*)m_pkMC->GetWnd("AudioVolumeSlider"))->SetPos(fPos, true);
 
 	fPos = (m_pkInput->GetMouseSens() / 5.0f) * 100.0f ;
 	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetRange(0,100);
@@ -157,7 +159,7 @@ void OptionsDlg::Open()
 
 
 
-	m_kOptionsValues.m_fPrevSoundVolume = m_pkAudioSys->GetSoundVolume();
+	m_kOptionsValues.m_fPrevVolume = m_pkAudioSys->GetMainVolume();
 	//m_kOptionsValues.m_fPrevMusicVolume = m_pkAudioSys->GetMusicVolume();
 	m_kOptionsValues.m_fPrevMouseSens = m_pkInput->GetMouseSens();
 
@@ -190,7 +192,7 @@ void OptionsDlg::Close(bool bSave)
 		m_pkZShaderSystem->SetGamma(m_kOptionsValues.m_fGammaColors[0],
 			m_kOptionsValues.m_fGammaColors[1], m_kOptionsValues.m_fGammaColors[2]);
 
-		m_pkAudioSys->SetSoundVolume(m_kOptionsValues.m_fPrevSoundVolume);
+		m_pkAudioSys->SetMainVolume(m_kOptionsValues.m_fPrevVolume);
 //		m_pkAudioSys->SetMusicVolume(m_kOptionsValues.m_fPrevMusicVolume);
 		
 		//char cmd[25];
@@ -336,6 +338,19 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				char cmd[50];
 				sprintf(cmd, "r_vegetation %i", (int) g_kMistClient.IsButtonChecked("VegetationCheckbox"));
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+			}
+		}
+		else
+		if(strMainWnd == "OptionsPageAudio")
+		{
+			if(strController == "AudioOnOffCheckbox")
+			{
+				if(((ZGuiCheckbox*)g_kMistClient.GetWnd("AudioOnOffCheckbox"))->IsChecked())
+					g_kMistClient.m_pkAudioSys->SetMainVolume(0.0f);
+				else
+					g_kMistClient.m_pkAudioSys->SetMainVolume(
+						g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_fPrevVolume);
+
 			}
 		}
 		else
@@ -486,12 +501,15 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 			//	g_kMistClient.m_pkAudioSys->SetMusicVolume(pos / 100.0f);
 			//}
 			//else
-			if(strController == "SoundVolumeSlider")
+			if(strController == "AudioVolumeSlider")
 			{
-				float pos;
-				pos = ((ZGuiSlider*)g_kMistClient.GetWnd("SoundVolumeSlider"))->ZGuiSlider::GetPos();
-				g_kMistClient.m_pkAudioSys->SetSoundVolume(pos / 100.0f);
-			}
+				if(((ZGuiCheckbox*)g_kMistClient.GetWnd("AudioOnOffCheckbox"))->IsChecked() == false)
+				{
+					float pos;
+					pos = ((ZGuiSlider*)g_kMistClient.GetWnd("AudioVolumeSlider"))->ZGuiSlider::GetPos();
+					g_kMistClient.m_pkAudioSys->SetMainVolume(pos / 100.0f);					
+				}
+			}			
 		}
 		else
 		if(strMainWnd == "OptionsPageController")

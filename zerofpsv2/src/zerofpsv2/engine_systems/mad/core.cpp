@@ -169,6 +169,9 @@ char* Mad_Core::GetName(void)
 
 float Mad_Core::GetAnimationLengthInS(int iAnim)
 { 
+	if(iAnim < 0) // zeblar: läger till en check... fick ett negativt värde inskickat en gång som res i krash.
+		iAnim = 0;
+
 	int iNumOfKeyFrames = m_kBoneAnim[iAnim].m_kBoneKeyFrames.size();
 	return (iNumOfKeyFrames * g_fMadFrameTime);
 }

@@ -1,4 +1,4 @@
-// zfaudiosystem.cpp: implementation of the ZFAudioSystem class.
+//// zfaudiosystem.cpp: implementation of the ZFAudioSystem class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -212,20 +212,15 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
 	m_fReferenceDistance = 1.0f;
-	m_bEnableSound = true;
-	m_bEnableMusic = true;
+	//m_bEnableSound = true;
+	//m_bEnableMusic = true;
 
-	RegisterVariable("a_enablesound",&m_bEnableSound,CSYS_BOOL);
-	RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
+	//RegisterVariable("a_enablesound",&m_bEnableSound,CSYS_BOOL);
+	//RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
 // 	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
 
 	m_fMainVolume = 1.0f;
-
-	m_fSoundVolume = 1.0f;
-	RegisterVariable("a_soundvolume",&m_fSoundVolume,CSYS_FLOAT);
-	
-	m_fMusicVolume = 1.0f;
-	RegisterVariable("a_musicvolume",&m_fMusicVolume,CSYS_FLOAT);
+	RegisterVariable("a_mainvolume",&m_fMainVolume,CSYS_FLOAT);
 
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -689,15 +684,15 @@ void ZFAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
-bool ZFAudioSystem::SetSoundVolume(float fVolume)
-{
-	if((fVolume<=1.0) && (fVolume>0.0))
-	{
-		m_fSoundVolume = fVolume;
-		return true;
-	}
-	return false;
-};
+//bool ZFAudioSystem::SetSoundVolume(float fVolume)
+//{
+//	if((fVolume<=1.0) && (fVolume>0.0))
+//	{
+//		m_fSoundVolume = fVolume;
+//		return true;
+//	}
+//	return false;
+//};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -705,15 +700,15 @@ bool ZFAudioSystem::SetSoundVolume(float fVolume)
 ///////////////////////////////////////////////////////////////////////////////
 void ZFAudioSystem::Update()
 {
-	if(m_bEnableSound == false)
-		return;
+	//if(m_bEnableSound == false)
+	//	return;
 	
 	//dvoid waz here and hacked a bit =D
 	//sätter ljudvolym till noll om applicationen är minimerad
 	if(m_pkZeroFps->GetMinimized())
 		alListenerf(AL_GAIN, 0.0);
 	else	
-		alListenerf(AL_GAIN, 1.0);
+		alListenerf(AL_GAIN, m_fMainVolume);
 	
 	UpdateAmbientSound();
 
@@ -765,7 +760,8 @@ void ZFAudioSystem::Update()
 					alSourcei (pkSound->m_uiSourceBufferName, AL_SOURCE_RELATIVE, AL_TRUE      );
 				}
 
-				alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, pkSound->m_fGain);
+				float fGain = m_fMainVolume * pkSound->m_fGain;
+				alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, fGain/*pkSound->m_fGain*/);
 			}
 			else
 			{
@@ -1119,7 +1115,8 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 	
 	// Set gain.
 	alGetError();
-	alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, pkSound->m_fGain);
+	float fGain = m_fMainVolume * pkSound->m_fGain;
+	alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, fGain/*pkSound->m_fGain*/);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
 		PrintError(error, "ZFAudioSystem::Play, Failed to set gain!");

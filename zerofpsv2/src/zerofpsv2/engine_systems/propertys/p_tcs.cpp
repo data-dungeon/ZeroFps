@@ -3,7 +3,7 @@
 #include "../common/heightmap.h"
 
 #include "p_hmrp2.h"
-#include "../tcs/tcs.h"3
+#include "../tcs/tcs.h"
 
 using namespace ObjectManagerLua;
 
