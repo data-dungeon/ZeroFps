@@ -166,18 +166,11 @@ void MistClient::OnInit()
 	//start menu music
 	g_ZFObjSys.RunCommand(string(string("audioplay ")+m_strMenuMusic).c_str(),CSYS_SRC_SUBSYS);	
 	
-	
-	
 	if(m_bQuickStart)
 	{
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
 	}
 	m_pkNetwork->ClientStart();
-
-	
-//  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
-//  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
-//  		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
 
 }
 

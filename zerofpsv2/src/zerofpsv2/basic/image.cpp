@@ -603,20 +603,26 @@ bool Image::load_jpg(FILE *fp)
 
 	DWORD im_loc_bytes=(DWORD)temp;
 
+	int max = w*h;
+
 	for (y=0;y<h;y++)
 		for (x=0;x<w;x++)
 		{
 			pixel = (color_rgb*) im_loc_bytes;
 			m_pkPixels[oka].r = pixel->b;
 			m_pkPixels[oka].g = pixel->g;
-			m_pkPixels[oka++].b = pixel->r;
-			m_pkPixels[oka++].a = 0;
-			im_loc_bytes+=4;
+			m_pkPixels[oka].b = pixel->r;
+			oka ++;
+
+			im_loc_bytes+=	4;
 		}
 
 	m_bHasAlpha = false;
 	m_iWidth  = w;
 	m_iHeight = h;
+
+	Flip(false, true);
+
 	return true;
 }
 
