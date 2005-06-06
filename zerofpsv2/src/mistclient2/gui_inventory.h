@@ -24,6 +24,7 @@ enum InventoryDropTarget
 
 struct ITEM_INFO 
 {
+	string	strName;
 	string	strInfo;
 	string	strImage;
 	int		m_iValue;

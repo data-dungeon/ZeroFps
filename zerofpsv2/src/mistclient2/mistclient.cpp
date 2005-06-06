@@ -1425,6 +1425,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			ITEM_INFO kInfo;
 			
+			pkNetMessage->Read_Str(kInfo.strName);
 			pkNetMessage->Read_Str(kInfo.strInfo);
 			pkNetMessage->Read_Str(kInfo.strImage);
 			pkNetMessage->Read(kInfo.m_fWeight);

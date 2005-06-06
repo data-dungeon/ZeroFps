@@ -1037,6 +1037,7 @@ void MistServer::SendItemInfo(int iItemID,int iClientID)
 		NetPacket kNp;			
 		kNp.Write((char) MLNM_SC_ITEMINFO);		
 	
+		kNp.Write_Str(pkItem->GetName());
 		kNp.Write_Str(pkItem->GetInfo());
 		kNp.Write_Str(pkItem->GetImage());
 		kNp.Write(pkItem->GetWeight());
