@@ -124,6 +124,7 @@ void P_Light::UpdateLightMode()
 				float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
 	
 				m_pkLightSource->kDiffuse = Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03) );
+				m_pkLightSource->kSpecular = m_pkLightSource->kDiffuse;
 			}
 			break;		
 		}

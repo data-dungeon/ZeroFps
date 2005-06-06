@@ -35,6 +35,7 @@ class MCOMMON_API EnvSetting
 		string	m_strCloudLow;				
 		string	m_strCloudHi;				
 		
+		Vector4	m_kSunSpecularColor;
 		Vector4	m_kSunDiffuseColor;
 		Vector4	m_kSunAmbientColor;		
 		Vector3	m_kSunPos;

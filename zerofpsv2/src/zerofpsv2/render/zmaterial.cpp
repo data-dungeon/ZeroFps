@@ -69,7 +69,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_kMatDiffuse.Set(0.8,0.8,0.8,1.0);
 	m_kMatSpecular.Set(0.0,0.0,0.0,1.0);
 	m_kMatEmission.Set(0.0,0.0,0.0,1.0);
-	m_fShininess = 10.0;
+	m_fShininess = 5.0;
 	
 };
 

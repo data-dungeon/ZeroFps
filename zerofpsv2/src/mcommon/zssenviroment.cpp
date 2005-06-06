@@ -161,6 +161,17 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 		
 		m_kSunDiffuseColor.w = 1;
 		
+		//specular sunlight
+		if(m_kIni.KeyExist("enviroment","sunspecularR"))
+			m_kSunSpecularColor.x = m_kIni.GetFloatValue("enviroment","sunspecularR");
+		if(m_kIni.KeyExist("enviroment","sunspecularG"))
+			m_kSunSpecularColor.y = m_kIni.GetFloatValue("enviroment","sunspecularG");
+		if(m_kIni.KeyExist("enviroment","sunspecularB"))
+			m_kSunSpecularColor.z = m_kIni.GetFloatValue("enviroment","sunspecularB");		
+		
+		m_kSunSpecularColor.w = 1;
+		
+		
 		//ambient sunlight
 		if(m_kIni.KeyExist("enviroment","sunambientR"))
 			m_kSunAmbientColor.x = m_kIni.GetFloatValue("enviroment","sunambientR");
@@ -212,7 +223,8 @@ void EnvSetting::Clear()
 	m_strCloudHi	= "";			
 	
 		
-	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1.0);					
+	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1.0);	
+	m_kSunSpecularColor.Set(1,1,1,1);				
 	//m_kSunDiffuseColor.Set(-1,-1,-1,-1);					
 	m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
 	//m_kSunAmbientColor.Set(-1,-1,-1,-1);		

@@ -183,6 +183,7 @@ void P_Enviroment::UpdateEnviroment()
 	//light
 	static Vector4 kCurrentDiffuse(0,0,0,0);
 	static Vector4 kCurrentAmbient(0,0,0,0);
+	static Vector4 kCurrentSpecular(0,0,0,0);
 	
 // 	P_Light* pkLight;
 // 	if( !(pkLight = (P_Light*)GetEntity()->GetProperty("P_Light")) )
@@ -196,28 +197,30 @@ void P_Enviroment::UpdateEnviroment()
 				
 		Vector4 kSunDColor(1,0.9,0.9,1);
 		Vector4 kSunAColor(0.9,0.9,1,1);
+		Vector4 kSunSColor(1,1,1,1);
 		
 		kSunDColor*=fS;
+		kSunSColor*=fS;
 		kSunAColor*=fS * 0.5;
 		
 		kCurrentDiffuse.Lerp(kCurrentDiffuse,kSunDColor,fIf);
 		kCurrentAmbient.Lerp(kCurrentAmbient,kSunAColor,fIf);
+		kCurrentSpecular.Lerp(kCurrentSpecular,kSunSColor,fIf);
 	}
 	else
 	{		
 		kCurrentDiffuse.Lerp(kCurrentDiffuse,m_kCurrentEnvSetting.m_kSunDiffuseColor,fIf);
 		kCurrentAmbient.Lerp(kCurrentAmbient,m_kCurrentEnvSetting.m_kSunAmbientColor,fIf);
+		kCurrentSpecular.Lerp(kCurrentSpecular,m_kCurrentEnvSetting.m_kSunSpecularColor,fIf);
+		
 	}
 	
 	LightSource* pkSun = m_pkLight->GetSunPointer();
-// 	pkSun->SetType(DIRECTIONAL_LIGHT);
+
+	pkSun->kSpecular = kCurrentSpecular;
 	pkSun->kDiffuse = kCurrentDiffuse;
 	pkSun->kAmbient = kCurrentAmbient;
 	pkSun->kRot = m_kCurrentEnvSetting.m_kSunPos;
-// 	pkSun->SetDiffuse(kCurrentDiffuse);
-// 	pkSun->SetAmbient(kCurrentAmbient);		
-// 	pkLigpkSun->SetRot(m_kCurrentEnvSetting.m_kSunPos);	
-			
 
 	//particles
 	//setup particle property
@@ -391,6 +394,7 @@ void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strCloudHi);
 	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strCloudLow);
 
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunSpecularColor);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunDiffuseColor);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunAmbientColor);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunPos);	
@@ -432,7 +436,7 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strCloudHi);
 	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strCloudLow);
 	
-
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunSpecularColor);
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunDiffuseColor);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunAmbientColor);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunPos);	
