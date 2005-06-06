@@ -3,6 +3,8 @@
 #include "../basic/globals.h"
 #include "zshadersystem.h" 
 
+#include "../engine/zerofps.h"
+
 map<string,int> ZMaterial::m_kEnums;
 int ZMaterial::m_iNextID = 1;
 
@@ -877,6 +879,7 @@ namespace SI_ZMATERIAL
 	int					g_iCurrentMaterialPass = -1;
 	bool					g_bHaveGLSLSupport;
 	ZFScriptSystem*	g_pkScript = NULL;
+	ZeroFps*				g_pkZeroFps = NULL;
 	
 	
 	int PassBeginLua(lua_State* pkLua)
@@ -940,17 +943,31 @@ namespace SI_ZMATERIAL
 		g_pkScript->AddReturnValue(pkLua, dRet);				
 		return 1;		
 	}		
+	
+	int ShadowMap(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,0))
+			return 0;		
+
+		double dRet = 0;					
+		if(g_pkZeroFps->GetShadowMap())
+			dRet = 1;	
+		
+		g_pkScript->AddReturnValue(pkLua, dRet);				
+		return 1;		
+	}			
 }
 
 
 void RegisterSI_Material()
 {
 	SI_ZMATERIAL::g_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	SI_ZMATERIAL::g_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	
-	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassBegin",		SI_ZMATERIAL::PassBeginLua);
-	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassEnd",			SI_ZMATERIAL::PassEndLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassBegin",				SI_ZMATERIAL::PassBeginLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassEnd",				SI_ZMATERIAL::PassEndLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportGLSLProgram",	SI_ZMATERIAL::SupportGLSLProgramLua);
-
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("ShadowMap",				SI_ZMATERIAL::ShadowMap);
 };
 
 
