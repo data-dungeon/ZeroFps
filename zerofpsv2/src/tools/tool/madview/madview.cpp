@@ -142,26 +142,26 @@ void MadView::OnIdle()
 
 void MadView::ToogleLight(bool bEnabled)
 {
-	static bool s_bAdded = false;
+// 	static bool s_bAdded = false;
 
 	if(bEnabled)
 	{	
-		m_kSun.kRot = Vector3(0.5,1,-1);
-		m_kSun.kDiffuse=Vector4(0.8,0.8,0.8,0);
-		m_kSun.kAmbient=Vector4(0.3,0.3,0.3,0);
-		m_kSun.iType=DIRECTIONAL_LIGHT;			
-		m_kSun.iPriority=10;
-		m_kSun.fConst_Atten=1;
-		m_kSun.fLinear_Atten=0;
-		m_kSun.fQuadratic_Atten=0;
-
-		m_pkLight->Add(&m_kSun);
-		s_bAdded = true; 
+		LightSource* pkLight = m_pkLight->GetSunPointer();
+ 		pkLight->kDiffuse=Vector4(0.8,0.8,0.8,0);
+ 		pkLight->kAmbient=Vector4(0.6,0.6,0.6,0);
+ 		pkLight->kSpecular=Vector4(1,1,1,0);		
+		
+// 		s_bAdded = true; 
 	}
 	else
 	{
-		if(s_bAdded)
-			m_pkLight->Remove(&m_kSun);
+		LightSource* pkLight = m_pkLight->GetSunPointer();
+		pkLight->kDiffuse.Set(0,0,0,0);		
+		pkLight->kAmbient.Set(0,0,0,0);
+		pkLight->kSpecular=Vector4(0,0,0,0);
+
+/*		if(s_bAdded)
+			m_pkLight->Remove(&m_kSun);*/
 	}
 }
 
