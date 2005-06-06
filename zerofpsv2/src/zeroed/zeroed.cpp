@@ -1730,7 +1730,7 @@ void ZeroEd::ToogleLight()
 		LightSource* pkLight = m_pkLight->GetSunPointer();
  		pkLight->kDiffuse=Vector4(0.8,0.8,0.8,0);
  		pkLight->kAmbient=Vector4(0.6,0.6,0.6,0);
- 		pkLight->kSpecular=Vector4(1,1,1,0);
+ 		pkLight->kSpecular=Vector4(0.8,0.8,0.8,0);
 	}
 }
 
