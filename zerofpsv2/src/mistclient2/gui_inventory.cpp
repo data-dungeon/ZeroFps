@@ -21,7 +21,8 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 	if(msg == ZGM_MOUSEMOVE)
 	{
 		int pressed = ((int*)params)[0], x = ((int*)params)[1], y = ((int*)params)[2];
-		g_kMistClient.m_pkInventoryDlg->OnMouseMove(pressed < 1 ? false : true, x, y);
+		if(g_kMistClient.m_pkInventoryDlg)
+			g_kMistClient.m_pkInventoryDlg->OnMouseMove(pressed < 1 ? false : true, x, y);
 	}
 	else
 	if(msg == ZGM_KEYPRESS)
@@ -121,8 +122,6 @@ InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6),
 
 	m_iSplitShareMax = 0;
 
-	m_kItemUnderInspection.second = -1;
-
 
 }
 
@@ -214,6 +213,8 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
+	if(m_pkInventoryWnd == NULL) return;
+
 	if(m_pkSplitStockWnd && g_kMistClient.m_pkGui->GetWndCapture() == m_pkSplitStockWnd)
 		return;
 
@@ -261,9 +262,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					}
 					else
 					{
-						m_kItemUnderInspection.first = i;
-						m_kItemUnderInspection.second = true;
-
 						g_kMistClient.RequestItemInfo(m_vkInventoryItemList[i].iItemID);
 						//OpenItemInfoWnd(true);
 					}
@@ -340,9 +338,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					else
 					{
 						g_kMistClient.RequestItemInfo(m_vkContainerItemList[i].iItemID);
-						m_kItemUnderInspection.first = i;
-						m_kItemUnderInspection.second = false;
-						//OpenItemInfoWnd(true);
 					}
 				}
 				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
@@ -1267,16 +1262,7 @@ void InventoryDlg::OpenItemInfoWnd(bool bOpen, ITEM_INFO kInfo)
 		g_kMistClient.ShowWnd("ItemInfoWnd", true, true, false);
 		g_kMistClient.SetText("ItemInfoTextbox", (char*)kInfo.strInfo.c_str());
 
-		if(m_kItemUnderInspection.first != -1)
-		{
-			if(m_kItemUnderInspection.second == true)
-				g_kMistClient.SetText("ItemLabelTextbox", 
-					(char*)m_vkInventoryItemList[m_kItemUnderInspection.first].strName.c_str());
-			else
-				g_kMistClient.SetText("ItemLabelTextbox", 
-					(char*)m_vkContainerItemList[m_kItemUnderInspection.first].strName.c_str());
-
-		}
+		g_kMistClient.SetText("ItemLabelTextbox", (char*)kInfo.strName.c_str());
 		
 		sprintf(szNumber, "%0.2f Kg", kInfo.m_fWeight);
 		g_kMistClient.SetText("ItemValueWeight", szNumber);

@@ -208,6 +208,20 @@ void EquipmentDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			}
 		}
 	}
+
+	static bool s_bRightMouseButtonPressed = false;
+	if(g_kMistClient.m_pkGui->m_bMouseRightPressed && s_bRightMouseButtonPressed == false)
+	{
+		s_bRightMouseButtonPressed = true;
+
+		EQUIPMENT_SLOT* pkSlot = GetSlot(mx, my);
+		if(pkSlot != NULL && pkSlot->m_iItemID != -1)
+		{			
+			g_kMistClient.RequestItemInfo(pkSlot->m_iItemID);
+		}
+	}
+	else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
+		s_bRightMouseButtonPressed = false;
 }
 
 void EquipmentDlg::HighlightSlot(int iItemType)
@@ -380,7 +394,7 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 			(*pSlot).m_iStackSize = vkItemList[0].m_iStackSize;
 			(*pSlot).m_iSlotsW = vkItemList[0].m_cItemW;
 			(*pSlot).m_iSlotsH = vkItemList[0].m_cItemH;
-			
+						
 			if((*pSlot).m_pkWnd)
 			{
 				(*pSlot).m_pkWnd->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes( "items/" + vkItemList[0].m_strIcon);

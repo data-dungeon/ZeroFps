@@ -1453,7 +1453,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 			cout<<"-- Got item info --"<<endl;
 			cout<<"IMAGE:"<<kInfo.strImage<<endl;			
-			cout<<"TEXT:"<<kInfo.strInfo<<endl;		
+			cout<<"TEXT:"<<kInfo.strInfo<<endl;	
+			cout<<"NAME:"<<kInfo.strName<<endl;	
 			cout<<"STATS:"<<endl;
 			for(int i =0;i<m_kStats.size();i++)
 				cout<<m_kStats[i].m_strName<<"  "<<m_kStats[i].m_fValue<<" "<<m_kStats[i].m_fMod<<endl;

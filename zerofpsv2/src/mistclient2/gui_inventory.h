@@ -118,9 +118,6 @@ private:
 	SPECIAL_SLOT m_kSplitSlot; 
 	SPECIAL_SLOT m_kSplitSlotTarget; 
 
-	pair<int, bool> m_kItemUnderInspection; // 1:st arg: index into that array (or -1 if no item under inspection).
-														 // 2:nd arg: 1 = m_vkInventoryItemList, 0: m_vkContainerItemList.
-
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
 
