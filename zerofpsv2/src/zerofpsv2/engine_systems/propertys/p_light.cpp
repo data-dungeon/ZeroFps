@@ -57,7 +57,7 @@ void P_Light::Update()
 
 		UpdateLightMode();		
 		
-		if(m_pkLightSource->iType == POINT_LIGHT && m_fFlareSize > 0)
+		if((m_pkLightSource->iType == POINT_LIGHT && m_fFlareSize > 0) || (m_pkZeroFps->GetDebugGraph()))
 			m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 		else
 			m_iType = PROPERTY_TYPE_NORMAL;
@@ -68,6 +68,12 @@ void P_Light::Update()
 	{
 		m_pkLightSource->kPos = m_pkEntity->GetIWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);			
 		DrawFlare();
+	
+	
+	  	if(m_pkZeroFps->GetDebugGraph())
+		{
+			m_pkRender->Sphere(m_pkEntity->GetIWorldPosV(),0.3,1,Vector3(1,1,0),false);
+		}
 	}
 
 	
