@@ -76,6 +76,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		
 		//states
+		bool			m_bShowLagMeeter;
 		bool			m_bTargetRotate;
 		bool			m_bShowMenulevel;
 		bool			m_bQuickStart; 
@@ -163,6 +164,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 			
 		// gui stuff
+		void ShowLag();
 		void SetupGUI();
 		void InitGUIFonts();
 		void FindGUIScriptsByResSuffix();

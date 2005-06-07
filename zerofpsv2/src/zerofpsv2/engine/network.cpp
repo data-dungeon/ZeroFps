@@ -1165,6 +1165,14 @@ void NetWork::DevShow_ClientConnections()
 	}
 }
 	
+int NetWork::GetPing(int iConID)
+{
+	if(iConID < 0 || iConID >= m_RemoteNodes.size())
+		return -1;
+	
+	return int(m_RemoteNodes[iConID]->m_fPing * 1000);
+}
+	
 void NetWork::DrawConnectionGraphs()
 {
 	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {

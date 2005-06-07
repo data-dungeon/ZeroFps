@@ -52,6 +52,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bQuickStart 			=	false;
 	m_bTargetRotate		=	false;
 	m_bLoginKeepAlive    =  false;
+	m_bShowLagMeeter		=	true;
 	m_fPingDelay			=  2;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
@@ -68,6 +69,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	RegisterVariable("ap_quickstart",		 	&m_bQuickStart,				CSYS_BOOL);
 	RegisterVariable("ap_quickstartadress",	&m_strQuickStartAddress,	CSYS_STRING);
 	RegisterVariable("ap_targetrotate",			&m_bTargetRotate,				CSYS_BOOL);
+	RegisterVariable("ap_lagmeeter",				&m_bShowLagMeeter,			CSYS_BOOL);
+
 
 	RegisterVariable("ap_bloom",					&m_bBloom,				CSYS_BOOL);
 	
@@ -1224,6 +1227,8 @@ void MistClient::Input()
 
 void MistClient::OnSystem() 
 {
+	ShowLag();
+
 	UpdateCharacter();
 	SendControlInfo();
 // 	CloseActiveContainer();
@@ -1231,6 +1236,41 @@ void MistClient::OnSystem()
 	if(m_iCharacterID != -1)
  		m_pkSkillBar->Update(m_pkZeroFps->GetSystemUpdateFpsDelta());
 
+}
+
+void MistClient::ShowLag()
+{
+	if(m_bShowLagMeeter)
+	{
+		if(ZGuiWnd* pkLagWnd = (ZGuiLabel*)GetWnd("LagWnd"))
+			pkLagWnd->Show();
+	
+		if(ZGuiLabel* pkLagLable = (ZGuiLabel*)GetWnd("LagLabel"))
+		{
+			pkLagLable->Show();
+			
+			static float fDelay = 0;
+ 			static float fTotal = 0;
+			static int   iSamples = 0;
+			
+ 			fTotal += m_pkNetwork->GetPing(0);
+ 			iSamples++;
+			
+			if(m_pkZeroFps->GetEngineTime() - fDelay > 2.0)
+			{
+				pkLagLable->SetText((char*)IntToString(fTotal/iSamples).c_str());
+				
+				fTotal = 0;
+				iSamples = 0;
+				fDelay = m_pkZeroFps->GetEngineTime();
+			}
+		}
+	}
+	else
+	{
+		if(ZGuiWnd* pkLagWnd = (ZGuiLabel*)GetWnd("LagWnd"))
+			pkLagWnd->Hide();
+	}
 }
 
 void MistClient::SendControlInfo()

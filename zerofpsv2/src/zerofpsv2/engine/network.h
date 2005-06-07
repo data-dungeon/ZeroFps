@@ -257,6 +257,7 @@ public:
 	int GetFreeClientNum();
 	
 	int GetClientNetSpeed(int iId);
+	int GetPing(int iConID);
 	bool IsConnected(int iId);
 	
 	// NetStrings
