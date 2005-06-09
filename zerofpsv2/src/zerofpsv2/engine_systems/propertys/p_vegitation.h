@@ -23,13 +23,14 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 			float fWindStart;
 		};
 
-/*		struct LodLevel
-		{
+// 		struct LodLevel
+// 		{
 			vector<Vector3>	m_kVertexArray;
-			vector<Vector3>	m_kNormalArray;
-			vector<Vector2>	m_kTextureArray;		
-		};
-		vector<LodLevel>	m_kLodLevels;*/
+// 			vector<Vector3>	m_kNormalArray;
+			vector<Vector2>	m_kTextureArray;
+			vector<Vector4>	m_kColorArray;
+// 		};
+// 		vector<LodLevel>	m_kLodLevels;*/
 		
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
@@ -58,8 +59,8 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );		
 	
-// 		void BuildArrays();
-// 		void DrawArray(int iLodLevel);
+		void BuildArrays();
+		void DrawArray();
 		
 		void CalculateRadius();
 		void CreateAABB();

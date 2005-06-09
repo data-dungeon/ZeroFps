@@ -389,15 +389,22 @@ void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& k
 											Vector2(0,0),
 											Vector2(1,0)};
 	
+// 	static  float acolordata[64]={1,1,1,1,
+// 											1,1,1,1,
+// 											1,1,1,1,
+// 											1,1,1,1,										
+// 											1,1,1,1,
+// 											1,1,1,1,
+// 											1,1,1,1,
+// 											1,1,1,1};
 	static  float acolordata[64]={1,1,1,1,
-											1,1,1,1,
-											1,1,1,1,
+											0,1,1,1,
+											0,1,1,1,
 											1,1,1,1,										
 											1,1,1,1,
 											1,1,1,1,
-											1,1,1,1,
-											1,1,1,1};
-	
+											0,1,1,1,
+											0,1,1,1};	
 	acolordata[3] = 	fAlpha;							
 	acolordata[7] = 	fAlpha;								
 	acolordata[11] = 	fAlpha;								
@@ -405,7 +412,7 @@ void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& k
 	acolordata[19] = 	fAlpha;								
 	acolordata[23] = 	fAlpha;								
 	acolordata[27] = 	fAlpha;								
-	acolordata[31] = 	fAlpha;								
+	acolordata[31] = 	fAlpha;					
 
 											
 	m_pkZShaderSystem->MatrixPush();		

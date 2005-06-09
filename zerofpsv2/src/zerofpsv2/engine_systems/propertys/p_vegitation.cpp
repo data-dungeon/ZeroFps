@@ -79,7 +79,7 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 	
 	CalculateRadius();
 	CreateAABB();
-// 	BuildArrays();
+ 	BuildArrays();
 		
 	
 	SetNetUpdateFlag(true);	
@@ -92,9 +92,8 @@ void P_Vegitation::Update()
 	if(!m_pkZeroFps->GetVegetation())
 		return;
 
-
-	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
-		return;
+ 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
+ 		return;
 
 	static Vector3 kObjectPos;
 	kObjectPos = m_pkEntity->GetWorldPosV();
@@ -103,14 +102,6 @@ void P_Vegitation::Update()
  	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(kObjectPos,m_fRadius))
  		return;
 
-	//frustum culling aabb
-	if(!m_pkFps->GetCam()->GetFrustum()->CubeInFrustum(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax))
-		return;
-
-
-	//update light					
-	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
-	
 		
 	if(!m_CheckedForHM)
 	{
@@ -130,7 +121,7 @@ void P_Vegitation::Update()
 	}
 	
 
-
+	float fDistance = kObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
 					
  	//draw a ball on the server
   	if(m_pkFps->GetDebugGraph())
@@ -139,15 +130,31 @@ void P_Vegitation::Update()
 		m_pkZShaderSystem->UseDefaultGLSLProgram(false);
 		
   		m_pkRender->Sphere(kObjectPos,0.5,1,Vector3(1,1,1),true);
-		m_pkRender->DrawAABB(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax,Vector3(1,1,1),1);
+		
+		if(fDistance > 10)
+			m_pkRender->DrawAABB(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax,Vector3(0.5,0.5,0.5),1);
+		else
+			m_pkRender->DrawAABB(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax,Vector3(1,1,1),1);
 		
 		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
 	}
 	
-	float fDistance = kObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
-	if(fDistance > 10)
-		return;
+	//out of sight
+// 	if(fDistance > 10)
+// 		return;
 							
+	
+	//frustum culling aabb
+	if(!m_pkFps->GetCam()->GetFrustum()->CubeInFrustum(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax))
+		return;	
+	
+	
+	
+	//update light					
+ 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+							
+	DrawArray();
+					
 					
 /* 	int iStep = int(fDistance / 3.0);
   	if(iStep < 1)
@@ -162,23 +169,23 @@ void P_Vegitation::Update()
 			kPos = m_akPositions[i].kPos + kObjectPos;
 			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale,fAlpha);			
 		}	*/	
-
 	
-	//setup material	
-	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
-		
-	float t=m_pkFps->GetEngineTime();
-	float fAlpha = 1 - (fDistance /10);
 	
-	static Vector3 rot;
-	static Vector3 kPos;
-	for(unsigned int i=0;i<m_akPositions.size();i++)
-	{
-		rot = m_akPositions[i].kRot;  
-		kPos = m_akPositions[i].kPos + kObjectPos;
-		rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
-		m_pkRender->DrawCross(kPos,rot,m_kScale,fAlpha);			
-	}	
+// 	//setup material	
+// 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
+// 		
+// 	float t=m_pkFps->GetEngineTime();
+// 	float fAlpha = 1 - (fDistance /10);
+// 	
+// 	static Vector3 rot;
+// 	static Vector3 kPos;
+// 	for(unsigned int i=0;i<m_akPositions.size();i++)
+// 	{
+// 		rot = m_akPositions[i].kRot;  
+// 		kPos = m_akPositions[i].kPos + kObjectPos;
+// 		rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
+// 		m_pkRender->DrawCross(kPos,rot,m_kScale,fAlpha);			
+// 	}	
 
 	
 // 	cout<<fAlpha<<endl;
@@ -449,87 +456,73 @@ Property* Create_VegitationProperty()
 
 
 
-/*
+
 void P_Vegitation::BuildArrays()
 {
-	m_kLodLevels.clear();
-	
-	LodLevel temp;
-	
-	m_kLodLevels.push_back(temp);
- 	m_kLodLevels.push_back(temp);
- 	m_kLodLevels.push_back(temp);
- 	m_kLodLevels.push_back(temp);
+	m_kVertexArray.clear();
+	m_kTextureArray.clear();
+	m_kColorArray.clear();
 
-	
-		Vector3 kScale(m_kScale.x/2,m_kScale.y,m_kScale.z/2);// = m_kScale * 0.5;
-		
-		
-		Vector3 topleft(-kScale.x,kScale.y,0);
-		Vector3 topright(kScale.x,kScale.y,0);
-		Vector3 bottomleft(-kScale.x,0,0);
-		Vector3 bottomright(kScale.x,0,0);
-	
-		Vector3 topback(0,kScale.y,-kScale.z);
-		Vector3 topfront(0,kScale.y,kScale.z);
-		Vector3 bottomback(0,0,-kScale.z);
-		Vector3 bottomfront(0,0,kScale.z);
-		
-		static Vector3 kNormal(0,1,0);
-		
-		static Vector2 kUV1(0,1);
-		static Vector2 kUV2(1,1);
-		static Vector2 kUV3(1,0);
-		static Vector2 kUV4(0,0);
-		
-	for(int l = 0;l<4;l++)
+	static Vector2 kUV1(0,1);
+	static Vector2 kUV2(2,1);
+	static Vector2 kUV3(2,0);
+	static Vector2 kUV4(0,0);
+
+	Vector3 kScale(m_kScale.x/2,m_kScale.y,m_kScale.z/2);// = m_kScale * 0.5;
+// 	Vector3 kScale(m_kScale.x,m_kScale.y,m_kScale.z);
+
+	Vector3 topleft(-kScale.x,kScale.y,0);
+	Vector3 topright(kScale.x,kScale.y,0);
+	Vector3 bottomleft(-kScale.x,0,0);
+	Vector3 bottomright(kScale.x,0,0);
+
+	Vector3 topback(0,kScale.y,-kScale.z);
+	Vector3 topfront(0,kScale.y,kScale.z);
+	Vector3 bottomback(0,0,-kScale.z);
+	Vector3 bottomfront(0,0,kScale.z);
+
+	int iPositions = m_akPositions.size();
+	for(int i =0;i<iPositions;i++ )
 	{
-		vector<Vector3>* pkVertexArray =  &m_kLodLevels[l].m_kVertexArray;
-		vector<Vector3>* pkNormalArray =  &m_kLodLevels[l].m_kNormalArray;
-		vector<Vector2>* pkTextureArray = &m_kLodLevels[l].m_kTextureArray;
-			
+		Vector3 off(Randomf(1)-0.5,0,Randomf(1)-0.5);
+	
+		//cross vertises
+		m_kVertexArray.push_back(m_akPositions[i].kPos +topleft+off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +topright-off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomright-off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomleft+off);
+	
+		m_kVertexArray.push_back(m_akPositions[i].kPos +topback+off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +topfront-off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomfront-off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomback+off);
+	
+
+		//uv's
+		m_kTextureArray.push_back(kUV1);
+		m_kTextureArray.push_back(kUV2);
+		m_kTextureArray.push_back(kUV3);
+		m_kTextureArray.push_back(kUV4);
+	
+		m_kTextureArray.push_back(kUV1);
+		m_kTextureArray.push_back(kUV2);
+		m_kTextureArray.push_back(kUV3);
+		m_kTextureArray.push_back(kUV4);
+	
+		m_kColorArray.push_back(Vector4(1,1,1,1));
+		m_kColorArray.push_back(Vector4(1,1,1,1));
+		m_kColorArray.push_back(Vector4(1,1,1,0));
+		m_kColorArray.push_back(Vector4(1,1,1,0));
 		
-		int iPositions = m_akPositions.size();
-		for(int i =0;i<iPositions;i += (l+2) )
-		{
-			//cross vertises
-			pkVertexArray->push_back(m_akPositions[i].kPos +topleft);
-			pkVertexArray->push_back(m_akPositions[i].kPos +topright);
-			pkVertexArray->push_back(m_akPositions[i].kPos +bottomright);
-			pkVertexArray->push_back(m_akPositions[i].kPos +bottomleft);
-		
-			pkVertexArray->push_back(m_akPositions[i].kPos +topback);
-			pkVertexArray->push_back(m_akPositions[i].kPos +topfront);
-			pkVertexArray->push_back(m_akPositions[i].kPos +bottomfront);
-			pkVertexArray->push_back(m_akPositions[i].kPos +bottomback);
-		
-			//normals
-			pkNormalArray->push_back(kNormal);
-			pkNormalArray->push_back(kNormal);
-			pkNormalArray->push_back(kNormal);
-			pkNormalArray->push_back(kNormal);
-			
-			pkNormalArray->push_back(kNormal);
-			pkNormalArray->push_back(kNormal);
-			pkNormalArray->push_back(kNormal);
-			pkNormalArray->push_back(kNormal);
-			
-			//uv's
-			pkTextureArray->push_back(kUV1);
-			pkTextureArray->push_back(kUV2);
-			pkTextureArray->push_back(kUV3);
-			pkTextureArray->push_back(kUV4);
-		
-			pkTextureArray->push_back(kUV1);
-			pkTextureArray->push_back(kUV2);
-			pkTextureArray->push_back(kUV3);
-			pkTextureArray->push_back(kUV4);
-		
-		}
+		m_kColorArray.push_back(Vector4(1,1,1,1));
+		m_kColorArray.push_back(Vector4(1,1,1,1));
+		m_kColorArray.push_back(Vector4(1,1,1,0));
+		m_kColorArray.push_back(Vector4(1,1,1,0));
+
 	}
 }
 
-void P_Vegitation::DrawArray(int iLodLevel)
+void P_Vegitation::DrawArray()
 {
 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));
 	
@@ -538,12 +531,14 @@ void P_Vegitation::DrawArray(int iLodLevel)
 		m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV());		
 	
 		m_pkZShaderSystem->ResetPointers();
-		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(m_kLodLevels[iLodLevel].m_kTextureArray[0]));
-		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,  &(m_kLodLevels[iLodLevel].m_kVertexArray[0]));
-		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,  &(m_kLodLevels[iLodLevel].m_kNormalArray[0]));		
-		m_pkZShaderSystem->SetNrOfVertexs(m_kLodLevels[iLodLevel].m_kVertexArray.size());
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,	&(m_kTextureArray[0]));
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,  	&(m_kVertexArray[0]));
+		m_pkZShaderSystem->SetPointer(COLOR_POINTER,		&(m_kColorArray[0]));
+		m_pkZShaderSystem->SetNormal(Vector3(0,1,0));
+// 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,  &(m_kNormalArray[0]));		
+		m_pkZShaderSystem->SetNrOfVertexs(m_kVertexArray.size());
 		
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);			
 	
 	m_pkZShaderSystem->MatrixPop();
-}*/
+}
