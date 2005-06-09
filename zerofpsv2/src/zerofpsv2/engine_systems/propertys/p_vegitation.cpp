@@ -464,8 +464,8 @@ void P_Vegitation::BuildArrays()
 	m_kColorArray.clear();
 
 	static Vector2 kUV1(0,1);
-	static Vector2 kUV2(2,1);
-	static Vector2 kUV3(2,0);
+	static Vector2 kUV2(1,1);
+	static Vector2 kUV3(1,0);
 	static Vector2 kUV4(0,0);
 
 	Vector3 kScale(m_kScale.x/2,m_kScale.y,m_kScale.z/2);// = m_kScale * 0.5;
