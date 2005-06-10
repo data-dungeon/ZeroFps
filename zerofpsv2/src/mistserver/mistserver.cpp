@@ -1217,17 +1217,22 @@ namespace SI_MistServer
 {
 	int SayToCharacterLua(lua_State* pkLua)
 	{
-		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		if(g_pkScript->GetNumArgs(pkLua) < 2)
+		{
+			cout<<"SayToCharacter needs at least two arguments"<<endl;
 			return 0;
+		}
 		
 		int id;
-		double dTemp;
-		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-		id = (int)dTemp;
+		g_pkScript->GetArgInt(pkLua, 0, &id);
 		
-		//char	acMessage[256];
-		string strMessage;
-		g_pkScript->GetArgString(pkLua, 1, strMessage);		
+		string strMessage;		
+		string temp;
+		for(int i =1;i<g_pkScript->GetNumArgs(pkLua);i++)
+		{
+			g_pkScript->GetArgString(pkLua, i, temp);		
+			strMessage+=temp;
+		}
 		
 		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
 			g_kMistServer.SayToClients(strMessage,"->",-1,pkData->m_iConnectionID);
