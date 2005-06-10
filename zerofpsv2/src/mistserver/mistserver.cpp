@@ -160,7 +160,7 @@ void MistServer::Init()
 	//setup physics
 	m_pkTcs->SetGravity(15);
 	m_pkTcs->SetColIt(2);
-	m_pkTcs->SetConIt(2);	
+	m_pkTcs->SetConIt(4);	
 	
 	//system ant network
 	m_pkZeroFps->SetSystemFps(20);
