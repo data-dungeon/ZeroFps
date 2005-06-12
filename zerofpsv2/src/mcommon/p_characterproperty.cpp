@@ -851,6 +851,25 @@ void P_CharacterProperty::UpdateStats()
 	{
 		m_fStatTimer = fTime;
 	
+	
+	
+		//maximum values
+		m_kCharacterStats.SetStat("HealthMax",		m_kCharacterStats.GetTotal("Vitality") * 2.0);
+		m_kCharacterStats.SetStat("HealthRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.0125);
+		
+		m_kCharacterStats.SetStat("ManaMax",		m_kCharacterStats.GetTotal("Intelligence") );
+		m_kCharacterStats.SetStat("ManaRegen",		m_kCharacterStats.GetTotal("Intelligence") * 0.0125 );
+ 		
+ 		m_kCharacterStats.SetStat("StaminaMax",	m_kCharacterStats.GetTotal("Vitality") * 5.0 );
+ 		m_kCharacterStats.SetStat("StaminaRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.15 );
+
+		//setup basic damage, and attack		
+		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.25 );
+		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
+			
+		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
+		m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );	
+	
 		
 		//stamina
 		int iDrain = m_kCharacterStats.GetTotal("StaminaRegen");		
@@ -896,22 +915,7 @@ void P_CharacterProperty::UpdateStats()
 		if(m_kCharacterStats.GetTotal(strMana) < 0)
 			m_kCharacterStats.SetStat(strMana,0);
 				
-		//maximum values
-		m_kCharacterStats.SetStat("HealthMax",		m_kCharacterStats.GetTotal("Vitality") * 2.0);
-		m_kCharacterStats.SetStat("HealthRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.0125);
-		
-		m_kCharacterStats.SetStat("ManaMax",		m_kCharacterStats.GetTotal("Intelligence") );
-		m_kCharacterStats.SetStat("ManaRegen",		m_kCharacterStats.GetTotal("Intelligence") * 0.0125 );
- 		
- 		m_kCharacterStats.SetStat("StaminaMax",	m_kCharacterStats.GetTotal("Vitality") * 5.0 );
- 		m_kCharacterStats.SetStat("StaminaRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.15 );
 
-		//setup basic damage, and attack		
-		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.25 );
-		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
-			
-		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
-		m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );
 		
 		SendStats();
 	}
