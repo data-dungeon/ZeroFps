@@ -1535,6 +1535,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fMinDamage;
 			float fMaxDamage;
 			
+			float fAbsorbTotal;
 			
 			pkNetMessage->Read(fStamina);
 			pkNetMessage->Read(fStaminaMax);
@@ -1562,6 +1563,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fMinDamage);
  			pkNetMessage->Read(fMaxDamage);
 
+ 			pkNetMessage->Read(fAbsorbTotal);
 			
 			//basic stats
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatStrength"))
@@ -1583,6 +1585,9 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkP->SetText((char*)IntToString(int(fDefense)).c_str());
 			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatDamage"))
 				pkP->SetText( (char*) (IntToString(int(fMinDamage))+string(" - ")+IntToString(int(fMaxDamage)) ).c_str()  );
+							
+			if(ZGuiLabel* pkP = (ZGuiLabel*)GetWnd("StatAbsorbTotal"))
+				pkP->SetText((char*)IntToString(int(fAbsorbTotal)).c_str());
 							
 						
 			//level and xp

@@ -865,7 +865,7 @@ void P_CharacterProperty::UpdateStats()
 
 		//setup basic damage, and attack		
 		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.25 );
-		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
+		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
 			
 		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
 		m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );	
@@ -1817,6 +1817,17 @@ void P_CharacterProperty::SendStats()
  	kNp.Write(fMaxDamage);
 	
 	
+	float fAbsorbTotal = 0;
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbSlashing");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbCrushing");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbPiercing");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbFire");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbIce");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbLightning");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbMagic");
+	fAbsorbTotal += m_kCharacterStats.GetTotal("AbsorbPoison");
+	
+ 	kNp.Write(fAbsorbTotal);
 		
 	//send package
 	kNp.TargetSetClient(m_iConID);
