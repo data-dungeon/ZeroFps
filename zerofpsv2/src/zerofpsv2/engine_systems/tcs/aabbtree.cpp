@@ -530,27 +530,42 @@ bool Triangle::TestLineVSSphere(const Vector3& kPos,float fRadius,const Vector3&
 
 bool Triangle::TestSides(const Vector3& kPos)
 {
-	static Vector3 e10,e20,vp;
-	static float a,b,c,ac_bb,d,e;	
-	
-	e10= m_kVerts[1]-m_kVerts[0];
-	e20= m_kVerts[2]-m_kVerts[0];
-	
-	a 	= e10.Dot(e10);
-	b 	= e10.Dot(e20);
-	c 	= e20.Dot(e20);	
-	ac_bb=(a*c)-(b*b);
-		
-	vp.Set(kPos.x-m_kVerts[0].x, kPos.y-m_kVerts[0].y, kPos.z-m_kVerts[0].z);
-	
-	d = vp.Dot(e10);
-	e = vp.Dot(e20);
-	
-	float x = (d*c)-(e*b);
-	float y = (e*a)-(d*b);
-	float z = x+y-ac_bb;
-	
-	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
+	static Vector3 vert0p;
+	static Vector3 vert1p;
+	static Vector3 vert2p;
+
+	vert0p = m_kVerts[0] - kPos;
+	vert1p = m_kVerts[1] - kPos;
+	float d = vert0p.Cross(vert1p).Dot(m_kPlane.m_kNormal);
+	if (d < 0) return false;
+	vert2p = m_kVerts[2] - kPos;
+	d = vert1p.Cross(vert2p).Dot(m_kPlane.m_kNormal);
+	if (d < 0) return false;
+	d = vert2p.Cross(vert0p).Dot(m_kPlane.m_kNormal);
+	if (d < 0) return false;
+	return true;
+
+// 	static Vector3 e10,e20,vp;
+// 	static float a,b,c,ac_bb,d,e;	
+// 	
+// 	e10= m_kVerts[1]-m_kVerts[0];
+// 	e20= m_kVerts[2]-m_kVerts[0];
+// 	
+// 	a 	= e10.Dot(e10);
+// 	b 	= e10.Dot(e20);
+// 	c 	= e20.Dot(e20);	
+// 	ac_bb=(a*c)-(b*b);
+// 		
+// 	vp.Set(kPos.x-m_kVerts[0].x, kPos.y-m_kVerts[0].y, kPos.z-m_kVerts[0].z);
+// 	
+// 	d = vp.Dot(e10);
+// 	e = vp.Dot(e20);
+// 	
+// 	float x = (d*c)-(e*b);
+// 	float y = (e*a)-(d*b);
+// 	float z = x+y-ac_bb;
+// 	
+// 	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
 }
 
 bool Triangle::TestLine(const Vector3& kP1,const Vector3& kP2,Vector3* pkTestPos)

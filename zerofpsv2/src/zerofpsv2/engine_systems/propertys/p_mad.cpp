@@ -263,7 +263,7 @@ void P_Mad::DoAnimationUpdate()
 
 void P_Mad::SetBase(const char* acName)
 {
-	//dvoid addat, byter inte modell om det redan är den modellen
+	//dvoid addat, byter inte modell om det redan ï¿½ den modellen
 	if(m_kMadFile == acName)
 		return;
 
@@ -719,19 +719,37 @@ bool P_Mad::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
 
 bool P_Mad::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 {
-  Vector3 e10=kVerts[1]-kVerts[0];
-  Vector3 e20=kVerts[2]-kVerts[0];
-  float a = e10.Dot(e10);
-  float b = e10.Dot(e20);
-  float c = e20.Dot(e20);
-  float ac_bb=(a*c)-(b*b);
-  Vector3 vp(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
-  float d = vp.Dot(e10);
-  float e = vp.Dot(e20);
-  float x = (d*c)-(e*b);
-  float y = (e*a)-(d*b);
-  float z = x+y-ac_bb;
-  return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
+
+  // first way to do it :D
+	static Vector3 vert0p;
+	static Vector3 vert1p;
+	static Vector3 vert2p;
+
+	vert0p = kVerts[0] - kPos;
+	vert1p = kVerts[1] - kPos;
+	float d = vert0p.Cross(vert1p).Dot(*pkNormal);
+	if (d < 0) return false;
+	vert2p = kVerts[2] - kPos;
+	d = vert1p.Cross(vert2p).Dot(*pkNormal);
+	if (d < 0) return false;
+	d = vert2p.Cross(vert0p).Dot(*pkNormal);
+	if (d < 0) return false;
+	return true;
+
+//   Vector3 e10=kVerts[1]-kVerts[0];
+//   Vector3 e20=kVerts[2]-kVerts[0];
+//   float a = e10.Dot(e10);
+//   float b = e10.Dot(e20);
+//   float c = e20.Dot(e20);
+//   float ac_bb=(a*c)-(b*b);
+//   Vector3 vp(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
+//   float d = vp.Dot(e10);
+//   float e = vp.Dot(e20);
+//   float x = (d*c)-(e*b);
+//   float y = (e*a)-(d*b);
+//   float z = x+y-ac_bb;
+// 	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
+
 
 /*	
 

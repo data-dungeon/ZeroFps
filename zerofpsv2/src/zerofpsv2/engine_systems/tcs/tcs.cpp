@@ -1180,41 +1180,44 @@ bool Tcs::IsInNerbyZone(P_Tcs* pkBody1,P_Tcs* pkBody2)
 
 bool Tcs::TestSides(const Vector3* kVerts,const Vector3* pkNormal,const Vector3& kPos)
 {
-/*  
-  // first way to do it :D
-  Vector3 vert0p = kVerts[0] - kPos;
-  Vector3 vert1p = kVerts[1] - kPos;
-  float d = vert0p.Cross(vert1p).Dot(*pkNormal);
-  if (d < 0) return false;
-  Vector3 vert2p = kVerts[2] - kPos;
-  d = vert1p.Cross(vert2p).Dot(*pkNormal);
-  if (d < 0) return false;
-  d = vert2p.Cross(vert0p).Dot(*pkNormal);
-  if (d < 0) return false;
-  return true;
-*/
+  
+	//   first way to do it :D
+	static Vector3 vert0p;
+	static Vector3 vert1p;
+	static Vector3 vert2p;
+
+	vert0p = kVerts[0] - kPos;
+	vert1p = kVerts[1] - kPos;
+	float d = vert0p.Cross(vert1p).Dot(*pkNormal);
+	if (d < 0) return false;
+	vert2p = kVerts[2] - kPos;
+	d = vert1p.Cross(vert2p).Dot(*pkNormal);
+	if (d < 0) return false;
+	d = vert2p.Cross(vert0p).Dot(*pkNormal);
+	if (d < 0) return false;
+	return true;
 
 
-	//one way to do it
-	static Vector3 e10,e20,vp;
-	static float a,b,c,ac_bb,d,e;	
-	
-	e10=kVerts[1]-kVerts[0];
-	e20=kVerts[2]-kVerts[0];
-	a = e10.Dot(e10);
-	b = e10.Dot(e20);
-	c = e20.Dot(e20);
-	ac_bb=(a*c)-(b*b);
-	vp.Set(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
-	d = vp.Dot(e10);
-	e = vp.Dot(e20);
-	
-	float x = (d*c)-(e*b);
-	float y = (e*a)-(d*b);
-	float z = x+y-ac_bb;
-	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
 
-	
+// 	//one way to do it
+// 	static Vector3 e10,e20,vp;
+// 	static float a,b,c,ac_bb,d,e;	
+// 	
+// 	e10=kVerts[1]-kVerts[0];
+// 	e20=kVerts[2]-kVerts[0];
+// 	a = e10.Dot(e10);
+// 	b = e10.Dot(e20);
+// 	c = e20.Dot(e20);
+// 	ac_bb=(a*c)-(b*b);
+// 	vp.Set(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
+// 	d = vp.Dot(e10);
+// 	e = vp.Dot(e20);
+// 	
+// 	float x = (d*c)-(e*b);
+// 	float y = (e*a)-(d*b);
+// 	float z = x+y-ac_bb;
+//  	return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
+// 	
 
 /*	
 	//3 way do do it :P
