@@ -1,7 +1,7 @@
 // zfscript.cpp: implementation of the ZFScriptSystem class.
 //
 //////////////////////////////////////////////////////////////////////
- 
+  
 #include "zfscript.h"
 #include <stdio.h> 
 #include "../basic/zfvfs.h"
