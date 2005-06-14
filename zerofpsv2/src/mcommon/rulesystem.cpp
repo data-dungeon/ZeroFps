@@ -106,12 +106,14 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		float fRandA = Randomf(pkStatsA->GetTotal("Attack")  );
 		float fRandD = Randomf(pkStatsD->GetTotal("Defense") );
 	
-// 		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
+ 		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
+		cout<<"randomized "<<fRandA<< " VS "<<fRandD<<endl;
 		
 		if(fRandA <= fRandD)
 		{
 			//cout<<"MISS"<<endl;
-			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV(),1);
+			Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
+			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
 			
 			//tell defender its been missed
 			CharacterMiss(pkDefender->GetEntity(),iAttacker);
@@ -141,14 +143,14 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 								Randomi(pkStatsA->GetTotal("DamagePoisonMax") - pkStatsA->GetTotal("DamagePoisonMin") +1);
 			
 			//absorb	
-			iSlashing 	-= pkStatsD->GetTotal("AbsorbSlashing");
-			iCrushing 	-= pkStatsD->GetTotal("AbsorbCrushing");
-			iPiercing 	-= pkStatsD->GetTotal("AbsorbPiercing");
-			iFire 		-= pkStatsD->GetTotal("AbsorbFire");
-			iIce 			-= pkStatsD->GetTotal("AbsorbIce");
-			iLightning 	-= pkStatsD->GetTotal("AbsorbLightning");
-			iMagic 		-= pkStatsD->GetTotal("AbsorbMagic");
-			iPoison 		-= pkStatsD->GetTotal("AbsorbPoison");
+			iSlashing 	-= Randomi(pkStatsD->GetTotal("AbsorbSlashing"));
+			iCrushing 	-= Randomi(pkStatsD->GetTotal("AbsorbCrushing"));
+			iPiercing 	-= Randomi(pkStatsD->GetTotal("AbsorbPiercing"));
+			iFire 		-= Randomi(pkStatsD->GetTotal("AbsorbFire"));
+			iIce 			-= Randomi(pkStatsD->GetTotal("AbsorbIce"));
+			iLightning 	-= Randomi(pkStatsD->GetTotal("AbsorbLightning"));
+			iMagic 		-= Randomi(pkStatsD->GetTotal("AbsorbMagic"));
+			iPoison 		-= Randomi(pkStatsD->GetTotal("AbsorbPoison"));
 			
 			iSlashing = Max(iSlashing,0);
 			iCrushing = Max(iCrushing,0);
@@ -162,22 +164,27 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		
 			int iTotal = iSlashing + iCrushing + iPiercing + iFire + iIce + iLightning + iMagic + iPoison;
 			
-// 			cout<<"__DAMAGE__"<<endl;
-// 			cout<<"Slashing : "<<iSlashing<<endl;
-// 			cout<<"Crushing : "<<iCrushing<<endl;
-// 			cout<<"Piercing : "<<iPiercing<<endl;
-// 			cout<<"Fire     : "<<iFire<<endl;
-// 			cout<<"Ice      : "<<iIce<<endl;
-// 			cout<<"Lightning: "<<iLightning<<endl;
-// 			cout<<"MAgic    : "<<iMagic<<endl;
-// 			cout<<"Poison   : "<<iPoison<<endl;
-// 			cout<<"TOTAL    : "<<iTotal<<endl;
+			cout<<"__DAMAGE__"<<endl;
+			cout<<"Slashing : "<<iSlashing<<endl;
+			cout<<"Crushing : "<<iCrushing<<endl;
+			cout<<"Piercing : "<<iPiercing<<endl;
+			cout<<"Fire     : "<<iFire<<endl;
+			cout<<"Ice      : "<<iIce<<endl;
+			cout<<"Lightning: "<<iLightning<<endl;
+			cout<<"MAgic    : "<<iMagic<<endl;
+			cout<<"Poison   : "<<iPoison<<endl;
+			cout<<"TOTAL    : "<<iTotal<<endl;
 		
 			
 			//Damage(iAttacker,iDefender,iTotal);
 			pkDefender->SetLastDamageFrom(iAttacker);
 			pkStatsD->ChangeStat("Health",-iTotal);		
-			SendPointText(IntToString(iTotal),pkDefender->GetEntity()->GetWorldPosV(),0);			
+
+			Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
+			if(iTotal<=0)
+				SendPointText("NoDmg",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
+			else
+				SendPointText(IntToString(iTotal),pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,0);			
 		
 			//tell defender its been hit
 			CharacterHit(pkDefender->GetEntity(),iAttacker);

@@ -677,7 +677,7 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 
 void P_CharacterProperty::SetupCharacterStats()
 {
-	m_kCharacterStats.AddStat("Level"			,1,0);		//alla karaktärer börjar på lvl 1 
+	m_kCharacterStats.AddStat("Level"			,1,0);		//alla karaktï¿½er bï¿½jar pï¿½lvl 1 
 	m_kCharacterStats.AddStat("Experience"		,0,0);
 	m_kCharacterStats.AddStat("PrevLevel"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
@@ -695,7 +695,7 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("ManaMax"			,0,0);
 	m_kCharacterStats.AddStat("ManaRegen"		,0,0);	
 	
-	m_kCharacterStats.AddStat("Health"			,1,0);		//failsafe så inte karaktären dör direkt
+	m_kCharacterStats.AddStat("Health"			,1,0);		//failsafe sï¿½inte karaktï¿½en dï¿½ direkt
 	m_kCharacterStats.AddStat("HealthMax"		,1,0);		//
 	m_kCharacterStats.AddStat("HealthRegen"	,0,0);
 
@@ -864,11 +864,13 @@ void P_CharacterProperty::UpdateStats()
  		m_kCharacterStats.SetStat("StaminaRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.15 );
 
 		//setup basic damage, and attack		
-		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.25 );
-		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 1.5 );
+		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.0 );
+		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
 			
-		m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
-		m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );	
+		//m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
+		//m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );	
+		//m_kCharacterStats.SetStat("DamageCrushingMin",0 );
+		//m_kCharacterStats.SetStat("DamageCrushingMax",0 );	
 	
 		
 		//stamina
@@ -1134,7 +1136,7 @@ void P_CharacterProperty::OnLevelUP()
 
 	m_kCharacterStats.ChangeStat("StatPoints",8);	
 	
-	//tillfälligt test
+	//tillfï¿½ligt test
 // 	m_kCharacterStats.ChangeStat("Strength",3);
 // 	m_kCharacterStats.ChangeStat("Dexterity",3);
 // 	m_kCharacterStats.ChangeStat("Vitality",3);
