@@ -31,10 +31,10 @@ class BASIC_API Vector4 {
 			}
 		
 		Vector4& operator=(const int &iEquals) {
-			x=iEquals;
-			y=iEquals;
-			z=iEquals;
-			w=iEquals;
+			x=float(iEquals);
+			y=float(iEquals);
+			z=float(iEquals);
+			w=float(iEquals);
 			return *this;
 			}
 		Vector4& operator=(const Vector3 &kOtherV3);

@@ -300,12 +300,10 @@ bool ZFSystem::StartUp()
 */
 bool ZFSystem::ShutDown()
 {
-	char szName[256];
-
 	g_Logf("ShutDown Engine SubSystems: \n");
 
 	// Engine Systems Shutdown backwards.
-	for(int i = 0;i < m_kObjectNames.size();i++)
+	for(unsigned int i = 0;i < m_kObjectNames.size();i++)
 	{
 		for(map<string,NameObject>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
 		{
@@ -672,7 +670,7 @@ string ZFSystem::GetVarValue(ZFCmdData* pkArea)
 		{
 			vector<bool>* pkBoolVec = 	(vector<bool>*)pkArea->m_vValue;
 			
-			for(int i = 0;i< pkBoolVec->size();i++)
+			for(unsigned int i = 0;i< pkBoolVec->size();i++)
 			{
 				if((*pkBoolVec)[i])
 					strValue += "1";

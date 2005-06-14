@@ -360,7 +360,7 @@ void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath
 
 					if(ext != NULL)
 					{					
-						for(int i=0; i<szExtensions.size(); i++)
+						for(unsigned int i=0; i<szExtensions.size(); i++)
 						{
 							if(strcmp(ext, szExtensions[i].c_str()) == 0)
 							{
@@ -527,7 +527,7 @@ bool ZFVFileSystem::FileExists(string strName)
 	ListDir(&kDirs,strDir);
 	
 	if(m_bCaseSensitive)
-	for(int i = 0;i<kDirs.size();i++)
+	for(unsigned int i = 0;i<kDirs.size();i++)
 	{
 		if(m_bCaseSensitive)
 		{
@@ -565,7 +565,7 @@ string ZFVFileSystem::GetRealName(const string& strName)
 	vector<string> kDirs;
 	ListDir(&kDirs,strDir);
 		
-	for(int i = 0;i<kDirs.size();i++)
+	for(unsigned int i = 0;i<kDirs.size();i++)
 	{
 		if(IsSameIgnoreCase(kDirs[i].c_str(),strFile.c_str()))
 		{

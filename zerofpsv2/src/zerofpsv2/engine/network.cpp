@@ -307,14 +307,14 @@ int NetWork::GetClientNumber(IPaddress* pkAddress)
 
 void NetWork::SetMaxNodes(int iMaxNode)
 {
-	for(int i = 0;i<m_RemoteNodes.size();i++)
+	for(unsigned int i = 0;i<m_RemoteNodes.size();i++)
 	{
 		delete m_RemoteNodes[i];
 	}
 	
 	m_RemoteNodes.clear();
 	
- 	for(int i =0;i<iMaxNode;i++)
+ 	for(unsigned int i =0;i<iMaxNode;i++)
  		m_RemoteNodes.push_back(new RemoteNode());	
 	
 	m_iMaxNumberOfNodes = iMaxNode;
@@ -520,7 +520,7 @@ void NetWork::GotServerInfo(NetPacket* pkNetPacket)
 	pkNetPacket->Read(iMaxPlayers);
 
 
-	for(int i=0; i<m_kServers.size(); i++)
+	for(unsigned int i=0; i<m_kServers.size(); i++)
 	{
 		if( IsAddressEquals(&m_kServers[i].m_kServerIp, &pkNetPacket->m_kAddress))
 		{
@@ -661,7 +661,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 	//	cout << "Hit max per frame number"<< endl;
 
 
-	for(int i=0; i<m_RemoteNodes.size(); i++)
+	for(unsigned int i=0; i<m_RemoteNodes.size(); i++)
 	{
 		if(m_RemoteNodes[i]->m_eConnectStatus == NETSTATUS_DISCONNECT)
 			continue;
@@ -1192,7 +1192,7 @@ void NetWork::SendAckList(int iClient, vector<int>& kAckList)
 	int iSize = kAckList.size();
 	kNetPRespons.Write( iSize );
 
-	for(int i=0; i<kAckList.size(); i++)
+	for(unsigned int i=0; i<kAckList.size(); i++)
 		kNetPRespons.Write( kAckList[i] ); 
 
 	kNetPRespons.m_kAddress = m_RemoteNodes[iClient]->m_kAddress;
@@ -1494,7 +1494,7 @@ void NetWork::DisconnectAll()
 	Send2(&kNetPRespons);
 
 	// Now inform the application that everyone is gone.
-	for(int i=0; i<m_RemoteNodes.size(); i++)
+	for(unsigned int i=0; i<m_RemoteNodes.size(); i++)
 	{
 		if(m_RemoteNodes[i]->m_eConnectStatus == NETSTATUS_DISCONNECT)
 			continue;
@@ -1572,7 +1572,7 @@ void NetWork::Ping()
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_PING);
 
-	for(int i=0; i<m_RemoteNodes.size(); i++)
+	for(unsigned int i=0; i<m_RemoteNodes.size(); i++)
 	{
 		if(m_RemoteNodes[i]->m_eConnectStatus == NETSTATUS_DISCONNECT)
 			continue;

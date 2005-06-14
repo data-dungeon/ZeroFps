@@ -287,7 +287,7 @@ ZFResourceInfo*	ZFResourceDB::GetResourceData(const string& strResName)
 
 ZFResourceInfo*	ZFResourceDB::FindResource(const string& strResName)
 {
-	for(int i = 0;i<m_kResources.size();i++)
+	for(unsigned int i = 0;i<m_kResources.size();i++)
 		if(m_kResources[i]->m_strName == strResName)
 			return m_kResources[i];
 
@@ -344,7 +344,7 @@ void ZFResourceDB::ReloadResource(string strResName)
 
 void ZFResourceDB::ReloadAllResorces()
 {
-	for(int i = 0;i<m_kResources.size();i++)
+	for(unsigned int i = 0;i<m_kResources.size();i++)
 		ReloadResource(m_kResources[i]->m_strName);
 
 
@@ -466,7 +466,7 @@ int ZFResourceDB::GetResSizeInBytes()
 	int iTotalBytes = 0;
 
 	
-	for(int i=0;i<m_kResources.size();i++)
+	for(unsigned int i=0;i<m_kResources.size();i++)
 		iTotalBytes += m_kResources[i]->m_pkResource->GetSize();
 		
 // 	list<ZFResourceInfo*>::iterator it;

@@ -362,7 +362,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void DebugVarClear() { kDebugVar.clear();  }
 		void DebugSet(string strName, string strValue)
 		{
-			for(int i=0; i<kDebugVar.size(); i++)
+			for(unsigned int i=0; i<kDebugVar.size(); i++)
 			{
 				if(kDebugVar[i].m_Variable == strName)
 				{

@@ -49,7 +49,7 @@ Render::Render()
 	RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
 	RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
 	RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
-	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_INT);
+	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_BOOL);
 
 	// Register Our Own commands.
 	Register_Cmd("r_glinfo",	FID_GLINFO);	

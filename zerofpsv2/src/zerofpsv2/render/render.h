@@ -93,7 +93,7 @@ class RENDER_API Render : public ZFSubSystem {
 		//screen info
 		SDL_Surface* 	m_pkScreen;								//main sdl screen surface
 		int				m_iWidth,m_iHeight,m_iDepth;
-		int				m_iFullScreen;
+		bool			m_iFullScreen;
 		int				m_iSDLVideoModeFlags;
 		
 		//console color
