@@ -178,7 +178,7 @@ void ActionMenu::Open()
 		{				
 			m_pkIconSelection->SetPos(x, y, false, true); 
  			//m_pkIconSelection->Show();
- 			m_pkIconSelection->Hide();	//visa inte markören i början
+ 			m_pkIconSelection->Hide();	//visa inte mark?en i b?jan
 		}
 
 		ZGuiButton* pkButton;
@@ -294,10 +294,10 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	
 	ZGuiWnd* pkWndButtonCursor = NULL;
 
-	// Kolla vilken knapp som är vald.
+	// Kolla vilken knapp som ? vald.
 	list<ZGuiWnd*> kChilds;
 	m_pkMainWnd->GetChildrens(kChilds);
-	m_pkIconSelection->Hide();				//dvoid hax, dölj markören om ingen ikon är markerad
+	m_pkIconSelection->Hide();				//dvoid hax, dölj markören om ingen ikon ? markerad
 	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
 	{
 		ZGuiWnd* pkChild = (*it);
@@ -317,7 +317,7 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 
 	
-	// Om höger musknapp har släpps skall vi sända valt action
+	// Om h?er musknapp har sl?ps skall vi s?da valt action
 // 	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
 	if(g_kMistClient.m_pkGui->m_bMouseLeftPressed == false) 
 	{

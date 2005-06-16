@@ -823,6 +823,23 @@ void P_CharacterProperty::UpdateSkillQueue()
 
 }
 
+void P_CharacterProperty::SetDefaultAttackSkill(const string& strDA)		
+{	
+	if(Skill* pkSkill = GetSkillPointer(strDA))
+	{
+		if(pkSkill->GetSkillType() == eOFFENSIVE)
+		{
+			m_strDefaultAttackSkill=  strDA;			
+			SendSkillbar();
+		}
+		else
+			cout<<"that shill is not an offensive skill"<<endl;
+	}
+	else
+		cout<<"character does not have that skill"<<endl;
+
+}
+
 void P_CharacterProperty::UpdateStats()
 {
 	//get character control;
@@ -2482,6 +2499,10 @@ void P_CharacterProperty::SendSkillbar(const string& strSkill)
 	NetPacket kNp;
 	kNp.Write((char) MLNM_SC_SKILLBAR);	
  	
+	//default attack skill
+	kNp.Write_Str(m_strDefaultAttackSkill);	
+	
+
  	int iSize = m_kSkillBar.size();
 	for(int i = 0;i<iSize;i++)
 	{

@@ -81,6 +81,18 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		
 		// -------------------------------------------
 		
+		case MLNM_CS_SETDEFAULTATTACK:
+		{
+			string strSkill;
+			PkNetMessage->Read_Str(strSkill);
+			
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+					pkCP->SetDefaultAttackSkill(strSkill);
+
+			break;
+		}
+
 		case MLNM_CS_ADDSTATPOINT:
 		{
 			int iStat;

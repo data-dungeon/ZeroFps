@@ -5,8 +5,8 @@
   MistClient is the Client of the game MistLands.
 */
 
-#ifndef _DONT_MAIN					// <- OBS! Flytta inte pï¿½denna. Mï¿½te ligga i
-	#define _MAINAPPLICATION_		// just denna fil och inte pï¿½flera stï¿½len.
+#ifndef _DONT_MAIN					// <- OBS! Flytta inte p?denna. M?te ligga i
+	#define _MAINAPPLICATION_		// just denna fil och inte p?flera st?len.
 	#define _DONT_MAIN
 #endif
  
@@ -99,7 +99,7 @@ void MistClient::OnInit()
 	m_pkCamera->SetName("Main camera");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
-	//register property bï¿½
+	//register property b?
 	RegisterPropertys();
 
 	//register resources
@@ -1052,7 +1052,7 @@ void MistClient::Input()
 // 	}	
 		
 	
-	//respawn knapp, i brist på gui
+	//respawn knapp, i brist p?gui
 	if(m_bDead && m_pkInputHandle->Pressed(KEY_BACKSPACE) && !DelayCommand())
 		SendRespawnRequest();
 	
@@ -1365,7 +1365,11 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			vector<SkillNetInfo>	kSkillList;
 			SkillNetInfo temp;
+			string strDefaultAttack;
 			
+			//read default attack
+			pkNetMessage->Read_Str(strDefaultAttack);	
+
 			while(true)
 			{
 				pkNetMessage->Read(temp.m_cPos);
@@ -1377,6 +1381,11 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read_Str(temp.m_strSkillName);								
 				if(!temp.m_strSkillName.empty())
 				{
+					if(temp.m_strSkillName == strDefaultAttack)
+						temp.m_bDefaultAttack = true;
+					else
+						temp.m_bDefaultAttack = false;
+
 					pkNetMessage->Read_Str(temp.m_strSkillScreenName);
 					pkNetMessage->Read_Str(temp.m_strSkillIcon);
 					pkNetMessage->Read(temp.m_fReloadTimeLeft);				
@@ -2095,8 +2104,8 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 	
 	if(bMouse)
 	{
-		// Zeb was here! Nu kï¿½ vi med operativsystemets egna snabba musmarkï¿½
-		// alltsï¿½mï¿½te vi anvï¿½da den position vi fï¿½ dï¿½ifrï¿½.
+		// Zeb was here! Nu k? vi med operativsystemets egna snabba musmark?
+		// allts?m?te vi anv?da den position vi f? d?ifr?.
 		m_pkInputHandle->UnitMouseXY(x,y);
 		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
 		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
@@ -2448,7 +2457,19 @@ void MistClient::OnSystemMessage(const string& strType,int iNrOfParam,const void
 		AddRemoveServer("localhost","localhost:4242",true);
 		
 		UpdateServerListbox();
-	}
+	} 
 }
 
+void MistClient::SendSetDefaultAttack(const string& strSkill)
+{
+	NetPacket kNp;	
+	kNp.Clear();
+	kNp.Write((char) MLNM_CS_SETDEFAULTATTACK);
+
+	kNp.Write_Str(strSkill);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
+
+}
 

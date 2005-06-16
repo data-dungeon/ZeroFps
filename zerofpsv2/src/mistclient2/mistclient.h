@@ -136,6 +136,7 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);
 		
 		//general network sends
+		void SendSetDefaultAttack(const string& strSkill);		
 		void SendAddSkillToQueue(const string& strSkill,int iTargetID);		
 		void SendAddStatPoint(int iStat);
 		void SendAddSkillToSkillbar(const string& strSkill,int iPos);
@@ -155,10 +156,10 @@ class MistClient :public Application, public ZGuiApp {
 		void SendRespawnRequest();
 		void RequestItemInfo(int iItemID);
 		void SendUseSkill(const string& strSkill,int iTargetID,const Vector3& kPos,const Vector3& kDir);		
-			/*SendMoveItem hj�p.
-				iItemID : alltid entity id't f� itemet i fr�a
-				iTraget : target container entity ID , om -1 s�antas i spelarens inventory
-				iPosX   : position i containern som f�em�et skall flyttas till, om -1 s�s�ts f�em�et p�en ledig plats
+			/*SendMoveItem hj?p.
+				iItemID : alltid entity id't f? itemet i fr?a
+				iTraget : target container entity ID , om -1 s?antas i spelarens inventory
+				iPosX   : position i containern som f?em?et skall flyttas till, om -1 s?s?ts f?em?et p?en ledig plats
 			*/
 		
 		

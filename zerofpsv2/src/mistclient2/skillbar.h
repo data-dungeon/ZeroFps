@@ -2,6 +2,7 @@
 #define _SKILLBAR_H_
 
 #include "../zerofpsv2/basic/zguiskin.h"
+#include "../zerofpsv2/gui/zguilabel.h"
 
 #include <vector>
 #include <string>
@@ -20,7 +21,8 @@ class SkillInfo
 		float		m_fReloadTimeTotal;
 		
 		int		m_iSkillType;
-		
+		bool		m_bDefaultAttack;
+
 		ZGuiButton*	m_pkButton;	
 };
 
@@ -31,6 +33,7 @@ class SkillNetInfo
 		string	m_strSkillName;
 		string	m_strSkillScreenName;
 		string	m_strSkillIcon;
+		bool		m_bDefaultAttack;
 
 		float		m_fReloadTimeLeft;
 		float		m_fReloadTimeTotal;
@@ -42,7 +45,7 @@ class SkillBar
 {
 	private:
 		vector<SkillInfo>	m_kSkills;
-		
+		ZGuiLabel* 			m_pkCurrentDefaultAttack;
 
 	public:
 		SkillBar();
@@ -51,7 +54,7 @@ class SkillBar
 		void Update(float fTimeDiff);
 		void UpdateList(vector<SkillNetInfo> kSkillInfo);
 		
-		void HandleCommand(const string& strCommand);
+		void HandleCommand(int iButton,const string& strCommand);
 };
 
 

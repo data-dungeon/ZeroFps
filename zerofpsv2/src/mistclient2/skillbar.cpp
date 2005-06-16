@@ -17,6 +17,12 @@ void SkillBar::Init()
 	if(bHaveBeenInitialized)
 		return;
 
+	//currect default action marker
+	m_pkCurrentDefaultAttack = (ZGuiLabel*) g_kMistClient.CreateWnd(Label, "DefaultAttackLabel", "SkillBar", "", 96 + 0*32, 0, 32, 32, 0);
+	m_pkCurrentDefaultAttack->Hide();
+	m_pkCurrentDefaultAttack->SetSkin(new ZGuiSkin());
+	m_pkCurrentDefaultAttack->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("actions/action_selection_border.tga");	
+
 
 	SkillInfo temp;
 	for(int i =0;i<19;i++)
@@ -31,7 +37,6 @@ void SkillBar::Init()
 		temp.m_pkButton->SetButtonUpSkin(new ZGuiSkin());
 		temp.m_pkButton->SetButtonDownSkin(new ZGuiSkin());
 		temp.m_pkButton->SetButtonHighLightSkin(temp.m_pkButton->GetButtonUpSkin());		
-//   		temp.m_pkButton->SetButtonHighLightSkin(new ZGuiSkin());		
 		temp.m_pkButton->SetFocus(true);
 		
 		
@@ -42,8 +47,6 @@ void SkillBar::Init()
 		pkSkin = temp.m_pkButton->GetButtonDownSkin();
 			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
 			
-//  		pkSkin = temp.m_pkButton->GetButtonHighLightSkin();
-//  			pkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("skills/empty.tga") ;
 			
 			
 		m_kSkills.push_back(temp);	
@@ -68,7 +71,10 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 		m_kSkills[iPos].m_fReloadTimeLeft = 	kSkillInfo[i].m_fReloadTimeLeft;
 		m_kSkills[iPos].m_fReloadTimeTotal = 	kSkillInfo[i].m_fReloadTimeTotal;
 		m_kSkills[iPos].m_iSkillType = 			kSkillInfo[i].m_cSkillType;
-		
+		m_kSkills[iPos].m_bDefaultAttack = 		kSkillInfo[i].m_bDefaultAttack;
+
+
+
 		if(m_kSkills[iPos].m_strSkillName.empty())
 		{
 			m_kSkills[iPos].m_pkButton->GetButtonUpSkin()->m_iBkTexID = 		g_kMistClient.LoadGuiTextureByRes("skills/empty.tga");
@@ -89,16 +95,27 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 }
 
 
-void SkillBar::HandleCommand(const string& strCommand)
+void SkillBar::HandleCommand(int iButton,const string& strCommand)
 {
-	int iButton = atoi(&strCommand.c_str()[11]);
+	int iSkill = atoi(&strCommand.c_str()[11]);
 
-	if(!m_kSkills[iButton].m_strSkillName.empty())
-		g_kMistClient.SendAddSkillToQueue(m_kSkills[iButton].m_strSkillName,g_kMistClient.GetCurrentTargetID());
+	if(iButton == 0)
+	{
+		if(!m_kSkills[iSkill].m_strSkillName.empty())
+			g_kMistClient.SendAddSkillToQueue(m_kSkills[iSkill].m_strSkillName,g_kMistClient.GetCurrentTargetID());
+	}
+	else if(iButton == 1)
+	{
+		if(!m_kSkills[iSkill].m_strSkillName.empty())
+			g_kMistClient.SendSetDefaultAttack(m_kSkills[iSkill].m_strSkillName);
+	}
+	
 }
 
 void SkillBar::Update(float fTimeDiff)
 {
+	bool bHaveSetDefaultAttack = false;
+
 	ZGuiSkin* pkSkin;
 	bool bCombatMode = g_kMistClient.GetCombatMode();
 
@@ -106,6 +123,17 @@ void SkillBar::Update(float fTimeDiff)
 	{
 		if(!m_kSkills[i].m_strSkillName.empty())
 		{
+			//default attack marker
+			if(m_kSkills[i].m_bDefaultAttack)
+			{			
+				bHaveSetDefaultAttack = true;
+				
+				Rect temp = m_kSkills[i].m_pkButton->GetWndRect();				
+ 				m_pkCurrentDefaultAttack->SetPos(temp.Left, 0, false, true); 
+ 				m_pkCurrentDefaultAttack->SetZValue(99);
+				m_pkCurrentDefaultAttack->Show();
+			}		
+		
 			//still reloading
 			if( m_kSkills[i].m_fReloadTimeLeft > 0)
 			{		
@@ -180,6 +208,11 @@ void SkillBar::Update(float fTimeDiff)
 			pkSkin->m_afBkColor[2] = 1;						
 		}
 	}
+	
+	
+	//if no default attack was set, hide marker
+	if(!bHaveSetDefaultAttack)
+	   m_pkCurrentDefaultAttack->Hide();
 }
 
 

@@ -291,9 +291,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
-		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}
-		void SetDefaultAttackSkill(const string& strDA)		{	m_strDefaultAttackSkill=  strDA;		ResetAllNetUpdateFlags();}
-		
+		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}		
 		void SetClient(int iConID)									{	m_iConID = iConID;				}	
 		
 		//gets
@@ -329,13 +327,13 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		void	AddSkillToSkillbar(const string& strSkill,int iPos);
 		void  RemoveItemFromSkillbar(int iPos);
-		
+
 		//experience and level
 		void  GiveExperience(int iXP);		
 		void  AddStatPoint(int iStat);
 		
 		//mana and stamina
-		bool UseMana(float fMana);
+		bool UseMana(float fMana);                                 
 		bool UseStamina(float fStamina);
 		
 		//combat
@@ -343,6 +341,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetCombatMode(bool bCombat)								{	m_bCombatMode = bCombat;		}
 		bool GetCombatMode()												{	return m_bCombatMode;			}
 		void AddSkillToQueue(const string& strSkill,int iTargetID);
+		void SetDefaultAttackSkill(const string& strDA);
 		
 		void SetLastDamageFrom(int iCharacterID)					{	m_iLastDamageFrom=iCharacterID;}
 		

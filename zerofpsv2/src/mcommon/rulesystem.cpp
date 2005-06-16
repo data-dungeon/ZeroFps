@@ -106,8 +106,8 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		float fRandA = Randomf(pkStatsA->GetTotal("Attack")  );
 		float fRandD = Randomf(pkStatsD->GetTotal("Defense") );
 	
- 		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
-		cout<<"randomized "<<fRandA<< " VS "<<fRandD<<endl;
+//  		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
+// 		cout<<"randomized "<<fRandA<< " VS "<<fRandD<<endl;
 		
 		if(fRandA <= fRandD)
 		{
@@ -164,16 +164,16 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		
 			int iTotal = iSlashing + iCrushing + iPiercing + iFire + iIce + iLightning + iMagic + iPoison;
 			
-			cout<<"__DAMAGE__"<<endl;
-			cout<<"Slashing : "<<iSlashing<<endl;
-			cout<<"Crushing : "<<iCrushing<<endl;
-			cout<<"Piercing : "<<iPiercing<<endl;
-			cout<<"Fire     : "<<iFire<<endl;
-			cout<<"Ice      : "<<iIce<<endl;
-			cout<<"Lightning: "<<iLightning<<endl;
-			cout<<"MAgic    : "<<iMagic<<endl;
-			cout<<"Poison   : "<<iPoison<<endl;
-			cout<<"TOTAL    : "<<iTotal<<endl;
+// 			cout<<"__DAMAGE__"<<endl;
+// 			cout<<"Slashing : "<<iSlashing<<endl;
+// 			cout<<"Crushing : "<<iCrushing<<endl;
+// 			cout<<"Piercing : "<<iPiercing<<endl;
+// 			cout<<"Fire     : "<<iFire<<endl;
+// 			cout<<"Ice      : "<<iIce<<endl;
+// 			cout<<"Lightning: "<<iLightning<<endl;
+// 			cout<<"MAgic    : "<<iMagic<<endl;
+// 			cout<<"Poison   : "<<iPoison<<endl;
+// 			cout<<"TOTAL    : "<<iTotal<<endl;
 		
 			
 			//Damage(iAttacker,iDefender,iTotal);
