@@ -9,7 +9,7 @@
 	#define _MAINAPPLICATION_		// just denna fil och inte p?flera st?len.
 	#define _DONT_MAIN
 #endif
- 
+
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine/inputhandle.h"

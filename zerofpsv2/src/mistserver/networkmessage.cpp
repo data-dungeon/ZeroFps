@@ -177,7 +177,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			int iTarget;
 			PkNetMessage->Read(iTarget);
 			
-			cout<<"go ttarget "<<iTarget<<endl;
+			cout<<"got target "<<iTarget<<endl;
 			
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))

@@ -1148,10 +1148,12 @@ void P_CharacterProperty::AddStatPoint(int iStat)
 
 void P_CharacterProperty::OnLevelUP()
 {
-// 	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV(),3);
+	Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
+
+ 	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV()+kRandomPos,3);
 	SendTextToClient("You are now level "+IntToString(m_kCharacterStats.GetTotal("Level")));	
 
-	m_kCharacterStats.ChangeStat("StatPoints",8);	
+	m_kCharacterStats.ChangeStat("StatPoints",4);	
 	
 	//tillf�ligt test
 // 	m_kCharacterStats.ChangeStat("Strength",3);
@@ -1669,7 +1671,7 @@ void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
 
 void P_CharacterProperty::PlayCharacterMovementSounds()
 {
-	static float fWalkGain = 0.05;
+	static float fWalkGain = 0.04;
 	static Vector3 kOffset(0,0.5,0);
 
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))

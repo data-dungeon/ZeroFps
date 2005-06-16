@@ -934,8 +934,8 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 */
 void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 {
-	Vector3 pos;
-	Matrix3 rot;
+	static Vector3 pos;
+	static Matrix3 rot;
 
 	int iNewID;
 	pkFile->Read(iNewID);	
@@ -973,7 +973,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 
 	int i;
 
-	int iNumOfEntVars;
+	unsigned int iNumOfEntVars;
 	pkFile->Read(iNumOfEntVars);		
 	EntityVariable kEntVar;
 
@@ -1096,6 +1096,9 @@ void Entity::Save(ZFIoInterface* pkFile)
 	unsigned int iNumOfEntVars = m_kVariables.size();
 	pkFile->Write(iNumOfEntVars);	
 	
+	if(iNumOfEntVars > 100)
+		cout<<"EXXXXXXXXXRRRRRRRRRRRRRRORRRRRRRRRRRRRRRRRRRRR!!!!!!!!!!!!!!!! number of ent vars is totaly fucked"<<endl;
+
 	for(i=0; i<iNumOfEntVars; i++) 
 	{
 		strcpy(acTemp,m_kVariables[i].m_strName.c_str());

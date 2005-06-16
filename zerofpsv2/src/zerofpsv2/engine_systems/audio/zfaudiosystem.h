@@ -18,7 +18,7 @@
 #include "oggstream.h"
 
 #define DUMMY_SOUND "/data/sound/dummy.wav"
-#define HEARABLE_DISTANCE 100.0f
+#define HEARABLE_DISTANCE 25.0f
 
 // PlayAudio options 
 #define ZFAUDIO_LOOP			1  // loopa ljudet när det har spelat klart

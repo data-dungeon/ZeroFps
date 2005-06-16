@@ -1189,7 +1189,7 @@ void ZFAudioSystem::Stop(ZFSoundInfo *pkSound)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::Restart(ZFSoundInfo *pkSound)
 {
-	printf("restarting sound\n");
+	//printf("restarting sound\n");
 	
 	if(!InitSound(pkSound))
 		return false;

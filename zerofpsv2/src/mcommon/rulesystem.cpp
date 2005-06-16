@@ -7,7 +7,7 @@
 using namespace ObjectManagerLua;
 
 RuleSystem::RuleSystem() : ZFSubSystem("RuleSystem")
-{
+{ 
 
 }
 
