@@ -445,7 +445,6 @@ void P_Md5::ReadMeshes(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 {
 	char* ucpToken;
 	ucpToken = pkScript->GetToken();		// Read away {
-	int iValue;
 
 	ucpToken = pkScript->GetToken();	
 	while(strcmp(ucpToken, "}"))

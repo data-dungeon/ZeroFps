@@ -265,6 +265,8 @@ namespace SI_P_Sound
 		}
 		else
 			cout<<"WARNING: StartSoundLua could not find entity "<<id<<endl;
+
+		return 0;
 	}	
 }
 

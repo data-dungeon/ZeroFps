@@ -134,7 +134,7 @@ public:
 		// the rect is in screen space.
 
 	void GetChildrens(list<ZGuiWnd*>& kList);
-	int GetNumChildrens() { return m_kChildList.size(); }
+	int GetNumChildrens() { return int(m_kChildList.size()); }
 	virtual void SetText(char* strText, bool bResizeWnd=false);
 	virtual char* GetText() { return m_strText; }
 	virtual void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB);

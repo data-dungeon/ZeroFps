@@ -12,7 +12,7 @@
 
 class Entity;
 class Camera;
-class Mad_CoreSubMesh;
+struct Mad_CoreSubMesh;
 
 /**	\brief	Da MadView
 		\ingroup MadView

@@ -137,7 +137,7 @@ void Render::SetDisplay()
 
 	m_iSDLVideoModeFlags = 0;
 
-	if(m_iFullScreen > 0)
+	if(m_iFullScreen == true)
 		m_iSDLVideoModeFlags = SDL_OPENGL|SDL_FULLSCREEN;
 	else
 		m_iSDLVideoModeFlags = SDL_OPENGL;

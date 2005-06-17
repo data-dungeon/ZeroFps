@@ -573,7 +573,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName,
 		return false;
 	
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
-	Call(pkScript,szFuncName,vkParams);
+	return Call(pkScript,szFuncName,vkParams);
 }
 
 bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
@@ -664,8 +664,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName,
 		return false;
 	
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
-	Call(pkScript,szFuncName,iNumParams,iNumResults);
-
+	return Call(pkScript,szFuncName,iNumParams,iNumResults);
 }
 
 bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 

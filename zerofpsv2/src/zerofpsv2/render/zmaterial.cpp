@@ -710,6 +710,9 @@ bool ZMaterial::Create(string strName)
 	 	return LoadLuaMaterial(strName.c_str());		
 	}
 
+	assert(0);	// This should never happen?
+	return false;
+
 // 	return LoadShader(strName.c_str());
 } 
 
