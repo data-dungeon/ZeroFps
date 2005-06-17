@@ -21,8 +21,10 @@ void SkillBar::Init()
 	m_pkCurrentDefaultAttack = (ZGuiLabel*) g_kMistClient.CreateWnd(Label, "DefaultAttackLabel", "SkillBar", "", 96 + 0*32, 0, 32, 32, 0);
 	m_pkCurrentDefaultAttack->Hide();
 	m_pkCurrentDefaultAttack->SetSkin(new ZGuiSkin());
-	m_pkCurrentDefaultAttack->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("actions/action_selection_border.tga");	
+	m_pkCurrentDefaultAttack->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("defaultskill.tga");	
 
+	if(ZGuiWnd* pkWnd = g_kMistClient.GetWnd("SkillBar"))
+		pkWnd->m_bAcceptRightClicks = true;
 
 	SkillInfo temp;
 	for(int i =0;i<19;i++)
@@ -38,7 +40,7 @@ void SkillBar::Init()
 		temp.m_pkButton->SetButtonDownSkin(new ZGuiSkin());
 		temp.m_pkButton->SetButtonHighLightSkin(temp.m_pkButton->GetButtonUpSkin());		
 		temp.m_pkButton->SetFocus(true);
-		
+		temp.m_pkButton->m_bAcceptRightClicks = true;
 		
 		ZGuiSkin* pkSkin;
 		pkSkin = temp.m_pkButton->GetButtonUpSkin();

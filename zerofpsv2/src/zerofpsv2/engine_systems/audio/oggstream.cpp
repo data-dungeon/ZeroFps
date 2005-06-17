@@ -290,6 +290,8 @@ bool OggStream::QueueBuffer(ALuint *pALuiBuffer)
 			return false;
 		}
 
+
+		alGetError();
 		alBufferData(*pALuiBuffer, m_eFormat, m_pcTempBuffer, bytes_read, m_pkVorbisInfo->rate);  
 		if(alGetError()!=AL_NO_ERROR)
 		{

@@ -75,7 +75,11 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		else
 		if(strMainWnd == "SkillBar")
 		{
-			g_kMistClient.m_pkSkillBar->HandleCommand(0,strController);
+			if( ((int*)params)[1] )
+				g_kMistClient.m_pkSkillBar->HandleCommand(1,strController);
+			else
+				g_kMistClient.m_pkSkillBar->HandleCommand(0,strController);
+
 		}
 		else
 		if(strMainWnd == "StatsWnd")
@@ -99,14 +103,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 					g_kMistClient.SendCombatMode(true);
 			}
 		}		
-	}
-	
-	if(msg == ZGM_COMMAND)
-	{
-		if(strMainWnd == "SkillBar")
-		{
-			g_kMistClient.m_pkSkillBar->HandleCommand(1,strController);
-		}
 	}
 
 	if(msg == ZGM_SELECTLISTITEM)
