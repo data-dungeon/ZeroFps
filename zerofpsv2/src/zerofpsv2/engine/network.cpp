@@ -608,7 +608,6 @@ void NetWork::MS_GotServers(NetPacket* pkNetPack)
 {
 	m_kServers.clear();
 	char SzAdress[128];
-	IPaddress kIp;
 
 	int iNumOfServers;
 	pkNetPack->Read(iNumOfServers);

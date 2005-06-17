@@ -576,7 +576,6 @@ namespace SI_P_AI
 		if( g_pkScript->GetNumArgs(pkLua) == 2 )
 		{
 			double dEntID, dAIState;
-			char	acType[128];
 			g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
 			g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
 	

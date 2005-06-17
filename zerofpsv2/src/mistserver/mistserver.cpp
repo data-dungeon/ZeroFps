@@ -434,7 +434,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	NetPacket kNp;
 	Vector3 kStartPos;
 
-	unsigned int i;
 	vector<string>	kUsers;
 	string strNewTitle;
 
