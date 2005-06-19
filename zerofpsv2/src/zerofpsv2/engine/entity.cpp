@@ -2176,6 +2176,8 @@ bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObje
 
 namespace SI_Entity
 {
+// Property Mangment ******************************************************************************************************
+
 /**	\fn AddProperty(Entity, PropertyName)
  	\relates SIEntity
    \brief Gives a Entity a property.
@@ -2282,6 +2284,7 @@ int SetParameterLua(lua_State* pkLua)
 	return 0;
 }
 
+// Entity Values ******************************************************************************************************
 /**	\fn GetObjectType( Entity )
  		\relates SIEntity
 		\param Entity Id of entity to get type of.
@@ -2334,16 +2337,93 @@ int GetObjectNameLua(lua_State* pkLua)
 	return 1;
 }
 
-/**	\fn GetLocalDouble( Entity, VariableName)
+/**	\fn SetEditIcon( Entity, iIcon )
+ 		\relates SIEntity
+		\param Entity Id of entity to get name of.
+		\brief Returns the name of the entity.
+*/
+int SetEditIcon(lua_State* pkLua)
+{
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+	int iIcon = (int) dTemp;
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	if(!o1)
+		return 1;
+
+	o1->m_ucIcon = iIcon;
+	o1->AddProxyProperty("P_EditIcon");
+
+	return 1;	
+}
+
+// Entity Variables ******************************************************************************************************
+/**	\fn IsLocalSet( EntityID, VariableName )
+ 		\relates SIEntity
+		\param EntityID entity to check.
+		\param VariableName Name of variable to look for.
+		\brief Returns true if variable exist in entity.
+*/
+int IsLocalSet(lua_State* pkLua)
+{
+	int iRetValue = 0;
+	if(!g_pkScript->VerifyArg(pkLua, 2))
+		return 0;
+
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	if(!pkEnt)
+	{
+		g_pkScript->AddReturnValue( pkLua, iRetValue );
+		return 1;
+	}
+	
+	EntityVariable* pkVar = pkEnt->GetVar(acName);
+	if(pkVar)
+		iRetValue = 1;
+   
+	g_pkScript->AddReturnValue( pkLua, iRetValue );
+	
+	return 1;
+}
+
+/**	\fn SetLocal(EntityID, VariableName, Value)
  	\relates SIEntity
-   \brief Get value of a double variable stored in Entity.
-   \param Entity Entity to get variable from.
+   \brief Set value of a variable stored in Entity.
+   \param EntityID Entity to set variable on.
+   \param VariableName Name of variable.
+   \param Value New value to set variable to.
+
+	There are three of these functions. SetLocalDouble, SetLocalString and SetLocalVector. They take a 
+	number, string and table with numbers as last parameter each.
+
+	If the variable don't exist it will be created with std values. 0.0 for Double, empty string for String
+	and zero vector for Vector.
+*/
+
+/**	\fn GetLocal( EntityID, VariableName)
+ 	\relates SIEntity
+   \brief Get value of a variable stored in Entity.
+   \param EntityID Entity to get variable from.
    \param VariableName Name of variable.
 	\return Return Return value of variable
 
-	Get value of a double variable stored in Entity. The variable is saved with the object and it
-	can be used to save status flags used by the script. If no variable with the given name is 
-	found a value of 0.0 will be returned.
+	There are three of these functions. GetLocalDouble, GetLocalString and GetLocalVector. They take a 
+	number, string and table with numbers as last parameter each.
+
+	If no variable with the given name is found a std value will be returned.
 */
 int GetLocalDouble(lua_State* pkLua)
 {
@@ -2365,16 +2445,6 @@ int GetLocalDouble(lua_State* pkLua)
 
 }
 
-/**	\fn SetLocalDouble(Entity, VariableName, Value)
- 	\relates SIEntity
-   \brief Set value of a double variable stored in Entity.
-   \param Entity Entity to get variable from.
-   \param VariableName VariableName Name of variable.
-   \param Value New value to set variable to.
-
-	Set value of a double variable stored in Entity. If the variable don't exist it will be
-	created.
-*/
 int SetLocalDouble(lua_State* pkLua)
 {
 	if(!g_pkScript->VerifyArg(pkLua, 3))
@@ -2397,17 +2467,6 @@ int SetLocalDouble(lua_State* pkLua)
 	return 1;	
 }
 
-/**	\fn GetLocalString( Entity, VariableName)
- 	\relates SIEntity
-   \brief Get value of a double variable stored in Entity.
-   \param Entity Entity to get variable from.
-   \param VariableName Name of variable.
-	\return Return Return value of variable
-
-	Get value of a string variable stored in Entity. The variable is saved with the object and it
-	can be used to save status flags used by the script. If no variable with the given name is 
-	found a empty string will be returned.
-*/
 int GetLocalString(lua_State* pkLua)
 {
 	if(!g_pkScript->VerifyArg(pkLua, 2))
@@ -2427,17 +2486,6 @@ int GetLocalString(lua_State* pkLua)
 	return 1;
 }
 
-
-/**	\fn SetLocalString(Entity, VariableName, Value)
- 	\relates SIEntity
-   \brief Set value of a double variable stored in Entity.
-   \param Entity Entity to get variable from.
-   \param VariableName VariableName Name of variable.
-   \param Value New value to set variable to.
-
-	Set value of a string variable stored in Entity. If the variable don't exist it will be
-	created.
-*/
 int SetLocalString(lua_State* pkLua)
 {
 	if(!g_pkScript->VerifyArg(pkLua,3))
@@ -2533,8 +2581,9 @@ int GetLocalVector(lua_State* pkLua)
 	return 1;	
 }
 
+// Position/Rotation ******************************************************************************************************
 
-/**	\fn SetObjectRotFromObjectLua( TargetEntity, SourceEntity)
+/**	\fn SetObjectRotToIdentityLua( TargetEntity, SourceEntity)
  	\relates SIEntity
    \brief Sets the rotation of an entity to that of the seccond entity
    \param TargetEntity Entity to set rotation on
@@ -2620,15 +2669,10 @@ int SetObjectPosLua(lua_State* pkLua)
 	return 1;
 }
 
-
-// Position/Rotations.
-
-
-/**	\fn SetLocalPos(x,y,z)
- 	\relates SIEntityManger
+/**	\fn SetObjectLocalPos(x,y,z)
+ 	\relates SIEntity
 	\brief Sets the local pos of the last object.
 */
-
 int SetLocalPosLua(lua_State* pkLua)
 {
 	if(!g_pkScript->VerifyArg(pkLua, 2))
@@ -2644,66 +2688,7 @@ int SetLocalPosLua(lua_State* pkLua)
 	}
 		
 	return 0;
-// 	if(!pkEnt)	return 0;
-// 	
-// 	
-// 
-// 	if(g_kScriptState.g_pkLastObject == NULL)
-// 		return 0;
-// 
-// 	if(g_pkScript->GetNumArgs(pkLua) != 3)
-// 		return 0;	
-// 
-// 	double x,y,z;
-// 	
-// 	g_pkScript->GetArg(pkLua, 0, &x);
-// 	g_pkScript->GetArg(pkLua, 1, &y);
-// 	g_pkScript->GetArg(pkLua, 2, &z);
-// 	
-// 	g_kScriptState.g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
-// 	
-// 	return 0;
 }
-
-
-/**	\fn SetVelTo( Entity)
- 	\relates SIEntity
-   \brief Sets velocity of entity
-*/
-/*
-int SetVelToLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) == 3)
-	{
-		double dId;
-
-		double dVel;
-		Vector3 kPos;
-		vector<TABLE_DATA> vkData;
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgTable(pkLua, 2, vkData);
-		g_pkScript->GetArgNumber(pkLua, 2, &dVel);
-
-		kPos = Vector3(
-			(float) (*(double*) vkData[0].pData),
-			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData));
-
-		Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId);
-
-		if(pkEnt)
-		{
-			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
-
-			pkEnt->SetVel(dir*(float) dVel);
-		}
-		return 0;
-	}
-
-   return 0;
-}
-*/
 
 /**	\fn GetObjectPos( Entity)
  	\relates SIEntity
@@ -2713,12 +2698,6 @@ int GetObjectPosLua(lua_State* pkLua)
 {
 	if(!g_pkScript->VerifyArg(pkLua, 1))
 		return 0;
-
-	/*if(g_pkScript->GetNumArgs(pkLua) != 1)
-	{
-		cout<<"SetObjectPos takes 1 argument(s)"<<endl;
-		return 0;
-	}*/
 
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
@@ -2805,28 +2784,6 @@ int GetObjectRotLua(lua_State* pkLua)
 	return 1;
 }
 
-int SetEditIcon(lua_State* pkLua)
-{
-	if(!g_pkScript->VerifyArg(pkLua, 2))
-		return 0;
-
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
-
-	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-	int iIcon = (int) dTemp;
-
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	if(!o1)
-		return 1;
-
-	o1->m_ucIcon = iIcon;
-	o1->AddProxyProperty("P_EditIcon");
-
-	return 1;	
-}
 
 }
 
@@ -2839,26 +2796,30 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("AddProperty",			SI_Entity::AddPropertyLua);
 	g_pkScript->ExposeFunction("SetParameter",		SI_Entity::SetParameterLua);
-	g_pkScript->ExposeFunction("GetObjectType",		SI_Entity::GetObjectTypeLua);		
-	g_pkScript->ExposeFunction("GetObjectName",		SI_Entity::GetObjectNameLua);		
 	g_pkScript->ExposeFunction("DelProperty",		   SI_Entity::DelPropertyLua);		
 
+	// Entity Values
+	g_pkScript->ExposeFunction("GetObjectType",		SI_Entity::GetObjectTypeLua);		
+	g_pkScript->ExposeFunction("GetObjectName",		SI_Entity::GetObjectNameLua);		
+	g_pkScript->ExposeFunction("SetEditIcon",			SI_Entity::SetEditIcon);
+
+	// Entity Variables
+
+	g_pkScript->ExposeFunction("IsLocalSet",			SI_Entity::IsLocalSet);
 	g_pkScript->ExposeFunction("GetLocalDouble",		SI_Entity::GetLocalDouble);
 	g_pkScript->ExposeFunction("SetLocalDouble",		SI_Entity::SetLocalDouble);
 	g_pkScript->ExposeFunction("GetLocalString",		SI_Entity::GetLocalString);
 	g_pkScript->ExposeFunction("SetLocalString",		SI_Entity::SetLocalString);
+	g_pkScript->ExposeFunction("SetLocalVector",		SI_Entity::SetLocalVector);
+	g_pkScript->ExposeFunction("GetLocalVector",		SI_Entity::GetLocalVector);
 
+	// Position/Rotation
+	g_pkScript->ExposeFunction("SetObjectRotToIdentity",		SI_Entity::SetObjectRotToIdentityLua);
+	g_pkScript->ExposeFunction("SetObjectRotFromObject",		SI_Entity::SetObjectRotFromObjectLua);
 	g_pkScript->ExposeFunction("SetObjectPos",		SI_Entity::SetObjectPosLua);
 	g_pkScript->ExposeFunction("SetObjectLocalPos",		SI_Entity::SetLocalPosLua);
-	g_pkScript->ExposeFunction("SetObjectRotFromObject",		SI_Entity::SetObjectRotFromObjectLua);
-	g_pkScript->ExposeFunction("SetObjectRotToIdentity",		SI_Entity::SetObjectRotToIdentityLua);
-	
-	//g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
 	g_pkScript->ExposeFunction("GetObjectPos",		SI_Entity::GetObjectPosLua);
 	g_pkScript->ExposeFunction("GetObjectRot",		SI_Entity::GetObjectRotLua);
 
-	g_pkScript->ExposeFunction("SetLocalVector",		SI_Entity::SetLocalVector);
-	g_pkScript->ExposeFunction("GetLocalVector",		SI_Entity::GetLocalVector);
-	g_pkScript->ExposeFunction("SetEditIcon",			SI_Entity::SetEditIcon);
 
 }

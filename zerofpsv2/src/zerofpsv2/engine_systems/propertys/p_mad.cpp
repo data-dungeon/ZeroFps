@@ -511,6 +511,18 @@ bool P_Mad::AddMesh(int iSId)
 	return Mad_Modell::AddMesh(iSId);
 }
 
+
+/** \var float m_fScale
+	\brief Scale of model.
+	\relates Mad
+
+	Use this to change the size of a MAD. Std is 1.0. 
+*/
+
+/** \var string m_kMadFile
+	\brief MAD file to use.
+	\relates Mad
+*/
 vector<PropertyValues> P_Mad::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(7);

@@ -345,9 +345,13 @@ namespace SI_PPSystem
 
 /**	\fn SetPSystem( Entity, SystemName)
  		\relates PSystem
-		\brief Sets the particle system to use.
+		\param SystemName Name of particle system to use.
+		\brief Sets a particle system on a entity.
 
-		Impulse is given in the direction specified by xyz.
+		If only the first parameter is used the particle system of the entity (if any) will be removed.
+
+		If the second parameter is given it must be the name of one of the particle system in /data/psystem. 
+		A P_System property will be assigned to the entity if it does not have one.
 */
 int SetPSystemLua(lua_State* pkLua)
 {
@@ -384,7 +388,6 @@ int SetPSystemLua(lua_State* pkLua)
 			
 			if(ps)
 			{
-				//char	acType[128];
 				string strType;
 				g_pkScript->GetArgString(pkLua, 1, strType);
 				

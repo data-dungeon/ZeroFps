@@ -54,28 +54,27 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	Reset();
 		
+	// entity management
+	pkScript->ExposeFunction("CreateEntity", 			ObjectManagerLua::CreateEntityLua);
+	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
+	pkScript->ExposeFunction("IsEntityValid",  		ObjectManagerLua::IsEntityValid);
+
 	//create
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
 	pkScript->ExposeFunction("InitProperty",		  	ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);
-	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
-	//----
-
-	// entity management
-	pkScript->ExposeFunction("CreateEntity", 			ObjectManagerLua::CreateEntityLua);
-	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
-	pkScript->ExposeFunction("IsEntityValid",  		ObjectManagerLua::IsEntityValid);
+	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);
 
 	// entity orientation
 	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
 	pkScript->ExposeFunction("PlaceObjectOnGround",	ObjectManagerLua::PlaceObjectOnGroundLua);
 
 	//zone management
-	pkScript->ExposeFunction("GetZoneIDAtPos",		ObjectManagerLua::GetZoneIDAtPosLua);
 	pkScript->ExposeFunction("GetZoneID",				ObjectManagerLua::GetZoneIDLua);
+	pkScript->ExposeFunction("GetZoneIDAtPos",		ObjectManagerLua::GetZoneIDAtPosLua);
 	pkScript->ExposeFunction("SetZoneModel",			ObjectManagerLua::SetZoneModelLua);
 
 	// Common used functions , used together whit P_ScriptInterface
@@ -183,7 +182,7 @@ int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua)
 	return 1;
 }
 
-
+// Create ******************************************************************************************************
 /**	\fn InitObject(ScripName)
  		\relates SIEntityCreate
 		\brief Run a script to create objects.
@@ -352,11 +351,11 @@ int SetReturnObjectLua(lua_State* pkLua)
 
 	return 0;
 }
+
 /**	\fn HaveRelativOri()
  	\relates SIEntityCreate
 	\brief Sets the last object to have relative orientation.
 */
-
 int HaveRelativOriLua(lua_State* pkLua)
 {
 	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
@@ -380,9 +379,8 @@ int HaveRelativOriLua(lua_State* pkLua)
 	g_kScriptState.g_pkLastObject->SetRelativeOri(true);
 	return 0;
 }
-//----end of create
 
-
+// Orient ******************************************************************************************************
 int PlaceObjectOnGroundLua(lua_State* pkLua)
 {/*
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
@@ -426,16 +424,6 @@ int PlaceObjectOnGroundLua(lua_State* pkLua)
 	return 0;
 }
 
-
-
-int SIGetSelfIDLua(lua_State* pkLua)
-{
-	g_pkScript->AddReturnValue(pkLua,g_kScriptState.g_iCurrentObjectID);
-	return 1;
-}
-
-
-
 // takes objectID, objectID
 int DistanceToLua(lua_State* pkLua)
 {
@@ -472,8 +460,11 @@ int DistanceToLua(lua_State* pkLua)
 	return 1;
 }
 
-
-
+// zone management ******************************************************************************************************
+/**	\fn GetZoneIDAtPos(EntityID)
+ 	\relates SIEntityManger
+	\brief	Returns zone id at entitys position. -1 if outside zones.
+*/
 int GetZoneIDLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 1)
@@ -500,6 +491,10 @@ int GetZoneIDLua(lua_State* pkLua)
    return 0;
 }
 
+/**	\fn GetZoneIDAtPos(Position)
+ 	\relates SIEntityManger
+	\brief	Returns zone id at position. -1 if outside zones.
+*/
 int GetZoneIDAtPosLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 1)
@@ -526,6 +521,10 @@ int GetZoneIDAtPosLua(lua_State* pkLua)
    return 0;
 }
 
+/**	\fn SetZoneModel(ZoneId, Modelname)
+ 	\relates SIEntityManger
+	\brief	Returns zone id at position. -1 if outside zones.
+*/
 int SetZoneModelLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 2)
@@ -540,6 +539,17 @@ int SetZoneModelLua(lua_State* pkLua)
 	}
 
    return 0;
+}
+
+// Common ******************************************************************************************************
+/**	\fn GetSelfID()
+ 	\relates SIEntityManger
+	\brief	Returns entity id for active entity.
+*/
+int SIGetSelfIDLua(lua_State* pkLua)
+{
+	g_pkScript->AddReturnValue(pkLua,g_kScriptState.g_iCurrentObjectID);
+	return 1;
 }
 
 
@@ -585,5 +595,6 @@ Entity* GetEntityPtr(lua_State* pkLua, int iIndex)
 
 	return pkEnt;
 }
+
 
 }
