@@ -1026,7 +1026,8 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		pkFile->Read(name,50,1);
 		int iVersion;
 		pkFile->Read(iVersion);
-					
+		
+		//cout<<"creating prop:"<<name<<endl;	
 		
 		Property* prop = AddProperty(name);
 		
