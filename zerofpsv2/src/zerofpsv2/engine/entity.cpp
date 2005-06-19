@@ -938,7 +938,8 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	static Matrix3 rot;
 
 	int iNewID;
-	pkFile->Read(iNewID);	
+	pkFile->Read(iNewID);
+
 	if(bLoadID)
 	{
 		m_pkEntityManager->Link(this,iNewID);
@@ -1027,8 +1028,6 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		int iVersion;
 		pkFile->Read(iVersion);
 		
-		//cout<<"creating prop:"<<name<<endl;	
-		
 		Property* prop = AddProperty(name);
 		
 		if(prop)
@@ -1052,7 +1051,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		{
 			Entity* newobj = m_pkEntityManager->CreateEntity(false);
 			newobj->SetParent(this);
-			newobj->Load(pkFile,bLoadID);		
+			newobj->Load(pkFile,bLoadID);	
 		}
 	}
 	
@@ -1097,8 +1096,6 @@ void Entity::Save(ZFIoInterface* pkFile)
 	unsigned int iNumOfEntVars = m_kVariables.size();
 	pkFile->Write(iNumOfEntVars);	
 	
-	if(iNumOfEntVars > 100)
-		cout<<"EXXXXXXXXXRRRRRRRRRRRRRRORRRRRRRRRRRRRRRRRRRRR!!!!!!!!!!!!!!!! number of ent vars is totaly fucked"<<endl;
 
 	for(i=0; i<iNumOfEntVars; i++) 
 	{
@@ -1155,7 +1152,7 @@ void Entity::Save(ZFIoInterface* pkFile)
 	pkFile->Write(iChilds);		
 	
 	//save all childs
-	for( i = 0;i<iChilds;i++)
+	for( i = 0;i<m_akChilds.size();i++)
 	{
 		if(m_akChilds[i]->GetSave())
 			m_akChilds[i]->Save(pkFile);

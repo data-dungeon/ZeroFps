@@ -782,10 +782,10 @@ void P_Container::Print()
 
 void P_Container::Save(ZFIoInterface* pkPackage)
 {
-	pkPackage->Write(&m_iMaxItems,sizeof(m_iMaxItems),1);
+	pkPackage->Write(m_iMaxItems);
 	
-	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
-	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
+	pkPackage->Write(m_iSizeX);
+	pkPackage->Write(m_iSizeY);
 	
 	pkPackage->Write(m_iContainerType);
 	pkPackage->Write(m_bStaticOwner);	
@@ -798,9 +798,9 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 	
 	//save item types
 	int iTypes = m_kItemTypes.size();
-	pkPackage->Write(&iTypes,sizeof(iTypes),1);		
+	pkPackage->Write(iTypes);		
 	for(int i = 0 ;i < iTypes;i++)
-		pkPackage->Write(&m_kItemTypes[i],sizeof(m_kItemTypes[i]),1);	
+		pkPackage->Write(m_kItemTypes[i]);	
 	
 }
 
@@ -808,10 +808,10 @@ void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	if(iVersion == 5)
 	{
-		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+		pkPackage->Read(m_iMaxItems);	
 		
-		pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
-		pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
+		pkPackage->Read(m_iSizeX);
+		pkPackage->Read(m_iSizeY);
 	
 		SetSize(m_iSizeX,m_iSizeY);
 	
@@ -825,12 +825,12 @@ void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 	
 		//load types
 		int iTypes;
-		pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+		pkPackage->Read(iTypes);		
 		m_kItemTypes.clear();
 		for(int i = 0 ;i < iTypes;i++)
 		{
 			int iT;
-			pkPackage->Read(&iT,sizeof(iT),1);				
+			pkPackage->Read(iT);				
 			m_kItemTypes.push_back(iT);
 		}				
 	}
