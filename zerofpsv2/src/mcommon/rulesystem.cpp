@@ -204,8 +204,22 @@ namespace SI_RuleSystem
 {
 
 /**	\fn Damage( Target, dDamage )
+		\param Target Id of entity do damage.
+		\param dDamage How much damage.
 		\brief Damages target entity.
 		\relates RuleSystem
+
+		Only character can be damaged right now. 
+*/
+
+/**	\fn Damage( Attacker,  Target, dDamage )
+		\param Attacker Id of entity that was responsible for the damage.
+		\param Target Id of entity do damage.
+		\param dDamage How much damage.
+		\brief Damages target entity.
+		\relates RuleSystem
+
+		Only character can be damaged right now. 
 */
 	int DamageLua(lua_State* pkLua)
 	{
@@ -244,7 +258,10 @@ namespace SI_RuleSystem
 	}	
 
 /**	\fn Attack( Attacker, Defender )
-		\brief Attack target entity.
+		\param Attacker Id of entity that should attack.
+		\param Defender Id of entity that is the target of the attack.
+		\return Returns 1 if hit and 0 if miss.
+		\brief Makes a character attacks another character
 		\relates RuleSystem
 */
 	int AttackLua(lua_State* pkLua)

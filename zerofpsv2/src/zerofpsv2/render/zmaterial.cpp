@@ -869,7 +869,11 @@ ZFResource* Create__Material()
 
 
 
+/**	\class Material 
+		\ingroup NewSi
 
+		Scriptfunctions that can only be used inside a material script (.zlm). 
+*/
 
 // #include "../engine_systems/script_interfaces/si_objectmanager.h" 
 // using namespace ObjectManagerLua;
@@ -884,7 +888,11 @@ namespace SI_ZMATERIAL
 	ZFScriptSystem*	g_pkScript = NULL;
 	ZeroFps*				g_pkZeroFps = NULL;
 	
-	
+/**	\fn PassBegin( iPass )
+		\param iPass Rendering pass to start setting parameters for.
+		\brief Starts a new rendering pass in a material file.
+		\relates Material
+*/	
 	int PassBeginLua(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,1))
@@ -912,6 +920,10 @@ namespace SI_ZMATERIAL
 		return 0;		
 	}	
 
+/**	\fn PassEnd( )
+		\brief Ends the current rendering pass in a material file.
+		\relates Material
+*/	
 	int PassEndLua(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,0))
@@ -931,7 +943,11 @@ namespace SI_ZMATERIAL
 		return 0;		
 	}		
 	
-	
+/**	\fn SupportGLSLProgram( )
+		\return Returns 1 if current rendering system supports GL Slang programs. 0 if not.
+		\brief Used to see if gl slang is supported.
+		\relates Material
+*/		
 	int SupportGLSLProgramLua(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,0))
@@ -947,6 +963,10 @@ namespace SI_ZMATERIAL
 		return 1;		
 	}		
 	
+/**	\fn ShadowMap( )
+		\brief *** Unknown ZMaterial.cpp:965.
+		\relates Material
+*/		
 	int ShadowMap(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,0))

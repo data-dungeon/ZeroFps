@@ -211,6 +211,15 @@ int GuiAppLua::CloseWndLua(lua_State* pkLua)
 	return 1;
 }
 
+/**	\fn ChangeSkin(szWndName, szSkinName, szType)
+ 	\relates SIGui
+	\brief Sets the visible and focus status on a window.
+
+	\param szWndName Name of window.
+	\param szSkinName Name of the skin declared in the script file
+	\param szType Name of the type of the skin.
+*/
+
 // Close window
 // Parameters:
 // (0) char* Name of the window
@@ -423,13 +432,13 @@ int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 	return 1;
 }
 
-/**	\fn CreateWndLua(szWndName, bVisible, bFocus)
+/**	\fn ShowWnd(szWndName, bVisible, bFocus)
  	\relates SIGui
 	\brief Sets the visible and focus status on a window.
 
 	\param szWndName Name of window.
-	\param bVisible Desc
-	\param bFocus Desc
+	\param bVisible Bool if window should be visible.
+	\param bFocus Bool if window should have focus.
 */
 int GuiAppLua::ShowWndLua(lua_State* pkLua)
 {
@@ -488,6 +497,15 @@ int GuiAppLua:: SetMoveAreaLua(lua_State* pkLua)
 	return 1;
 }
 
+/**	\fn SetTextColor(szWndName, iRed, iGreen, iBlue)
+ 	\relates SIGui
+	\brief Changes the color of the text used in a window.
+
+	\param szWndName Name of window.
+	\param iRed Set the red color component as a number (0-255).
+	\param iGreen Set the green color component as a number (0-255).
+	\param iBlue Set the blue color component as a number (0-255).
+*/
 int GuiAppLua::SetTextColor(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);

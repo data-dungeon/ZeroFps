@@ -73,7 +73,8 @@ INPUT                  = . \
                          mcommon\rulesystem.cpp
 FILE_PATTERNS          = si_*.cpp \
                          p_*.cpp \
-                         entity.cpp
+                         entity.cpp \
+                         zmaterial.cpp
 RECURSIVE              = YES
 EXCLUDE                = C:/Projects/zerofpsv2/src/zerofpsv2/ogl/
 EXCLUDE_SYMLINKS       = NO

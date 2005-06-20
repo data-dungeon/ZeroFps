@@ -2169,8 +2169,10 @@ bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObje
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
 /** \class SIEntity 
- *  \ingroup NewSi
- *  */
+   \ingroup NewSi
+   
+	Scriptfunctions that modify one entity. Almost all of them takes entity to modify as first parameter.
+*/
 
 namespace SI_Entity
 {
