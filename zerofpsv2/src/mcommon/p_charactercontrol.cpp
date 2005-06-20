@@ -56,6 +56,11 @@ P_CharacterControl::P_CharacterControl()
 	m_iDirection = 		eMOVE_NONE;
 	m_iCharacterState	=	eIDLE_STANDING;	
 	
+	m_bFalling			=	false;
+	m_kFallPos			=	Vector3::ZERO;
+	m_fFallDamage		=	0;
+	m_bFirstFallUpdate=	true;
+	
 	m_kControls.reset();
 	
 	//animations
@@ -214,7 +219,39 @@ void P_CharacterControl::Update()
 			pkTcs->ApplyForce(Vector3(0,0,0),kVel);
 		}
 			
-
+		//fall damage
+		if(m_bFirstFallUpdate)
+		{
+			m_kFallPos = m_pkEntity->GetWorldPosV();
+			m_bFirstFallUpdate = false;
+		}
+		
+		if(pkTcs->GetOnGround())
+		{
+			if(m_bFalling)
+			{				
+				float fDistance = m_kFallPos.DistanceTo(m_pkEntity->GetWorldPosV());
+				if(fDistance > 3)
+				{
+					m_fFallDamage += (fDistance - 3)*15; 
+				
+					//cout<<"OUCH falldamage "<<(fDistance - 3)*15<< " total:"<<m_fFallDamage<<endl;
+				}
+			}
+			
+			m_bFalling = false;
+			m_kFallPos = m_pkEntity->GetWorldPosV();
+		}
+		else
+		{	
+			if(m_pkEntity->GetWorldPosV().y > m_kFallPos.y)
+				m_kFallPos = m_pkEntity->GetWorldPosV();
+			 
+			m_bFalling = true;
+		}
+		
+		
+		
 		
 		
 		//check if where walking or running or nothing
@@ -309,6 +346,13 @@ void P_CharacterControl::Update()
 	//update animation
 	UpdateAnimation();
 
+}
+
+float P_CharacterControl::GetFallDamage()
+{
+	float fRetVal = m_fFallDamage;
+	m_fFallDamage = 0;
+	return fRetVal;
 }
 
 void P_CharacterControl::SetNoClientRotation(bool bRot)

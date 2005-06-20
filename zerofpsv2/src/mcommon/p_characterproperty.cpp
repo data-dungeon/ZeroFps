@@ -869,7 +869,6 @@ void P_CharacterProperty::UpdateStats()
 		m_fStatTimer = fTime;
 	
 	
-	
 		//maximum values
 		m_kCharacterStats.SetStat("HealthMax",		m_kCharacterStats.GetTotal("Vitality") * 2.0);
 		m_kCharacterStats.SetStat("HealthRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.0125);
@@ -912,6 +911,10 @@ void P_CharacterProperty::UpdateStats()
 			
 		//health
 		string strHealth("Health");
+		//apply fall damage
+		m_kCharacterStats.ChangeStat(strHealth,-pkCC->GetFallDamage());
+
+
 		if(pkCC->GetCharacterState() == eSITTING)		
 			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen") * 2);
 		else

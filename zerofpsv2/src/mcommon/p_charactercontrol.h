@@ -87,6 +87,12 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		bool			m_bForceCrawl;
 		
+
+		bool			m_bFalling;
+		bool			m_bFirstFallUpdate;
+		Vector3		m_kFallPos;
+		float			m_fFallDamage;
+
 		bool			m_bHaveJumped;
 		bool			m_bInWater;
 		
@@ -142,7 +148,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		int  GetMovedirection()									{	return m_iDirection;			}
 		bool GetControl(int iKey);																			
 		int  GetCharacterState()								{	return m_iCharacterState;	}
-		
+		float GetFallDamage();
+
 		//movement stats																												
 		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}
 		void SetJumpForce(float fJump)						{	m_fJumpForce = fJump;		}
