@@ -965,6 +965,8 @@ void Camera::DrawWorld()
 			}
 		}		
 			
+		//m_pkZShadow->Update();
+
 		//Draw unshadows scene
  		m_iCurrentRenderMode = RENDER_NOSHADOWLAST;
  		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);

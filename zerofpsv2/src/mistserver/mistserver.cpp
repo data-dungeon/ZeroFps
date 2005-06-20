@@ -534,6 +534,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 					
 				
 			SayToClients(strMsg);	
+			break;
 		}			
 			
 		case FID_USERS:	
