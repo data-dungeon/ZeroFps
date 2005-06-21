@@ -358,7 +358,7 @@ void P_Enviroment::MakeThunder()
 		return;
 
 	static float fRate = 30;
-	static float fDistance = 1.0;
+	static float fDistance = 2.0;
 
 	static float fNextFlash = m_pkZeroFps->GetEngineTime() + Randomf(fRate);;
 	static float fNextThunder = -1;
@@ -376,7 +376,7 @@ void P_Enviroment::MakeThunder()
 		}
 		else
 		{	
-			fNextThunder = m_pkZeroFps->GetEngineTime() + fDistance;
+			fNextThunder = m_pkZeroFps->GetEngineTime() +1.0 + Randomf(fDistance);
 		
 			float fL = Randomf(0.5);
 			float fFade = Max(1.0 - (fDiff / 0.5),0.0);
