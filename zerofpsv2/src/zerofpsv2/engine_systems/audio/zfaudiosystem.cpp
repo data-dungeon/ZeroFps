@@ -954,6 +954,12 @@ bool ZFAudioSystem::GetSoundWithLowestPriority(string& strRes)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::Hearable(ZFSoundInfo* pkSound)
 {
+	//dvoid la till detta...blev massa felutskrifter annars o verka itne fungera korrekt
+	if( pkSound->m_b2DSound)
+	{
+		return true;
+	}
+
 	if( pkSound->m_kPos.DistanceTo(m_kPos) < HEARABLE_DISTANCE )
 		return true;
 
