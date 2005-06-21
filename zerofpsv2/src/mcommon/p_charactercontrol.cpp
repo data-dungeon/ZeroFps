@@ -230,7 +230,7 @@ void P_CharacterControl::Update()
 		{
 			if(m_bFalling)
 			{				
-				float fDistance = m_kFallPos.DistanceTo(m_pkEntity->GetWorldPosV());
+				float fDistance = fabs(m_kFallPos.y - m_pkEntity->GetWorldPosV().y);
 				if(fDistance > 3)
 				{
 					m_fFallDamage += (fDistance - 3)*15; 
