@@ -221,14 +221,14 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 
 	// Count Alive psystems
 	for (int i = 0; i < m_kPSystems.size();i++)
-		if ( &m_kPSystems[i] )
+		if ( m_kPSystems[i].m_pkPSystem )
 			iCount++;
 	
 	pkPackage->Write(iCount);
    
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
-		if (&m_kPSystems[i])
+		if ( m_kPSystems[i].m_pkPSystem )
 		{
 			// PSType
 			pkPackage->Write_Str(m_kPSystems[i].m_strPSName);
