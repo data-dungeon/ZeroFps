@@ -636,6 +636,12 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_bInheritPosFromJoint = false;
 
+	// Timeoffset
+	if ( m_kIniLoader.KeyExist("timeoffset", "time") )
+		pkPSType->m_kPSystemBehaviour.m_fTimeOffset = m_kIniLoader.GetFloatValue("timeoffset", "time");
+	else
+		pkPSType->m_kPSystemBehaviour.m_fTimeOffset = 0;
+
 
 	// close the file
 	//m_kIniLoader.Close();

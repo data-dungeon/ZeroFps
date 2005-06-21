@@ -217,13 +217,23 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 {
 
 	// number of PSystems
-	pkPackage->Write(m_kPSystems.size());
+	int iCount = 0;
+
+	// Count Alive psystems
+	for (int i = 0; i < m_kPSystems.size();i++)
+		if ( &m_kPSystems[i] )
+			iCount++;
+	
+	pkPackage->Write(iCount);
    
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
-		// PSType
-		pkPackage->Write_Str(m_kPSystems[i].m_strPSName);
-	   pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
+		if (&m_kPSystems[i])
+		{
+			// PSType
+			pkPackage->Write_Str(m_kPSystems[i].m_strPSName);
+			pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
+		}
 	}
 
 }

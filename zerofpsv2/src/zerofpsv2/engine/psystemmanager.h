@@ -44,7 +44,8 @@ struct PSystemTypeData
 	float 
 		m_fLifeTime,
 		m_fStartArea,
-		m_fParticlesPerSec;
+		m_fParticlesPerSec,
+		m_fTimeOffset;
 	
 	int 
 		m_iMaxParticles,
