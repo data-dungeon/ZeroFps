@@ -14,6 +14,7 @@ class OggStream
 {
 
 public:
+	bool		m_bKillMe;
 
 	bool		IsPlaying()	{ return m_bPlaying; }
 	bool		SetVolume(float fVolume);

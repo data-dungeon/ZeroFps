@@ -14,6 +14,7 @@ OggStream::OggStream(bool bListenerRelCoords,
 	m_bLooping(true),
 	m_bListenerRelCoords(bListenerRelCoords)
 {
+	m_bKillMe = false;
 	m_pkThread = NULL;
 	Create();
 }
@@ -171,10 +172,11 @@ int OggStream::ThreadMain(void *v)
 	if(v)
 	{
 		OggStream* pkOgg = (OggStream*) v;
-		while(1)
+		while(!pkOgg->m_bKillMe)
 		{
 			pkOgg->Update();
 			SDL_Delay(20);
+
 		}
 	}
 

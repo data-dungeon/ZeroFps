@@ -256,7 +256,10 @@ bool ZFAudioSystem::StopAudio(string strName, Vector3 pos, bool bRelease)
 				ogg->Stop();
 				if( ogg->m_pkThread != NULL) 
 				{
-					SDL_KillThread(ogg->m_pkThread);
+					//SDL_KillThread(ogg->m_pkThread);
+					ogg->m_bKillMe = true;
+					SDL_WaitThread(ogg->m_pkThread,NULL);
+
 					ogg->m_pkThread = NULL;
 				}
 
@@ -300,7 +303,9 @@ bool ZFAudioSystem::StopAudio(int iID, bool bRelease)
 				ogg->Stop();
 				if( ogg->m_pkThread != NULL) 
 				{
-					SDL_KillThread(ogg->m_pkThread);
+					ogg->m_bKillMe = true;
+					SDL_WaitThread(ogg->m_pkThread,NULL);
+					//SDL_KillThread(ogg->m_pkThread);
 					ogg->m_pkThread = NULL;
 				}
 
@@ -625,8 +630,13 @@ bool ZFAudioSystem::ShutDown()
 
 	for(int i=0; i<m_vkOggStreams.size(); i++)
 	{
-		if( m_vkOggStreams[i]->m_pkThread != NULL)  
-			SDL_KillThread(m_vkOggStreams[i]->m_pkThread);
+		if( m_vkOggStreams[i]->m_pkThread != NULL)
+		{
+			//SDL_KillThread(m_vkOggStreams[i]->m_pkThread);
+			m_vkOggStreams[i]->m_bKillMe = true;
+			SDL_WaitThread(m_vkOggStreams[i]->m_pkThread,NULL);
+		}
+
 		delete m_vkOggStreams[i];
 	}
 
@@ -1019,17 +1029,17 @@ bool ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 	// Stoppa ljudet.
 	alGetError(); // clear
 	alSourceStop(pkSound->m_uiSourceBufferName);
-	if( (error = alGetError()) != AL_NO_ERROR)
-	{
-		ZFAudioSystem::PrintError(error, "Failed to stop sound before delete!"); 
-		printf("name = %i\n", pkSound->m_uiSourceBufferName);
-	}
+// 	if( (error = alGetError()) != AL_NO_ERROR)
+// 	{
+// 		ZFAudioSystem::PrintError(error, "Failed to stop sound before delete!"); 
+// 		printf("name = %i\n", pkSound->m_uiSourceBufferName);
+// 	}
 
 	// Deallokera source pekaren.
 	alGetError(); // clear
 	alDeleteSources(1, &pkSound->m_uiSourceBufferName);
-	if( (error = alGetError()) != AL_NO_ERROR)
-		ZFAudioSystem::PrintError(error, "Failed to delete source buffer!"); 
+// 	if( (error = alGetError()) != AL_NO_ERROR)
+// 		ZFAudioSystem::PrintError(error, "Failed to delete source buffer!"); 
 
 	pkSound->m_uiSourceBufferName = NO_SOURCE;
 
