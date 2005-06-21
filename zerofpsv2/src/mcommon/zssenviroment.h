@@ -41,6 +41,7 @@ class MCOMMON_API EnvSetting
 		Vector3	m_kSunPos;
 		
 		bool		m_bSunFlare;
+		bool		m_bThunder;
 		
 		float		m_fFogStart;
 		float		m_fFogStop;		

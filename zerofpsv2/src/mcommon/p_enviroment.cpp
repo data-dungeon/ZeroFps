@@ -44,6 +44,10 @@ P_Enviroment::P_Enviroment()
 	m_fPosOfDay = 						0;
 	m_fPosOfPart =						0;
 	
+	m_kThunderSounds.push_back("data/sound/thunder/thunder1.wav");
+	m_kThunderSounds.push_back("data/sound/thunder/thunder2.wav");
+	m_kThunderSounds.push_back("data/sound/thunder/thunder3.wav");
+	
 	m_pkRainSplashMat = new ZMaterial;
 		m_pkRainSplashMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/rainsplash.tga");
 		m_pkRainSplashMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
@@ -131,6 +135,7 @@ void P_Enviroment::Update()
 			
 			DrawSky();
 			UpdateEnviroment();
+			MakeThunder();
 		}
 
 		
@@ -347,6 +352,52 @@ void P_Enviroment::UpdateEnviroment()
 
 }
 
+void P_Enviroment::MakeThunder()
+{
+	if(!m_kCurrentEnvSetting.m_bThunder)
+		return;
+
+	static float fRate = 30;
+	static float fDistance = 1.0;
+
+	static float fNextFlash = m_pkZeroFps->GetEngineTime() + Randomf(fRate);;
+	static float fNextThunder = -1;
+	static Vector3 kNextPos = Vector3(Randomf(1)-0.5,1,Randomf(1)-0.5);
+
+
+
+	if(fNextFlash != -1 && m_pkZeroFps->GetEngineTime() > fNextFlash)
+	{
+		float fDiff = m_pkZeroFps->GetEngineTime() - fNextFlash;
+		if(fDiff > 0.5) 
+		{
+			fNextFlash = m_pkZeroFps->GetEngineTime() + Randomf(fRate);
+			kNextPos = Vector3(Randomf(1)-0.5,1,Randomf(1)-0.5);
+		}
+		else
+		{	
+			fNextThunder = m_pkZeroFps->GetEngineTime() + fDistance;
+		
+			float fL = Randomf(0.5);
+			float fFade = Max(1.0 - (fDiff / 0.5),0.0);
+	
+			LightSource* pkSun = m_pkLight->GetSunPointer();	
+			pkSun->kSpecular = Vector4(0.5+fL,0.5+fL,0.5+fL,1) * fFade;
+			pkSun->kDiffuse = Vector4(0.5+fL,0.5+fL,0.5+fL,1) * fFade;
+			pkSun->kAmbient = pkSun->kAmbient + Vector4(0.25,0.25,0.25,1);
+			pkSun->kRot = kNextPos;
+		}
+	}
+
+	if(fNextThunder != -1 && m_pkZeroFps->GetEngineTime() > fNextThunder)
+	{
+		fNextThunder = -1;
+		m_pkAudioSystem->PlayAudio(m_kThunderSounds[Randomi(m_kThunderSounds.size())],Vector3(0,0,0),Vector3(0,0,0),ZFAUDIO_2D,0.5);
+	}
+	
+
+}
+
 void P_Enviroment::UpdateEnvSetting(EnvSetting* pkEnvSetting)
 {
 	m_pkZoneEnvSetting = pkEnvSetting;	
@@ -400,6 +451,7 @@ void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_kSunPos);	
 	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_bSunFlare);	
+	pkNetPacket->Write(m_pkZoneEnvSetting->m_bThunder);		
 		
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_fFogStart);	
 	pkNetPacket->Write(m_pkZoneEnvSetting->m_fFogStop);	
@@ -442,6 +494,7 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunPos);	
 		
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_bSunFlare);	
+	pkNetPacket->Read(m_kCurrentEnvSetting.m_bThunder);	
 	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_fFogStart);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_fFogStop);	
@@ -734,6 +787,8 @@ void P_Enviroment::DrawSky()
 	
 	m_pkZShaderSystem->UseDefaultGLSLProgram(usd);
 }
+
+
 
 void P_Enviroment::FadeGain(bool bOut)
 {
