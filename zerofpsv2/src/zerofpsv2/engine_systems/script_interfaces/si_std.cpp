@@ -31,6 +31,7 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 	pkScript->ExposeFunction("Sin",			StdLua::SinLua);	
 	pkScript->ExposeFunction("Cos",			StdLua::CosLua);		
 	pkScript->ExposeFunction("Tan",			StdLua::TanLua);
+	pkScript->ExposeFunction("Pow",			StdLua::PowLua);
 	pkScript->ExposeFunction("GetTicks",	StdLua::GetTicksLua);
 	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
@@ -180,6 +181,31 @@ int SinLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dTal);
 	
 	g_pkScript->AddReturnValue(pkLua,sin(dTal));
+	
+	return 1;
+}
+
+/**	\fn Pow( val,pow )
+ 		\relates SIStd
+		\brief Exponent.
+		\param val input.
+		\param pow power value
+		\return Return val power of pow
+*/
+int PowLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	{
+		cout<<"Pow takes 2 argument(s)"<<endl;				
+		return 0;
+	}	
+		
+	double dTal;
+	double dPow;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTal);
+	g_pkScript->GetArgNumber(pkLua, 1, &dPow);
+	
+	g_pkScript->AddReturnValue(pkLua,pow(dTal,dPow));
 	
 	return 1;
 }

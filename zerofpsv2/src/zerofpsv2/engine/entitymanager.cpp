@@ -3071,11 +3071,50 @@ void EntityManager::DeleteUnloadedZones(int iClient)
 }
 
 
+void EntityManager::RecreateEntitys(const string& strType)
+{
+	//loop trough all zones
+	for(int i = 0;i<m_kZones.size();i++)
+	{
+		//is this zone used?
+		if(m_kZones[i].m_iStatus != EZS_UNUSED)
+		{
+			//load zone if not loaded
+			if(m_kZones[i].m_iStatus == EZS_UNLOADED)
+				LoadZone(i);
+				
+			//get all entitys in zone
+			vector<Entity*>	kEntitys;
+			m_kZones[i].m_pkZone->GetAllEntitys(&kEntitys,true);
 
-
-
-
-
+			//loop all entitys
+			for(int j = 0;j<kEntitys.size();j++)
+			{
+				//matching type
+				if(kEntitys[j]->GetType() == strType)
+				{
+					//try creating entity from script
+					if(Entity* pkNew = CreateEntityFromScript(kEntitys[j]->m_pScriptFileHandle->GetRes().c_str()))
+					{
+						m_pkSystem->Printf( (string("Recreating entityID: ") + IntToString(kEntitys[j]->GetEntityID())).c_str() );
+						
+						pkNew->SetUseZones(kEntitys[j]->GetUseZones());
+						pkNew->SetRelativeOri(kEntitys[j]->GetRelativeOri());
+						pkNew->SetLocalPosV(kEntitys[j]->GetLocalPosV());
+						pkNew->SetLocalRotM(kEntitys[j]->GetLocalRotM());
+						pkNew->SetParent(kEntitys[j]->GetParent());
+						
+						Delete(kEntitys[j]);						
+					}
+					else
+					{
+						m_pkSystem->Printf( (string("Could not recreate entityID: ") + IntToString(kEntitys[j]->GetEntityID())).c_str() );
+					}
+				}
+			}
+		}
+	}
+}
 
 
 

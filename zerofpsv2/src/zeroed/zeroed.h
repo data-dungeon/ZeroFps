@@ -37,6 +37,8 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_LIGHTMODE,
 			FID_EDITSUN,
 
+			FID_RECREATE,
+			
 			FID_SETCAM,
 			FID_CAMLINK,
 			FID_CAMSOLO,

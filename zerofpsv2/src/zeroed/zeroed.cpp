@@ -96,6 +96,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
    RegisterVariable("ap_planemovement", 	&m_bPlaneMovement, CSYS_BOOL);
 	
 	// Register Commands
+
+	Register_Cmd("recreate",	FID_RECREATE);		
 	Register_Cmd("new",			FID_NEW);		
 	Register_Cmd("load",			FID_LOAD);		
 	Register_Cmd("save",			FID_SAVE);
@@ -1004,7 +1006,21 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 	string strNewTitle;
 	int iMode;
 
-	switch(cmdid) {
+	switch(cmdid) 
+	{
+		case FID_RECREATE:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("recreate [entity-type]");
+				break;				
+			}			
+
+			m_pkEntityManager->RecreateEntitys(kCommand->m_kSplitCommand[1]);
+		
+			break;
+		}
+		
 		case FID_NEW:
 			if(m_bSoloMode)
 				SoloToggleView();		

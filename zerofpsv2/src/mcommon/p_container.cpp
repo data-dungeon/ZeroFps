@@ -394,7 +394,7 @@ bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 	//place on free slot?
 	if(iX == -1)
 	{
-		cout<<"moving to freepos ,or free stack"<<endl;
+		//cout<<"moving to freepos ,or free stack"<<endl;
 		
 		int iTargetPosX = -1;
 		int iTargetPosY = -1;

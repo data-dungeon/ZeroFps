@@ -313,6 +313,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void 			SetTrackerLos(int iLos) 							{	m_iTrackerLOS = iLos;			};		
 		ZoneData* 	GetZone(Entity* PkEntity);
 		
+		void			RecreateEntitys(const string& strType);
+
 		
 		//trackers
 		void 					AddTracker(P_Track* kObject);
