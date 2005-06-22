@@ -48,8 +48,12 @@ bool OggStream::Create()
 
 	m_fVolume = 1.0f;
 
+	
+
 	m_pcTempBuffer = new char[ m_uiBufferSize ]; 
    m_pALuiBuffers = new ALuint[ m_uiNrOfBuffers ];
+   
+   alGetError();
 	alGenBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
 	if (alGetError()!=AL_NO_ERROR)
 	{
@@ -65,6 +69,7 @@ bool OggStream::Create()
 	
 	if(m_bListenerRelCoords)
 	{
+		alGetError();
 		Vector3 pos(0,0,0), dir(0,1,0);
 		alSourcefv(m_uiSource, AL_POSITION,&pos[0]);		
 		alSourcefv(m_uiSource,  AL_VELOCITY,&dir[0]);	
@@ -149,8 +154,12 @@ bool OggStream::Play()
 	if(!m_bFileOK)
 		return false;
 	
+	
+	
 	for(unsigned int index = 0; index<m_uiNrOfBuffers; index++)
 		QueueBuffer(&m_pALuiBuffers[index]);
+
+	alGetError();
 
 	m_fStartTime = m_pkZeroFpsObject->m_pkEntityManager->GetSimTime();
 	alSourcef(m_uiSource, AL_GAIN, m_fVolume);
@@ -297,6 +306,7 @@ bool OggStream::QueueBuffer(ALuint *pALuiBuffer)
 		alBufferData(*pALuiBuffer, m_eFormat, m_pcTempBuffer, bytes_read, m_pkVorbisInfo->rate);  
 		if(alGetError()!=AL_NO_ERROR)
 		{
+			cout<<"bytes "<<bytes_read<<" buffer "<<*pALuiBuffer<< endl;
 			cout<<"error generating bufferDATA!" <<endl;
 			return false;
 		}
