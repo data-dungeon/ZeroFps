@@ -22,7 +22,7 @@ P_Light::P_Light()
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT;
  
-	m_iMode  = LMODE_DEFAULT;
+	m_iMode  = 0;
 	m_fTimer = 0;
 	m_kOffset.Set(0,0,0);
 	m_fFlareSize = 0.0;
@@ -122,19 +122,35 @@ void P_Light::UpdateLightMode()
 {
 	switch(m_iMode)
 	{		
-		case LMODE_TORCH:
+		case 1:
 		{
 			if(m_pkZeroFps->GetEngineTime() - m_fTimer > 0.05)
 			{
 				m_fTimer = m_pkZeroFps->GetEngineTime();
-				float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
+				//float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
 	
-				m_pkLightSource->kDiffuse = Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03) );
+				m_pkLightSource->fQuadratic_Atten = 0.05 + Randomf(0.01);
+				m_pkLightSource->kDiffuse = Vector3(1,0.8,0.7).Unit();//Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03)).Unit();
 				m_pkLightSource->kSpecular = m_pkLightSource->kDiffuse;
+				
 			}
 			break;		
-		}
-		
+		}		
+				
+		case 2:
+		{
+			if(m_pkZeroFps->GetEngineTime() - m_fTimer > 0.05)
+			{
+				m_fTimer = m_pkZeroFps->GetEngineTime();
+				//float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
+	
+				m_pkLightSource->fQuadratic_Atten = 0.3 + Randomf(0.005);
+				m_pkLightSource->kDiffuse = Vector3(1,0.8,0.7).Unit();//Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03)).Unit();
+				m_pkLightSource->kSpecular = m_pkLightSource->kDiffuse;
+				
+			}
+			break;		
+		}						
 	}	
 }
 

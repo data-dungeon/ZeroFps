@@ -9,13 +9,6 @@
 using namespace std;
 
 
-enum ENGINE_SYSTEMS_API LIGHT_MODES
-{
-	LMODE_DEFAULT=0,
-	LMODE_TORCH=1,
-
-};
-
 /// Property to make an object cast light.
 class ENGINE_SYSTEMS_API P_Light : public Property 
 {
