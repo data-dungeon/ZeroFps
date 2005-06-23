@@ -17,6 +17,8 @@ Note - dont try to run the .bin files directly. Instead you shuld run the
 shellscripts run*.sh like runmistserver.sh otherwise it wont find all librarys.
 
 
+
+
 How to Contact Zero Point Gameplay:
 homepage: http://www.zeropointgameplay.com
 irc: freenode, #mistlands

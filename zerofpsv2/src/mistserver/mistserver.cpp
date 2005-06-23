@@ -622,13 +622,13 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				m_pkConsole->Printf("userprev name prev");
 				m_pkConsole->Printf("Sets privilege for a user. prev is a string with the followin.");
-				m_pkConsole->Printf("=A : Add admin rights on user.");
+				m_pkConsole->Printf("+A : Add admin rights on user.");
 				m_pkConsole->Printf("-A : Remove admin rights on user.");
-				m_pkConsole->Printf("=B : Add builder rights on user.");
+				m_pkConsole->Printf("+B : Add builder rights on user.");
 				m_pkConsole->Printf("-B : Remove builder rights on user.");
-				m_pkConsole->Printf("=G : Add game master rights on user.");
+				m_pkConsole->Printf("+G : Add game master rights on user.");
 				m_pkConsole->Printf("-G : Remove game master rights on user.");
-				m_pkConsole->Printf("=P : Add player rights on user.");
+				m_pkConsole->Printf("+P : Add player rights on user.");
 				m_pkConsole->Printf("-P : Remove player rights on user.");
 				break;				
 			}		

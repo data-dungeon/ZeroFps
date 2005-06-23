@@ -872,20 +872,20 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 	switch(ucControlType) {
 		// If controll handle_controllpacket.
 		case ZF_NETCONTROL_LIST:
-			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
+			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
 			// Broadcast to find servers.
 			// Server respons with name.
 			SendServerInfo(pkNetPacket->m_kAddress);
 			break;
 
 		case ZF_NETCONTROL_SERVERINFO:
-			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
+			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
 			GotServerInfo(pkNetPacket);
 			break;
 
 		case ZF_NETCONTROL_JOIN:
 			// Sent to join a server.
-			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOIN)");
+			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOIN)");
 			AddressToStr(&pkNetPacket->m_kAddress, m_szAddressBuffer);
 
 			// Server respons with yes/no.
@@ -977,7 +977,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			m_RemoteNodes[iClientID]->m_fLastMessageTime = fEngineTime;
 			
 			m_kServerAddress = pkNetPacket->m_kAddress;
-			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINYES)");
+			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINYES)");
 			AddressToStr(&pkNetPacket->m_kAddress, m_szAddressBuffer);
 			m_pkConsole->Printf("Server Ip: %s", m_szAddressBuffer);
 
@@ -988,13 +988,13 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			m_pkZeroFps->m_iServerConnection	= iConnID;
 			m_pkZeroFps->m_iClientEntityID		= iObjId;
 			m_pkZeroFps->Connect(iClientID,NULL,NULL,false);
-			m_pkConsole->Printf("ConnID: %d, ObjID: %d", iConnID, iObjId);
+			//m_pkConsole->Printf("ConnID: %d, ObjID: %d", iConnID, iObjId);
 			break;
 
 		case ZF_NETCONTROL_JOINNO:
-			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINNO)");
+			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINNO)");
 			pkNetPacket->Read_Str( strNoMessage );
-			m_pkConsole->Printf("Connect No: %s", strNoMessage.c_str() );
+			//m_pkConsole->Printf("Connect No: %s", strNoMessage.c_str() );
 			break;
 
 		case ZF_NETCONTROL_REQCLIENTID:
@@ -1018,7 +1018,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 		case ZF_NETCONTROL_DISCONNECT:
 			iClientID = GetClientNumber( &pkNetPacket->m_kAddress );
 			if(iClientID != ZF_NET_NOCLIENT) {
-				m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_DISCONNECT)");
+				//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_DISCONNECT)");
 				m_pkZeroFps->Disconnect(iClientID);
 				m_RemoteNodes[iClientID]->m_eConnectStatus = NETSTATUS_DISCONNECT;
 				m_RemoteNodes[iClientID]->Clear();

@@ -443,10 +443,22 @@ char Console::FormatKey(QueuedKeyInfo& kKey)
 {
 	if(kKey.m_iModifiers & MODIFIER_SHIFT) 
 	{
-		cout << "Formating Key" << endl;
+		//cout << "Formating Key" << endl;
 		if(kKey.m_iKey>96 && kKey.m_iKey<123){
 			return kKey.m_iKey-32;
 		}
+		if(kKey.m_iKey=='0'){
+			return '=';
+		}		
+		if(kKey.m_iKey=='+'){
+			return '?';
+		}				
+		if(kKey.m_iKey=='9'){
+			return ')';
+		}				
+		if(kKey.m_iKey=='8'){
+			return '(';
+		}								
 		if(kKey.m_iKey=='-'){
 			return '_';
 		}
