@@ -165,6 +165,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fLegLength;
 		float			m_fMarkerSize;
 		
+		bool			m_bInCamp;
+		
 		//death
 		bool			m_bDead;
 		float			m_fDeadTimer;
@@ -300,6 +302,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
 		float  GetLegLength()										{	return m_fLegLength;				}
 		float  GetMarkerSize()										{	return m_fMarkerSize;			}
+
+		bool	CanRest();
+		bool	InCamp();
 
 		//faction  stuff
 		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}

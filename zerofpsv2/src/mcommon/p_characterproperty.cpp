@@ -582,6 +582,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fDeadTimer			=	0;
 	m_fDecayTime			=	60;
 	
+	m_bInCamp				=	false;
+	
 	m_fRespawnTime			=	-1;
 	m_iRespawnZone			=	-1;
 	m_kRespawnPos			=	Vector3(0,0,0);
@@ -868,13 +870,28 @@ void P_CharacterProperty::UpdateStats()
 	{
 		m_fStatTimer = fTime;
 	
+		//check for camp resting
+		if(pkCC->GetCharacterState() == eSITTING && InCamp())
+		{
+ 			if(!m_bInCamp)
+ 				SendTextToClient("Resting");			
+ 			
+ 			m_bInCamp = true;			
+		}
+		else
+		{
+ 			if(m_bInCamp)
+ 				SendTextToClient("Stoped resting");			
+			
+			m_bInCamp = false;		
+		}
 	
 		//maximum values
 		m_kCharacterStats.SetStat("HealthMax",		m_kCharacterStats.GetTotal("Vitality") * 2.0);
-		m_kCharacterStats.SetStat("HealthRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.0125);
+		m_kCharacterStats.SetStat("HealthRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.005);
 		
 		m_kCharacterStats.SetStat("ManaMax",		m_kCharacterStats.GetTotal("Intelligence") );
-		m_kCharacterStats.SetStat("ManaRegen",		m_kCharacterStats.GetTotal("Intelligence") * 0.0125 );
+		m_kCharacterStats.SetStat("ManaRegen",		m_kCharacterStats.GetTotal("Intelligence") * 0.005 );
  		
  		m_kCharacterStats.SetStat("StaminaMax",	m_kCharacterStats.GetTotal("Vitality") * 5.0 );
  		m_kCharacterStats.SetStat("StaminaRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.15 );
@@ -883,13 +900,9 @@ void P_CharacterProperty::UpdateStats()
 		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.0 );
 		m_kCharacterStats.SetStat("Defense",m_kCharacterStats.GetTotal("Dexterity") / 2.0 );
 			
-		//m_kCharacterStats.SetStat("DamageCrushingMin",m_kCharacterStats.GetTotal("Strength") / 3.0 );
-		//m_kCharacterStats.SetStat("DamageCrushingMax",m_kCharacterStats.GetTotal("Strength") / 2.0 );	
-		//m_kCharacterStats.SetStat("DamageCrushingMin",0 );
-		//m_kCharacterStats.SetStat("DamageCrushingMax",0 );	
-	
 		
-		//stamina
+		//stamina	
+		
 		int iDrain = m_kCharacterStats.GetTotal("StaminaRegen");		
 		switch(pkCC->GetCharacterState())
 		{
@@ -897,9 +910,12 @@ void P_CharacterProperty::UpdateStats()
 			case eRUNNING: iDrain -= 5; break;
 			case eJUMPING: iDrain -= 10; break;
 			case eSWIMMING: iDrain -= 4; break;		
-			case eSITTING: iDrain *= 2; break;		
+			case eSITTING:	iDrain *= 2; break;		
 		}
 		
+		if(m_bInCamp)
+			iDrain *= 10;
+				
 		string strStamina("Stamina");		
 		m_kCharacterStats.ChangeStat(strStamina,iDrain);
 		
@@ -914,10 +930,9 @@ void P_CharacterProperty::UpdateStats()
 		//apply fall damage
 		m_kCharacterStats.ChangeStat(strHealth,-pkCC->GetFallDamage());
 
-
-		if(pkCC->GetCharacterState() == eSITTING)		
-			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen") * 2);
-		else
+ 		if(m_bInCamp) 		
+ 			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen") * 10);
+ 		else
 			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen"));
 		
 		if(m_kCharacterStats.GetTotal(strHealth) > m_kCharacterStats.GetTotal("HealthMax"))
@@ -927,9 +942,9 @@ void P_CharacterProperty::UpdateStats()
 
 		//mana
 		string strMana("Mana");
-		if(pkCC->GetCharacterState() == eSITTING)		
-			m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen")*2);
-		else
+ 		if(m_bInCamp)		
+ 			m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen")*10);
+ 		else
 			m_kCharacterStats.ChangeStat(strMana,m_kCharacterStats.GetTotal("ManaRegen"));		
 		
 		if(m_kCharacterStats.GetTotal(strMana) > m_kCharacterStats.GetTotal("ManaMax"))
@@ -973,6 +988,148 @@ void P_CharacterProperty::UpdateStats()
 	
 	
 }
+
+bool P_CharacterProperty::InCamp()
+{
+	vector<Entity*>	kZones;	
+	vector<Entity*> 	kEntitys;
+		
+	bool bHaveFirePlace = false;
+	int iEnemy = -1;
+	float fRange = 999999999;
+	
+	Entity* pkZone = NULL;
+	
+	//does this entity use zones?
+	if(m_pkEntity->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent();
+	}
+	else if(m_pkEntity->GetParent()->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent()->GetParent();
+	}
+	
+	
+	//we assume that parent is a zone
+	if(pkZone)
+	{
+		pkZone->GetZoneNeighbours(&kZones);
+		
+		//get all propertys in zones
+		for(int i =0;i<kZones.size();i++)
+		{
+			kZones[i]->GetAllEntitys(&kEntitys);
+		}
+		
+		for(int i = 0;i<kEntitys.size();i++)
+		{
+			if(kEntitys[i] == m_pkEntity)
+				continue;
+		
+			//a character?
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)kEntitys[i]->GetProperty("P_CharacterProperty"))
+			{
+				if(pkCP->IsDead())
+					continue;
+				
+				//is charater evil against me?
+				if(pkCP->IsEnemy(GetEntity()->GetEntityID()))
+				{					
+					float fDistance = pkCP->GetEntity()->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
+					
+					//out of range
+					if(fDistance < 16)
+						return false;
+				}
+			}
+		
+		
+			//a fireplace here?
+			if(kEntitys[i]->GetType() == "fireplace-skillobj.lua")
+			{
+				//out of range
+				if(kEntitys[i]->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV()) < 4)
+				{
+					bHaveFirePlace = true;
+				}
+			}
+		}
+	}
+	
+	return bHaveFirePlace;
+}
+
+bool P_CharacterProperty::CanRest()
+{
+	vector<Entity*>	kZones;	
+	vector<Property*> kPropertys;
+		
+	int iEnemy = -1;
+	float fRange = 999999999;
+	
+	Entity* pkZone = NULL;
+	
+	//does this entity use zones?
+	if(m_pkEntity->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent();
+	}
+	else if(m_pkEntity->GetParent()->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent()->GetParent();
+	}
+	
+	
+	//we assume that parent is a zone
+	if(pkZone)
+	{
+		pkZone->GetZoneNeighbours(&kZones);
+		
+		//get all propertys in zones
+		for(int i =0;i<kZones.size();i++)
+		{
+			kZones[i]->GetAllPropertys(&kPropertys,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER);
+		}
+		
+		
+		//find characters
+		static Property* pkProp;
+		
+		for(int i = 0;i<kPropertys.size();i++)
+		{
+			pkProp = kPropertys[i];
+		
+			//skip self
+			if(pkProp == this)
+				continue;
+		
+			//we only care about character propertys
+ 			if(!pkProp->IsPropertyType("P_CharacterProperty"))
+ 				continue;
+				
+			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
+			{
+				if(pkCP->IsDead())
+					continue;
+				
+				//is charater evil against me?
+				if(pkCP->IsEnemy(GetEntity()->GetEntityID()))
+				{					
+					float fDistance = pkCP->GetEntity()->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
+					
+					//out of range
+					if(fDistance < 16)
+						return false;
+				}
+			}
+		}
+	}
+	
+	return true;
+	
+}	
+
 
 void P_CharacterProperty::MakeAlive()
 {		

@@ -131,7 +131,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		int  GetAnimationSet()									{	return m_iCurrentSet;		}
 		
 		//controls
-		void Sit();
+		bool Sit();
 		void SetControl(int iControl,bool bState);
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;

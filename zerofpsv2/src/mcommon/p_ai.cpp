@@ -450,7 +450,7 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 				//found character
 				
 				//is it eeevil?
-				if(pkCP->GetFaction() != m_pkCharacterProperty->GetFaction())
+				if(m_pkCharacterProperty->IsEnemy(pkCP->GetEntity()->GetEntityID()))
 				{					
 					float fDistance = pkCP->GetEntity()->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
 					

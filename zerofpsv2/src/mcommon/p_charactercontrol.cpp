@@ -2,6 +2,7 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_tcstrigger.h" 
 
+#include "p_characterproperty.h"
 
 AnimationSet::AnimationSet()
 {
@@ -365,16 +366,22 @@ void P_CharacterControl::SetNoClientRotation(bool bRot)
 	ResetAllNetUpdateFlags();
 }
 
-void P_CharacterControl::Sit()
+bool P_CharacterControl::Sit()
 {
 	if(m_iCharacterState == eIDLE_STANDING)
 	{
-		SetCharacterState(eSITTING);		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntity->GetProperty("P_CharacterProperty"))
+			if(!pkCP->CanRest())
+				return false;
+		
+		SetCharacterState(eSITTING);
 	}
 	else
 	{
 		SetCharacterState(eIDLE_STANDING);
 	}
+	
+	return true;
 }
 
 void P_CharacterControl::Lock(float fTime)

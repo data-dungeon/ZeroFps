@@ -137,8 +137,13 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 				if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterControl"))
-					pkCC->Sit();			
-		
+				{
+					if(!pkCC->Sit())
+					{
+						SayToClients("There are enemies nerby","->",-1,PkNetMessage->m_iClientID);
+					}
+					
+				}
 			break;
 		}
 		

@@ -839,6 +839,7 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-light.lua",7);
 			SendAddSkillToSkillbar("skill-stun.lua",8);
 			SendAddSkillToSkillbar("skill-freeze.lua",9);
+			SendAddSkillToSkillbar("skill-camp.lua",10);
 		}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))
