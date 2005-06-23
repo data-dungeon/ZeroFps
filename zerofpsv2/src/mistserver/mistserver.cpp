@@ -715,8 +715,33 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 			strWhy = "Failed to create player on server";
 			return false;
 		}
-	
-		if(m_pkPlayerDB->VerifyUser(strPlayer,strPasswd))
+
+		if(!m_pkPlayerDB->VerifyUser(strPlayer,strPasswd)) 
+		{
+			m_pkConsole->Printf("Player '%s' found, password check FAILED",strPlayer.c_str());
+			strWhy = "Wrong login name and/or password";
+			return false;
+		}
+
+		if(bIsEditor)
+		{
+			if(m_pkPlayerDB->HasPrivilege(strPlayer,"B"))
+			{
+				return true;
+			}
+			else
+			{
+				strWhy = "You are not a builder";
+				return false;
+			}
+		}
+		else
+		{
+			m_pkConsole->Printf("Player '%s' found, password check OK",strPlayer.c_str());
+			return true;
+		}
+
+		/*if(m_pkPlayerDB->VerifyUser(strPlayer,strPasswd))
 		{
 			m_pkConsole->Printf("Player '%s' created",strPlayer.c_str());
 			return true;
@@ -725,7 +750,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 		{
 			m_pkConsole->Printf("Error while creating player '%s' (this shuld never hapen)",strPlayer.c_str());
 			return false;
-		}
+		}*/
 	}
 
 	return false;
