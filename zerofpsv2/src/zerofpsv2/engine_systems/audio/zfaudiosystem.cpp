@@ -390,6 +390,7 @@ int ZFAudioSystem::PlayAudio(string strName, Vector3 kPos, Vector3 kDir, int iFl
 
 		if(bExist == false)
 			pkOgg = new OggStream(!(iFlags & ZFAUDIO_3DOGG),24,4096);
+			//pkOgg = new OggStream(!(iFlags & ZFAUDIO_3DOGG),24,8192);
 
 		if(!pkOgg->Open(strName))
 		{

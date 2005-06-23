@@ -184,7 +184,7 @@ int OggStream::ThreadMain(void *v)
 		while(!pkOgg->m_bKillMe)
 		{
 			pkOgg->Update();
-			SDL_Delay(20);
+			SDL_Delay(100);
 
 		}
 	}
@@ -285,42 +285,55 @@ bool OggStream::Stop()
 
 bool OggStream::QueueBuffer(ALuint *pALuiBuffer)
 {
-	int current_section;
-	long bytes_read = ov_read(&m_kOggFile, m_pcTempBuffer, m_uiBufferSize, 
-		0, 2, 1, &current_section); 
-
-	if(!(bytes_read==OV_HOLE || bytes_read==OV_EBADLINK ))
+	int current_section;	
+	int iPos = 0;
+	
+	//loop an dfill buffer
+	while(iPos < m_uiBufferSize)
 	{
+		int iLeft = m_uiBufferSize - iPos;
+		char* pkPos = (char*)m_pcTempBuffer;
+	
+		//read buffer
+		long bytes_read = ov_read(&m_kOggFile, &pkPos[iPos], iLeft,0, 2, 1, &current_section); 
+		
+		//any errors?
+		if((bytes_read==OV_HOLE || bytes_read==OV_EBADLINK ))
+			return false;
+		
+		//if end of stream reset stream position if looping
 		if(bytes_read == 0)
 		{
 			if(m_bLooping)
 			{
-				if (ov_raw_seek(&m_kOggFile,0) == 0)
-					return QueueBuffer(pALuiBuffer);	
+				ov_raw_seek(&m_kOggFile,0);
 			}
-			return false;
+			else
+				return false;
 		}
-
-
-		alGetError();
-		alBufferData(*pALuiBuffer, m_eFormat, m_pcTempBuffer, bytes_read, m_pkVorbisInfo->rate);  
-		if(alGetError()!=AL_NO_ERROR)
-		{
-			cout<<"bytes "<<bytes_read<<" buffer "<<*pALuiBuffer<< endl;
-			cout<<"error generating bufferDATA!" <<endl;
-			return false;
-		}
-
-		alSourceQueueBuffers(m_uiSource, 1, pALuiBuffer );
-		if(alGetError()!=AL_NO_ERROR)
-		{
-			printf("OggStream - Error Queuing buffer\n");
-			return false;
-		}		
-		return true;
+		
+		//move buffer position
+		iPos += bytes_read;
 	}
-	else 
+	
+
+	alGetError();
+	alBufferData(*pALuiBuffer, m_eFormat, m_pcTempBuffer, iPos, m_pkVorbisInfo->rate);  
+	if(alGetError()!=AL_NO_ERROR)
+	{
+		//cout<<"bytes "<<bytes_read<<" buffer "<<*pALuiBuffer<< endl;
+		cout<<"error generating bufferDATA!" <<endl;
 		return false;
+	}
+
+	alSourceQueueBuffers(m_uiSource, 1, pALuiBuffer );
+	if(alGetError()!=AL_NO_ERROR)
+	{
+		printf("OggStream - Error Queuing buffer\n");
+		return false;
+	}		
+	
+	return true;
 }
 
 bool OggStream::SetVolume(float fVolume)

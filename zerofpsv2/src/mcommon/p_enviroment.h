@@ -58,6 +58,10 @@ class MCOMMON_API P_Enviroment: public Property {
 		float				m_fPosOfDay;		//0-1 interpolated factor
 		float				m_fPosOfPart;		//0-1 interpolated factor, position in part, 
 		
+		//current
+		string			m_strCurrentMusic;
+		string			m_strCurrentPsystem;
+		
 		//thunder
 		vector<string>	m_kThunderSounds;
 

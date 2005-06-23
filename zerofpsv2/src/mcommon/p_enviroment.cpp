@@ -229,12 +229,11 @@ void P_Enviroment::UpdateEnviroment()
 
 	//particles
 	//setup particle property
-	static string strCurrentParticles;
 	if(!m_kCurrentEnvSetting.m_strParticles.empty())
 	{	
-		if(m_kCurrentEnvSetting.m_strParticles != strCurrentParticles)
+		if(m_kCurrentEnvSetting.m_strParticles != m_strCurrentPsystem)
 		{	
-			strCurrentParticles = m_kCurrentEnvSetting.m_strParticles;
+			m_strCurrentPsystem = m_kCurrentEnvSetting.m_strParticles;
 		
 			P_PSystem* pkPS;
 			if( !(pkPS = (P_PSystem*)GetEntity()->GetProperty("P_PSystem")) )
@@ -245,7 +244,7 @@ void P_Enviroment::UpdateEnviroment()
 	}
 	else
 	{
-		strCurrentParticles = "";
+		m_strCurrentPsystem = "";
 		GetEntity()->DeleteProperty("P_PSystem");
 	}
 	
@@ -279,9 +278,9 @@ void P_Enviroment::UpdateEnviroment()
 
 	//music
 
-	static string strCurrentMusic;
-	if(m_kCurrentEnvSetting.m_strMusic != strCurrentMusic)
+	if(m_kCurrentEnvSetting.m_strMusic != m_strCurrentMusic)
 	{
+		//cout<<"music changed"<<endl;
 		if(m_iMusicID != -1)
 		{
 			if(m_fGain > 0)
@@ -301,13 +300,14 @@ void P_Enviroment::UpdateEnviroment()
 		{
 			m_pkAudioSystem->StopAudio(m_iMusicID,true);
 			m_iMusicID = -1;
-			strCurrentMusic = "";
+			m_strCurrentMusic = "";
 		}
 	
 		if(m_kCurrentEnvSetting.m_strMusic.length() != 0)
 		{
+			//cout<<"starting music"<<endl;
 			m_fGain = 0.0f;
-			strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;		
+			m_strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;		
 			m_iMusicID = m_pkAudioSystem->PlayAudio(m_kCurrentEnvSetting.m_strMusic, 
 				Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP, m_fGain);
 			m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
@@ -819,11 +819,11 @@ void P_Enviroment::DrawSun()
 	//max number of samples 
 	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
 	static float fMaxAngle = 45.0;
-	static float fFlareSize = 1.5;
+	static float fFlareSize = 1.0;
 	
 	//positions for sun and flare
 	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kCurrentEnvSetting.m_kSunPos * 100;
-	Vector3 kFlarePos = m_pkZeroFps->GetCam()->GetRenderPos() + m_kCurrentEnvSetting.m_kSunPos;
+	Vector3 kFlarePos = m_pkZeroFps->GetCam()->GetRenderPos() + m_kCurrentEnvSetting.m_kSunPos * 0.5;
 	
 	//calculate angle betwen sun and camera center
 	Matrix4 kRot = m_pkZeroFps->GetCam()->GetRotM();
