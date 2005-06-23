@@ -140,7 +140,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				{
 					if(!pkCC->Sit())
 					{
-						SayToClients("There are enemies nerby","->",-1,PkNetMessage->m_iClientID);
+						SayToClients("There are enemies nearby.","->",-1,PkNetMessage->m_iClientID);
 					}
 					
 				}
@@ -390,7 +390,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					if(Entity* pkChar = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
 						if(pkObj->GetWorldPosV().DistanceTo(pkChar->GetWorldPosV()) > 2.0)
 						{
-							SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
+							SayToClients("You are too far away","Server",-1,PkNetMessage->m_iClientID);
 							break;
 						}
 				
@@ -469,7 +469,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				//do a distance check
 				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
 				{
-					SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
+					SayToClients("You are too far away","Server",-1,PkNetMessage->m_iClientID);
 					break;
 				}			
 			
@@ -533,7 +533,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				//do a distance check
 				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
 				{
-					SayToClients("You are to far away","Server",-1,PkNetMessage->m_iClientID);
+					SayToClients("You are too far away","Server",-1,PkNetMessage->m_iClientID);
 					break;
 				}						
 			
@@ -543,7 +543,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//check if target container is ours
 					if(pkTargetContainer->GetOwnerID() != pkCharacter->GetEntityID())
 					{
-						SayToClients("target container is not yours","Server",-1,PkNetMessage->m_iClientID);
+						SayToClients("Target container is not yours","Server",-1,PkNetMessage->m_iClientID);
 						break;					
 					}								
 							

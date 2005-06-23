@@ -881,7 +881,7 @@ void P_CharacterProperty::UpdateStats()
 		else
 		{
  			if(m_bInCamp)
- 				SendTextToClient("Stoped resting");			
+ 				SendTextToClient("Stopped resting");			
 			
 			m_bInCamp = false;		
 		}
