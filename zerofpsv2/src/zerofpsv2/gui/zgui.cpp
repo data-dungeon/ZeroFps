@@ -1195,6 +1195,9 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 
 		if(bShiftIsPressed)
 		{
+			if(iKey == '+')
+				iKey = '?';	
+			else
 			if(iKey == '7')
 				iKey = '/';
 			else

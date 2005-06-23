@@ -183,16 +183,16 @@ void PlayerDatabase::SetUserPrev(string strLoginName, string strPrev)
 	kFile.Close();
 
 	if(strstr(strPrev.c_str(), "-A"))	kLogin.m_kPrivilege.m_bAdmin = false;
-	if(strstr(strPrev.c_str(), "+A"))	kLogin.m_kPrivilege.m_bAdmin = true;
+	if(strstr(strPrev.c_str(), "+A") || strstr(strPrev.c_str(), "=A"))	kLogin.m_kPrivilege.m_bAdmin = true;
 
 	if(strstr(strPrev.c_str(), "-B"))	kLogin.m_kPrivilege.m_bBuilder = false;
-	if(strstr(strPrev.c_str(), "+B"))	kLogin.m_kPrivilege.m_bBuilder = true;
+	if(strstr(strPrev.c_str(), "+B") || strstr(strPrev.c_str(), "=B"))	kLogin.m_kPrivilege.m_bBuilder = true;
 
 	if(strstr(strPrev.c_str(), "-G"))	kLogin.m_kPrivilege.m_bGameMaster = false;
-	if(strstr(strPrev.c_str(), "+G"))	kLogin.m_kPrivilege.m_bGameMaster = true;
+	if(strstr(strPrev.c_str(), "+G") || strstr(strPrev.c_str(), "=G"))	kLogin.m_kPrivilege.m_bGameMaster = true;
 
 	if(strstr(strPrev.c_str(), "-P"))	kLogin.m_kPrivilege.m_bPlayer = false;
-	if(strstr(strPrev.c_str(), "+P"))	kLogin.m_kPrivilege.m_bPlayer = true;
+	if(strstr(strPrev.c_str(), "+P") || strstr(strPrev.c_str(), "=P"))	kLogin.m_kPrivilege.m_bPlayer = true;
 
 	if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
 	{

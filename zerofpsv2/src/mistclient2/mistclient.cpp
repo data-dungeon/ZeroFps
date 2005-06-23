@@ -283,29 +283,29 @@ void MistClient::Say(string strMsg)
 		
 		
 	//check for inline emotes
-	int iEmoteStart = strMsg.find("/");
-	
-	if(iEmoteStart != -1)
-	{
-		int iEmoteEnd = strMsg.find(" ",iEmoteStart)-1;		
-		//cout<<"line:"<<iEmoteStart<<" - "<<iEmoteEnd<<endl;		
-		//cout<<"emote:"<<strMsg.substr(iEmoteStart+1,iEmoteEnd - iEmoteStart)<<"|"<<endl;
-		
-		SendTaunt(strMsg.substr(iEmoteStart+1,iEmoteEnd - iEmoteStart));
-		
-		string msg = strMsg.substr(0,iEmoteStart);
-		if(strMsg.length() > iEmoteEnd+1)
-		{
-			msg+=strMsg.substr(iEmoteEnd+1);			
-			//cout<<"msg:"<<msg<<"|"<<endl;
-			//SendMessage(strMsg,MLCM_TALK,"");
-		}
-					
-		if(!msg.empty())			
-			SendMessage(msg,MLCM_TALK,""); 	
-		return;
-	}
-		
+// 	int iEmoteStart = strMsg.find("/");
+// 	
+// 	if(iEmoteStart != -1)
+// 	{
+// 		int iEmoteEnd = strMsg.find(" ",iEmoteStart)-1;		
+// 		//cout<<"line:"<<iEmoteStart<<" - "<<iEmoteEnd<<endl;		
+// 		//cout<<"emote:"<<strMsg.substr(iEmoteStart+1,iEmoteEnd - iEmoteStart)<<"|"<<endl;
+// 		
+// 		SendTaunt(strMsg.substr(iEmoteStart+1,iEmoteEnd - iEmoteStart));
+// 		
+// 		string msg = strMsg.substr(0,iEmoteStart);
+// 		if(strMsg.length() > iEmoteEnd+1)
+// 		{
+// 			msg+=strMsg.substr(iEmoteEnd+1);			
+// 			//cout<<"msg:"<<msg<<"|"<<endl;
+// 			//SendMessage(strMsg,MLCM_TALK,"");
+// 		}
+// 					
+// 		if(!msg.empty())			
+// 			SendMessage(msg,MLCM_TALK,""); 	
+// 		return;
+// 	}
+// 		
 	
 	
 	
