@@ -1087,6 +1087,17 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 		
 		case FID_SAVE:
+			if(m_pkZeroFps->m_bServerMode == false)
+			{
+				// Send save request
+				NetPacket kNp;
+				kNp.Clear();
+				kNp.Write((char) MLNM_CS_SAVEWORLD);
+				kNp.TargetSetClient(0);
+				SendAppMessage(&kNp);
+				break;
+			}
+
 			if(kCommand->m_kSplitCommand.size() > 1)
 			{
 				m_pkConsole->Printf(" The save command is now only for saving a loaded level.\nCan it be the 'saveas' command you should use? ");

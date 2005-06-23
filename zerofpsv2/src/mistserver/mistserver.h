@@ -42,6 +42,12 @@ class MistServer :public Application , public ZGuiApp
 			FID_TEST_JIDDRA,		// Owned by Vim.
 			
 			FID_SAY,
+
+			FID_USERADD,
+			FID_USERDEL,
+			FID_USERPASS,
+			FID_USERLIST,
+			FID_USERPREV,
 		};
 
 		//enviroment system

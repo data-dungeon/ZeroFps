@@ -31,7 +31,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			cout << "Plz Add: " << strChar << " with modell " << strMod << endl;
 
 			string strLogin = m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strLogin;
-			m_pkPlayerDB->CreateNewCharacter(strLogin, strChar, strMod);
+			m_pkPlayerDB->CharacterCreate(strLogin, strChar, strMod);
 			SendCharacterList(PkNetMessage->m_iClientID);
 
 			break;
@@ -43,7 +43,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			PkNetMessage->Read_Str(strChar);
 
 			string strLogin = m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strLogin;
-			m_pkPlayerDB->DeleteCharacter(strLogin, strChar);
+			m_pkPlayerDB->CharacterDelete(strLogin, strChar);
 			SendCharacterList(PkNetMessage->m_iClientID);
 			break;
 		}
@@ -649,7 +649,23 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					
 			break;
 		}
-		
+
+		case MLNM_CS_SAVEWORLD:
+		{
+			cout << "Got a req to save the world." << endl;
+
+			PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID);
+			if(pkData)
+			{
+				if(m_pkPlayerDB->HasPrivilege(pkData->m_strPlayerName, "B"))
+				{
+					m_pkEntityManager->SaveWorld(m_strWorldDir,true);
+				}
+			}
+
+			break;
+		}
+
 
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;

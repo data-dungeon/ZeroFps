@@ -1025,7 +1025,8 @@ void ZFAudioSystem::GetSoundsUsingResource(ZFSoundRes* pkResource,
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 {
-	ALenum error;
+	ALenum error = AL_NO_ERROR;
+
 
 	// Stoppa ljudet.
 	alGetError(); // clear

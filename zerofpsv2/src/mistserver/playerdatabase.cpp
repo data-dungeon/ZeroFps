@@ -10,6 +10,12 @@ PlayerDatabase::PlayerDatabase()
 	m_pkEntityMan		= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	ZFBasicFS* pkBFPS	= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));	
 
+	m_bStdPrivilege.m_bAdmin		= false;
+	m_bStdPrivilege.m_bBuilder		= false;
+	m_bStdPrivilege.m_bGameMaster = false;
+	m_bStdPrivilege.m_bPlayer		= true;
+
+
 	m_strPlayerDirectory= "logins/";
 		
 	//make sure that player directory exist
@@ -17,72 +23,40 @@ PlayerDatabase::PlayerDatabase()
 		pkBFPS->CreateDir(m_strPlayerDirectory.c_str());
 }
 
-bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
-{
-	// First check so there is not already a player with this name.
-	if(LoginExist(strPlayer)) 
-	{
-		cout<< "The Login already '" << strPlayer << "' exist" <<endl;	
-		return false;
-	}
-	
-	ZFVFile kFile;
-	string strPlayerDataFile = m_strPlayerDirectory + strPlayer + "/playerdata.dat"; 
-	
-	if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
-	{
-		cout<<"Error creating player file " << strPlayerDataFile << endl;
-		return false;
-	}
-	
-	LoginData kLogin;
-	
 
-	//writing password
-	strcpy(kLogin.szPass, strPassword.c_str());
-	strcpy(kLogin.szName, strPlayer.c_str());
-	kFile.Write(&kLogin,sizeof(kLogin),1);
-	
-	kFile.Close();
-	return true;
+
+string PlayerDatabase::PrevToStr(LoginPrivilege kPrev)
+{
+	string strPrev;
+
+	if(kPrev.m_bAdmin)		strPrev = strPrev + "A";
+	if(kPrev.m_bBuilder)		strPrev = strPrev + "B";
+	if(kPrev.m_bGameMaster)	strPrev = strPrev + "G";
+	if(kPrev.m_bPlayer)		strPrev = strPrev + "P";
+
+
+	return strPrev;
 }
 
-vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
+LoginPrivilege PlayerDatabase::StrToPrev(string strPrev)
 {
-	vector<string>	kCharNames;
-	//string strPlayerDataFile = "bin/" + m_strPlayerDirectory + strLogin; 
-	string strPlayerDataFile = m_strPlayerDirectory + strLogin; 
-	cout << "***Scaning in" << strPlayerDataFile << endl;
+	LoginPrivilege kPrev;
 
-	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
-	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
+	kPrev.m_bAdmin = kPrev.m_bBuilder = kPrev.m_bGameMaster = kPrev.m_bPlayer = false;
 
-	
- 	//dvoids hax för o ta bort ".."	och "."
-	vector<string>::iterator it =kCharNames.begin();
-	while(it != kCharNames.end())
-	{
-		if( *it == ".." || *it == ".") 
-		{
-			kCharNames.erase(it);
-			it = kCharNames.begin();
-			continue;
-		}			
-		it++;
-	}
-	
-	
-/*	cout << strPlayerDataFile <<endl;
-	for(int i=0; i<kCharNames.size(); i++)
-		cout << "Name: " << i << " " <<  kCharNames[i] << endl;*/
+	if(strPrev.find("A"))		kPrev.m_bAdmin			= true;	
+	if(strPrev.find("B"))		kPrev.m_bBuilder		= true;	
+	if(strPrev.find("G"))		kPrev.m_bGameMaster	= true;	
+	if(strPrev.find("P"))		kPrev.m_bPlayer		= true;	
 
-	return kCharNames;
+	return kPrev;
 }
 
-bool PlayerDatabase::LoginExist(string strLogin)
+// User Mangment ***************************************************************************************************
+bool PlayerDatabase::UserExist(string strUser)
 {
 	ZFVFile kFile;
-	string strPlayerDataFile = m_strPlayerDirectory + strLogin + "/playerdata.dat"; 
+	string strPlayerDataFile = m_strPlayerDirectory + strUser + "/playerdata.dat"; 
 	cout << "strPlayerDataFile " << strPlayerDataFile << endl;
 
 	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
@@ -91,54 +65,166 @@ bool PlayerDatabase::LoginExist(string strLogin)
 	return true;
 }
 
-PlayerData* PlayerDatabase::GetPlayerDataByCharacterID(int iEntityID)
+bool PlayerDatabase::UserCreate(string strUser, string strPassword)
 {
-	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	// First check so there is not already a player with this name.
+	if(UserExist(strUser)) 
 	{
-		if(m_strActivePlayers[i].m_iCharacterID == iEntityID)
-		{
-			return &m_strActivePlayers[i];
-		}
-	}	
-	
-	return NULL;	
-}
-
-PlayerData*	PlayerDatabase::GetPlayerData(string	strPlayer)
-{
-	for(int i = 0 ;i<m_strActivePlayers.size();i++)
-	{
-		if(m_strActivePlayers[i].m_strPlayerName == strPlayer)
-		{
-			return &m_strActivePlayers[i];
-		}
-	}	
-	
-	return NULL;
-}
-
-PlayerData*	PlayerDatabase::GetPlayerData(int iConnection)
-{
-	for(int i = 0 ;i<m_strActivePlayers.size();i++)
-	{
-		if(m_strActivePlayers[i].m_iConnectionID == iConnection)
-		{
-			return &m_strActivePlayers[i];
-		}
-	}	
-	
-	return NULL;
-}
-
-void	PlayerDatabase::GetPlayerEntitys(vector<pair<Entity*,int> >* pkEnts)
-{
-	for(int i = 0 ;i<m_strActivePlayers.size();i++)
-	{	
-		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_strActivePlayers[i].m_iCharacterID))	
-			pkEnts->push_back(pair<Entity*,int>(pkEnt,m_strActivePlayers[i].m_iConnectionID));	
+		cout<< "The Login already '" << strUser << "' exist" <<endl;	
+		return false;
 	}
+	
+	ZFVFile kFile;
+	string strPlayerDataFile = m_strPlayerDirectory + strUser + "/playerdata.dat"; 
+	
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
+	{
+		cout<<"Error creating player file " << strPlayerDataFile << endl;
+		return false;
+	}
+	
+	LoginData kLogin;
+	//writing password
+	strcpy(kLogin.szPass, strPassword.c_str());
+	strcpy(kLogin.szName, strUser.c_str());
+	kLogin.m_kPrivilege = m_bStdPrivilege;
+
+	kFile.Write(&kLogin,sizeof(kLogin),1);
+	kFile.Close();
+
+	return true;
 }
 
+bool PlayerDatabase::UserDelete(string strUser)
+{
+	// Don't delete players that are online.
+	if(IsOnline(strUser))
+	{
+		cout << "The user '" << strUser << "' is online and can not be removed." << endl;
+		return false;
+	}
+
+	cout << "Delete Login '" << strUser << "'" << endl;
+	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+
+	string strLoginDir = m_strPlayerDirectory + strUser; 
+	string strLoginDataFile = strLoginDir + string("/playerdata.dat"); 
+
+	// Delete Player Data files
+	cout << "TargetFile: "<< strLoginDataFile << endl;
+	return pkVFS->RemoveFile(strLoginDataFile.c_str());
+}
+
+bool PlayerDatabase::VerifyUser(string strPlayer,string strPassword)
+{
+	ZFVFile kFile;
+
+	string strPlayerDataFile = m_strPlayerDirectory + strPlayer + "/playerdata.dat"; 
+	
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
+	{	
+		//cout<<"Player "<<strPlayer<< " dont exist"<<endl;
+		return false;
+	}
+		
+	//cout<<"player found verrifying password"<<endl;	
+	
+	LoginData kLogin;
+	kFile.Read(&kLogin,sizeof(kLogin),1);
+	
+	//read password
+	kFile.Close();
+	
+	//is the password valid ?
+	if(strPassword == kLogin.szPass)
+		return true;
+		
+	return false;
+}
+
+bool PlayerDatabase::HasPrivilege(string strLoginName, string strPrev)
+{
+	ZFVFile kFile;
+
+	string strPlayerDataFile = m_strPlayerDirectory + strLoginName + "/playerdata.dat"; 
+	
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
+	{	
+		//cout<<"Player "<<strPlayer<< " dont exist"<<endl;
+		return false;
+	}
+		
+	LoginData kLogin;
+	kFile.Read(&kLogin,sizeof(kLogin),1);
+	kFile.Close();
+
+	if(strstr(strPrev.c_str(), "A") && kLogin.m_kPrivilege.m_bAdmin == false)			return false;
+	if(strstr(strPrev.c_str(), "B") && kLogin.m_kPrivilege.m_bBuilder == false)		return false;
+	if(strstr(strPrev.c_str(), "G") && kLogin.m_kPrivilege.m_bGameMaster == false)	return false;
+	if(strstr(strPrev.c_str(), "P") && kLogin.m_kPrivilege.m_bPlayer == false)		return false;
+
+	return true;
+}
+
+
+void PlayerDatabase::SetUserPrev(string strLoginName, string strPrev)
+{
+	ZFVFile kFile;
+
+	string strPlayerDataFile = m_strPlayerDirectory + strLoginName + "/playerdata.dat"; 
+	
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
+	{	
+		return ;
+	}
+		
+	LoginData kLogin;
+	kFile.Read(&kLogin,sizeof(kLogin),1);
+	kFile.Close();
+
+	if(strstr(strPrev.c_str(), "-A"))	kLogin.m_kPrivilege.m_bAdmin = false;
+	if(strstr(strPrev.c_str(), "=A"))	kLogin.m_kPrivilege.m_bAdmin = true;
+
+	if(strstr(strPrev.c_str(), "-B"))	kLogin.m_kPrivilege.m_bBuilder = false;
+	if(strstr(strPrev.c_str(), "=B"))	kLogin.m_kPrivilege.m_bBuilder = true;
+
+	if(strstr(strPrev.c_str(), "-G"))	kLogin.m_kPrivilege.m_bGameMaster = false;
+	if(strstr(strPrev.c_str(), "=G"))	kLogin.m_kPrivilege.m_bGameMaster = true;
+
+	if(strstr(strPrev.c_str(), "-P"))	kLogin.m_kPrivilege.m_bPlayer = false;
+	if(strstr(strPrev.c_str(), "=P"))	kLogin.m_kPrivilege.m_bPlayer = true;
+
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
+	{
+		cout<<"Error creating player file " << strPlayerDataFile << endl;
+		return;
+	}
+	
+	kFile.Write(&kLogin,sizeof(kLogin),1);
+	kFile.Close();
+}
+
+string  PlayerDatabase::GetPrivilege(string strUser)
+{
+	ZFVFile kFile;
+
+	string strPlayerDataFile = m_strPlayerDirectory + strUser + "/playerdata.dat"; 
+	
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
+	{	
+		return string("");
+	}
+		
+	LoginData kLogin;
+	kFile.Read(&kLogin,sizeof(kLogin),1);
+	kFile.Close();
+
+	string strPrev = PrevToStr(kLogin.m_kPrivilege);
+	return strPrev;
+}
+
+
+// Login/Logout ***************************************************************************************************
 bool PlayerDatabase::Login(string strPlayer,string strPassword)
 {
 	//check if player is already connected
@@ -146,7 +232,7 @@ bool PlayerDatabase::Login(string strPlayer,string strPassword)
 		return false;
 
 	//check player password
-	if(VerifyPlayer(strPlayer, strPassword)) 
+	if(VerifyUser(strPlayer, strPassword)) 
 	{
 		//m_strActiveUsers.push_back( strPlayer );
 		PlayerData kNewPlayer;		
@@ -190,7 +276,6 @@ bool PlayerDatabase::IsOnline(string strLogin)
 	return false;
 }
 
-
 void PlayerDatabase::GetUsers(vector<string>* pkUsers)
 {
 	for(int i = 0 ;i<m_strActivePlayers.size();i++)
@@ -199,36 +284,8 @@ void PlayerDatabase::GetUsers(vector<string>* pkUsers)
 	}
 }
 
-bool PlayerDatabase::VerifyPlayer(string strPlayer,string strPassword)
-{
-	ZFVFile kFile;
-
-	string strPlayerDataFile = m_strPlayerDirectory + strPlayer + "/playerdata.dat"; 
-	
-	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
-	{	
-		//cout<<"Player "<<strPlayer<< " dont exist"<<endl;
-		return false;
-	}
-		
-	//cout<<"player found verrifying password"<<endl;	
-	
-	LoginData kLogin;
-	kFile.Read(&kLogin,sizeof(kLogin),1);
-	
-	//read password
-	kFile.Close();
-		
-	//is the password valid ?
-	if(strPassword == kLogin.szPass)
-		return true;
-		
-	return false;
-
-}
-
-
-bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter, string strModell)
+// Character ***************************************************************************************************
+bool PlayerDatabase::CharacterCreate(string strPlayer, string strCharacter, string strModell)
 {
 	ZFVFile kFile;
 
@@ -297,7 +354,7 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter, s
 	return true;	
 }
 
-Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
+Entity* PlayerDatabase::CharacterSpawn(string strPlayer, string strCharacter)
 {
 	ZFVFile kFile;
 
@@ -324,7 +381,7 @@ Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
 }
 
 
-bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
+bool PlayerDatabase::CharacterSave(Entity* pkEntity,string strPlayer)
 {
 	ZFVFile kFile;
 	string strCharacter = pkEntity->GetName();
@@ -354,7 +411,7 @@ bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
 	return true;
 }
 
-void PlayerDatabase::DeleteCharacter(string strPlayer, string strCharacter)
+void PlayerDatabase::CharacterDelete(string strPlayer, string strCharacter)
 {
 	cout << "Delete Character '" << strCharacter << "' from Login '" << strPlayer << "'" << endl;
 	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
@@ -371,6 +428,94 @@ void PlayerDatabase::DeleteCharacter(string strPlayer, string strCharacter)
 	cout << "TargetDir: "<< strCharacterDataDir << endl;
 	pkVFS->RemoveDir(strCharacterDataDir);
 }
+
+vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
+{
+	vector<string>	kCharNames;
+	//string strPlayerDataFile = "bin/" + m_strPlayerDirectory + strLogin; 
+	string strPlayerDataFile = m_strPlayerDirectory + strLogin; 
+	cout << "***Scaning in" << strPlayerDataFile << endl;
+
+	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
+
+	
+ 	//dvoids hax för o ta bort ".."	och "."
+	vector<string>::iterator it =kCharNames.begin();
+	while(it != kCharNames.end())
+	{
+		if( *it == ".." || *it == ".") 
+		{
+			kCharNames.erase(it);
+			it = kCharNames.begin();
+			continue;
+		}			
+		it++;
+	}
+	
+	
+/*	cout << strPlayerDataFile <<endl;
+	for(int i=0; i<kCharNames.size(); i++)
+		cout << "Name: " << i << " " <<  kCharNames[i] << endl;*/
+
+	return kCharNames;
+}
+
+// Get PlayerData ***************************************************************************************************
+PlayerData* PlayerDatabase::GetPlayerDataByCharacterID(int iEntityID)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_iCharacterID == iEntityID)
+		{
+			return &m_strActivePlayers[i];
+		}
+	}	
+	
+	return NULL;	
+}
+
+PlayerData*	PlayerDatabase::GetPlayerData(string	strPlayer)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_strPlayerName == strPlayer)
+		{
+			return &m_strActivePlayers[i];
+		}
+	}	
+	
+	return NULL;
+}
+
+PlayerData*	PlayerDatabase::GetPlayerData(int iConnection)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_iConnectionID == iConnection)
+		{
+			return &m_strActivePlayers[i];
+		}
+	}	
+	
+	return NULL;
+}
+
+void	PlayerDatabase::GetPlayerEntitys(vector<pair<Entity*,int> >* pkEnts)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{	
+		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_strActivePlayers[i].m_iCharacterID))	
+			pkEnts->push_back(pair<Entity*,int>(pkEnt,m_strActivePlayers[i].m_iConnectionID));	
+	}
+}
+
+
+
+
+
+
+
 
 
 

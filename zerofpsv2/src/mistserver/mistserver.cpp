@@ -75,6 +75,13 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("jiddra",		FID_TEST_JIDDRA);
 	Register_Cmd("say",			FID_SAY);
 
+	// User mangment
+	Register_Cmd("useradd",			FID_USERADD);
+	Register_Cmd("userdel",			FID_USERDEL);
+	Register_Cmd("userpass",		FID_USERPASS);
+	Register_Cmd("userlist",		FID_USERLIST);
+	Register_Cmd("userprev",		FID_USERPREV);
+
 	m_strWorldDir  = "";
    
 	m_pkActiveCameraObject	= NULL;
@@ -571,7 +578,6 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkNetwork->MS_ServerIsActive();
 
 			break;
-
 		case FID_LIGHTMODE:
 			m_pkNetwork->MS_ServerDown();
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -584,11 +590,63 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 */
 
+		case FID_USERADD:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 2)
+			{
+				m_pkConsole->Printf("useradd name password");
+				m_pkConsole->Printf("Create a new user if he does not already exist.");
+				break;				
+			}			
 
-	
+			m_pkPlayerDB->UserCreate(kCommand->m_kSplitCommand[1], kCommand->m_kSplitCommand[2]);
+			break;
+		}
+
+		case FID_USERDEL:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("userdel name");
+				m_pkConsole->Printf("Delete a user. Does not delete character so a new user with the same name will get the characters.");
+				break;				
+			}			
+
+			m_pkPlayerDB->UserDelete(kCommand->m_kSplitCommand[1]);
+			break;
+		}
+
+		case FID_USERPREV:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("userprev name prev");
+				m_pkConsole->Printf("Sets privilege for a user. prev is a string with the followin.");
+				m_pkConsole->Printf("=A : Add admin rights on user.");
+				m_pkConsole->Printf("-A : Remove admin rights on user.");
+				m_pkConsole->Printf("=B : Add builder rights on user.");
+				m_pkConsole->Printf("-B : Remove builder rights on user.");
+				m_pkConsole->Printf("=G : Add game master rights on user.");
+				m_pkConsole->Printf("-G : Remove game master rights on user.");
+				m_pkConsole->Printf("=P : Add player rights on user.");
+				m_pkConsole->Printf("-P : Remove player rights on user.");
+				break;				
+			}		
+
+			if(kCommand->m_kSplitCommand.size() <= 2)
+			{
+				string strPrev = m_pkPlayerDB->GetPrivilege(kCommand->m_kSplitCommand[1]);
+				m_pkConsole->Printf(" Privilege for user '%s' = %s", kCommand->m_kSplitCommand[1].c_str(), strPrev.c_str());
+				break;
+			}
+
+			m_pkPlayerDB->SetUserPrev(kCommand->m_kSplitCommand[1], kCommand->m_kSplitCommand[2]);
+			break;
+		}
+
+		
 
 	}
-
 }
 
 void MistServer::ClientInit()
@@ -606,7 +664,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 	string strCharacter	= "mrbad";
 
 	// Check that this is a valid login.
-	if(m_pkPlayerDB->LoginExist(strPlayer)) 
+	if(m_pkPlayerDB->UserExist(strPlayer)) 
 	{
 		if(m_pkPlayerDB->IsOnline(szLogin))
 		{
@@ -616,15 +674,30 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 		}
 
 		// Check Password
-		if(!m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd)) 
+		if(!m_pkPlayerDB->VerifyUser(strPlayer,strPasswd)) 
 		{
 			m_pkConsole->Printf("Player '%s' found, password check FAILED",strPlayer.c_str());
 			strWhy = "Wrong login name and/or password";
 			return false;
 		}
 
-		m_pkConsole->Printf("Player '%s' found, password check OK",strPlayer.c_str());
-		return true;
+		if(bIsEditor)
+		{
+			if(m_pkPlayerDB->HasPrivilege(strPlayer,"B"))
+			{
+				return true;
+			}
+			else
+			{
+				strWhy = "You are not a builder";
+				return false;
+			}
+		}
+		else
+		{
+			m_pkConsole->Printf("Player '%s' found, password check OK",strPlayer.c_str());
+			return true;
+		}
 	}
 	else 
 	{
@@ -636,14 +709,14 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 		}
 
 		// Try To Create the new player
-		if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) 
+		if(!m_pkPlayerDB->UserCreate(strPlayer,strPasswd)) 
 		{
 			m_pkConsole->Printf("Failed to create new player '%s'",strPlayer.c_str());
 			strWhy = "Failed to create player on server";
 			return false;
 		}
 	
-		if(m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd))
+		if(m_pkPlayerDB->VerifyUser(strPlayer,strPasswd))
 		{
 			m_pkConsole->Printf("Player '%s' created",strPlayer.c_str());
 			return true;
@@ -819,7 +892,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 {
 
 	//try to crreate saved character
-	Entity* pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
+	Entity* pkObject = m_pkPlayerDB->CharacterSpawn(csPlayer,csCharacter);
 	
 	
 	//if it fails try to create a new character
@@ -882,7 +955,7 @@ void MistServer::DeletePlayerCharacter(int iConID)
 		Entity* pkObj = m_pkEntityManager->GetEntityByID(pkPD->m_iCharacterID);
 		if(pkObj)
 		{
-			m_pkPlayerDB->SaveCharacter(pkObj,pkPD->m_strPlayerName);
+			m_pkPlayerDB->CharacterSave(pkObj,pkPD->m_strPlayerName);
 			m_pkEntityManager->Delete(pkObj);
 		}
 	}
