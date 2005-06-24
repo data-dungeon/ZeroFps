@@ -16,6 +16,19 @@ Linux:
 Note - dont try to run the .bin files directly. Instead you shuld run the 
 shellscripts run*.sh like runmistserver.sh otherwise it wont find all librarys.
 
+some external librarys are included in "bin/linux_stuff". If you are missing any 
+librarys you could possible just copy them from "bin/linux_stuff/" to 
+"bin/" .
+
+
+Some Mistlands dependencies:
+SDL 1.2
+SDL-net 1.2
+Lua 5.0
+LuaLib
+OpenAl
+VorbisFile
+Ogg
 
 
 
