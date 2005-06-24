@@ -14,81 +14,63 @@ P_ScriptInterface::P_ScriptInterface()
 	
 	m_bNetwork = false;
 	
-//	m_bHaveRunInit = false;
+	m_iVersion = 2;
 	m_fHeartRate =- 1;
-	m_iLastTouchFrame = -1;
 
-	m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
+	m_fTimer = 0;
 }
 
 P_ScriptInterface::~P_ScriptInterface() { }
 
 void P_ScriptInterface::Update()
 {
-/*	if(!m_bHaveRunInit)
-	{
-		m_bHaveRunInit = true;		
-		m_pkEntityManager->CallFunction(m_pkEntity, "Init");
-	}
-*/
-
 	if(m_fHeartRate != -1)
+	{
 		if(m_pkFps->m_pkEntityManager->GetSimTime() - m_fTimer > m_fHeartRate)
 		{
-			m_pkEntityManager->CallFunction(m_pkEntity, "HeartBeat");
-			
+			m_pkEntityManager->CallFunction(m_pkEntity, "HeartBeat");		
 			m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
-		}
+		}		
+	}
 }
 
 void P_ScriptInterface::SetHeartRate(float blub) 
 {
 	m_fHeartRate = blub;
-	
-	if ( int(m_fHeartRate) <= 0 )
-		m_fTimer = 0;
-	else
-		m_fTimer += rand() % (int)m_fHeartRate;
+	m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
 }
 
 void P_ScriptInterface::Touch(int iId)
 {  
-// 	//only do one touch per frame
-// 	if(m_pkZeroFps->GetCurrentFrame() == m_iLastTouchFrame)
-// 		return;
-// 	m_iLastTouchFrame = m_pkZeroFps->GetCurrentFrame();
-// 
-// 	vector<ScriptFuncArg> kArgs(1);
-// 	kArgs[0].m_kType.m_eType = tINT;
-// 	kArgs[0].m_pData = &iId;
-// 
-// 	m_pkEntityManager->CallFunction(m_pkEntity, "Touch",&kArgs);
+
 }
 
 void P_ScriptInterface::OnEvent(GameMessage& Msg)
 {
-/*	cout << "[P_ScriptInterface]: Recv GM: " << m_acName << ", ";
-	cout << Msg.m_ToObject << ", ";
-	cout << Msg.m_FromObject << ", ";
-	cout << Msg.m_Name;
-	cout << endl;
-	
-	string strName = string("on") + Msg.m_Name;
-   
-	m_pkEntityManager->CallFunction(m_pkEntity, strName.c_str(), 0);*/
 }
 
 void P_ScriptInterface::Save(ZFIoInterface* pkPackage)
 {
-   pkPackage->Write ( (void*)&m_bFirstRun, sizeof(m_bFirstRun), 1 );
-   pkPackage->Write ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
+   pkPackage->Write(m_fHeartRate);
+   pkPackage->Write(m_fTimer);	
+
 }
 
 void P_ScriptInterface::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-   pkPackage->Read ( (void*)&m_bFirstRun, sizeof(m_bFirstRun), 1 );
-   pkPackage->Read ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
-	SetHeartRate(m_fHeartRate);
+	if(iVersion == 2)
+	{
+	   pkPackage->Read(m_fHeartRate);
+	   pkPackage->Read(m_fTimer);	
+	}
+	else
+	{
+
+		bool apa;
+		pkPackage->Read ( (void*)&apa, sizeof(apa), 1 );
+		pkPackage->Read ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
+		SetHeartRate(m_fHeartRate);
+	}
 }
 
 
