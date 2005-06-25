@@ -17,6 +17,14 @@ void LightPSProp::Update()
 
 	m_kColor += m_kColorChange * fFrameTime;
 
+	// Prevent color from getting negative
+	if (m_kColor.x < 0 )
+			m_kColor.x = 0;
+	if (m_kColor.y < 0 )
+			m_kColor.y = 0;
+	if (m_kColor.z < 0 )
+			m_kColor.z = 0;
+
 	pkLight->SetAmbient(m_kColor);
 	pkLight->SetDiffuse(m_kColor);
 

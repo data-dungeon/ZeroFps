@@ -907,8 +907,8 @@ void P_CharacterProperty::UpdateStats()
 		switch(pkCC->GetCharacterState())
 		{
 			case eWALKING: iDrain = 0; break;
-			case eRUNNING: iDrain -= 5; break;
-			case eJUMPING: iDrain -= 10; break;
+			case eRUNNING: iDrain -= 2; break;
+			case eJUMPING: iDrain -= 5; break;
 			case eSWIMMING: iDrain -= 4; break;		
 			case eSITTING:	iDrain *= 2; break;		
 		}
@@ -3293,7 +3293,7 @@ namespace SI_P_CharacterProperty
 		int iTargetID;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgInt(pkLua, 0, &iTargetID);
+		g_pkScript->GetArgInt(pkLua, 1, &iTargetID);
 		
 		int iRet = 0;	
 		
@@ -3314,13 +3314,17 @@ namespace SI_P_CharacterProperty
 		int iTargetID;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgInt(pkLua, 0, &iTargetID);
+		g_pkScript->GetArgInt(pkLua, 1, &iTargetID);
 		
 		int iRet = 0;	
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
 			if(pkCP->IsFriend(iTargetID))
 				iRet = 1;
+		}
+		else
+			return 0;
 			
 		g_pkScript->AddReturnValue(pkLua, double(iRet) );							
 		return 1;		
