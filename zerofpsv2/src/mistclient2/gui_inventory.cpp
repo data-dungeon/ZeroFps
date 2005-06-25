@@ -232,15 +232,25 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my)) // cursor is inside the 
 			{																						 // rectangle of the slot.
 				iCursorBordeSize = 2;
-				SetSelectionBorder(i, true, false);
+				SetSelectionBorder(i, true, false);			
 
+				static float fMoveTime =0;
+				
 				if(bLeftButtonPressed)
-				{												
+				{																						
 					if(m_kMoveSlot.m_iIndex == -1)
-						PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
+					{
+						//how long has button been pressed?
+						if(g_kMistClient.m_pkZeroFps->GetEngineTime() - fMoveTime > 0.1)						
+							PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
+					}										
 				}
 				else
 				{
+					//save last time left button was not pressed
+					fMoveTime = g_kMistClient.m_pkZeroFps->GetEngineTime();
+					
+				
 					if(m_bDoubleClicked == false)
 					{
 						if(m_kMoveSlot.m_iIndex != -1) // if we have a move slot...
@@ -509,12 +519,20 @@ void InventoryDlg::OnDoubleClick(int iMouseX, int iMouseY)
 		pkVector = &m_vkContainerItemList;
 	}
 		
+	//open container
 	if((*pkVector)[kTargetSlot.first].bIsContainer)
 	{
 		OpenContainerItem(true, kTargetSlot.first, 
 			bTargetIsInventoryItem);
 	}
-
+	else
+	{	
+		//use item
+		cout<<"using itme"<<(*pkVector)[kTargetSlot.first].iItemID<<endl;
+		g_kMistClient.SendUseItem((*pkVector)[kTargetSlot.first].iItemID);
+	}
+	
+	
 	m_kMoveSlot.m_iIndex = temp;
 
 	if(m_kMoveSlot.m_iIndex != -1)
@@ -525,7 +543,7 @@ void InventoryDlg::OnDoubleClick(int iMouseX, int iMouseY)
 			m_kItemWndPosBeforeMove.y, false, true);
 
 		// Show normal cursor again.
-		float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
+		float w = g_kMistClient.GetScaleX()*32.0f, h = g_kMistClient.GetScaleY()*32.0f ;
 		g_kMistClient.m_pkGui->SetCursor( (int)iMouseX, 
 			(int)iMouseY, 
 			g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);

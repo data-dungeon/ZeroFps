@@ -29,6 +29,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_ADDSTATPOINT,
 	MLNM_CS_SETDEFAULTATTACK,
 	MLNM_CS_SAVEWORLD,
+	MLNM_CS_USEITEM,
 };
 
 //	A network message from the server to the client.

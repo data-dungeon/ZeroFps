@@ -223,7 +223,7 @@ bool P_Container::StackItem(P_Item* pkItem,int iX,int iY,int iCount)
 					//get container and remove item
 					if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
 					{
-						pkContainer->RemoveItem(pkItem->GetEntity()->GetEntityID());
+						pkContainer->DeleteItem(pkItem->GetEntity()->GetEntityID());						
 					}
 				}
 				else
@@ -321,6 +321,7 @@ int P_Container::HaveItem(const string strItemName)
 void P_Container::ClearItem(int iID)
 {
 	for( int iY = 0;iY<m_iSizeY;iY++)
+	{
 		for( int iX = 0;iX<m_iSizeX;iX++)
 		{
 			int* i = GetItem(iX,iY);
@@ -328,7 +329,11 @@ void P_Container::ClearItem(int iID)
 			if(*i == iID)
 				*i = -1;
 		}	
+	}
+	
 }
+
+
 
 bool P_Container::GetItemPos(int iID,int& iRX,int& iRY)
 {
@@ -449,15 +454,22 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 			
 		
 	//get current container, if any, and clear item from its current position
-	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
-	{
-		//uneqip twohanded
-		if(pkItem->m_bTwoHanded)		
-			if(pkContainer->GetWeaponHand())
-				pkContainer->SetupTwohanded(false);
-	
-		pkContainer->ClearItem(pkItemEnt->GetEntityID());
+ 	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
+ 	{
+		pkContainer->RemoveItem(pkItem->GetEntity()->GetEntityID());		
 	}
+
+// 	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
+// 	{
+// 		//uneqip twohanded
+// 		if(pkItem->m_bTwoHanded)		
+// 			if(pkContainer->GetWeaponHand())
+// 				pkContainer->SetupTwohanded(false);
+// 	
+// 		pkContainer->ClearItem(pkItemEnt->GetEntityID());
+// 	}
+	
+	
 	
 	//set item on its new position
 	SetItem(pkItem,iX,iY);
@@ -466,7 +478,7 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 	//setup item ----------------------------------
 	
 	//remove old  stuff
-	pkItem->UnEquip();
+// 	pkItem->UnEquip();
 	
 	
 	//set item's owned by setting
@@ -652,8 +664,29 @@ bool P_Container::RemoveItem(int iID)
 		return false;	
 
 	ClearItem(iID);	
-	m_pkEntMan->Delete(iID);
 	
+	if(P_Item* pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(iID,"P_Item"))
+	{
+		//uneqip twohanded
+		if(pkItem->m_bTwoHanded)		
+			if(GetWeaponHand())
+				SetupTwohanded(false);
+		
+		pkItem->UnEquip();
+	}	
+	
+	
+	return true;
+}
+
+bool P_Container::DeleteItem(int iID)
+{
+	if(!HaveItem(iID))
+		return false;	
+	
+	RemoveItem(iID);	
+	m_pkEntMan->Delete(iID);
+					
 	return true;
 }
 
@@ -978,6 +1011,26 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_Container
 {
+	int DeleteItemInContainerLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,1))
+			return 0;
+		
+		int iItemID;
+		g_pkScript->GetArgInt(pkLua, 0, &iItemID);
+		
+		//get item 
+		if(P_Item* pkItem = (P_Item*)g_pkObjMan->GetPropertyFromEntityID(iItemID,"P_Item"))
+		{
+			if(P_Container* pkCon = (P_Container*)g_pkObjMan->GetPropertyFromEntityID(pkItem->GetInContainerID(),"P_Container"))
+			{
+				pkCon->DeleteItem(iItemID);
+			}
+		}
+			
+		return 0;
+	}
+	
 	int CreateItemInContainerLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -1044,6 +1097,8 @@ void Register_P_Container(ZeroFps* pkZeroFps)
 
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("CreateItemInContainer",	SI_P_Container::CreateItemInContainerLua);
+	g_pkScript->ExposeFunction("DeleteItemInContainer",	SI_P_Container::DeleteItemInContainerLua);
+	
 	//g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
 
 }

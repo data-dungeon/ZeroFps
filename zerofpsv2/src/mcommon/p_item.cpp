@@ -1,9 +1,11 @@
 #include "p_item.h"
+#include "p_container.h"
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "p_characterproperty.h"
 #include "p_buff.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
+
 
 P_Item::P_Item()
 {
@@ -50,7 +52,11 @@ P_Item::P_Item()
 
 P_Item::~P_Item()
 {
-
+// 	if(P_Container* pkContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iInContainerID,"P_Container"))
+// 	{
+// 		//cout<<"removing item from container"<<endl;
+// 		pkContainer->RemoveItem(m_pkEntity->GetEntityID());
+// 	}
 }
 
 void P_Item::Init()

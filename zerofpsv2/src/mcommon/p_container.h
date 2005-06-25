@@ -78,6 +78,8 @@ class MCOMMON_API P_Container: public Property
 		bool IsFree(int iX,int iY,int iW,int iH,int iSelfID = -1);
 		bool AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount);
 		
+		void RemoveItemFromContainer(int iID);
+		
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
 		bool ItemTypeOK(int iType);				
@@ -131,6 +133,7 @@ class MCOMMON_API P_Container: public Property
 		bool AddMove(int iID,int iX,int iY,int iCount);
 		bool DropItem(int iID,const Vector3& kPos);		
 		bool RemoveItem(int iID);
+		bool DeleteItem(int iID);
 		
 		int HaveItem(const string strItemName);		
 				
@@ -139,7 +142,7 @@ class MCOMMON_API P_Container: public Property
 		int 				GetNrOfItems();
 		int* 				GetItem(int iX,int iY); // Zeb: Flytta denna s�den blev public..EEEVIL
 		
-
+		friend class p_item;
 };
 
 MCOMMON_API Property* Create_P_Container();

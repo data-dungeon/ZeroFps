@@ -1278,7 +1278,7 @@ void P_CharacterProperty::GiveExperience(int iXP)
 		
 	if(m_kCharacterStats.GetTotal("Experience") >= m_kCharacterStats.GetTotal("NextLevel"))
 	{
-		float fLevelMod = 2.5;	
+		float fLevelMod = 2.0;	
 		m_kCharacterStats.SetStat("PrevLevel",m_kCharacterStats.GetTotal("NextLevel"));
 		m_kCharacterStats.SetStat("NextLevel",m_kCharacterStats.GetTotal("NextLevel") * fLevelMod);
 		m_kCharacterStats.ChangeStat("Level",1);

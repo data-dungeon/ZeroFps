@@ -2308,6 +2308,17 @@ void MistClient::SendSetTarget(int iTargetID)
 	SendAppMessage(&kNp);	
 }
 
+void MistClient::SendUseItem(int iItemID)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_USEITEM);
+	
+	kNp.Write(iItemID);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
+}
+
 void MistClient::SendAction(int iEntityID,const string& strAction)
 {
 

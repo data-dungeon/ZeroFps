@@ -481,6 +481,48 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}		
 		
+		case MLNM_CS_USEITEM:
+		{
+			int iItemID;
+			PkNetMessage->Read(iItemID);
+			
+			cout<<"using item:"<<iItemID<<endl;
+			
+			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				//get item property
+				if(P_Item* pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(iItemID,"P_Item"))
+				{
+					//get items container
+					if(P_Container* pkContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(pkItem->GetInContainerID(),"P_Container"))
+					{
+						if(pkContainer->GetOwnerID() != pkPlayerData->m_iCharacterID)
+						{
+							SayToClients("you dont own that container","->",-1,PkNetMessage->m_iClientID);
+							break;
+						}
+						
+						
+						vector<ScriptFuncArg> args(1);
+						args[0].m_kType.m_eType = tINT;
+						args[0].m_pData = &(pkPlayerData->m_iCharacterID);
+						
+						m_pkEntityManager->CallFunction(pkItem->GetEntity(), "ContainerUse",&args);												
+						
+						//RESEND container
+						SendContainer(pkItem->GetInContainerID(),PkNetMessage->m_iClientID,false);
+						
+						break;
+					}		
+					else
+						cout<<"item is not in any container"<<endl;
+				}				
+			}									
+			
+		
+			break;
+		}
+		
 		case MLNM_CS_MOVE_ITEM:
 		{
 			int iItemID;

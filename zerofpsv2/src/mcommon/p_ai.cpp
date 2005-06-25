@@ -214,7 +214,7 @@ bool P_AI::States(int iEvent, int iState)
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
-					SetState( eAI_STATE_RANDOMWALK );
+					SetState( eAI_STATE_GUARD );
 					return false;
 				}		
 			
@@ -224,7 +224,7 @@ bool P_AI::States(int iEvent, int iState)
 				
 					if(fDistance > m_fSeeDistance)
 					{
-						SetState(eAI_STATE_RANDOMWALK);
+						SetState(eAI_STATE_GUARD);
 						return false;
 					}
 				
@@ -247,7 +247,7 @@ bool P_AI::States(int iEvent, int iState)
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
-					SetState( eAI_STATE_RANDOMWALK );
+					SetState( eAI_STATE_GUARD );
 					return false;
 				}		
 			
@@ -257,7 +257,7 @@ bool P_AI::States(int iEvent, int iState)
 				
 					if(fDistance > m_fSeeDistance)
 					{
-						SetState( eAI_STATE_RANDOMWALK ); //return to random walk
+						SetState( eAI_STATE_GUARD ); //return to random walk
 						return false;
 					}
 				
@@ -267,6 +267,30 @@ bool P_AI::States(int iEvent, int iState)
 						SetState (eAI_STATE_ATTACK );
 						return false;
 					}
+					
+					
+					//check for other closer targets
+					if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
+					{
+						m_fFindTime = m_pkZeroFps->GetEngineTime();
+					
+						int iEnemy = FindClosestEnemy(m_fSeeDistance);
+						if(iEnemy != -1)
+						{
+							//set attack state
+							//SetState( eAI_STATE_CHASE );
+							//m_iTarget = iEnemy;
+							
+							if(Entity* pkNew = m_pkEntityManager->GetEntityByID(iEnemy))
+							{
+								if(pkNew->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV()) < fDistance)
+								{
+									m_iTarget = iEnemy;
+									pkEnemy = pkNew;
+								}
+							}
+						}
+					}					
 					
 					//chase
 					m_pkCharacterProperty->SetCombatMode(true);
@@ -284,7 +308,7 @@ bool P_AI::States(int iEvent, int iState)
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
-					SetState(eAI_STATE_RANDOMWALK);
+					SetState(eAI_STATE_GUARD);
 					return false;
 				}
 				
