@@ -96,6 +96,14 @@ void P_Mad::Update()
  			//StopProfileTimer("r___mad");
 			return;
 		}
+		
+// 		cout<<"bla:"<<m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) / GetRadius()<<endl;
+// 		if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) / GetRadius() > 40)
+// 		{
+// 			return;
+// 		
+// 		}
+		
 
 		//get entity rotation
 		static Matrix3 kRot;

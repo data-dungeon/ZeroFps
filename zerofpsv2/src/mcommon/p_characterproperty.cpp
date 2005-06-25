@@ -927,8 +927,14 @@ void P_CharacterProperty::UpdateStats()
 			
 		//health
 		string strHealth("Health");
+		
 		//apply fall damage
-		m_kCharacterStats.ChangeStat(strHealth,-pkCC->GetFallDamage());
+		float fFallDmg = pkCC->GetFallDamage();
+		if(fFallDmg > 0)
+		{
+			SetLastDamageFrom(-1);					
+			m_kCharacterStats.ChangeStat(strHealth,-fFallDmg);
+		}
 
  		if(m_bInCamp) 		
  			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen") * 10);
