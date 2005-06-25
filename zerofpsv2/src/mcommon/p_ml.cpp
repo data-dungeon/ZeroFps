@@ -77,7 +77,7 @@ void P_Ml::Update()
 
 void P_Ml::AddAction(const char* csAction)
 {
-	cout<<"registering action:"<<csAction<<endl;
+	//cout<<"registering action:"<<csAction<<endl;
 	m_kActions.push_back(string(csAction));	
 	SetNetUpdateFlag(true);		
 }

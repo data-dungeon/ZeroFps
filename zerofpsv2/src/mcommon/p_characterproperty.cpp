@@ -907,8 +907,8 @@ void P_CharacterProperty::UpdateStats()
 		switch(pkCC->GetCharacterState())
 		{
 			case eWALKING: iDrain = 0; break;
-			case eRUNNING: iDrain -= 2; break;
-			case eJUMPING: iDrain -= 5; break;
+			case eRUNNING: iDrain -= 3; break;
+			case eJUMPING: iDrain -= 8; break;
 			case eSWIMMING: iDrain -= 4; break;		
 			case eSITTING:	iDrain *= 2; break;		
 		}
