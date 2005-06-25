@@ -1408,6 +1408,20 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			cout<<"got character entityID from server"<<endl;
 			pkNetMessage->Read(m_iCharacterID);
 		
+			//temporary hack 
+			SendAddSkillToSkillbar("skill-fireball.lua",0);
+			SendAddSkillToSkillbar("skill-speed.lua",1);
+			SendAddSkillToSkillbar("skill-heal.lua",2);
+			SendAddSkillToSkillbar("skill-basic_attack.lua",3);
+			SendAddSkillToSkillbar("skill-bow.lua",4);
+			SendAddSkillToSkillbar("skill-resurrect.lua",5);
+			SendAddSkillToSkillbar("skill-bolt.lua",6);
+			SendAddSkillToSkillbar("skill-light.lua",7);
+			SendAddSkillToSkillbar("skill-stun.lua",8);
+			SendAddSkillToSkillbar("skill-freeze.lua",9);
+			SendAddSkillToSkillbar("skill-camp.lua",10);
+			//--------------------------
+		
 			break;
 		}
 

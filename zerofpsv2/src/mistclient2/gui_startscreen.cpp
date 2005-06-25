@@ -307,8 +307,8 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				if(pkCam == NULL)
 				{
 					g_kMistClient.AddListItem("CharGen_ModellList", "human_male");
-					g_kMistClient.AddListItem("CharGen_ModellList", "human_female");
-					g_kMistClient.AddListItem("CharGen_ModellList", "goblin_male");
+					//g_kMistClient.AddListItem("CharGen_ModellList", "human_female");
+					//g_kMistClient.AddListItem("CharGen_ModellList", "goblin_male");
 					((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(3);
 
 					g_kMistClient.SelListItemByIndex("CharGen_ModellList",0);
