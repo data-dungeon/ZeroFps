@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="basic"
 	ProjectGUID="{B04EA80D-8F10-4C4F-BB55-9A9049ED0CF2}"
+	RootNamespace="basic"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -44,9 +45,9 @@
 				OutputFile="..\..\..\bin\basic_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="c:\cppdev\cppdev\"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/basic.pdb"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
 				ImportLibrary=".\Debug/basic_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -57,7 +58,7 @@
 				TypeLibraryName=".\Debug/basic.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  $(ProjectDir)debug\*.lib  ..\..\..\bin"/>
+				CommandLine="copy  $(ProjectDir)debug\*.lib  ..\..\..\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -98,7 +99,8 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -108,8 +110,13 @@
 				OutputFile="..\..\..\bin\basic.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="c:\cppdev\cppdev\"
-				ProgramDatabaseFile=".\Release/basic.pdb"
+				AdditionalLibraryDirectories=""
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
+				GenerateMapFile="TRUE"
+				MapFileName="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).map"
+				MapExports="TRUE"
+				MapLines="TRUE"
 				ImportLibrary=".\Release/basic.lib"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -120,7 +127,7 @@
 				TypeLibraryName=".\Release/basic.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  $(ProjectDir)release\*.lib  ..\..\..\bin"/>
+				CommandLine="copy  $(ProjectDir)release\*.lib  ..\..\..\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

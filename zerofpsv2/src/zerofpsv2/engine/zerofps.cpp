@@ -1168,6 +1168,13 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf( kCommand->m_strFullCommand.c_str() + kCommand->m_kSplitCommand[0].size() + 1 );
 			break;
 
+		case FID_MASSSPAWN:	
+			{
+			int* pkCrashPtr = NULL;
+			*pkCrashPtr = 42;
+			break;
+			}
+
 		case FID_PRINTOBJECT:
 			m_pkEntityManager->DisplayTree();
 			break;

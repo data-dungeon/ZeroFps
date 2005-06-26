@@ -44,9 +44,9 @@
 				OutputFile="..\..\bin\mistserver_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\bin"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/mistserver.pdb"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -94,7 +94,8 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -104,8 +105,13 @@
 				OutputFile="..\..\bin\mistserver.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\bin"
-				ProgramDatabaseFile=".\Release/mistserver.pdb"
+				AdditionalLibraryDirectories="..\..\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
+				GenerateMapFile="TRUE"
+				MapFileName="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).map"
+				MapExports="TRUE"
+				MapLines="TRUE"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"

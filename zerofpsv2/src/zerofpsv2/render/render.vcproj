@@ -32,7 +32,8 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -42,9 +43,14 @@
 				OutputFile="..\..\..\bin\render.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\bin"
+				AdditionalLibraryDirectories="..\..\..\lib"
 				IgnoreDefaultLibraryNames="libc.lib"
-				ProgramDatabaseFile=".\Release/render.pdb"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
+				GenerateMapFile="TRUE"
+				MapFileName="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).map"
+				MapExports="TRUE"
+				MapLines="TRUE"
 				ImportLibrary=".\Release/render.lib"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -55,7 +61,7 @@
 				TypeLibraryName=".\Release/render.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy               $(ProjectDir)release\*.lib               ..\..\..\bin\"/>
+				CommandLine="copy $(ProjectDir)release\*.lib    ..\..\..\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -108,10 +114,10 @@
 				OutputFile="..\..\..\bin\render_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\bin"
+				AdditionalLibraryDirectories="..\..\..\lib"
 				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/render.pdb"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
 				ImportLibrary=".\Debug/render_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -122,7 +128,7 @@
 				TypeLibraryName=".\Debug/render.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy               $(ProjectDir)debug\*.lib               ..\..\..\bin\"/>
+				CommandLine="copy $(ProjectDir)debug\*.lib ..\..\..\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

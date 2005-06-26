@@ -4,9 +4,9 @@
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include <iostream>
-
+ 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
-
+ 
 #include "p_charactercontrol.h"
 #include "p_characterproperty.h"
 

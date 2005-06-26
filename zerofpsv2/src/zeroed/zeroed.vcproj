@@ -39,10 +39,10 @@
 				OutputFile="..\..\bin\zeroed_debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\bin"
+				AdditionalLibraryDirectories="..\..\lib"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/zeroed.pdb"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
 				SubSystem="1"
 				TargetMachine="0"/>
 			<Tool
@@ -87,7 +87,7 @@
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="1"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -96,9 +96,13 @@
 				OutputFile="..\..\bin\zeroed.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\bin; c:\cppdev\cppdev\"
-				GenerateDebugInformation="FALSE"
-				ProgramDatabaseFile=".\Release/zeroed.pdb"
+				AdditionalLibraryDirectories="..\..\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
+				GenerateMapFile="TRUE"
+				MapFileName="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).map"
+				MapExports="TRUE"
+				MapLines="TRUE"
 				SubSystem="1"
 				OptimizeReferences="0"
 				EnableCOMDATFolding="0"

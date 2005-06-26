@@ -45,10 +45,10 @@
 				OutputFile="..\..\..\bin\engine_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\bin"
+				AdditionalLibraryDirectories="..\..\..\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/engine.pdb"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
 				ImportLibrary=".\Debug/engine_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -59,7 +59,7 @@
 				TypeLibraryName=".\Debug/engine.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  $(ProjectDir)debug\*.lib ..\..\..\bin"/>
+				CommandLine="copy  $(ProjectDir)debug\*.lib ..\..\..\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -101,7 +101,8 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -111,9 +112,14 @@
 				OutputFile="..\..\..\bin\engine.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\bin"
+				AdditionalLibraryDirectories="..\..\..\lib"
 				IgnoreDefaultLibraryNames="LIBCMT.lib;LIBC.lib"
-				ProgramDatabaseFile=".\Release/engine.pdb"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).pdb"
+				GenerateMapFile="TRUE"
+				MapFileName="$(SolutionDir)/dbg/$(InputName)_$(ConfigurationName).map"
+				MapExports="TRUE"
+				MapLines="TRUE"
 				ImportLibrary=".\Release/engine.lib"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -124,7 +130,7 @@
 				TypeLibraryName=".\Release/engine.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  $(ProjectDir)release\*.lib ..\..\..\bin"/>
+				CommandLine="copy  $(ProjectDir)release\*.lib ..\..\..\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
