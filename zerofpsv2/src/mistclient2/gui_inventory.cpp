@@ -305,13 +305,22 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				iCursorBordeSize = 2;
 				SetSelectionBorder(i, false, false);
 
+				static float fMoveTime =0;
+
 				if(bLeftButtonPressed)
 				{				
 					if(m_kMoveSlot.m_iIndex == -1) // inget slot under cursorn, plocka upp.
-						PickUpFromGrid(i,false,mx,my); 
+					{
+						if(g_kMistClient.m_pkZeroFps->GetEngineTime() - fMoveTime > 0.1)						
+							PickUpFromGrid(i,false,mx,my); 
+					}
 				}
 				else
 				{
+					//save last time left button was not pressed
+					fMoveTime = g_kMistClient.m_pkZeroFps->GetEngineTime();
+				
+				
 					if(m_kMoveSlot.m_iIndex != -1)
 						OnDropItem(mx, my);
 
