@@ -1,7 +1,7 @@
 SRC=../../
 BINARY=libscript.so
 BINDIR=$(SRC)../bin/
-LIBS=--shared -L$(BINDIR) -llua -llualib -ltolua++
+LIBS=--shared -L$(BINDIR) -llua50 -llualib50 -ltolua++
 
 SOURCE=$(wildcard *.cpp)
 OBJS=$(SOURCE:.cpp=.o)
