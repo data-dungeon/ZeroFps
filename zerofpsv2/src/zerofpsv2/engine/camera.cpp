@@ -468,7 +468,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 //  	glDepthRange (0.003, 1.0);	//offset depthrange   default
 //   	glDepthRange (0.001, 1.0);	//offset depthrange 
  	glEnable(GL_POLYGON_OFFSET_FILL);
-  	glPolygonOffset(1,0);
+  	glPolygonOffset(2,0);
 
 	//reload last material
 	m_pkZShaderSystem->ReloadMaterial();		
