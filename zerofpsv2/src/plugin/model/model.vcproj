@@ -70,6 +70,9 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="2"
+				FavorSizeOrSpeed="1"
+				OptimizeForProcessor="2"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ZPGPLUGIN_EXPORTS"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="TRUE"
