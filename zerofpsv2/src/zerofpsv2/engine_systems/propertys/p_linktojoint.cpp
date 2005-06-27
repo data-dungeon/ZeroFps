@@ -46,6 +46,10 @@ void P_LinkToJoint::Update()
 	{
 		if(P_Mad* pkMad = (P_Mad*)pkHost->GetProperty("P_Mad"))
 		{
+			if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(pkHost->GetIWorldPosV(),pkMad->GetRadius()))
+				return;
+		
+		
 			kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint);				
 			kRot = pkMad->GetJointRotation(m_strToJoint);
 			
