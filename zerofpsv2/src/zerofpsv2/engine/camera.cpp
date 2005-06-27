@@ -130,16 +130,19 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		{
 			int iMaxFBO;
 			glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT,&iMaxFBO);
+			
+			cout<<"CAMERA: Using FBO's for shadows , max resulution "<<iMaxFBO<<endl;
 	 		m_iShadowTexWidth = Min(iQuality,iMaxFBO);
  			m_iShadowTexHeight = Min(iQuality,iMaxFBO);;							
 		}
 		else
 		{
+			cout<<"CAMERA: No FBO support, falling back to glCopyTexSubImage2D"<<endl;
 	 		m_iShadowTexWidth = Min(iQuality,GetMaxSize(m_pkRender->GetWidth()));
  			m_iShadowTexHeight = Min(iQuality,GetMaxSize(m_pkRender->GetHeight()));;					
 		}
 			
-		cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
+		cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
 		m_iShadowTexture = -1;
 		m_fShadowArea = 40;
