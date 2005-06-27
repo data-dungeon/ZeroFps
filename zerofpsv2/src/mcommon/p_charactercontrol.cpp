@@ -37,6 +37,7 @@ P_CharacterControl::P_CharacterControl()
 	m_bNetwork = 			true;
 	m_iVersion = 			5;
 		
+	m_pkTcs	= 				NULL;	
 	
 	m_iConnectionID	=	-1;
 	
@@ -109,6 +110,14 @@ vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 
 void P_CharacterControl::Update()
 {	
+	//get P_Tcs
+	if(!m_pkTcs)
+	{
+		m_pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs");
+		if(!m_pkTcs)
+			return;
+	}
+
 	SetNoClientRotation(false);
 
 	
@@ -144,186 +153,183 @@ void P_CharacterControl::Update()
 	}
 	
 	
-	
 
-	if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
+	//water check
+	m_bInWater = false;
+	if(m_pkTcs->GetTrigger() != -1)
 	{
-		//water check
-		m_bInWater = false;
-		if(pkTcs->GetTrigger() != -1)
+		//check for trigger
+		if(P_TcsTrigger* pkTrigger = (P_TcsTrigger*)m_pkEntityManager->GetPropertyFromEntityID(m_pkTcs->GetTrigger(),"P_TcsTrigger"))
 		{
-			//check for trigger
-			if(P_TcsTrigger* pkTrigger = (P_TcsTrigger*)m_pkEntityManager->GetPropertyFromEntityID(pkTcs->GetTrigger(),"P_TcsTrigger"))
+			if(pkTrigger->GetTriggerID() == 10)
 			{
-				if(pkTrigger->GetTriggerID() == 10)
-				{
-					m_bInWater = true;
-				}
+				m_bInWater = true;
 			}
-		}		
-	
-		
-		//disable gravity if in water
-		if(m_bInWater)
-		{
-			pkTcs->SetGravity(false);
-			SetCharacterState(eIDLE_SWIMING);
 		}
-		else
-			pkTcs->SetGravity(true);
-					
-		Vector3 kVel(0,0,0);					
+	}		
 
-					
-		if(m_kControls[eUP]) 	kVel.z +=  1;
-		if(m_kControls[eDOWN])	kVel.z += -1;
-		if(m_kControls[eLEFT])	kVel.x +=  1; 
-		if(m_kControls[eRIGHT])	kVel.x += -1; 
 	
-		//determin movement direction
-		if(kVel == Vector3::ZERO)
-			SetMoveDirection(eMOVE_NONE);
-		else if(kVel.z > 0)
-			SetMoveDirection(eMOVE_FORWARD);						
-		else if(kVel.z < 0)
-			SetMoveDirection(eMOVE_BACKWARD);
-		else if(kVel.x < 0)
-			SetMoveDirection(eMOVE_RIGHT);			
-		else if(kVel.x > 0)
-			SetMoveDirection(eMOVE_LEFT);
-		
+	//disable gravity if in water
+	if(m_bInWater)
+	{
+		m_pkTcs->SetGravity(false);
+		SetCharacterState(eIDLE_SWIMING);
+	}
+	else
+		m_pkTcs->SetGravity(true);
 				
-		//transform velocity
-		kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
-		kVel.y = 0;
-		
-		//multiply by character speed	
-		if(kVel.Length() > 0)
-			kVel = kVel.Unit() * m_fSpeed;
-		
-		//check if where crawling
-		if(m_kControls[eCRAWL] || m_bForceCrawl)
-			kVel *= 0.45;
-			
-		//character moves slower while in the air
-		if(!pkTcs->GetOnGround())
-			kVel *= 0.25;
-						
-			
-		//apply movement force					
-		if(!kVel.IsZero())
-		{
-			if(m_bInWater)
-				SetCharacterState(eSWIMMING);
-		
-			pkTcs->ClearExternalForces();
-			pkTcs->ApplyForce(Vector3(0,0,0),kVel);
-		}
-			
-		//fall damage
-		if(m_bFirstFallUpdate)
-		{
-			m_kFallPos = m_pkEntity->GetWorldPosV();
-			m_bFirstFallUpdate = false;
-		}
-		
-		if(pkTcs->GetOnGround())
-		{
-			if(m_bFalling)
-			{				
-				float fDistance = fabs(m_kFallPos.y - m_pkEntity->GetWorldPosV().y);
-				if(fDistance > 3)
-				{
-					m_fFallDamage += (fDistance - 3)*15; 
+	Vector3 kVel(0,0,0);					
+
 				
-					//cout<<"OUCH falldamage "<<(fDistance - 3)*15<< " total:"<<m_fFallDamage<<endl;
-				}
+	if(m_kControls[eUP]) 	kVel.z +=  1;
+	if(m_kControls[eDOWN])	kVel.z += -1;
+	if(m_kControls[eLEFT])	kVel.x +=  1; 
+	if(m_kControls[eRIGHT])	kVel.x += -1; 
+
+	//determin movement direction
+	if(kVel == Vector3::ZERO)
+		SetMoveDirection(eMOVE_NONE);
+	else if(kVel.z > 0)
+		SetMoveDirection(eMOVE_FORWARD);						
+	else if(kVel.z < 0)
+		SetMoveDirection(eMOVE_BACKWARD);
+	else if(kVel.x < 0)
+		SetMoveDirection(eMOVE_RIGHT);			
+	else if(kVel.x > 0)
+		SetMoveDirection(eMOVE_LEFT);
+	
+			
+	//transform velocity
+	kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
+	kVel.y = 0;
+	
+	//multiply by character speed	
+	if(kVel.Length() > 0)
+		kVel = kVel.Unit() * m_fSpeed;
+	
+	//check if where crawling
+	if(m_kControls[eCRAWL] || m_bForceCrawl)
+		kVel *= 0.45;
+		
+	//character moves slower while in the air
+	if(!m_pkTcs->GetOnGround())
+		kVel *= 0.25;
+					
+		
+	//apply movement force					
+	if(!kVel.IsZero())
+	{
+		if(m_bInWater)
+			SetCharacterState(eSWIMMING);
+	
+		m_pkTcs->ClearExternalForces();
+		m_pkTcs->ApplyForce(Vector3(0,0,0),kVel);
+	}
+		
+	//fall damage
+	if(m_bFirstFallUpdate)
+	{
+		m_kFallPos = m_pkEntity->GetWorldPosV();
+		m_bFirstFallUpdate = false;
+	}
+	
+	if(m_pkTcs->GetOnGround())
+	{
+		if(m_bFalling)
+		{				
+			float fDistance = fabs(m_kFallPos.y - m_pkEntity->GetWorldPosV().y);
+			if(fDistance > 3)
+			{
+				m_fFallDamage += (fDistance - 3)*15; 
+			
+				//cout<<"OUCH falldamage "<<(fDistance - 3)*15<< " total:"<<m_fFallDamage<<endl;
 			}
-			
-			m_bFalling = false;
+		}
+		
+		m_bFalling = false;
+		m_kFallPos = m_pkEntity->GetWorldPosV();
+	}
+	else
+	{	
+		if(m_pkEntity->GetWorldPosV().y > m_kFallPos.y)
 			m_kFallPos = m_pkEntity->GetWorldPosV();
+			
+		m_bFalling = true;
+	}
+	
+	
+	
+	
+	
+	//check if where walking or running or nothing
+	if(kVel.Length() > 0 && m_pkTcs->GetOnGround())
+	{
+		if(m_kControls[eCRAWL] || m_bForceCrawl)
+		{
+			m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
+			SetCharacterState(eWALKING);
 		}
 		else
-		{	
-			if(m_pkEntity->GetWorldPosV().y > m_kFallPos.y)
-				m_kFallPos = m_pkEntity->GetWorldPosV();
-			 
-			m_bFalling = true;
-		}
-		
-		
-		
-		
-		
-		//check if where walking or running or nothing
-		if(kVel.Length() > 0 && pkTcs->GetOnGround())
 		{
-			if(m_kControls[eCRAWL] || m_bForceCrawl)
+			m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
+			SetCharacterState(eRUNNING);
+		}
+	}
+	
+	//set idle standing i we havent touched the ground for some time
+	if(GetCharacterState() == eWALKING || GetCharacterState() == eRUNNING)
+	{
+		if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
+		{
+			SetCharacterState(eIDLE_STANDING);
+		}
+	}			
+	
+	
+	//jump
+	if(!m_bInWater)
+	{			
+		if(m_pkTcs->GetOnGround())
+		{
+			if(m_bHaveJumped)
 			{
-				m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
-				SetCharacterState(eWALKING);
+				SetCharacterState(eIDLE_STANDING);
+				m_bHaveJumped = false;
+				m_fJumpDelay = m_pkZeroFps->GetEngineTime();								
 			}
 			else
 			{
-				m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
-				SetCharacterState(eRUNNING);
-			}
-		}
-		
-		//set idle standing i we havent touched the ground for some time
-		if(GetCharacterState() == eWALKING || GetCharacterState() == eRUNNING)
-		{
-			if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
-			{
-				SetCharacterState(eIDLE_STANDING);
-			}
-		}			
-		
-		
-		//jump
-		if(!m_bInWater)
-		{			
-			if(pkTcs->GetOnGround())
-			{
-				if(m_bHaveJumped)
+				if(m_kControls[eJUMP])
 				{
-					SetCharacterState(eIDLE_STANDING);
-					m_bHaveJumped = false;
-					m_fJumpDelay = m_pkZeroFps->GetEngineTime();								
-				}
-				else
-				{
-					if(m_kControls[eJUMP])
+					if(m_pkZeroFps->GetEngineTime() - m_fJumpDelay > 0.5)
 					{
-						if(m_pkZeroFps->GetEngineTime() - m_fJumpDelay > 0.5)
+						if(m_pkTcs->GetOnGround())
 						{
-							if(pkTcs->GetOnGround())
-							{
-								m_bHaveJumped = true;
-								pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
-							}
+							m_bHaveJumped = true;
+							m_pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
 						}
 					}
 				}
 			}
 		}
-		else
-		{
-			m_bHaveJumped = false;
-		
-			if(m_kControls[eJUMP])
-			{			
-				pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,3,0));			
-			}	
-		}
-		
-		
-						
-		if(m_bHaveJumped)
-		{
-			SetCharacterState(eJUMPING);
-		}			
 	}
+	else
+	{
+		m_bHaveJumped = false;
+	
+		if(m_kControls[eJUMP])
+		{			
+			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,3,0));			
+		}	
+	}
+	
+	
+					
+	if(m_bHaveJumped)
+	{
+		SetCharacterState(eJUMPING);
+	}			
+
 
 	
 	// dont let the client rotate a sitting character
@@ -669,9 +675,11 @@ bool P_CharacterControl::GetControl(int iKey)
 }
 
 
+
+
+
+
 // P_CharacterControl script interface
-
-
 using namespace ObjectManagerLua;
 
 namespace SI_P_CharacterControl

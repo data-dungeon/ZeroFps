@@ -69,6 +69,8 @@ class MCOMMON_API P_CharacterControl: public Property
 {
 	private:
 	
+		P_Tcs*		m_pkTcs;
+	
 		//control stuff
 		bitset<6>	m_kControls;
 		int			m_iDirection;
@@ -122,6 +124,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);		
+		
 		
 		//set client connection id if anny
 		void SetClient(int iConID)								{	m_iConnectionID=iConID;		}

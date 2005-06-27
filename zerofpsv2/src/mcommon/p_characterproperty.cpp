@@ -857,7 +857,7 @@ void P_CharacterProperty::UpdateStats()
 	//check if character is dead
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 	{
-		cout<<"Character is soooo dead"<<endl;
+		//cout<<"Character is soooo dead"<<endl;
 		OnDeath();
 		return;
 	}
@@ -1252,7 +1252,7 @@ void P_CharacterProperty::OnDeath()
 		//reset inventory owner, to allow other players to loot
 		if(P_Container* pkInv = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iInventory,"P_Container"))
 		{
-			cout<<"disabling static owner of inventory to allow looting"<<endl;
+			//cout<<"disabling static owner of inventory to allow looting"<<endl;
 			pkInv->SetStaticOwner(false);
 			pkInv->SetOwnerID(-1);
 			pkInv->SetContainerType(eNormal);
@@ -2757,6 +2757,8 @@ bool P_CharacterProperty::IsNeutral()
 {
 	return m_iFaction == 0;
 }
+
+
 
 // SCRIPT INTERFACE FOR P_CharacterProperty
 using namespace ObjectManagerLua;

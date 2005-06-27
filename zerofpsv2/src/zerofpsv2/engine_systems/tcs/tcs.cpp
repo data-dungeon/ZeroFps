@@ -912,6 +912,16 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 			if(!IsInNerbyZone(pkBody1,pkBody2))
 				continue;				
 								
+			//do sphere test early
+			if( (pkBody1->m_iTestType==E_SPHERE) && (pkBody2->m_iTestType==E_SPHERE) ) 
+			{
+				//SPHERE VS SPHERE
+				TestSphereVsSphere(pkBody1,pkBody2,pkCollissions);												
+				m_iNrOfTests++;
+				continue;
+			}
+								
+								
 			//first do a sphere test			
 			if(!CollideSphereVSSphere(pkBody1,pkBody2))
 				continue;
@@ -946,11 +956,6 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 			{				
 				//SPHERE VS MESH
 				TestSphereVsMesh(pkBody1,pkBody2,pkCollissions);
-			}
-			else if( (pkBody1->m_iTestType==E_SPHERE) && (pkBody2->m_iTestType==E_SPHERE) ) 
-			{
-				//SPHERE VS SPHERE
-				TestSphereVsSphere(pkBody1,pkBody2,pkCollissions);
 			}
 			else if	(((pkBody1->m_iTestType==E_SPHERE) && (pkBody2->m_iTestType==E_HMAP)) || 
 						((pkBody1->m_iTestType==E_HMAP) && (pkBody2->m_iTestType==E_SPHERE)))
@@ -1547,10 +1552,8 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission
 		temp->kPositions.push_back(pkBody1->m_kNewPos - (temp->kNormals[0] * pkBody1->m_fRadius));
 					
 		
-		pkCollissions->push_back(temp);							
-		
-	}		
-		
+		pkCollissions->push_back(temp);									
+	}				
 }
 
 bool Tcs::CollideSphereVSSphere(P_Tcs* pkBody1,P_Tcs* pkBody2)

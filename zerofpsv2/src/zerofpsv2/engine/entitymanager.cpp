@@ -3083,6 +3083,9 @@ void EntityManager::RecreateEntitys(const string& strType)
 			if(m_kZones[i].m_iStatus == EZS_UNLOADED)
 				LoadZone(i);
 				
+			if(m_kZones[i].m_iStatus == EZS_CACHED)
+				m_kZones[i].m_iStatus = EZS_LOADED;
+				
 			//get all entitys in zone
 			vector<Entity*>	kEntitys;
 			m_kZones[i].m_pkZone->GetAllEntitys(&kEntitys,true);
@@ -3099,10 +3102,13 @@ void EntityManager::RecreateEntitys(const string& strType)
 						m_pkSystem->Printf( (string("Recreating entityID: ") + IntToString(kEntitys[j]->GetEntityID())).c_str() );
 						
 						pkNew->SetUseZones(kEntitys[j]->GetUseZones());
+						pkNew->SetParent(kEntitys[j]->GetParent());						
 						pkNew->SetRelativeOri(kEntitys[j]->GetRelativeOri());
 						pkNew->SetLocalPosV(kEntitys[j]->GetLocalPosV());
 						pkNew->SetLocalRotM(kEntitys[j]->GetLocalRotM());
-						pkNew->SetParent(kEntitys[j]->GetParent());
+						
+						if(pkNew->GetLocalPosV() != kEntitys[j]->GetLocalPosV())
+							cout<<"Error setting pos"<<endl;
 						
 						Delete(kEntitys[j]);						
 					}
