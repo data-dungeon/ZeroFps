@@ -347,6 +347,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool GetCombatMode()												{	return m_bCombatMode;			}
 		void AddSkillToQueue(const string& strSkill,int iTargetID);
 		void SetDefaultAttackSkill(const string& strDA);
+		string GetDefaultAttackSkill()								{	return m_strDefaultAttackSkill;}
 		
 		void SetLastDamageFrom(int iCharacterID)					{	m_iLastDamageFrom=iCharacterID;}
 		

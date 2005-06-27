@@ -197,6 +197,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//empty material, used when pushing 
 		ZMaterial		m_kEmptyMaterial;
 
+		//FOB's
+		bool				m_bSupportFBO;
+
 		//hardware shader data
 		bool				m_bSupportVertexProgram;
 		bool				m_bSupportFragmentProgram;
@@ -206,6 +209,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool				m_bSupportGLSLProgram;
 		GLenum			m_iCurrentGLSLProgramID;				
 		bool				m_bUseGLSL;
+		bool				m_bForceDisableGLSL;
 		
 		ZFResourceHandle* m_pkDefaultGLSLProgram;
 		bool					m_bUseDefaultGLSLProgram;
@@ -354,7 +358,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void UseDefaultGLSLProgram(bool bUse)					{	m_bUseDefaultGLSLProgram = bUse;	}
 		bool GetUseDefaultGLSLProgram()							{	return m_bUseDefaultGLSLProgram;	}
 		ZFResourceHandle* GetDefaultGLSLProgramResource()	{	return m_pkDefaultGLSLProgram;	}
-		
+		void SetForceDisableGLSL(bool bDisable)				{	m_bForceDisableGLSL = bDisable;	}
 										
 																										
 		//basic
@@ -399,6 +403,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool SupportFragmentProgram() 						{	return m_bSupportFragmentProgram;	}
 		bool SupportOcculusion()								{	return m_bOcclusion;						}
 		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}
+		bool SupportFBO()											{	return m_bSupportFBO;					}
 		
 		//arrays
 		void ResetPointers();

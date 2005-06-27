@@ -92,7 +92,8 @@ public:
 /** \brief	Main class for the ZeroFps engine.
 	 \ingroup Engine
 */
-class ENGINE_API ZeroFps : public I_ZeroFps {
+class ENGINE_API ZeroFps : public I_ZeroFps 
+{
 	private:
 		enum FuncId_e
 		{
@@ -160,6 +161,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool				m_bShadowMap;
 		bool				m_bShadowMapRealtime;
 		int				m_iShadowMapMode;
+		int				m_iShadowMapQuality;
 		bool				m_bVegetation;
 				
 		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
@@ -337,9 +339,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetDebugGraph(bool bDebug)	{	m_bDebugGraph = bDebug;	}
 		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
 		
-		bool GetShadowMap()					{	return m_bShadowMap;		}
-		bool GetShadowMapRealtime()		{	return m_bShadowMapRealtime;}
-		int  GetShadowMapMode()				{	return m_iShadowMapMode;}
+		bool GetShadowMap()					{	return m_bShadowMap;				}
+		bool GetShadowMapRealtime()		{	return m_bShadowMapRealtime;	}
+		int  GetShadowMapMode()				{	return m_iShadowMapMode;		}
+		int  GetShadowMapQuality()			{	return m_iShadowMapQuality;	}
 		
 		bool GetVegetation()					{	return m_bVegetation;	}
 

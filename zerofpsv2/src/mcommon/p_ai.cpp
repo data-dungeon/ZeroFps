@@ -346,9 +346,13 @@ bool P_AI::States(int iEvent, int iState)
 						//set look att state
 						SetState(eAI_STATE_LOOKAT);
 						m_iTarget = iEnemy;
-						m_pkCharacterProperty->SetCombatMode(false);
+						return false;
 					}	
-				}	
+				}
+					
+				m_pkCharacterProperty->SetCombatMode(false);					
+				m_pkCharacterControl->SetControl(eUP,false);
+					
 
 		State(eAI_STATE_DEAD)
 			OnEnter
@@ -382,23 +386,33 @@ void P_AI::Touch(int iID)
 
 float P_AI::GetOffensiveRange()
 {
-	float fRange = -1;
-
-	vector<Skill*>* kSkills =m_pkCharacterProperty->GetSkillList();
-	
-	for(int i =0;i<kSkills->size();i++)
+	if(Skill* pkSkill = m_pkCharacterProperty->GetSkillPointer(m_pkCharacterProperty->GetDefaultAttackSkill()))
 	{
-		if((*kSkills)[i]->GetSkillType() == eOFFENSIVE)
-		{
-			if((*kSkills)[i]->GetTimeLeft() == 0)
-			{
-				if((*kSkills)[i]->GetRange() > fRange)
-					fRange = (*kSkills)[i]->GetRange();
-			}
-		}
-	}	
-
-	return fRange;
+		return pkSkill->GetRange();
+	}
+	
+	return -1;
+	
+// 	m_pkCharacterProperty
+// 	
+// 
+// 	float fRange = -1;
+// 
+// 	vector<Skill*>* kSkills =m_pkCharacterProperty->GetSkillList();
+// 	
+// 	for(int i =0;i<kSkills->size();i++)
+// 	{
+// 		if((*kSkills)[i]->GetSkillType() == eOFFENSIVE)
+// 		{
+// 			if((*kSkills)[i]->GetTimeLeft() == 0)
+// 			{
+// 				if((*kSkills)[i]->GetRange() > fRange)
+// 					fRange = (*kSkills)[i]->GetRange();
+// 			}
+// 		}
+// 	}	
+// 
+// 	return fRange;
 }
 
 void P_AI::UseOffensiveSkill()

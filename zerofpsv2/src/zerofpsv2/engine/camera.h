@@ -156,7 +156,8 @@ class ENGINE_API Camera : public I_Camera
 		Matrix4			m_kLightProjMatrix;
 		Matrix4			m_kLightViewMatrix;
 		
-		
+		GLuint			m_iShadowFBO;
+		GLuint			m_iShadowRBOcolor;
 		
 		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, unsigned int iTexture);
 		int		GetMaxSize(int iRes);

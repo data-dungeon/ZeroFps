@@ -679,7 +679,7 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 
 void P_CharacterProperty::SetupCharacterStats()
 {
-	m_kCharacterStats.AddStat("Level"			,1,0);		//alla karaktï¿½er bï¿½jar pï¿½lvl 1 
+	m_kCharacterStats.AddStat("Level"			,1,0);		//alla karaktärer börjar på lvl 1
 	m_kCharacterStats.AddStat("Experience"		,0,0);
 	m_kCharacterStats.AddStat("PrevLevel"		,0,0);
 	m_kCharacterStats.AddStat("NextLevel"		,0,0);
@@ -693,15 +693,15 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("Speed"			,0,0);
 	m_kCharacterStats.AddStat("Jump"				,0,0);
 	
-	m_kCharacterStats.AddStat("Mana"				,0,0);
+	m_kCharacterStats.AddStat("Mana"				,999,0);		//ser till att man börjar med full mana
 	m_kCharacterStats.AddStat("ManaMax"			,0,0);
 	m_kCharacterStats.AddStat("ManaRegen"		,0,0);	
 	
-	m_kCharacterStats.AddStat("Health"			,1,0);		//failsafe sï¿½inte karaktï¿½en dï¿½ direkt
-	m_kCharacterStats.AddStat("HealthMax"		,1,0);		//
+	m_kCharacterStats.AddStat("Health"			,999,0);		//börjar med full hp
+	m_kCharacterStats.AddStat("HealthMax"		,1,0);		
 	m_kCharacterStats.AddStat("HealthRegen"	,0,0);
 
-	m_kCharacterStats.AddStat("Stamina"			,0,0);
+	m_kCharacterStats.AddStat("Stamina"			,999,0);		//börjar med full stamina
 	m_kCharacterStats.AddStat("StaminaMax"		,0,0);
 	m_kCharacterStats.AddStat("StaminaRegen"	,0,0);	
 		

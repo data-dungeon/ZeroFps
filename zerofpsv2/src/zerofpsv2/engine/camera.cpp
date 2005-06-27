@@ -55,6 +55,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_bFSSEnabled		=	false;
 	m_bBloomEnabled	=	false;
 	
+	m_iShadowFBO = 		0;
+	m_iShadowRBOcolor =	0;	
+	
 	//create fsstexture
   	m_iFSSTextureWidth = GetMinSize(m_pkRender->GetWidth());
  	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
@@ -117,10 +120,26 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		//SHADOW HACK
 		
 		//find shadowtexture size
-		m_iShadowTexWidth = GetMaxSize(m_pkRender->GetWidth());
-		m_iShadowTexHeight = GetMaxSize(m_pkRender->GetHeight());
+		int iQuality = m_pkZeroFps->GetShadowMapQuality();
+ 		m_iShadowTexWidth = iQuality;
+ 		m_iShadowTexHeight = iQuality;
+ 		
+ 		
+		
+		if(m_pkZShaderSystem->SupportFBO())
+		{
+			int iMaxFBO;
+			glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT,&iMaxFBO);
+	 		m_iShadowTexWidth = Min(iQuality,iMaxFBO);
+ 			m_iShadowTexHeight = Min(iQuality,iMaxFBO);;							
+		}
+		else
+		{
+	 		m_iShadowTexWidth = Min(iQuality,GetMaxSize(m_pkRender->GetWidth()));
+ 			m_iShadowTexHeight = Min(iQuality,GetMaxSize(m_pkRender->GetHeight()));;					
+		}
 			
-		//cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
+		cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
 		m_iShadowTexture = -1;
 		m_fShadowArea = 40;
@@ -135,11 +154,59 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		
+		//USE FBO ?
+		if(m_pkZShaderSystem->SupportFBO())
+		{
+			//create FBO and color buffer
+			glGetError();
+			glGenFramebuffersEXT(1, &m_iShadowFBO);
+			glGenRenderbuffersEXT(1, &m_iShadowRBOcolor);
+			if(glGetError() != GL_NO_ERROR) cout<<"ERROR generating FBO"<<endl;
+			
+			//bind frame buffer
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_iShadowRBOcolor);			
+			if(glGetError() != GL_NO_ERROR) cout<<"ERROR binding FBO"<<endl;
+			
+			
+			//setup color buffer
+			glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_iShadowRBOcolor);
+			glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,
+												GL_RGBA, m_iShadowTexWidth, m_iShadowTexHeight);			
+			glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
+													GL_COLOR_ATTACHMENT0_EXT,
+													GL_RENDERBUFFER_EXT, m_iShadowRBOcolor);			
+			if(glGetError() != GL_NO_ERROR) cout<<"ERROR color buffer"<<endl;
+			
+			
+			// attach depth buffer texture                                 		
+			glFramebufferTexture2DEXT(	GL_FRAMEBUFFER_EXT,
+												GL_DEPTH_ATTACHMENT_EXT,
+												GL_TEXTURE_2D, m_iShadowTexture, 0);			
+			if(glGetError() != GL_NO_ERROR) cout<<"ERROR binding depth "<<endl;
+				
+			//check framebuffer status
+			GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+			switch(status)
+			{
+				case GL_FRAMEBUFFER_COMPLETE_EXT:					
+					break;
+					
+				case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+					cout<<"ERROR unsupported FBO format"<<endl;
+					break;
+					
+				default:
+					cout<<"ERROR fbo totaly failed"<<endl;					
+					break;
+			}
+					
+			//return to normal window buffer
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);	
+		}
 	
 		//Light projection matrix
 		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
 		m_pkZShaderSystem->MatrixGenerateOrtho(-m_fShadowArea,m_fShadowArea,-m_fShadowArea,m_fShadowArea,m_fNear,m_fFar);
-		//m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
 		m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
 	}
 }
@@ -162,6 +229,12 @@ Camera::~Camera()
 		delete m_pkBloomMaterial1;
 	if(m_pkBloomMaterial2)
 		delete m_pkBloomMaterial2;
+		
+	if(m_iShadowFBO != 0)
+		glDeleteFramebuffersEXT(1,&m_iShadowFBO);
+	
+	if(m_iShadowRBOcolor != 0)
+		glDeleteRenderbuffersEXT(1,&m_iShadowRBOcolor);
 
 }
 
@@ -359,11 +432,20 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	m_pkZShaderSystem->MatrixSave(&m_kLightViewMatrix);								
 					
 
+	//setup FBO if supported
+	if(m_pkZShaderSystem->SupportFBO())
+	{
+		//enable FBO
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_iShadowFBO);
+	}
+
 	
-	//m_pkZShaderSystem->SetClearColor(m_kClearColor);
-	//m_pkZShaderSystem->SetFog(m_kFogColor,m_fFogNear,m_fFogFar,m_bFogEnabled);
+	glViewport(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+	glScissor(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
 	
 	m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER|DEPTH_BUFFER);
+
+
 
  	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
  	m_pkZShaderSystem->MatrixLoad(&m_kLightProjMatrix);
@@ -377,15 +459,12 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	m_kFrustum.GetFrustum(m_kLightProjMatrix,m_kLightViewMatrix);	
 			
 	
-	
-	glViewport(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
-	glScissor(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
-
-	//Draw back faces into the shadow map
-	
 	//Disable color writes, and use flat shading for speed
   	m_pkZShaderSystem->ForceColorMask(0);
+
 //  	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
+
+	//setup depth offseting
 //  	glDepthRange (0.003, 1.0);	//offset depthrange   default
 //   	glDepthRange (0.001, 1.0);	//offset depthrange 
  	glEnable(GL_POLYGON_OFFSET_FILL);
@@ -399,18 +478,26 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	m_pkZShaderSystem->ForceLighting(0);
  	glShadeModel(GL_FLAT);
 	
+	//disable all shaders
+	m_pkZShaderSystem->SetForceDisableGLSL(true);
+	
 	//update all render propertys that shuld cast a shadow
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
-
 	
 	//save texture	
-	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);	
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
-
-	//glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, 1024,1024,0);
+	if(m_pkZShaderSystem->SupportFBO())
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	else
+	{
+	 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);	
+ 		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+	}
 	
+	
+	//enable shaders again
+	m_pkZShaderSystem->SetForceDisableGLSL(false);
 	
   	glDepthRange (0.0, 1.0);
  	glDisable(GL_POLYGON_OFFSET_FILL);
@@ -883,7 +970,7 @@ void Camera::DrawWorld()
  		kCenter = m_kRenderPos;						
 						
 		//setup light
-		LightSource* pkLight= m_pkLight->GetFirstDirectionalLight();		
+		LightSource* pkLight = m_pkLight->GetSunPointer();
 		
 		Vector3 kLightPos;
 		if(pkLight)

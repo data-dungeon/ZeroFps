@@ -130,7 +130,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bShadowMapRealtime		= false;
 	m_iShadowMapMode			= 1;
 	m_bShadowMap				= true;
-	
+	m_iShadowMapQuality		= 1024;
 	
 	// Register Variables
 	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
@@ -159,6 +159,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
 	RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);
 	RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
+	RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);

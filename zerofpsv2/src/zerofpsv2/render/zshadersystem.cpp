@@ -14,6 +14,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	
 	m_bCopyedData =			false;
 	
+	m_bSupportFBO = 			false;
+	
 	m_bSupportVertexProgram = 		false;
 	m_bSupportFragmentProgram = 	false;
 	m_iCurrentVertexProgram = 		-1;
@@ -22,6 +24,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_bUseGLSL						=	true;
 	m_bSupportGLSLProgram = 		false;
 	m_iCurrentGLSLProgramID = 		0;
+	m_bForceDisableGLSL	=			false;
 	
 	m_bOcclusion = 					false;
 	m_iOcQuery =						0;
@@ -91,10 +94,14 @@ bool ZShaderSystem::StartUp()
 	if(!m_bSupportGLSLProgram)
 		cout<<"ZSHADER: No GLSL program support"<<endl;
 											
+	//check for framebuffer object support
+	m_bSupportFBO = 			HaveExtension("GL_EXT_framebuffer_object");
+	if(!m_bSupportFBO)
+		cout<<"ZSHADER: No Framebuffer object support"<<endl;
+											
 	//check for vertexbuffer support	
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
-		cout<<"ZSHADER: No vertexbuffer support"<<endl;
-	
+		cout<<"ZSHADER: No vertexbuffer support"<<endl;	
 		
 	//setup ucculusion
 	if(!(m_bOcclusion = HaveExtension("GL_ARB_occlusion_query")))
@@ -1555,12 +1562,14 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 
 	iProgram = 0;	
 		
-	if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
-		iProgram = pkRt->m_iProgramID;
-	else if(m_bUseDefaultGLSLProgram)
-			if(GLSLProgram* pkRt = (GLSLProgram*)m_pkDefaultGLSLProgram->GetResourcePtr())
-				iProgram = pkRt->m_iProgramID;
-
+	if(!m_bForceDisableGLSL)
+	{
+		if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
+			iProgram = pkRt->m_iProgramID;
+		else if(m_bUseDefaultGLSLProgram)
+				if(GLSLProgram* pkRt = (GLSLProgram*)m_pkDefaultGLSLProgram->GetResourcePtr())
+					iProgram = pkRt->m_iProgramID;
+	}
 		
 		
  	if(iProgram == m_iCurrentGLSLProgramID)
