@@ -75,7 +75,7 @@ EntityManager::EntityManager()
 	m_bDrawEnviroments		= false;
 	m_iTrackerLOS				= 25;	
 	m_iObjectDistance			= 50;
-	m_fZoneUnloadTime			= 3;	
+	m_fZoneUnloadTime			= 30;	
 	m_iMaxZoneIO 				= 1;	
 	m_bAiShowInfo				= false;
 

@@ -101,6 +101,58 @@ ZMaterialSettings::~ZMaterialSettings()
 	m_pkSLP = NULL;
 }
 
+ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
+{
+	//copy textures
+	for(int i =0;i<4;i++)
+	{
+		m_kTUs[i] = kOther.m_kTUs[i];			
+	}
+
+	*m_pkVP = *(kOther.m_pkVP);
+	*m_pkFP = *(kOther.m_pkFP);
+	*m_pkSLP = *(kOther.m_pkSLP);
+		
+	for(int i=0;i<4;i++)
+	{
+		m_iTUTexCords[i] = kOther.m_iTUTexCords[i];
+		m_iTUTexEnvMode[i] = kOther.m_iTUTexEnvMode[i];
+		m_fTUTexGenScale[i] = kOther.m_fTUTexGenScale[i];
+	}
+		
+	m_kVertexColor = kOther.m_kVertexColor;		
+	m_kMatAmbient = kOther.m_kMatAmbient;
+	m_kMatDiffuse = kOther.m_kMatDiffuse;
+	m_kMatSpecular = kOther.m_kMatSpecular;
+	m_kMatEmission = kOther.m_kMatEmission;
+	m_fShininess = kOther.m_fShininess;		
+	m_bColorMaterial = kOther.m_bColorMaterial;
+	m_fLineWidth = kOther.m_fLineWidth;
+	m_iPolygonModeFront = kOther.m_iPolygonModeFront;
+	m_iPolygonModeBack = kOther.m_iPolygonModeBack;
+	m_iDepthFunc = kOther.m_iDepthFunc;
+	m_bLighting = kOther.m_bLighting;
+	m_iCullFace = kOther.m_iCullFace;
+	m_bAlphaTest = kOther.m_bAlphaTest;
+	m_bFog = kOther.m_bFog;
+	m_bBlend = kOther.m_bBlend;
+	m_bDepthTest = kOther.m_bDepthTest;
+	m_bStencilTest = kOther.m_bStencilTest;
+	m_iStencilOpFail = kOther.m_iStencilOpFail;
+	m_iStencilOpZFail = kOther.m_iStencilOpZFail;
+	m_iStencilOpZPass = kOther.m_iStencilOpZPass;
+	m_iStencilFunc = kOther.m_iStencilFunc;
+	m_iStencilFuncRef = kOther.m_iStencilFuncRef;
+	m_iStencilFuncMask = kOther.m_iStencilFuncMask;
+	m_iBlendSrc = kOther.m_iBlendSrc;
+	m_iBlendDst = kOther.m_iBlendDst;
+	m_bColorMask = kOther.m_bColorMask;
+	m_bDepthMask = kOther.m_bDepthMask;
+			
+	return (*this);
+}
+
+
 ZMaterial::ZMaterial()
 {
 	m_pkScript = NULL;
@@ -125,7 +177,27 @@ ZMaterial::~ZMaterial()
 	Clear();
 }
 
-ZMaterialSettings* ZMaterial::GetPass(int iPass)
+ZMaterial& ZMaterial::operator=(const ZMaterial& kOther)
+{
+	Clear();
+
+	int iPasses = kOther.GetNrOfPasses();	
+	for(int i =0;i<iPasses;i++)
+	{
+		ZMaterialSettings* pkNew = AddPass();
+
+		(*pkNew) = *kOther.GetPass(i); 
+	}
+	
+	m_pkScript = 			NULL;
+	m_pkMaterialScript = NULL;	
+	
+	
+	return (*this);
+}
+
+
+ZMaterialSettings* ZMaterial::GetPass(int iPass) const
 {
 	if(iPass >= (int) m_kPasses.size())
 		return NULL;

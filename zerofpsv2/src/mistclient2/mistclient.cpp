@@ -55,6 +55,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bShowLagMeeter		=	true;
 	m_fPingDelay			=  2;
 	m_strQuickStartAddress = "127.0.0.1:4242";
+	m_pkMakerEntity		= NULL;
 
 	m_strMenuMusic			=	"";//data/music/2nd_maintheme.ogg";
 
@@ -377,6 +378,59 @@ void MistClient::RenderInterface(void)
 				}
 			}
 
+// 	static int iCurrentMarked = -1;
+// 	static float fOldScale =-1;
+// 	if(m_iPickedEntityID != iCurrentMarked && m_bGuiCapture)
+// 	{
+// 		if(m_pkMakerEntity == NULL)
+// 		{
+// 			m_pkMakerEntity = m_pkEntityManager->CreateEntity();
+// 			m_pkMakerEntity->SetParent(m_pkEntityManager->GetWorldEntity());
+// 			m_pkMakerEntity->AddProperty("P_Mad");
+// 			m_pkMakerEntity->SetInterpolate(false);
+// 		}
+// 	
+// 		if(iCurrentMarked != -1)
+// 		{
+// 			if(P_Mad* pkMad = (P_Mad*)m_pkMakerEntity->GetProperty("P_Mad"))
+// 			{
+// 				pkMad->SetVisible(false);
+// 			}
+//  			iCurrentMarked = -1;		
+// // 			if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID(iCurrentMarked,"P_Mad"))
+// // 			{
+// // 				pkMad->SetScale(fOldScale);
+// // 			}		
+// // 			iCurrentMarked = -1;
+// 		} 		
+//  		
+//  		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+//  		{
+// 			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item"))
+// 			{			
+//  				if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_Mad"))
+//  				{						
+// 					if(P_Mad* pkMarkerMad = (P_Mad*)m_pkMakerEntity->GetProperty("P_Mad"))
+// 					{
+// 						cout<<"setting crap"<<endl;
+// 						iCurrentMarked = m_iPickedEntityID;
+// 						pkMarkerMad->SetVisible(true);
+// 						pkMarkerMad->SetBase(pkMad->m_kMadFile.c_str());
+// 						pkMarkerMad->SetScale(1.1);
+// 						pkMarkerMad->Set
+// 						m_pkMakerEntity->SetWorldPosV(pkEnt->GetWorldPosV());
+// 						m_pkMakerEntity->SetLocalRotM(pkEnt->GetLocalRotM());
+// 					}				
+// 				}
+// // 				if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_Mad"))
+// // 				{
+// // 					iCurrentMarked = m_iPickedEntityID;
+// // 					fOldScale = pkMad->m_fScale;
+// // 					pkMad->SetScale(fOldScale + 0.25);
+// // 				}
+// 			}
+// 		}
+// 	}
 							
 	m_pkPointText->Draw();
 		
@@ -1872,7 +1926,7 @@ void MistClient::OnClientStart(void)
 	m_bFrontView		=	false;
 	m_bDead				=	false;
 	m_bCombatMode		=	false;
-	
+	m_pkMakerEntity	=	NULL;
 }
 
 void MistClient::OnClientConnected() 

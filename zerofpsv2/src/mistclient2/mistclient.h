@@ -74,6 +74,7 @@ class MistClient :public Application, public ZGuiApp {
 		vector<string>	m_kEmotes;					//emote list
 		int				m_iTargetID;
 		
+		Entity*		m_pkMakerEntity;
 		
 		//states
 		bool			m_bShowLagMeeter;

@@ -611,6 +611,22 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		DrawSkelleton();
 }
 
+ZMaterial* Mad_Modell::GetMaterial(int iMesh,int iSubMesh)
+{
+	if(iMesh < 0 || iMesh >= m_kActiveMesh.size())
+		return NULL;
+	
+	SelectMesh(m_kActiveMesh[iMesh]);
+			
+	if(iSubMesh < 0 || iSubMesh >= GetNumOfSubMesh(m_kActiveMesh[iMesh]))
+		return NULL;
+	
+	
+	SelectSubMesh(iSubMesh);
+	ZFResourceHandle* pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+		
+	return (ZMaterial*)(pkRes->GetResourcePtr());		
+}
 
 void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 {

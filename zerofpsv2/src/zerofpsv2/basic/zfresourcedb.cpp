@@ -47,7 +47,11 @@ ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
 
 ZFResourceHandle& ZFResourceHandle::operator=(const ZFResourceHandle& kOther)
 {
-	SetRes(kOther.m_strName);
+	if(kOther.m_iID == -1)
+		FreeRes();
+	else
+		SetRes(kOther.m_strName);
+		
 	return *this;
 }
 

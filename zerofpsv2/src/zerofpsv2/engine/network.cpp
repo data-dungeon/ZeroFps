@@ -1038,7 +1038,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_PONG:
 			// 
-			cout << "Pong" << endl;
+			//cout << "Pong" << endl;
 			break;
 
 		case ZF_NETCONTROL_NOP:

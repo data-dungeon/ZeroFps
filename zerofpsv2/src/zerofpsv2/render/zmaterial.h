@@ -68,6 +68,7 @@ class RENDER_API ZMaterialSettings
 	
 		ZMaterialSettings();
 		~ZMaterialSettings();
+		ZMaterialSettings& operator=(const ZMaterialSettings& kOther);		
 };
 
 /**	\brief	A Material (Used by the shader SubSys).
@@ -127,13 +128,15 @@ class RENDER_API ZMaterial : public ZFResource
 	
 		ZMaterial();
 		~ZMaterial();
+		ZMaterial& operator=(const ZMaterial& kOther);
+
 
 		bool Create(string strName);	//	for resource system
 		int  CalculateSize();				
 	
-		int GetID() 			{return m_iID;};
-		int GetNrOfPasses() 	{ return int(m_kPasses.size()); }
-		ZMaterialSettings* GetPass(int iPass);
+		int GetID() 					{return m_iID;};
+		int GetNrOfPasses() const 	{ return int(m_kPasses.size()); };
+		ZMaterialSettings* GetPass(int iPass) const;
 		ZMaterialSettings* AddPass();
 				
 		bool LoadIniMaterial(const char* acFile);

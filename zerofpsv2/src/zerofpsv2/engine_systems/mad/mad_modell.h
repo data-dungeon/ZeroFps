@@ -112,7 +112,8 @@ public:
 	void SetScale(float fScale);
 
 	void SetReplaceTexture(char* szName);
-	void	SetReplaceTexture(char* szOrgName, char* szNew);
+	void SetReplaceTexture(char* szOrgName, char* szNew);
+	ZMaterial* GetMaterial(int iMesh,int iSubMesh);
 
 	void UpdateBones();
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
