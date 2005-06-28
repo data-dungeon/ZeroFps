@@ -142,7 +142,9 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	pkButton->SetFont(m_pkFont);
 	pkButton->SetText(szText);
 	
-	pkButton->SetTextColor(m_afTextColor[0]*255,m_afTextColor[1]*255,m_afTextColor[2]*255); 
+	pkButton->SetTextColor(	(unsigned int)(m_afTextColor[0]*255),
+									(unsigned int)(m_afTextColor[1]*255),
+									(unsigned int)(m_afTextColor[2]*255)); 
 
 	Rect rcClipper = GetScreenRect();
 	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
@@ -344,7 +346,9 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				// Change back to old font color
 				if(m_pkSelectedNode && m_pkSelectedNode->pkButton)
 					if(m_pkSelectedNode->kChilds.empty())
-						m_pkSelectedNode->pkButton->SetTextColor(m_afTextColor[0]*255,m_afTextColor[1]*255,m_afTextColor[2]*255); 
+						m_pkSelectedNode->pkButton->SetTextColor(	(unsigned int)(m_afTextColor[0]*255),
+																				(unsigned int)(m_afTextColor[1]*255),
+																				(unsigned int)(m_afTextColor[2]*255)); 
 				
 				// Öppna/stäng noden som har klickats.
 				bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked(); 
@@ -1168,3 +1172,8 @@ void ZGuiTreebox::SetTextColor(unsigned char ucR, unsigned char ucG,
 		it->second->pkButton->SetTextColor(ucR, ucG, ucB);
 	}
 }
+
+
+
+
+

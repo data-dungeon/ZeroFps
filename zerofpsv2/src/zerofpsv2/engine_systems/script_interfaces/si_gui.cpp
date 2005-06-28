@@ -550,7 +550,7 @@ int GuiAppLua::SetFontLua(lua_State* pkLua)
 	ZGuiWnd* pkWnd = g_pkGuiApp->GetWnd(szWindow);
 	if(pkWnd)
 	{
-		g_pkGuiApp->SetFont(szWindow, szFont, dRed, dGreen, dBlue, dGlyph);
+		g_pkGuiApp->SetFont(szWindow, szFont, (int)dRed, (int)dGreen, (int)dBlue, (int)dGlyph);
 	}
 		
 	return 1;
@@ -684,3 +684,8 @@ int GuiAppLua::SetDesignResolutionLua(lua_State* pkLua)
 	return true;
 
 }
+
+
+
+
+

@@ -33,7 +33,7 @@ P_Walker::P_Walker()
 	if(fLevel < 1)
 		fLevel = 1;
 			
-	m_iMaxLife = (5 * fLevel) * fPlayers ;
+	m_iMaxLife = int((5 * fLevel) * fPlayers) ;
 	m_iLife = m_iMaxLife;
 		
 	
@@ -243,7 +243,7 @@ void P_Walker::Touch(int iID)
 				return;			
 			iLastHit = iID;
 				
-			int iOwner = pkEnt->GetVarDouble("owner");
+			int iOwner = (int)pkEnt->GetVarDouble("owner");
 		
 			Damage(30,iOwner);
 			m_pkEntityManager->Delete(pkEnt);
@@ -256,7 +256,7 @@ void P_Walker::Touch(int iID)
 				return;			
 			iLastHit = iID;
 				
-			int iOwner = pkEnt->GetVarDouble("owner");
+			int iOwner = (int)pkEnt->GetVarDouble("owner");
 		
 			Damage(15,iOwner);
 			m_pkEntityManager->Delete(pkEnt);

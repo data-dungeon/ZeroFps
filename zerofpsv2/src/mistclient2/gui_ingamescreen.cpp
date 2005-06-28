@@ -471,3 +471,7 @@ void MistClient::UpdateBuffIconList()
 		m_kBuffIcons[i].m_pkProgressBar->SetPos((int)fDiff);		
 	}
 }
+
+
+
+

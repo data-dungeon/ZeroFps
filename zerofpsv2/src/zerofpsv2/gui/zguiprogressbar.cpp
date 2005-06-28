@@ -250,3 +250,8 @@ void ZGuiProgressbar::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 	m_pkLabelBkgrd->Resize(iWidth, iHeight, bChangeMoveArea);
 	m_pkLabelFront->Resize(iWidth, iHeight, bChangeMoveArea);
 }
+
+
+
+
+

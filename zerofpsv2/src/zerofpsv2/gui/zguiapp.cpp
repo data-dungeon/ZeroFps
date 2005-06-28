@@ -148,10 +148,10 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		dw = w*fResModX;
 		dh = h*fResModY;
 
-		x = dx;
-		y = dy;
-		w = dw;
-		h = dh;
+		x = int(dx);
+		y = int(dy);
+		w = int(dw);
+		h = int(dh);
 	}
 
 	// Om parent fönstret är en TabControl så är iFlags = sidnummret och parent fönstret
@@ -410,20 +410,20 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 				new_y = GetHeight() - (m_kDesignResolution.y-rc.Bottom) - rc.Height();
 				break;
 			case CenterHorz:
-				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float) m_kDesignResolution.x) * 
-					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
+				new_x = int((((rc.Left + (rc.Right-rc.Left)/2) / (float) m_kDesignResolution.x) * 
+					(float) GetWidth()) - (rc.Right-rc.Left)/2); 
 				new_y = rc.Top;
 				break;
 			case CenterVert:
 				new_x = rc.Left;
-				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float) m_kDesignResolution.x) * 
-					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
+				new_y = int((((rc.Top + (rc.Bottom-rc.Top)/2) / (float) m_kDesignResolution.x) * 
+					(float) GetHeight()) - (rc.Bottom-rc.Top)/2); 
 				break;
 			case Center:
-				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float)m_kDesignResolution.x) * 
-					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
-				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float)m_kDesignResolution.y) * 
-					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
+				new_x = int((((rc.Left + (rc.Right-rc.Left)/2) / (float)m_kDesignResolution.x) * 
+					(float) GetWidth()) - (rc.Right-rc.Left)/2); 
+				new_y = int((((rc.Top + (rc.Bottom-rc.Top)/2) / (float)m_kDesignResolution.y) * 
+					(float) GetHeight()) - (rc.Bottom-rc.Top)/2); 
 				break;
 			}
 
@@ -515,7 +515,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)
 
 	// Number of 90 degree rots on bk skin
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rots90deg", dData))
-		pkNewSkin->m_ucRots90Degree = dData;
+		pkNewSkin->m_ucRots90Degree = (unsigned char)dData;
 
 	// Spritemap rect
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rcBkTile", szData))
@@ -644,7 +644,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 
 	// Number of 90 degree rots on bk skin
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rots90deg", dData))
-		pkNewSkin->m_ucRots90Degree = dData;
+		pkNewSkin->m_ucRots90Degree = (unsigned char)dData;
 
 	// Number of 90 degree rots on bk skin
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "degree", dData))
@@ -1835,3 +1835,9 @@ void ZGuiApp::FindGuiTextureByResolution()
 		}
 	}
 }
+
+
+
+
+
+

@@ -152,3 +152,10 @@ void Register_P_Buff(ZeroFps* pkZeroFps)
 {
 	pkZeroFps->m_pkPropertyFactory->Register("P_Buff", Create_P_Buff);					
 }
+
+
+
+
+
+
+

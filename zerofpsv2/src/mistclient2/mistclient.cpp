@@ -1314,7 +1314,7 @@ void MistClient::ShowLag()
 			
 			if(m_pkZeroFps->GetEngineTime() - fDelay > 2.0)
 			{
-				pkLagLable->SetText((char*)IntToString(fTotal/iSamples).c_str());
+				pkLagLable->SetText((char*)IntToString(int(fTotal/iSamples)).c_str());
 				
 				fTotal = 0;
 				iSamples = 0;

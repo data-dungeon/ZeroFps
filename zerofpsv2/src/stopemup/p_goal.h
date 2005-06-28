@@ -22,3 +22,11 @@ class P_Goal : public Property
 Property* Create_P_Goal();
 
 #endif
+
+
+
+
+
+
+
+

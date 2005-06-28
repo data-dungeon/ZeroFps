@@ -96,12 +96,12 @@ void P_WaterRender::DrawSurface()
 	
 	t = m_pkZeroFps->GetEngineTime();
 	
-	for(int x = -m_kSize.x;x< m_kSize.x;x+=m_iStep)
+	for(int x = int(-m_kSize.x);x< m_kSize.x;x+=m_iStep)
 	{
 		fY1 = sin(x*0.5+t)*m_fWave  + m_kSize.y;
 		fY2 = sin((x+m_iStep)*0.5+t)*m_fWave + m_kSize.y;
 	
-		for(int z = -m_kSize.z;z< m_kSize.z;z+=m_iStep)
+		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
 		{
 			m_pkZShaderSystem->AddQuadUV(Vector2(x*0.1,z*0.1),Vector2(x*0.1+0.1,z*0.1),Vector2(x*0.1+0.1,z*0.1+0.1),Vector2(x*0.1,z*0.1+0.1));
  			m_pkZShaderSystem->AddQuadN(kNormal,kNormal,kNormal,kNormal);

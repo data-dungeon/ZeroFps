@@ -542,3 +542,10 @@ void P_Vegitation::DrawArray()
 	
 	m_pkZShaderSystem->MatrixPop();
 }
+
+
+
+
+
+
+

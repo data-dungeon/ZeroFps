@@ -146,15 +146,15 @@ void OptionsDlg::Open()
 
 	fPos = m_pkAudioSys->GetMainVolume() * 100.0f;
 	((ZGuiSlider*)m_pkMC->GetWnd("AudioVolumeSlider"))->SetRange(0,100);
-	((ZGuiSlider*)m_pkMC->GetWnd("AudioVolumeSlider"))->SetPos(fPos, true);
+	((ZGuiSlider*)m_pkMC->GetWnd("AudioVolumeSlider"))->SetPos((int)fPos, true);
 
 	fPos = (m_pkInput->GetMouseSens() / 5.0f) * 100.0f ;
 	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetRange(0,100);
-	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetPos(fPos, true);
+	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetPos((int)fPos, true);
 
 	fPos = m_pkZeroFps->GetConnectionSpeed();
 	((ZGuiSlider*)m_pkMC->GetWnd("NetSpeedSlider"))->SetRange(3000,50000);
-	((ZGuiSlider*)m_pkMC->GetWnd("NetSpeedSlider"))->SetPos(fPos, true);
+	((ZGuiSlider*)m_pkMC->GetWnd("NetSpeedSlider"))->SetPos((int)fPos, true);
 
 
 
@@ -359,7 +359,7 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 			if(strController == "MouseSensSetDefaultBn")
 			{
 				float fPos = (1.0f / 5.0f) * 100.0f ;
-				((ZGuiSlider*)g_kMistClient.GetWnd("MouseSensSlider"))->SetPos(fPos, true);
+				((ZGuiSlider*)g_kMistClient.GetWnd("MouseSensSlider"))->SetPos((int)fPos, true);
 			}
 		}
 		else 
@@ -478,7 +478,7 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 						if( strController	!=	szGammaSliders[i] )
 						{
 							((ZGuiSlider*)g_kMistClient.GetWnd(
-								szGammaSliders[i]))->SetPos(pos,false,true);
+								szGammaSliders[i]))->SetPos((int)pos,false,true);
 							g_kMistClient.SetText(szGammaLabels[i], szText);
 						}
 					}
@@ -575,3 +575,10 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 		}
 	}		
 }
+
+
+
+
+
+
+

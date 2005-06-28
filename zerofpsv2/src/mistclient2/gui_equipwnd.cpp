@@ -430,7 +430,7 @@ void EquipmentDlg::RescaleSlotIcon(EQUIPMENT_SLOT& r_kSlot, int iSlotsX, int iSl
 	int y  = rcIcon.Bottom - rcIcon.Height() / 2 - (int) dy / 2;
 
 	r_kSlot.m_pkWnd->SetPos(x, y, true, true);
-	r_kSlot.m_pkWnd->Resize(dx, dy);
+	r_kSlot.m_pkWnd->Resize((int)dx, (int)dy);
 }
 
 void EquipmentDlg::PickUpFromSlot(EQUIPMENT_SLOT* pkSlot, int mx, int my)
@@ -455,8 +455,8 @@ void EquipmentDlg::PickUpFromSlot(EQUIPMENT_SLOT* pkSlot, int mx, int my)
 
 	int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
 	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, 
-		g_kMistClient.GetScaleX()*(float)(size.x*32), 
-		g_kMistClient.GetScaleY()*(float)(size.y*32));	
+		int(g_kMistClient.GetScaleX()*(float)(size.x*32)), 
+		int(g_kMistClient.GetScaleY()*(float)(size.y*32)));	
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 
 	HighlightSlot(pkSlot->m_iItemType); 
@@ -513,7 +513,7 @@ void EquipmentDlg::OnDropItem(int mx, int my)
 	// Show normal cursor again.
 	float w = g_kMistClient.GetScaleX()*32.0f, h = g_kMistClient.GetScaleY()*32.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
+		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, (int)w, (int)h);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
@@ -521,3 +521,8 @@ void EquipmentDlg::OnDropItem(int mx, int my)
 
 	HighlightSlot(-1);
 }
+
+
+
+
+

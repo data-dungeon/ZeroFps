@@ -425,3 +425,8 @@ Property* Create_LightProperty()
 {
 	return new P_Light;
 }
+
+
+
+
+

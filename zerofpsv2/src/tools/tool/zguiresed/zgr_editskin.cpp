@@ -50,7 +50,7 @@ void ZGuiResEd::UpdatePreviewImage(const char* szFileName)
 
 					m_pkTexMan->EditEnd( id );
 
-					pkPreviewLabel->Resize(width, height);
+					pkPreviewLabel->Resize((int)width, (int)height);
 					pkPreviewLabel->Show();					
 				}
 			}
@@ -556,3 +556,7 @@ void ZGuiResEd::OnChangeSkinColor()
 			(*ppkSkin)->m_afBorderColor[2] = fColor;
 	}
 }
+
+
+
+

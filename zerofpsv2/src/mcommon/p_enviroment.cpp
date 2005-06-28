@@ -156,7 +156,7 @@ void P_Enviroment::Update()
 void P_Enviroment::UpdateTime()
 {
 	//update current time
-	m_iCurrentSecond += m_pkZeroFps->GetFrameTime()*m_fTimeScale;
+	m_iCurrentSecond += int(m_pkZeroFps->GetFrameTime()*m_fTimeScale);
 	if(m_iCurrentSecond > 86400)
 		m_iCurrentSecond = 0;
 	
@@ -817,7 +817,7 @@ void P_Enviroment::DrawSun()
 	static int iSunFlareTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
 	
 	//max number of samples 
-	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
+	static int iMaxSamples = int(0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight()));
 	static float fMaxAngle = 45.0;
 	static float fFlareSize = 1.0;
 	

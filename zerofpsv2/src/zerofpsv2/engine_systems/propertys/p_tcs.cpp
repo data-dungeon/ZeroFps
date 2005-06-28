@@ -1094,3 +1094,7 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetLinVelTowards",	SI_PTcs::SetObjectLinVelTowardsLua);	
 	g_pkScript->ExposeFunction("Bounce",				SI_PTcs::BounceLua);				
 }
+
+
+
+

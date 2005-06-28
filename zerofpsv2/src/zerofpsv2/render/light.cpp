@@ -507,3 +507,7 @@ LightSource* Light::GetFirstDirectionalLight()
 	
 	return NULL;
 }
+
+
+
+

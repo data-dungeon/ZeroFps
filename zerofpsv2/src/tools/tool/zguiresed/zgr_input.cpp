@@ -1060,7 +1060,7 @@ ZGuiWnd* ZGuiResEd::GetWndFromPoint(int x, int y)
 						length = 9999;
 					}
 
-					value -= length;
+					value -= int(length);
 
 					if(pkWnd == pkMainWnd)  
 						value -= 9999;
@@ -1215,3 +1215,8 @@ void ZGuiResEd::OnConfirmMsgBox(bool bAnswer)
 
 	ShowWnd("GuiDefMsgBox", false);
 }
+
+
+
+
+

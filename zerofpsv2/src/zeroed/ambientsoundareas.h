@@ -49,3 +49,12 @@ private:
 
 	vector<AmbientAreaInfo> m_kAmbientAreas;
 };
+
+
+
+
+
+
+
+
+

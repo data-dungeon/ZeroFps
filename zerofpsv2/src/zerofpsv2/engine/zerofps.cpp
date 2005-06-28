@@ -478,8 +478,8 @@ void ZeroFps::UpdateMouse()
 		{
 			float x,y;
 			m_pkGuiInputHandle->MouseXY(x,y);
-			mx = x;
-			my = y;
+			mx = int(x);
+			my = int(y);
 		}
 			
 		m_pkGui->UpdateMouse(mx, my,
@@ -503,8 +503,8 @@ void ZeroFps::UpdateGuiInput()
 	{
 		float x,y;
 		m_pkGuiInputHandle->MouseXY(x,y);
-		mx = x;
-		my = y;
+		mx = int(x);
+		my = int(y);
 	}
 		
 	m_pkGui->UpdateMouse(mx, my,

@@ -350,3 +350,9 @@ float OggStream::GetVolume()
 {
 	return m_fVolume;
 };
+
+
+
+
+
+

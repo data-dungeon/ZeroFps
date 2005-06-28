@@ -940,9 +940,9 @@ void EntityManager::PackToClients()
 		//connection speed
 	 	int iSendSize;		
 		if(m_pkZeroFps->GetSyncNetwork())
-			iSendSize = m_pkNetWork->GetClientNetSpeed(iClient) / m_pkZeroFps->GetSystemFps();
+			iSendSize = int(m_pkNetWork->GetClientNetSpeed(iClient) / m_pkZeroFps->GetSystemFps());
  		else	
-			iSendSize = m_pkNetWork->GetClientNetSpeed(iClient) / m_pkZeroFps->GetNetworkFps();		
+			iSendSize = int(m_pkNetWork->GetClientNetSpeed(iClient) / m_pkZeroFps->GetNetworkFps());		
 			
 		
 		
@@ -3202,3 +3202,16 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 		}*
 }
 */
+
+
+
+
+
+
+
+
+
+
+
+
+

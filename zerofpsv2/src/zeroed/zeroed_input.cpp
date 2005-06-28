@@ -741,3 +741,8 @@ Vector3 ZeroEd::Get3DMousePos(bool m_bMouse=true)
 	
 	return dir;
 }
+
+
+
+
+

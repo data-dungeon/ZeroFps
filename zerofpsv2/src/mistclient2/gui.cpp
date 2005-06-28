@@ -249,7 +249,7 @@ void MistClient::SetupGUI()
 
    // load software cursor
 	float w = g_kMistClient.GetScaleX()*32.0f, h = g_kMistClient.GetScaleY()*32.0f ;
-	g_kMistClient.m_pkGui->SetCursor( 0,0, g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
+	g_kMistClient.m_pkGui->SetCursor( 0,0, g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, int(w), int(h));
 	g_kMistClient.m_pkGui->ShowCursor(false); 
    g_kMistClient.m_pkInput->ShowCursor(false);
 	SetGuiCapture(true);
@@ -480,3 +480,7 @@ void MistClient::FindGUIScriptsByResSuffix()
 	printf("m_kGuiScrips[GSF_ITEMINFO] = %s\n", m_kGuiScrips[GSF_ITEMINFO].c_str());
 
 }
+
+
+
+

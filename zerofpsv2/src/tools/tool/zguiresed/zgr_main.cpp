@@ -185,3 +185,9 @@ bool ZGuiResEd::IsEditorWnd(ZGuiWnd* pkWnd)
 
 	return false;
 }
+
+
+
+
+
+

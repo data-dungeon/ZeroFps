@@ -243,3 +243,12 @@ void AmbientSoundAreas::Update(ZFAudioSystem* pkAudioSys)
 			pkAudioSys->GetListnerPos(), Vector3(0,0,0), 1.0f); 
 */			
 }
+
+
+
+
+
+
+
+
+

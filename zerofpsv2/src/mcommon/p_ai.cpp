@@ -627,7 +627,7 @@ namespace SI_P_AI
 			g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
 			g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
 	
-			Entity* pkObj = g_pkObjMan->GetEntityByID(dEntID);
+			Entity* pkObj = g_pkObjMan->GetEntityByID(int(dEntID));
 	
 			if ( !pkObj )
 				return 0;

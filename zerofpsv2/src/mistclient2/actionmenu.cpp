@@ -119,18 +119,18 @@ void ActionMenu::Open()
 	if(m_bGuiCaptureBeforOpen == true)
 		g_kMistClient.m_pkInputHandle->MouseXY(mx,my);
 
-	int mainwnd_pos_x = mx-m_kWidth/2, mainwnd_pos_y = my-m_kHeight/2;
+	int mainwnd_pos_x = int(mx-m_kWidth/2), mainwnd_pos_y = int(my-m_kHeight/2);
 
 	const float icon_angle_horz_offset = 75;
 	const float icon_angle_vert_offset = 75;
 
 	// Check so mainwindow are visible on screen...
-	if(mainwnd_pos_y < -icon_angle_vert_offset) mainwnd_pos_y = -icon_angle_vert_offset;
-	if(mainwnd_pos_x < -icon_angle_horz_offset) mainwnd_pos_x = -icon_angle_horz_offset;
+	if(mainwnd_pos_y < -icon_angle_vert_offset) mainwnd_pos_y = (int)-icon_angle_vert_offset;
+	if(mainwnd_pos_x < -icon_angle_horz_offset) mainwnd_pos_x = (int)-icon_angle_horz_offset;
 	if(mainwnd_pos_y + m_kHeight > g_kMistClient.GetHeight()+icon_angle_vert_offset) 
-		mainwnd_pos_y = g_kMistClient.GetHeight()-m_kHeight+icon_angle_vert_offset;
+		mainwnd_pos_y = int(g_kMistClient.GetHeight()-m_kHeight+icon_angle_vert_offset);
 	if(mainwnd_pos_x + m_kWidth > g_kMistClient.GetWidth()+icon_angle_horz_offset ) 
-		mainwnd_pos_x = g_kMistClient.GetWidth()-m_kWidth+icon_angle_horz_offset;
+		mainwnd_pos_x = int(g_kMistClient.GetWidth()-m_kWidth+icon_angle_horz_offset);
 
 	m_pkMainWnd->SetPos(mainwnd_pos_x, mainwnd_pos_y, true, true);
 	m_pkMainWnd->Show();
@@ -176,7 +176,7 @@ void ActionMenu::Open()
 
 		if(i==0)
 		{				
-			m_pkIconSelection->SetPos(x, y, false, true); 
+			m_pkIconSelection->SetPos((int)x, (int)y, false, true); 
  			//m_pkIconSelection->Show();
  			m_pkIconSelection->Hide();	//visa inte mark?en i b?jan
 		}
@@ -227,7 +227,7 @@ void ActionMenu::Open()
 		pkButton->GetSkin()->m_afBkColor[2] = 1.0f;		
 		
 		
-		pkButton->SetPos(x, y, false, true); 
+		pkButton->SetPos((int)x, (int)y, false, true); 
 		pkButton->Show();
 
 		if(pkButton->m_iZValue > iHeighestZValue)
@@ -349,3 +349,10 @@ void ActionMenu::SetEntity(int iEntityID)
 {
 	m_iEntityID = iEntityID;
 }
+
+
+
+
+
+
+

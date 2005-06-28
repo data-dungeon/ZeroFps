@@ -47,3 +47,10 @@ Property* Create_P_Goal()
 {
 	return new P_Goal;
 }
+
+
+
+
+
+
+

@@ -56,7 +56,7 @@ Entity::Entity()
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
 	m_fInterPolateFactor = 20;						//lower factor = slower moving objects/smoother movements
-	m_iLastInterPolateFrame = -1;
+	m_iLastInterPolateFrame = 0;
 	m_ucIcon					= 0;
 
 	//clear child list

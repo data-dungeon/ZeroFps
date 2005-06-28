@@ -238,7 +238,7 @@ bool ZGuiSlider::Notify(ZGuiWnd* pkWnd, int iCode)
 			float fProcentAvMax = (float)(rcArea.Right - rcBnt.Right) / (rcArea.Width()-rcBnt.Width());
 			float fPos = m_iMin + ( (1.0f-fProcentAvMax) * (float)(m_iMax-m_iMin) ) ;
 
-			SetPos(fPos, true);
+			SetPos(int(fPos), true);
 		}
 	}
 	return true;

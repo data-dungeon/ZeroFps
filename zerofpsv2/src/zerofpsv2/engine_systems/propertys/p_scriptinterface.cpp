@@ -92,32 +92,32 @@ namespace SI_PScriptInterface
 		\param HeartRate Time in Second between each heartbeat.
 		\brief Set a timer that run a heartbeat function on the entity.
 */
-int SISetHeartRateLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	int SISetHeartRateLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+	
+		double dId;	
+		double dHeartRate;
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgNumber(pkLua, 1, &dHeartRate);		
+	
+		Entity* pkObject = g_pkObjMan->GetEntityByID((int)dId);
+		if(!pkObject)
+			return 0;
+	
+		if(pkObject)
+		{	
+			P_ScriptInterface* pkScriptInterface = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");
+			if(!pkScriptInterface)
+				pkScriptInterface = (P_ScriptInterface*)pkObject->AddProperty("P_ScriptInterface");
+	
+			if(pkScriptInterface)
+				pkScriptInterface->SetHeartRate((float)dHeartRate);			
+		}
+	
 		return 0;
-
-	double dId;	
-	double dHeartRate;
-	g_pkScript->GetArgNumber(pkLua, 0, &dId);
-	g_pkScript->GetArgNumber(pkLua, 1, &dHeartRate);		
-
-	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dId);
-	if(!pkObject)
-		return 0;
-
-	if(pkObject)
-	{	
-		P_ScriptInterface* pkScriptInterface = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");
-		if(!pkScriptInterface)
-			pkScriptInterface = (P_ScriptInterface*)pkObject->AddProperty("P_ScriptInterface");
-
-		if(pkScriptInterface)
-			pkScriptInterface->SetHeartRate((float)dHeartRate);			
-	}
-
-	return 0;
-}	
+	}	
 }
 
 void ENGINE_SYSTEMS_API Register_PScriptInterface(ZeroFps* pkZeroFps)
@@ -128,3 +128,10 @@ void ENGINE_SYSTEMS_API Register_PScriptInterface(ZeroFps* pkZeroFps)
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("SISetHeartRate",		SI_PScriptInterface::SISetHeartRateLua);
 }
+
+
+
+
+
+
+

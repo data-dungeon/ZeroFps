@@ -122,14 +122,14 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 
 		if(uiIndex == 0)
 			pkNewPage->SetTextColor(
-				m_afSelTabTextColor[0]*255,
-				m_afSelTabTextColor[1]*255,
-				m_afSelTabTextColor[2]*255);
+				(unsigned char)(m_afSelTabTextColor[0]*255),
+				(unsigned char)(m_afSelTabTextColor[1]*255),
+				(unsigned char)(m_afSelTabTextColor[2]*255));
 		else
 			pkNewPage->SetTextColor(
-				m_afUnSelTabTextColor[0]*255,
-				m_afUnSelTabTextColor[1]*255,
-				m_afUnSelTabTextColor[2]*255);
+				(unsigned char)(m_afUnSelTabTextColor[0]*255),
+				(unsigned char)(m_afUnSelTabTextColor[1]*255),
+				(unsigned char)(m_afUnSelTabTextColor[2]*255));
 
 		OnChangeWndText(pkNewPage);
 	}
@@ -399,7 +399,9 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 			SetButtonSkin((*itButton), 1);
 			(*itPage)->Show();
 
-			(*itButton)->SetTextColor(m_afSelTabTextColor[0]*255,m_afSelTabTextColor[1]*255,m_afSelTabTextColor[2]*255);
+			(*itButton)->SetTextColor(	(unsigned char)(m_afSelTabTextColor[0]*255),
+												(unsigned char)(m_afSelTabTextColor[1]*255),
+												(unsigned char)(m_afSelTabTextColor[2]*255));
 
 			int* piParams = new int[3];
 			piParams[0] = m_uiCurrentPage;
@@ -412,7 +414,9 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 		{
 			SetButtonSkin((*itButton), 0);
 			(*itPage)->Hide();
-			(*itButton)->SetTextColor(m_afUnSelTabTextColor[0]*255,m_afUnSelTabTextColor[1]*255,m_afUnSelTabTextColor[2]*255);
+			(*itButton)->SetTextColor(	(unsigned char)(m_afUnSelTabTextColor[0]*255),
+												(unsigned char)(m_afUnSelTabTextColor[1]*255),
+												(unsigned char)(m_afUnSelTabTextColor[2]*255));
 		}
 
 		// Lower the previus selected tab back again.
@@ -798,17 +802,21 @@ void ZGuiTabCtrl::SetTabColor(float afColor[3], bool bSelTab)
 		if(index == m_uiCurrentPage)
 		{
 		(*itButton)->SetTextColor( 
-			m_afSelTabTextColor[0]*255.0f,
-			m_afSelTabTextColor[1]*255.0f,
-			m_afSelTabTextColor[2]*255.0f);
+			(unsigned char)(m_afSelTabTextColor[0]*255.0f),
+			(unsigned char)(m_afSelTabTextColor[1]*255.0f),
+			(unsigned char)(m_afSelTabTextColor[2]*255.0f));
 		}
 		else
 		{
 		(*itButton)->SetTextColor( 
-			m_afUnSelTabTextColor[0]*255.0f,
-			m_afUnSelTabTextColor[1]*255.0f,
-			m_afUnSelTabTextColor[2]*255.0f);
+			(unsigned char)(m_afUnSelTabTextColor[0]*255.0f),
+			(unsigned char)(m_afUnSelTabTextColor[1]*255.0f),
+			(unsigned char)(m_afUnSelTabTextColor[2]*255.0f));
 		}
 		index++;
 	}	
 }
+
+
+
+

@@ -468,8 +468,8 @@ void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int m
 
 	int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
 	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, 
-		g_kMistClient.GetScaleX()*(float)(size.x*ICON_WIDTH), 
-		g_kMistClient.GetScaleY()*(float)(size.y*ICON_HEIGHT));	
+		int(g_kMistClient.GetScaleX()*(float)(size.x*ICON_WIDTH)), 
+		int(g_kMistClient.GetScaleY()*(float)(size.y*ICON_HEIGHT)));	
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 
 	printf("Item id = %i\n", (*pkVector)[iSlotIndex].iItemID);
@@ -555,7 +555,7 @@ void InventoryDlg::OnDoubleClick(int iMouseX, int iMouseY)
 		float w = g_kMistClient.GetScaleX()*32.0f, h = g_kMistClient.GetScaleY()*32.0f ;
 		g_kMistClient.m_pkGui->SetCursor( (int)iMouseX, 
 			(int)iMouseY, 
-			g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
+			g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, (int)w, (int)h);
 
 		m_kMoveSlot.m_iIndex = -1;
 	}
@@ -925,7 +925,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	// Show normal cursor again.
 	float w = g_kMistClient.GetScaleX()*32.0f, h = g_kMistClient.GetScaleY()*32.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
+		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, (int)w, (int)h);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
@@ -1021,23 +1021,23 @@ Point InventoryDlg::SlotFromScreenPos(int x, int y, bool bInventory)
 
 	if(bInventory)
 	{
-		slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - 
-			(g_kMistClient.GetScaleX()*(float)UPPERLEFT_INVENTORY.x) ) / 
-			(g_kMistClient.GetScaleX() * (float) ICON_WIDTH); 
+		slot_x = int((x - m_pkInventoryWnd->GetScreenRect().Left - 
+						(g_kMistClient.GetScaleX()*(float)UPPERLEFT_INVENTORY.x) ) / 
+						(g_kMistClient.GetScaleX() * (float) ICON_WIDTH)); 
 
-		slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - 
-			(g_kMistClient.GetScaleY()*(float)UPPERLEFT_INVENTORY.y) ) / 
-			(g_kMistClient.GetScaleY() * (float) ICON_HEIGHT);
-	}
+		slot_y =  int((y - m_pkInventoryWnd->GetScreenRect().Top - 
+						(g_kMistClient.GetScaleY()*(float)UPPERLEFT_INVENTORY.y) ) / 
+						(g_kMistClient.GetScaleY() * (float) ICON_HEIGHT));
+	}	
 	else
 	{
-		slot_x = (x - m_pkContainerWnd->GetScreenRect().Left - 
-			(g_kMistClient.GetScaleX()*(float)UPPERLEFT_CONTAINER.x) ) / 
-			(g_kMistClient.GetScaleX() * (float) ICON_WIDTH); 
+		slot_x =  int((x - m_pkContainerWnd->GetScreenRect().Left - 
+						(g_kMistClient.GetScaleX()*(float)UPPERLEFT_CONTAINER.x) ) / 
+						(g_kMistClient.GetScaleX() * (float) ICON_WIDTH)); 
 
-		slot_y = (y - m_pkContainerWnd->GetScreenRect().Top - 
-			(g_kMistClient.GetScaleY()*(float)UPPERLEFT_CONTAINER.y) ) / 
-			(g_kMistClient.GetScaleY() * (float) ICON_HEIGHT);
+		slot_y =  int((y - m_pkContainerWnd->GetScreenRect().Top - 
+						(g_kMistClient.GetScaleY()*(float)UPPERLEFT_CONTAINER.y) ) / 
+						(g_kMistClient.GetScaleY() * (float) ICON_HEIGHT));
 	}
 
 	return Point(slot_x, slot_y);
@@ -1301,3 +1301,10 @@ void InventoryDlg::OpenItemInfoWnd(bool bOpen, ITEM_INFO kInfo)
 			g_kMistClient.LoadGuiTextureByRes(string("item_images/") + kInfo.strImage);
 	}
 }
+
+
+
+
+
+
+

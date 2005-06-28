@@ -804,3 +804,10 @@ Mad_CoreMesh* ModellXXX::GetMesh(const char* ucaName)
 	m_kMesh.push_back(kNewMesh);
 	return &m_kMesh.back();
 }
+
+
+
+
+
+
+

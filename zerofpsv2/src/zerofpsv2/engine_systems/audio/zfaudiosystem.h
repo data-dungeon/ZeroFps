@@ -238,7 +238,7 @@ private:
 	
 	inline int IsLeft( Vector2 *P0, Vector2 *P1, Vector2 *P2 ) 
 	{
-		return ( (P1->x - P0->x) * (P2->y - P0->y) - (P2->x - P0->x) * (P1->y - P0->y) );
+		return int( (P1->x - P0->x) * (P2->y - P0->y) - (P2->x - P0->x) * (P1->y - P0->y) );
 	}
 
 	bool PntInPolygon(Vector2 *pt, vector<Vector2*>& vPolygon);

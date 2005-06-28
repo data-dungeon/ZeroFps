@@ -280,7 +280,7 @@ BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
 			kTemp.m_iKey='-';
 	}
 
-#endif WIN32
+#endif
 
 	// Simpelt sätt att ändra å.ä.ö till a,a,o (istället för cp tecken som är nu)
 	// Vet i katten vad som händer på ett utlänskt tagentbord.

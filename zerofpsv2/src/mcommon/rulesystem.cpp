@@ -125,41 +125,41 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 			//cout<<"HIT"<<endl;
 		
 			//calculate damage	
-			int iSlashing 	=pkStatsA->GetTotal("DamageSlashingMin") + 
-								Randomi(pkStatsA->GetTotal("DamageSlashingMax") - pkStatsA->GetTotal("DamageSlashingMin") +1);
-			int iCrushing 	=pkStatsA->GetTotal("DamageCrushingMin") + 
-								Randomi(pkStatsA->GetTotal("DamageCrushingMax") - pkStatsA->GetTotal("DamageCrushingMin") +1);
-			int iPiercing 	=pkStatsA->GetTotal("DamagePiercingMin") + 
-								Randomi(pkStatsA->GetTotal("DamagePiercingMax") - pkStatsA->GetTotal("DamagePiercingMin") +1);
-			int iFire 		=pkStatsA->GetTotal("DamageFireMin") + 
-								Randomi(pkStatsA->GetTotal("DamageFireMax") - pkStatsA->GetTotal("DamageFireMin") +1);
-			int iIce 		=pkStatsA->GetTotal("DamageIceMin") + 
-								Randomi(pkStatsA->GetTotal("DamageIceMax") - pkStatsA->GetTotal("DamageIceMin") +1);
-			int iLightning	=pkStatsA->GetTotal("DamageLightningMin") + 
-								Randomi(pkStatsA->GetTotal("DamageLightningMax") - pkStatsA->GetTotal("DamageLightningMin") +1);
-			int iMagic	=	pkStatsA->GetTotal("DamageMagicMin") + 
-								Randomi(pkStatsA->GetTotal("DamageMagicMax") - pkStatsA->GetTotal("DamageMagicMin") +1);
-			int iPoison	=	pkStatsA->GetTotal("DamagePoisonMin") + 
-								Randomi(pkStatsA->GetTotal("DamagePoisonMax") - pkStatsA->GetTotal("DamagePoisonMin") +1);
+			int iSlashing 	=int(pkStatsA->GetTotal("DamageSlashingMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamageSlashingMax") - pkStatsA->GetTotal("DamageSlashingMin") +1)));
+			int iCrushing 	=int(pkStatsA->GetTotal("DamageCrushingMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamageCrushingMax") - pkStatsA->GetTotal("DamageCrushingMin") +1)));
+			int iPiercing 	=int(pkStatsA->GetTotal("DamagePiercingMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamagePiercingMax") - pkStatsA->GetTotal("DamagePiercingMin") +1)));
+			int iFire 		=int(pkStatsA->GetTotal("DamageFireMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamageFireMax") - pkStatsA->GetTotal("DamageFireMin") +1)));
+			int iIce 		=int(pkStatsA->GetTotal("DamageIceMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamageIceMax") - pkStatsA->GetTotal("DamageIceMin") +1)));
+			int iLightning	=int(pkStatsA->GetTotal("DamageLightningMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamageLightningMax") - pkStatsA->GetTotal("DamageLightningMin") +1)));
+			int iMagic	=	int(pkStatsA->GetTotal("DamageMagicMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamageMagicMax") - pkStatsA->GetTotal("DamageMagicMin") +1)));
+			int iPoison	=	int(pkStatsA->GetTotal("DamagePoisonMin") + 
+								Randomi(int(pkStatsA->GetTotal("DamagePoisonMax") - pkStatsA->GetTotal("DamagePoisonMin") +1)));
 			
 			//absorb	
-			iSlashing 	-= Randomi(pkStatsD->GetTotal("AbsorbSlashing"));
-			iCrushing 	-= Randomi(pkStatsD->GetTotal("AbsorbCrushing"));
-			iPiercing 	-= Randomi(pkStatsD->GetTotal("AbsorbPiercing"));
-			iFire 		-= Randomi(pkStatsD->GetTotal("AbsorbFire"));
-			iIce 			-= Randomi(pkStatsD->GetTotal("AbsorbIce"));
-			iLightning 	-= Randomi(pkStatsD->GetTotal("AbsorbLightning"));
-			iMagic 		-= Randomi(pkStatsD->GetTotal("AbsorbMagic"));
-			iPoison 		-= Randomi(pkStatsD->GetTotal("AbsorbPoison"));
+			iSlashing 	-= Randomi((int)pkStatsD->GetTotal("AbsorbSlashing"));
+			iCrushing 	-= Randomi((int)pkStatsD->GetTotal("AbsorbCrushing"));
+			iPiercing 	-= Randomi((int)pkStatsD->GetTotal("AbsorbPiercing"));
+			iFire 		-= Randomi((int)pkStatsD->GetTotal("AbsorbFire"));
+			iIce 			-= Randomi((int)pkStatsD->GetTotal("AbsorbIce"));
+			iLightning 	-= Randomi((int)pkStatsD->GetTotal("AbsorbLightning"));
+			iMagic 		-= Randomi((int)pkStatsD->GetTotal("AbsorbMagic"));
+			iPoison 		-= Randomi((int)pkStatsD->GetTotal("AbsorbPoison"));
 			
-			iSlashing = Max(iSlashing,0);
-			iCrushing = Max(iCrushing,0);
-			iPiercing = Max(iPiercing,0);
-			iFire = 		Max(iFire,0);
-			iIce =		Max(iIce,0);
-			iLightning =Max(iLightning,0);
-			iMagic = 	Max(iMagic,0);
-			iPoison = 	Max(iPoison,0);
+			iSlashing = (int)Max(iSlashing,0);
+			iCrushing = (int)Max(iCrushing,0);
+			iPiercing = (int)Max(iPiercing,0);
+			iFire = 		(int)Max(iFire,0);
+			iIce =		(int)Max(iIce,0);
+			iLightning =(int)Max(iLightning,0);
+			iMagic = 	(int)Max(iMagic,0);
+			iPoison = 	(int)Max(iPoison,0);
 
 		
 			int iTotal = iSlashing + iCrushing + iPiercing + iFire + iIce + iLightning + iMagic + iPoison;
@@ -286,3 +286,7 @@ namespace SI_RuleSystem
 		return 1;
 	}		
 }
+
+
+
+

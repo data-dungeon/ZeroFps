@@ -102,7 +102,7 @@ bool HeightMap::AllocHMMemory(int iSize)
 
 void HeightMap::Create(int iTilesSide)
 {
-	m_iTilesSide   =  iTilesSide / m_fTileSize;
+	m_iTilesSide   =  int(iTilesSide / m_fTileSize);
 	m_iVertexSide  =  m_iTilesSide + 1;
 	SetPosition(Vector3::ZERO);
 	//m_iHmScaleSize =	GetSize();

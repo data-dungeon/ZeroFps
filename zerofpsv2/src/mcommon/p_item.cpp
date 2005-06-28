@@ -550,3 +550,10 @@ void Register_P_Item(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("AddItemStat",			SI_P_Item::AddItemStatLua);
 	
 }
+
+
+
+
+
+
+

@@ -280,3 +280,8 @@ bool MadView::ShutDown()
 void MadView::RenderInterface()
 {
 }
+
+
+
+
+

@@ -1151,7 +1151,7 @@ void NetWork::DevShow_ClientConnections()
 				iNumOfUsesBuffers++;
 		}
 
-		int iPing = m_RemoteNodes[i]->m_fPing * 1000;
+		int iPing = int(m_RemoteNodes[i]->m_fPing * 1000);
 
 		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s - %.2f - %d Ping=%d", i, pkName, szAdress,
 			( m_RemoteNodes[i]->m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i]->m_iReliableRecvOrder,

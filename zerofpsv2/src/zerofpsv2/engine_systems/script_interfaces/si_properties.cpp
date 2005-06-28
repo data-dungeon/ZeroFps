@@ -21,3 +21,9 @@ void PropertiesLua::Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 	g_pkScript = NULL;
 	g_pkObjMan = NULL;
 }
+
+
+
+
+
+

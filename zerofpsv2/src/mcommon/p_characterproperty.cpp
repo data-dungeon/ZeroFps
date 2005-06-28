@@ -852,7 +852,7 @@ void P_CharacterProperty::UpdateStats()
 		return;	
 	}
 	
-	DebugSet("Health: ",m_kCharacterStats.GetTotal("Health"));
+	DebugSet("Health: ",int(m_kCharacterStats.GetTotal("Health")));
 	
 	//check if character is dead
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
@@ -903,7 +903,7 @@ void P_CharacterProperty::UpdateStats()
 		
 		//stamina	
 		
-		int iDrain = m_kCharacterStats.GetTotal("StaminaRegen");		
+		int iDrain = int(m_kCharacterStats.GetTotal("StaminaRegen"));		
 		switch(pkCC->GetCharacterState())
 		{
 			case eWALKING: iDrain = 0; break;
@@ -969,8 +969,8 @@ void P_CharacterProperty::UpdateStats()
 
 
 	//setup charactercontrol
-	int iSpeed = m_kCharacterStats.GetTotal("Speed");
-	int iJump = m_kCharacterStats.GetTotal("Jump");
+	int iSpeed = int(m_kCharacterStats.GetTotal("Speed"));
+	int iJump = int(m_kCharacterStats.GetTotal("Jump"));
 	
 	if(m_kCharacterStats.GetTotal("Stamina") < 10 )
 	{
@@ -1208,8 +1208,8 @@ void P_CharacterProperty::OnDeath()
 			if(pkKiller->GetIsPlayerCharacter())
 			{
 				float fLevelMod = 1.5;
-				int iXP =	 m_kCharacterStats.GetTotal("ExperienceValue") * 
-								(m_kCharacterStats.GetTotal("Level") * fLevelMod );
+				int iXP =	int(m_kCharacterStats.GetTotal("ExperienceValue") * 
+								(m_kCharacterStats.GetTotal("Level") * fLevelMod ));
 								
 				pkKiller->GiveExperience(iXP);				
 			}
@@ -1317,7 +1317,7 @@ void P_CharacterProperty::OnLevelUP()
 	Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
 
  	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV()+kRandomPos,3);
-	SendTextToClient("You are now level "+IntToString(m_kCharacterStats.GetTotal("Level")));	
+	SendTextToClient("You are now level "+IntToString((int)m_kCharacterStats.GetTotal("Level")));	
 
 	m_kCharacterStats.ChangeStat("StatPoints",4);	
 	
@@ -3504,3 +3504,16 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 // 			
 // 			break;
 // 		}			
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -335,3 +335,9 @@ void MadView::ChangeMad(string strName)
 	GetWnd("AnimationFileTree")->Show();
 
 }
+
+
+
+
+
+

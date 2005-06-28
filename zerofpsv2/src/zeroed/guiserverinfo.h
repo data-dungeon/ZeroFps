@@ -36,3 +36,17 @@ public:
 };
 
 #endif // _GUISERVERINFO_H_
+
+
+
+
+
+
+
+
+
+
+
+
+
+

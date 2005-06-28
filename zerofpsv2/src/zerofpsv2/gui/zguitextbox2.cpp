@@ -616,8 +616,8 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 	{
 		float mod = (float) Width / (float) fWidthBefore;
 		float w = mod*(float)m_pkScrollbarVertical->GetScreenRect().Width();
-		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-w, 0, false, true);
-		m_pkScrollbarVertical->Resize(w,Height);
+		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : int(Width-w), 0, false, true);
+		m_pkScrollbarVertical->Resize(int(w),Height);
 	}
 
 	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
@@ -1581,3 +1581,8 @@ void ZGuiTextbox::SetLeftAlignedScrollbar(bool bLeftAligned)
 
 	m_pkScrollbarVertical->SetPos(x,y, false, true);
 }
+
+
+
+
+

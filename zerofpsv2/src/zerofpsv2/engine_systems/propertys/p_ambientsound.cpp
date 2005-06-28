@@ -300,3 +300,8 @@ Property* Create_AmbientSound()
 {
 	return new P_AmbientSound();
 }
+
+
+
+
+
