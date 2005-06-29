@@ -91,39 +91,46 @@ void OptionsDlg::Open()
 	m_pkMC->CheckButton("FullscreenCheckbox", (m_pkRender->GetFullscreen() == true) );
 	m_pkMC->CheckButton("WindowCheckbox", (m_pkRender->GetFullscreen() == false) );
 
-	m_pkMC->CheckButton("NumShadows0Rb", (m_pkZShadow->GetNumShadowsPerModel() == 0));	
-	m_pkMC->CheckButton("NumShadows1Rb", (m_pkZShadow->GetNumShadowsPerModel() == 1));
-	m_pkMC->CheckButton("NumShadows2Rb", (m_pkZShadow->GetNumShadowsPerModel() == 2));
-	m_pkMC->CheckButton("NumShadows3Rb", (m_pkZShadow->GetNumShadowsPerModel() == 3));
-	m_pkMC->CheckButton("NumShadows4Rb", (m_pkZShadow->GetNumShadowsPerModel() == 4));
+// 	m_pkMC->CheckButton("NumShadows0Rb", (m_pkZShadow->GetNumShadowsPerModel() == 0));	
+// 	m_pkMC->CheckButton("NumShadows1Rb", (m_pkZShadow->GetNumShadowsPerModel() == 1));
+// 	m_pkMC->CheckButton("NumShadows2Rb", (m_pkZShadow->GetNumShadowsPerModel() == 2));
+// 	m_pkMC->CheckButton("NumShadows3Rb", (m_pkZShadow->GetNumShadowsPerModel() == 3));
+// 	m_pkMC->CheckButton("NumShadows4Rb", (m_pkZShadow->GetNumShadowsPerModel() == 4));
+// 
+// 	m_pkMC->ClearListbox("ShadowGroupsComboBox");
+// 	((ZGuiCombobox*)m_pkMC->GetWnd("ShadowGroupsComboBox"))->SetNumVisibleRows(5); 
+// 	m_pkMC->AddListItem("ShadowGroupsComboBox", "Big enviroment objects (zones ,trees)", 
+// 		m_kOptionsValues.m_iCurrentShadowGroup == 1);
+// 	m_pkMC->AddListItem("ShadowGroupsComboBox", "Small enviroment objects (rocks,tables)", 
+// 		m_kOptionsValues.m_iCurrentShadowGroup == 2);
+// 	m_pkMC->AddListItem("ShadowGroupsComboBox", "Players (player characters)", 
+// 		m_kOptionsValues.m_iCurrentShadowGroup == 3);
+// 	m_pkMC->AddListItem("ShadowGroupsComboBox", "Game objects (inventory objects)", 
+// 		m_kOptionsValues.m_iCurrentShadowGroup == 4);
+// 	m_pkMC->AddListItem("ShadowGroupsComboBox", "Creatures (non playable monsters)", 
+// 		m_kOptionsValues.m_iCurrentShadowGroup == 5);
+// 	
+// 	m_kOptionsValues.m_abEnabledShadowGroups[1] = m_pkZShadow->IsShadowGroupEnabled(1);
+// 	m_kOptionsValues.m_abEnabledShadowGroups[2] = m_pkZShadow->IsShadowGroupEnabled(2);
+// 	m_kOptionsValues.m_abEnabledShadowGroups[3] = m_pkZShadow->IsShadowGroupEnabled(3);
+// 	m_kOptionsValues.m_abEnabledShadowGroups[4] = m_pkZShadow->IsShadowGroupEnabled(4);
+// 	m_kOptionsValues.m_abEnabledShadowGroups[5] = m_pkZShadow->IsShadowGroupEnabled(5);
 
-	m_pkMC->ClearListbox("ShadowGroupsComboBox");
-	((ZGuiCombobox*)m_pkMC->GetWnd("ShadowGroupsComboBox"))->SetNumVisibleRows(5); 
-	m_pkMC->AddListItem("ShadowGroupsComboBox", "Big enviroment objects (zones ,trees)", 
-		m_kOptionsValues.m_iCurrentShadowGroup == 1);
-	m_pkMC->AddListItem("ShadowGroupsComboBox", "Small enviroment objects (rocks,tables)", 
-		m_kOptionsValues.m_iCurrentShadowGroup == 2);
-	m_pkMC->AddListItem("ShadowGroupsComboBox", "Players (player characters)", 
-		m_kOptionsValues.m_iCurrentShadowGroup == 3);
-	m_pkMC->AddListItem("ShadowGroupsComboBox", "Game objects (inventory objects)", 
-		m_kOptionsValues.m_iCurrentShadowGroup == 4);
-	m_pkMC->AddListItem("ShadowGroupsComboBox", "Creatures (non playable monsters)", 
-		m_kOptionsValues.m_iCurrentShadowGroup == 5);
+	m_pkMC->CheckButton("GLSLCheckbox", m_pkMC->m_pkZShaderSystem->GetUseGLSL() );
+	m_kOptionsValues.m_bPrevUseGLSLState = m_pkMC->m_pkZShaderSystem->GetUseGLSL(); 
+
 	
-	m_kOptionsValues.m_abEnabledShadowGroups[1] = m_pkZShadow->IsShadowGroupEnabled(1);
-	m_kOptionsValues.m_abEnabledShadowGroups[2] = m_pkZShadow->IsShadowGroupEnabled(2);
-	m_kOptionsValues.m_abEnabledShadowGroups[3] = m_pkZShadow->IsShadowGroupEnabled(3);
-	m_kOptionsValues.m_abEnabledShadowGroups[4] = m_pkZShadow->IsShadowGroupEnabled(4);
-	m_kOptionsValues.m_abEnabledShadowGroups[5] = m_pkZShadow->IsShadowGroupEnabled(5);
-
+	m_pkMC->CheckButton("ShadowmapRealtimeCheckbox", m_pkMC->m_pkZeroFps->GetShadowMapRealtime() );
+	m_kOptionsValues.m_bPrevShadowMapRealtimeState = m_pkMC->m_pkZeroFps->GetShadowMapRealtime(); 
+	
 	m_pkMC->CheckButton("ShadowmapCheckbox", m_pkMC->m_pkZeroFps->GetShadowMap() );
 	m_kOptionsValues.m_bPrevShadowMapState = m_pkMC->m_pkZeroFps->GetShadowMap(); 
 
 	m_pkMC->CheckButton("VegetationCheckbox", m_pkMC->m_pkZeroFps->GetVegetation() );
 	m_kOptionsValues.m_bPrevVegetationState = m_pkMC->m_pkZeroFps->GetVegetation(); 	
 	
-	m_pkMC->CheckButton("EnableShadowGroup", m_kOptionsValues.m_abEnabledShadowGroups[
-		m_kOptionsValues.m_iCurrentShadowGroup]);	
+// 	m_pkMC->CheckButton("EnableShadowGroup", m_kOptionsValues.m_abEnabledShadowGroups[
+// 		m_kOptionsValues.m_iCurrentShadowGroup]);	
 
 	m_kOptionsValues.m_iPrevNetSpeed = m_pkMC->m_pkZeroFps->GetConnectionSpeed(); 
 
@@ -236,7 +243,9 @@ void OptionsDlg::Close(bool bSave)
 			(m_pkMC->IsButtonChecked("ColorDepth16Checkbox") && m_pkRender->GetDepth() != 16) ||
 			(m_pkMC->IsButtonChecked("ColorDepth32Checkbox") && m_pkRender->GetDepth() != 32) ||
 			(m_pkMC->IsButtonChecked("FullscreenCheckbox") && !m_pkRender->GetFullscreen()) ||
-			(m_pkMC->IsButtonChecked("WindowCheckbox") && m_pkRender->GetFullscreen()))
+			(m_pkMC->IsButtonChecked("WindowCheckbox") && m_pkRender->GetFullscreen()) ||
+			(m_pkMC->IsButtonChecked("GLSLCheckbox") != m_kOptionsValues.m_bPrevUseGLSLState)
+			)
 		{
 			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
 			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
@@ -326,12 +335,31 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 					g_kMistClient.IsButtonChecked("EnableShadowGroup");
 			}
 			else
+			if(strController == "GLSLCheckbox")
+			{
+				char cmd[50];
+				sprintf(cmd, "r_useglsl %i", (int) g_kMistClient.IsButtonChecked("GLSLCheckbox"));
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+			
+				//also enable shadowmaps i glsl is enabled
+				if(g_kMistClient.IsButtonChecked("GLSLCheckbox"))
+				{
+					sprintf(cmd, "r_shadowmap %i", (int) g_kMistClient.IsButtonChecked("GLSLCheckbox"));
+					g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+				}			
+			}			
 			if(strController == "ShadowmapCheckbox")
 			{
 				char cmd[50];
 				sprintf(cmd, "r_shadowmap %i", (int) g_kMistClient.IsButtonChecked("ShadowmapCheckbox"));
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
 			}
+			if(strController == "ShadowmapRealtimeCheckbox")
+			{
+				char cmd[50];
+				sprintf(cmd, "r_shadowmaprealtime %i", (int) g_kMistClient.IsButtonChecked("ShadowmapRealtimeCheckbox"));
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+			}			
 			else
 			if(strController == "VegetationCheckbox")
 			{
@@ -549,29 +577,29 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 	{
 		if(strMainWnd == "OptionsPageGraphic")
 		{
-			if(strController == "ShadowGroupsComboBox")
-			{
-				string item = g_kMistClient.GetSelItem("ShadowGroupsComboBox");
-
-				if(item == "Big enviroment objects (zones ,trees)")
-					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 1;
-				else
-				if(item == "Small enviroment objects (rocks,tables)")
-					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 2;
-				else
-				if(item == "Players (player characters)")
-					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 3;
-				else
-				if(item == "Game objects (inventory objects)")
-					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 4;
-				else
-				if(item == "Creatures (non playable monsters)")
-					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 5;
-
-				g_kMistClient.CheckButton("EnableShadowGroup", 
-					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_abEnabledShadowGroups[
-						g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup]);
-			}
+// 			if(strController == "ShadowGroupsComboBox")
+// 			{
+// 				string item = g_kMistClient.GetSelItem("ShadowGroupsComboBox");
+// 
+// 				if(item == "Big enviroment objects (zones ,trees)")
+// 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 1;
+// 				else
+// 				if(item == "Small enviroment objects (rocks,tables)")
+// 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 2;
+// 				else
+// 				if(item == "Players (player characters)")
+// 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 3;
+// 				else
+// 				if(item == "Game objects (inventory objects)")
+// 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 4;
+// 				else
+// 				if(item == "Creatures (non playable monsters)")
+// 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup = 5;
+// 
+// 				g_kMistClient.CheckButton("EnableShadowGroup", 
+// 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_abEnabledShadowGroups[
+// 						g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup]);
+// 			}
 		}
 	}		
 }

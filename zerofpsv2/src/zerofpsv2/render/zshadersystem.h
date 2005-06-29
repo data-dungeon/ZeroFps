@@ -399,10 +399,11 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//information
 		bool HaveExtension(const string& strExt);
 		int GetStencilBits();
+		bool GetUseGLSL()											{	return m_bUseGLSL;						}
 		bool SupportVertexProgram() 							{	return m_bSupportVertexProgram;		}
 		bool SupportFragmentProgram() 						{	return m_bSupportFragmentProgram;	}
 		bool SupportOcculusion()								{	return m_bOcclusion;						}
-		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}
+		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}		
 		bool SupportFBO()											{	return m_bSupportFBO;					}
 		
 		//arrays

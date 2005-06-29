@@ -21,7 +21,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iCurrentVertexProgram = 		-1;
 	m_iCurrentFragmentProgram = 	-1;
 	
-	m_bUseGLSL						=	true;
+	m_bUseGLSL						=	false;
 	m_bSupportGLSLProgram = 		false;
 	m_iCurrentGLSLProgramID = 		0;
 	m_bForceDisableGLSL	=			false;
