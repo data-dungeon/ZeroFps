@@ -1428,23 +1428,22 @@ Entity*	ZeroEd::GetTargetObject2()
 		if(kObjects[i]->GetName() == "StaticEntity")				continue;
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")		continue;
 		
-		//get mad property and do a linetest		
-		//if(kObjects[i]->GetProperty("P_Tcs") == NULL)			continue;
 
 		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
 		d = 999999999;
 	
-		if(!mp)
-		{
-			d = (start - kObjects[i]->GetWorldPosV()).Length();
-		}
-		else
+		//if we have a mad do a per polygontest, otherwise just check distance
+		if(mp && mp->IsValid())
 		{
 			if(mp->TestLine(start,dir))
 			{	
 				cp = mp->GetLastColPos();
 				d = start.DistanceTo(cp);
 			}
+		}
+		else	
+		{
+			d = (start - kObjects[i]->GetWorldPosV()).Length();
 		}
 
 		if(d < closest)

@@ -128,6 +128,30 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_fGain); // gain
 	
 	SetNetUpdateFlag(iConnectionID,false);
+	
+	
+	//check if all clients got sound, if so clear it
+	if(!m_strFileName.empty() && !m_bLoop)
+	{
+		int iClients = m_pkZeroFps->m_pkNetWork->GetNumOfClients();
+		bool bComplete = true;
+		for(int i =0;i<iClients;i++)
+		{
+			if(m_pkZeroFps->m_pkNetWork->IsConnected(i) &&
+				m_pkEntity->GetExistOnClient(i) &&
+				GetNetUpdateFlag(i))
+			{
+				bComplete = false;
+				break;
+			}
+		}
+		
+		if(bComplete)
+		{
+			//cout<<"everyone seems to have the sound,clearing it: "<<m_pkEntity->GetEntityID()<<endl;
+			m_strFileName = "";
+		}
+	}
 }
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )

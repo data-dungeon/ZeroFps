@@ -71,6 +71,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		//model handling
+		bool IsValid()								{	return kMadHandle.IsValid();}
 		void SetBase(const char* acName);
 		void SetScale(float fScale);
 		bool AddMesh(int iSId);

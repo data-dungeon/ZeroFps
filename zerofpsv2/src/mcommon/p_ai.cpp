@@ -377,20 +377,20 @@ void P_AI::Touch(int iID)
 	if(m_pkCharacterControl)
 	{	
 	
-// 		if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntityManager->GetPropertyFromEntityID(iID,"P_CharacterControl"))
-// 		{
-// // 			if(pkCC->GetControl(eUP))
-// // 			{
-// 				m_pkCharacterControl->Lock(0.5);
-// // 	 			m_pkCharacterControl->SetControl(eUP,false);
-// // 			}
-// 		}
-// 		else
-// 		{		
+		if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntityManager->GetPropertyFromEntityID(iID,"P_CharacterControl"))
+		{
+			if(pkCC->GetControl(eUP))
+			{
+				m_pkCharacterControl->Lock(0.5);
+	 			m_pkCharacterControl->SetControl(eUP,false);
+			}
+		}
+		else
+		{		
 			float fRot = m_pkCharacterControl->GetYAngle();				
 			fRot +=180;
 			m_pkCharacterControl->SetYAngle(fRot);								
-// 		}
+		}
 	}
 }
 
