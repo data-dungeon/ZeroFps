@@ -367,11 +367,11 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				sprintf(cmd, "r_useglsl %i", (int) g_kMistClient.IsButtonChecked("GLSLCheckbox"));
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
 			
-				//also enable shadowmaps i glsl is enabled
+				//also enable shadowmaps if glsl is enabled
 				if(g_kMistClient.IsButtonChecked("GLSLCheckbox"))
 				{
-					sprintf(cmd, "r_shadowmap %i", (int) g_kMistClient.IsButtonChecked("GLSLCheckbox"));
-					g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+					g_kMistClient.m_pkZeroFps->m_pkConsole->Execute("r_shadowmap 1");	
+					g_kMistClient.CheckButton("ShadowmapCheckbox",true);
 				}			
 			}			
 			if(strController == "ShadowmapCheckbox")
@@ -379,6 +379,13 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				char cmd[50];
 				sprintf(cmd, "r_shadowmap %i", (int) g_kMistClient.IsButtonChecked("ShadowmapCheckbox"));
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
+			
+				//if no shadowmaps also disable glsl
+				if(!g_kMistClient.IsButtonChecked("ShadowmapCheckbox") && g_kMistClient.IsButtonChecked("GLSLCheckbox"))
+				{
+					g_kMistClient.m_pkZeroFps->m_pkConsole->Execute("r_useglsl 0");	
+					g_kMistClient.CheckButton("GLSLCheckbox",false);					
+				}
 			}
 			if(strController == "ShadowmapRealtimeCheckbox")
 			{
