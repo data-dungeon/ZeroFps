@@ -17,6 +17,7 @@ public:
 		bool m_bPrevUseGLSLState;		
 		bool m_bPrevShadowMapState;
 		bool m_bPrevShadowMapRealtimeState;
+		int  m_iPrevShadowmapQuality;
 		bool m_bPrevVegetationState;
 		int m_iCurrentShadowGroup;
 		int m_iCurrentPage;

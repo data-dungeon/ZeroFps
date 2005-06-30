@@ -91,6 +91,11 @@ void OptionsDlg::Open()
 	m_pkMC->CheckButton("FullscreenCheckbox", (m_pkRender->GetFullscreen() == true) );
 	m_pkMC->CheckButton("WindowCheckbox", (m_pkRender->GetFullscreen() == false) );
 
+	m_kOptionsValues.m_iPrevShadowmapQuality = m_pkZeroFps->GetShadowMapQuality();
+ 	m_pkMC->CheckButton("ShadowmapQualityLow", (m_pkZeroFps->GetShadowMapQuality() == 512));	
+ 	m_pkMC->CheckButton("ShadowmapQualityMed", (m_pkZeroFps->GetShadowMapQuality() == 1024));	
+ 	m_pkMC->CheckButton("ShadowmapQualityHi", (m_pkZeroFps->GetShadowMapQuality() == 2048));	
+
 // 	m_pkMC->CheckButton("NumShadows0Rb", (m_pkZShadow->GetNumShadowsPerModel() == 0));	
 // 	m_pkMC->CheckButton("NumShadows1Rb", (m_pkZShadow->GetNumShadowsPerModel() == 1));
 // 	m_pkMC->CheckButton("NumShadows2Rb", (m_pkZShadow->GetNumShadowsPerModel() == 2));
@@ -232,6 +237,9 @@ void OptionsDlg::Close(bool bSave)
 
 		m_kOptionsValues.m_bLockGammaColors = m_pkMC->IsButtonChecked("LockGammaColorsCheckbox");
 
+
+		bool bNeedRestart = false;
+
 		if( (m_pkMC->IsButtonChecked("ScreenSize800x600Rb") &&
 			!(m_pkMC->m_iWidth == 800 && m_pkMC->m_iHeight == 600)) || 
 			(m_pkMC->IsButtonChecked("ScreenSize1024x768Rb") &&
@@ -247,27 +255,45 @@ void OptionsDlg::Close(bool bSave)
 			(m_pkMC->IsButtonChecked("GLSLCheckbox") != m_kOptionsValues.m_bPrevUseGLSLState)
 			)
 		{
-			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
-			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+			bNeedRestart = true;
+// 			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
+// 			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
 		}
 
 		if(m_pkMC->m_iScaleMode == AUTO_SCALE && !m_pkMC->IsButtonChecked("ScaleGUICheckbox"))
 		{
-			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
-			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+// 			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
+// 			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+			bNeedRestart = true;
 		}
 
 		if(m_pkMC->m_iScaleMode == MANUALLY_SCALE && m_pkMC->IsButtonChecked("ScaleGUICheckbox"))
 		{
-			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
-			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+// 			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
+// 			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);
+			bNeedRestart = true;
 		}
 
-		if(m_pkMC->IsButtonChecked("NumShadows0Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 0");
-		if(m_pkMC->IsButtonChecked("NumShadows1Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 1");
-		if(m_pkMC->IsButtonChecked("NumShadows2Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 2");
-		if(m_pkMC->IsButtonChecked("NumShadows3Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 3");
-		if(m_pkMC->IsButtonChecked("NumShadows4Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 4");
+ 		if(m_pkMC->IsButtonChecked("ShadowmapQualityLow")) m_pkZeroFps->m_pkConsole->Execute("r_shadowmapquality 512");
+ 		if(m_pkMC->IsButtonChecked("ShadowmapQualityMed")) m_pkZeroFps->m_pkConsole->Execute("r_shadowmapquality 1024");
+ 		if(m_pkMC->IsButtonChecked("ShadowmapQualityHi")) m_pkZeroFps->m_pkConsole->Execute("r_shadowmapquality 2048");
+
+		if(m_pkZeroFps->GetShadowMapQuality() != m_kOptionsValues.m_iPrevShadowmapQuality)
+		{
+			bNeedRestart = true;
+		}
+		
+		if(bNeedRestart)
+		{
+			m_pkMC->SetText("RestartMsgLabel", "You must restart before the changes take effect.");
+			m_pkMC->ShowWnd("RestartMsgBox", true, true, true);				
+		}
+
+// 		if(m_pkMC->IsButtonChecked("NumShadows0Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 0");
+// 		if(m_pkMC->IsButtonChecked("NumShadows1Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 1");
+// 		if(m_pkMC->IsButtonChecked("NumShadows2Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 2");
+// 		if(m_pkMC->IsButtonChecked("NumShadows3Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 3");
+// 		if(m_pkMC->IsButtonChecked("NumShadows4Rb")) m_pkZeroFps->m_pkConsole->Execute("r_shadows 4");
 
 		for(int i=1; i<6; i++)
 			if( m_kOptionsValues.m_abEnabledShadowGroups[i] ) 
@@ -396,7 +422,7 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 
 			if(strController == "NetSpeedSetDefaultBn")
 			{
-				((ZGuiSlider*)g_kMistClient.GetWnd("NetSpeedSlider"))->SetPos(3000, true);
+				((ZGuiSlider*)g_kMistClient.GetWnd("NetSpeedSlider"))->SetPos(10000, true);
 			}
 
 			//char cmd[25];
