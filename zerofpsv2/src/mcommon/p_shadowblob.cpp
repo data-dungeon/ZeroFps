@@ -55,7 +55,7 @@ void P_ShadowBlob::Update()
 	m_pkZShaderSystem->ClearGeometry();
 	
 	m_pkZShaderSystem->MatrixPush();
-	m_pkZShaderSystem->MatrixTranslate(kShadowPos + Vector3(0,0.01,0));
+	m_pkZShaderSystem->MatrixTranslate(kShadowPos + Vector3(0,0.05,0));
 	
 	float x = fScale/2.0;
 	float z = fScale/2.0;
