@@ -854,6 +854,15 @@ void P_CharacterProperty::UpdateStats()
 	
 	DebugSet("Health: ",int(m_kCharacterStats.GetTotal("Health")));
 	
+	
+	//apply fall damage
+	float fFallDmg = pkCC->GetFallDamage();
+	if(fFallDmg > 0)
+	{
+		SetLastDamageFrom(-1);					
+		m_kCharacterStats.ChangeStat("Health",-fFallDmg);
+	}	
+	
 	//check if character is dead
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 	{
@@ -926,16 +935,7 @@ void P_CharacterProperty::UpdateStats()
 			
 			
 		//health
-		string strHealth("Health");
-		
-		//apply fall damage
-		float fFallDmg = pkCC->GetFallDamage();
-		if(fFallDmg > 0)
-		{
-			SetLastDamageFrom(-1);					
-			m_kCharacterStats.ChangeStat(strHealth,-fFallDmg);
-		}
-
+		string strHealth("Health");		
  		if(m_bInCamp) 		
  			m_kCharacterStats.ChangeStat(strHealth,m_kCharacterStats.GetTotal("HealthRegen") * 10);
  		else
