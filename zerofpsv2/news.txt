@@ -1,7 +1,7 @@
 Mistlands - What's new
 ********************************************************************************
 
-0.3.3 - (Mistlands milestone 4)
+0.4.0 - (Mistlands milestone 4)
 -------------------------------
 * Added skill system
 * Added primitiv enemy AI
@@ -11,15 +11,19 @@ Mistlands - What's new
 * Character stats
 * Experience, Levels
 * New light system
-* Thunder enviromental effect
+* Thunder environment effect
 * Looting from dead monsters
 * Simple scripted store system
 * New rule-system for combat etc
 * Removed crosshair and mouse toggle
-* Some optimizations allover the engine
+* Some optimizations all over the engine
 * Updated mistclient options menu
 * Skillbar
 * Statwindow
+* Masterserver, database over all started mistservers
+* zeroed uses userdatabase
+* New enemies, animations, skills, weapons, items etc
+
 
 0.3.2 - (Mistlands milestone 3)
 -------------------------------
