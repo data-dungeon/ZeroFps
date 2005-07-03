@@ -10,13 +10,13 @@ P_ShadowBlob::P_ShadowBlob()
 	m_pkZShaderSystem=		static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 	m_pkTcs =					static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));			
 	
-	
-	m_bNetwork = true;
+	m_pkMad			= NULL;
+	m_bNetwork 		= true;
 	m_iSortPlace	=	11;
 	
 	m_kOffset.Set(0,0,0);
-	m_fScale =		1;
-	m_bHaveSet = 	false;
+	m_fScale 		=		1;
+	m_bHaveSet 		= 	false;
 }
 
 P_ShadowBlob::~P_ShadowBlob()
@@ -29,18 +29,24 @@ void P_ShadowBlob::Update()
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NOSHADOWLAST)
 		return;
 
+
+	if(!m_pkMad)
+		m_pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
+
+	if(!m_bHaveSet)
+	{
+		m_bHaveSet = true;		
+		m_fScale = m_pkMad->GetRadius();
+	}
+	
+	if(m_pkMad)
+		if(m_pkMad->IsCulled())
+			return;
+
 	Vector3 kShadowPos = Vector3::ZERO;
 	float fScale = m_fScale;
 	
 	
-	if(!m_bHaveSet)
-	{
-		m_bHaveSet = true;
-		if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
-		{
-			m_fScale = pkMad->GetRadius();
-		}
-	}
 
 	kShadowPos = GetShadowPos();
 	fScale = m_fScale - ( kShadowPos.DistanceTo(GetEntity()->GetIWorldPosV() + m_kOffset)/2.0 );	

@@ -47,7 +47,7 @@ void P_LinkToJoint::Update()
 		if(P_Mad* pkMad = (P_Mad*)pkHost->GetProperty("P_Mad"))
 		{
 			kPos = pkHost->GetIWorldPosV();
-			if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(kPos,pkMad->GetRadius()))
+			if(pkMad->IsCulled())
 			{
 				m_pkEntity->SetWorldPosV(kPos);
 				return;

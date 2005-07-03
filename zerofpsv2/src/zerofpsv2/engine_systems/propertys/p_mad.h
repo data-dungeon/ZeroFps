@@ -21,6 +21,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		ZeroFps*			m_pkZeroFps;	// Ptr to zerofps sys.
 		ZShaderSystem* m_pkZShaderSystem;
 		
+		bool		m_bCulled;
 		float		m_fLod;
 		bool		m_bIsVisible;
 		int		m_iShadowGroup;
@@ -77,6 +78,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool AddMesh(int iSId);
 
 		int GetCollisionMeshID()				{	return m_iCollisionMeshID; }
+		bool IsCulled()							{	return m_bCulled;				}
 		
 		//animation
 		void SetAnimation(const char* szName, float fStartTime);

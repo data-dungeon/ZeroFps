@@ -501,6 +501,17 @@ void PSystem::TestInsideFrustum()
 		return;
 	}
 
+
+	Vector3 kPos = m_kPosition + m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
+
+
+	//Distance culling
+	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kPos) > m_pkFps->GetViewDistance())
+	{
+		m_bInsideFrustum = false;
+		return;
+	}
+
 	Frustum *pkFrustum = m_pkFps->GetCam()->GetFrustum();
 
 	// test culling
@@ -508,8 +519,6 @@ void PSystem::TestInsideFrustum()
 	{
 		Vector3 kScale = m_pkPSystemType->m_kPSystemBehaviour.m_kMaxSize;
 
-		Vector3 kPos = m_kPosition + 
-							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
 		
 		if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
 			m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset,
@@ -524,9 +533,6 @@ void PSystem::TestInsideFrustum()
 	}
 	else if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "point" )
 	{		
-		Vector3 kPos = m_kPosition + 
-							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
-
 		if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
 			m_bInsideFrustum = pkFrustum->PointInFrustum ( m_kRotation.VectorRotate( kPos ) );
 		else

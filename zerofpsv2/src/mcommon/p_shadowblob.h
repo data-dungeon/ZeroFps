@@ -31,6 +31,7 @@ class MCOMMON_API P_ShadowBlob: public Property {
 	
 		ZMaterial*	m_pkMaterial;
 		
+		P_Mad*	m_pkMad;
 		
 		Vector3 GetShadowPos();
 		

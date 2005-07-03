@@ -653,7 +653,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*kMap->m_fTileSize);
 
 	fDistance = (CamPos-PatchCenter).Length() ;
-	if(fDistance > m_iViewDistance)
+	if(fDistance > 300)
 		return;
 		
 /*	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,

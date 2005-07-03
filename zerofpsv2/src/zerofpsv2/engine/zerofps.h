@@ -163,7 +163,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int				m_iShadowMapMode;
 		int				m_iShadowMapQuality;
 		bool				m_bVegetation;
-				
+		float				m_fViewDistance;		
+		
 		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
 		
 
@@ -345,6 +346,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int  GetShadowMapQuality()			{	return m_iShadowMapQuality;	}
 		
 		bool GetVegetation()					{	return m_bVegetation;	}
+		float GetViewDistance()				{	return m_fViewDistance;	}
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);

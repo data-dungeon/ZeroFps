@@ -501,6 +501,9 @@ private:
 	// Radius from local origo that contain all of modell.
 	float										m_fBoundRadius;
 
+	// longest distance from two vertises / 2
+	float										m_fSize;
+
 	int										iStartFrame;
 	int										iEndFrame;
 
@@ -605,6 +608,7 @@ public:
 	void PrepareMesh(Mad_CoreMesh* pkMesh);
 
 	float GetRadius();
+	float GetSize()																						{	return m_fSize;	};
 	void CalculateRadius();
 
 	int GetJointID(const char* szJointName);

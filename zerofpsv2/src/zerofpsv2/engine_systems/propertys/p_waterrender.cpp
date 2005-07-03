@@ -55,10 +55,14 @@ void P_WaterRender::Update()
 	kMin.Set(kPos.x-m_kSize.x,kPos.y-m_kSize.y,kPos.z-m_kSize.z);
 	kMax.Set(kPos.x+m_kSize.x,kPos.y+m_kSize.y,kPos.z+m_kSize.z);
 	
+	
 	//frustum culling
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(kMin,kMax))
 		return;			
 	
+	if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) - m_kSize.Length() > m_pkZeroFps->GetViewDistance())
+		return;
+
 		
 	//update light					
 	m_pkLight->Update(&m_kLightProfile,kPos);	

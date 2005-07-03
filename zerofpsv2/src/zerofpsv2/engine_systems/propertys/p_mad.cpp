@@ -32,6 +32,7 @@ P_Mad::P_Mad()
 	m_iShadowGroup = 0;
 
 	m_bCastShadow = true;
+	m_bCulled = false;
 	
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
@@ -83,26 +84,28 @@ void P_Mad::Update()
 			return;
 			
 			
+		m_bCulled = true;
 			
 		static Vector3 kPos;
 		kPos = m_pkEntity->GetIWorldPosV();
 				
 		DoAnimationUpdate();
 		
+		//distance cull
+		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW && !m_pkEntity->IsZone())
+		{
+			float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos);		
+ 			if(fDistance > 10)
+ 			{
+				float r = GetSize();				
+ 				if( (fDistance - r) > m_pkZeroFps->GetViewDistance() * r)
+ 					return;			
+ 			}
+		}
 		
 		//Cull against sphere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(kPos,GetRadius()))
-		{
- 			//StopProfileTimer("r___mad");
-			return;
-		}
-		
-// 		cout<<"bla:"<<m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) / GetRadius()<<endl;
-// 		if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) / GetRadius() > 40)
-// 		{
-// 			return;
-// 		
-// 		}
+			return;	
 		
 
 		//get entity rotation
@@ -127,6 +130,9 @@ void P_Mad::Update()
 			}
 		}
 		
+		
+		//not culled
+		m_bCulled = false;
 		
 		//always update bones
 		UpdateBones();
@@ -157,6 +163,7 @@ void P_Mad::Update()
 					}
 				}
 			}
+			
 			
 			//update lighting
 			m_pkLight->Update(&m_kLightProfile,kPos);						

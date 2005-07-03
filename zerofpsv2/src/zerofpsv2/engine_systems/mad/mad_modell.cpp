@@ -734,6 +734,15 @@ void Mad_Modell::DrawSkelleton()
 	glPopAttrib();
 }
 
+float Mad_Modell::GetSize()
+{
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
+	if(!pkCore)
+		return 0;
+
+	return pkCore->GetSize() * m_fScale;	
+}
+
 float Mad_Modell::GetRadius()
 {
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 

@@ -81,6 +81,10 @@ void P_Light::Update()
 
 void P_Light::DrawFlare()
 {
+	//Distance culling
+	if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkLightSource->kPos) > m_pkZeroFps->GetViewDistance())
+		return;
+
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->PointInFrustum(m_pkLightSource->kPos))
 		return;
 

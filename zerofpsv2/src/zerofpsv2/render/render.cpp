@@ -14,7 +14,6 @@ Render::Render()
 
 	// Set Our own local variables.
 	m_iDetail					= 30;						//height meens greater detail att longer range	
-	m_iViewDistance			= 300;
 	m_iFpsLock					= 60;
 	m_iAutoLod					= 1;
 	m_iLodUpdate				= 0;	
@@ -41,7 +40,6 @@ Render::Render()
 	RegisterVariable("r_terrnorm",		&m_iDrawLandNormal, CSYS_BOOL);
 
 	RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
-	RegisterVariable("r_viewdistance",	&m_iViewDistance,CSYS_INT);
 	RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
 	RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
 

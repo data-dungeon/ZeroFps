@@ -28,6 +28,7 @@ Mad_Core::Mad_Core()
 	iActiveAnimation	= 0;
 	iBoneFrame			= 0;
 	m_fBoundRadius		= 0;
+	m_fSize				= 0;
 
 	m_bInterpolVertexFrames = false;
 }
@@ -732,16 +733,25 @@ void Mad_Core::CalculateRadius()
 
 	float fDist=0;
 
+	Vector3 kMax(-999999,-999999,-999999);
+	Vector3 kMin(999999,999999,999999);
+
 	for(unsigned int i=0; i <pkMesh->GetLODMesh(0)->akFrames[0].akVertex.size(); i++) 
 	{
+		if(kMax.x < pkVertex[i].x) kMax.x = pkVertex[i].x;
+		if(kMax.y < pkVertex[i].y) kMax.y = pkVertex[i].y;
+		if(kMax.z < pkVertex[i].z) kMax.z = pkVertex[i].z;
+		if(kMin.x > pkVertex[i].x) kMin.x = pkVertex[i].x;
+		if(kMin.y > pkVertex[i].y) kMin.y = pkVertex[i].y;
+		if(kMin.z > pkVertex[i].z) kMin.z = pkVertex[i].z;
+		
 		float newdist = pkVertex[i].Length();		
 		
 		if(newdist > fDist)
 			fDist = newdist;
-
-
 	}
 
+	m_fSize = kMax.DistanceTo(kMin);
 	m_fBoundRadius = fDist;
 	//cout << "Bound Radius for '" << GetName() << "' is = " << fDist << endl;
 }

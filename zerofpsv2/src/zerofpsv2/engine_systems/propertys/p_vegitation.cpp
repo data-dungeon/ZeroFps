@@ -98,6 +98,10 @@ void P_Vegitation::Update()
 	static Vector3 kObjectPos;
 	kObjectPos = m_pkEntity->GetWorldPosV();
 
+	//Distance culling
+	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kObjectPos) > m_pkZeroFps->GetViewDistance())
+		return;
+
 	//frustum culling sphere
  	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(kObjectPos,m_fRadius))
  		return;

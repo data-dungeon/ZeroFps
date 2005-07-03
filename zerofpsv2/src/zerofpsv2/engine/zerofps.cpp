@@ -126,6 +126,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bTcsFullframe			= false;
 	m_iProfileTotalTime		= 0;
 	m_bVegetation				= true;
+	m_fViewDistance			= 30;
 	
 	m_bShadowMapRealtime		= false;
 	m_iShadowMapMode			= 1;
@@ -155,6 +156,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
 	RegisterVariable("r_vegetation",		&m_bVegetation,			CSYS_BOOL);	
+	RegisterVariable("r_viewdistance",	&m_fViewDistance,			CSYS_FLOAT);	
 	
 	RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
 	RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);

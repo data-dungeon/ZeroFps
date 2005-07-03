@@ -119,6 +119,7 @@ public:
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
 	
 	float GetRadius();
+	float GetSize();
 
 	bool RemoveMesh(int iId);	
 	bool AddMesh(char* szName);	
