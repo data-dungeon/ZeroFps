@@ -1,0 +1,13 @@
+Mistlands is made by the Zero Point Gameplay team.
+It runs on the inhouse made engine ZeroFPS.
+
+Team members:
+
+Jimmy Magnusson  (Vim)            - Lead programmer, Lead Designer
+Richard Svensson (Dvoid)          - Programmer  
+Erik Glans       (Zeblar)         - Programmer, Music/Sound  
+Magnus Jönsson   (Zerom)          - Programmer, Graphics 
+Alexander Roemer (DemonWolf)      - Music 
+Ricky Hunter     (Misledtomisery) - Concept artist 
+Jono Alderson    (Kaos)           - Public relations, Advertising 
+Mattias Nyberg   (Kuckel)         - Graphics 
