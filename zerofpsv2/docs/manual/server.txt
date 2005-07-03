@@ -12,3 +12,5 @@ prevent the application from rendering and using CPU.
 Take down the console with the ½ key, the one above your TAB key and below you 
 ESC key. Use load levelname and save levelname to load and save levels.
 
+### How do I *insert question* the server
+Ask in our forum :)
