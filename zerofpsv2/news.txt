@@ -1,6 +1,23 @@
 Mistlands - What's new
 ********************************************************************************
 
+0.3.3 - (Mistlands milestone 4)
+-------------------------------
+* Added skill system
+* Added primitiv enemy AI
+* Added GLSL support
+* GLSL: Smother shadowmaps, specmaps , vegitation movement 
+* Use items in containers
+* Character stats
+* Experience, Levels
+* New light system
+* Thunder enviromental effect
+* Looting from dead monsters
+* Simple scripted store system
+* New rule-system for combat etc
+* Removed crosshair and mouse toggle
+* Some optimizations allover the engine
+
 
 0.3.2 - (Mistlands milestone 3)
 -------------------------------
