@@ -6,8 +6,7 @@ Team members:
 Jimmy Magnusson  (Vim)            - Lead programmer, Lead Designer
 Richard Svensson (Dvoid)          - Programmer  
 Erik Glans       (Zeblar)         - Programmer, Music/Sound  
-Magnus Jönsson   (Zerom)          - Programmer, Graphics 
+Magnus Jönsson   (Zerom)          - Graphics, Programmer
 Alexander Roemer (DemonWolf)      - Music 
 Ricky Hunter     (Misledtomisery) - Concept artist 
-Jono Alderson    (Kaos)           - Public relations, Advertising 
 Mattias Nyberg   (Kuckel)         - Graphics 
