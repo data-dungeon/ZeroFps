@@ -1,6 +1,0 @@
-#g++ -c *.cpp -O3
-rm -f *.o
-../../complink "*.cpp"
-./relink
-
-#g++ *.cpp -o ../../../bin/librender.so --shared -O3 -lGL -lGLU -lSDL_image -L/usr/X11R6/lib `sdl-config --cflags --libs`

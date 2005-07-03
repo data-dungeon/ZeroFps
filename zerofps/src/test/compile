@@ -1,1 +1,0 @@
-g++ *.cpp -o ../../bin/test -L../../bin/ -lbasic -lengine -lrender -lglut -L/usr/X11R6/lib
