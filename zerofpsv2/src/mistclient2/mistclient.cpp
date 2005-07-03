@@ -896,12 +896,12 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-camp.lua",10);
 		}
 	
-	if(m_pkInputHandle->Pressed(KEY_O))
-		if(!DelayCommand() )
-		{
-			for(int i =0;i<19;i++)
-				SendRemoveItemFromSkillbar(i);
-		}
+// 	if(m_pkInputHandle->Pressed(KEY_O))
+// 		if(!DelayCommand() )
+// 		{
+// 			for(int i =0;i<19;i++)
+// 				SendRemoveItemFromSkillbar(i);
+// 		}
 			
 			
 // 	//fireball test
