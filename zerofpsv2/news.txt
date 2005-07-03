@@ -21,7 +21,7 @@ Mistlands - What's new
 * Skillbar
 * Statwindow
 * Masterserver, database over all started mistservers
-* zeroed uses userdatabase
+* User rights system
 * New enemies, animations, skills, weapons, items etc
 
 
