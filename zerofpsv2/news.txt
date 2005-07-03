@@ -17,7 +17,9 @@ Mistlands - What's new
 * New rule-system for combat etc
 * Removed crosshair and mouse toggle
 * Some optimizations allover the engine
-
+* Updated mistclient options menu
+* Skillbar
+* Statwindow
 
 0.3.2 - (Mistlands milestone 3)
 -------------------------------
