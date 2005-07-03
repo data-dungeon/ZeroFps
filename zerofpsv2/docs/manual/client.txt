@@ -2,7 +2,9 @@ Mistlands - Manual: Client
 ********************************************************************************
 
 ### Before you can play
-You need a server to connect to. Look in server to find out how to start one.
+You need a server to connect to. All servers started will be listed when you try to
+connect. If your unlucky however, no server is started. You can easily start one yourself
+by starting up mistserver.
 
 ### How to connect to the server
 Start the mistclient application.
@@ -26,18 +28,21 @@ Character movement
  ctrl - Hold down to walk
  q - Turn left
  e - turn righteq
+ z - sit and rest
+ space - enter combat mode
 
 Camera controls
  x - Change to frontview of character
  Mouse scroll - zoom in/out
+ F and R - zoom in/out
  RMB+Mouse - rotate camera
 
 Other
  Left click - interact with object
- Right click - Bring up action meny on object, if it has any
- Space - mouselook
- I - open/closes inventory screen
- C - open/closes equip screen
+ Left click hold - bring up objects action menu, if it has any
+ I - open/close inventory screen
+ E - open/close equip screen
+ T - open/close chatbox
  Enter - Write something in chatbox (click enter again to send it).
 
 
@@ -55,8 +60,8 @@ To pick up an item, left click on it.
 Do drop an item, drag it outside the gui.
 
 ### Action meny
-The actionmeny appears when clicking and holdning down the right mouse button
-on some objects. For example, when right clicking on a potion, three icons 
+The actionmeny appears when clicking and holding down the left mouse button
+on some objects. For example, when left clicking on a potion for about 1-2 sec., three icons 
 appear: look, dring and pickup. Letting go of the mousebutton while the mouse 
 is on one of the buttons, triggers the action. The action meny always appear 
 when more than one action can be performed with an object.
@@ -67,5 +72,25 @@ To open a container in the world, chose open from the action meny when right
 clicking on it.
 
 ### Using objects, items and characters
-Usually just left click on a object, or rightclick on it and chose an event on 
-the action menu. Items can't be used from the inventory yet.
+Usually just left click on a object, or left click on it for while and chose an event on 
+the action menu. To use a item in the inventory, doubleclick on it.
+
+### Equipping items
+To equip an item, just drag the item to the slot you want to equip it on. The slots the item can
+be equipped on gets a white border around it when you drag it. Some weapons require both hands
+free, bows for example.
+
+### Combat
+To attack a enemy, you need to do the following:
+ - Have a weapon equipped, unless you are attacking with a spell.
+ - Be in combatmode (press space)
+ - Select an enemy (left click on one a he gets a red marker)
+ - Be inside skill range, different skills have different ranges
+ - Click on a skill, or have a defaultskill chosen
+
+### Skills
+To select a default skill, right click on it.
+
+### camp
+By using the campfire skill, and sitting down (z), you regenerate life, stamina and mana much faster.
+
