@@ -16,6 +16,7 @@ P_Sound::P_Sound()
 	m_strFileName = "";
 	m_strStopFileName = "";
 	m_bLoop=false;
+	m_fStartTime = -1;
 
 	m_bStarted = false;
 	m_kPrevpos = Vector3(-9999,-9999,-9999);
@@ -65,7 +66,7 @@ void P_Sound::Update()
 	}	
 
 	if(!m_strFileName.empty())
-	{
+	{	
 		Entity* pkEnt = GetEntity();
 
 		if(m_bLoop == false)
@@ -110,6 +111,8 @@ void P_Sound::StartSound(string strName, bool bLoop, float fGain)
 	m_strFileName = strName;
 	m_bLoop = bLoop;
 	m_fGain = fGain;
+	m_fStartTime = m_pkZeroFps->GetEngineTime();
+	
 	SetNetUpdateFlag(true);
 }
 
@@ -122,6 +125,17 @@ void P_Sound::StopSound(string strName)
 
 void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
+	//if 2s has passed since non looping sound was started, dont send it to client
+	if(!m_bLoop && 
+		!m_strFileName.empty() && 
+		m_pkZeroFps->GetEngineTime() > m_fStartTime + 2.0)
+	{
+		m_strFileName = "";
+		//cout<<"P_Sound: none looping sound timed out ,starttime:"<<m_fStartTime<<"  current time:"<<m_pkZeroFps->GetEngineTime()<<endl;
+	}
+	
+
+
 	pkNetPacket->Write_Str( m_strFileName); // filename
 	pkNetPacket->Write(m_bLoop); // loop or not
 	pkNetPacket->Write_Str( m_strStopFileName); // filename
@@ -130,28 +144,28 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	SetNetUpdateFlag(iConnectionID,false);
 	
 	
-	//check if all clients got sound, if so clear it
-	if(!m_strFileName.empty() && !m_bLoop)
-	{
-		int iClients = m_pkZeroFps->m_pkNetWork->GetNumOfClients();
-		bool bComplete = true;
-		for(int i =0;i<iClients;i++)
-		{
-			if(m_pkZeroFps->m_pkNetWork->IsConnected(i) &&
-				m_pkEntity->GetExistOnClient(i) &&
-				GetNetUpdateFlag(i))
-			{
-				bComplete = false;
-				break;
-			}
-		}
-		
-		if(bComplete)
-		{
-			//cout<<"everyone seems to have the sound,clearing it: "<<m_pkEntity->GetEntityID()<<endl;
-			m_strFileName = "";
-		}
-	}
+// 	//check if all clients got sound, if so clear it
+// 	if(!m_strFileName.empty() && !m_bLoop)
+// 	{
+// 		int iClients = m_pkZeroFps->m_pkNetWork->GetNumOfClients();
+// 		bool bComplete = true;
+// 		for(int i =0;i<iClients;i++)
+// 		{
+// 			if(m_pkZeroFps->m_pkNetWork->IsConnected(i) &&
+// 				m_pkEntity->GetExistOnClient(i) &&
+// 				GetNetUpdateFlag(i))
+// 			{
+// 				bComplete = false;
+// 				break;
+// 			}
+// 		}
+// 		
+// 		if(bComplete)
+// 		{
+// 			//cout<<"everyone seems to have the sound,clearing it: "<<m_pkEntity->GetEntityID()<<endl;
+// 			m_strFileName = "";
+// 		}
+// 	}
 }
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
@@ -209,6 +223,9 @@ void P_Sound::Load(ZFIoInterface* pkFile,int iVersion)
 		break;
 	}
 
+	m_fStartTime = m_pkZeroFps->GetEngineTime();
+	
+	
 	SetNetUpdateFlag(true);
 }
 
@@ -220,6 +237,7 @@ bool P_Sound::HandleSetValue( string kValueName ,string kValue )
 	{
 		res = false;
 		m_strFileName = kValue;
+		m_fStartTime = m_pkZeroFps->GetEngineTime();
 	}
 	
 	if(strcmp(kValueName.c_str(), "loop") == 0) 
@@ -285,7 +303,7 @@ namespace SI_P_Sound
 				pe->StartSound(strSound,(dLoop==1) ? true : false, (float) dGain);			
 			}
 			else
-				cout<<"WARNING: StartSoundLua on entity without P_Sound"<<endl;
+				cout<<"WARNING: StartSoundLua on entity without P_Sound: "<<pkObject->GetType()<<endl;
 		}
 		else
 			cout<<"WARNING: StartSoundLua could not find entity "<<id<<endl;
