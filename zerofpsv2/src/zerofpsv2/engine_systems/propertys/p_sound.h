@@ -21,6 +21,7 @@ private:
 	string m_strFileName;
 	bool m_bLoop;
 	float m_fGain;
+	float m_fStartTime;
 	
 	string m_strStopFileName;
 

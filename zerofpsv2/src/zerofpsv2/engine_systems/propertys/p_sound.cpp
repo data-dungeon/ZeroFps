@@ -302,8 +302,8 @@ namespace SI_P_Sound
 			{
 				pe->StartSound(strSound,(dLoop==1) ? true : false, (float) dGain);			
 			}
-			else
-				cout<<"WARNING: StartSoundLua on entity without P_Sound: "<<pkObject->GetType()<<endl;
+			//else
+			//	cout<<"WARNING: StartSoundLua on entity without P_Sound: "<<pkObject->GetType()<<endl;
 		}
 		else
 			cout<<"WARNING: StartSoundLua could not find entity "<<id<<endl;
