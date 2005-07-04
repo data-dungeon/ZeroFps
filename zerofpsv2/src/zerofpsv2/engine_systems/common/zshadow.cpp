@@ -94,7 +94,7 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 {
 	g_Logf("zerofps","ZShadow system created");
 
-	m_iNrOfShadows =		1;
+	m_iNrOfShadows =		0;
  	m_fExtrudeDistance = 100;
 	m_iCurrentShadows = 	0;
 	m_iCurrentVerts = 	0;

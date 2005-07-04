@@ -904,7 +904,7 @@ void P_CharacterProperty::UpdateStats()
  		
  		m_kCharacterStats.SetStat("StaminaMax",	m_kCharacterStats.GetTotal("Vitality") * 5.0 );
  		//m_kCharacterStats.SetStat("StaminaRegen",	m_kCharacterStats.GetTotal("Vitality") * 0.15 );
- 		m_kCharacterStats.SetStat("StaminaRegen",	1 );
+ 		m_kCharacterStats.SetStat("StaminaRegen",	2 );
 
 		//setup basic damage, and attack		
 		m_kCharacterStats.SetStat("Attack",	m_kCharacterStats.GetTotal("Dexterity") / 1.0 );
