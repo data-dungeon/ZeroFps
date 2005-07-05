@@ -1195,6 +1195,12 @@ void NetWork::SendAckList(int iClient, vector<int>& kAckList)
 		kNetPRespons.Write( kAckList[i] ); 
 
 	kNetPRespons.m_kAddress = m_RemoteNodes[iClient]->m_kAddress;
+	
+	if(kNetPRespons.m_iLength > MAX_PACKET_SIZE)
+	{
+		cout<<"ERROR - NetWork::SendAckList: kAckList larger then MAX_PACKET_SIZE"<<endl;
+	}
+
 	SendRaw(&kNetPRespons);
 }
 
@@ -1405,17 +1411,27 @@ void NetWork::Run()
 			m_RemoteNodes[i]->Clear();
 		}
 
+// 		int resent = 0;
+// 		int iBytes = 0;
 		for(set<int>::iterator it = m_RemoteNodes[i]->m_kRelSend.begin(); it != m_RemoteNodes[i]->m_kRelSend.end(); it++)
 		{
 			int iRel = m_RemoteNodes[i]->GetRel( (*it) );
 
 			if(( m_RemoteNodes[i]->m_akRelPackSendTime[iRel] + 0.25 ) < fEngineTime)
 			{
+// 				resent ++;
+// 				iBytes += m_RemoteNodes[i]->m_aiRelPackSize[iRel];
+				
 				m_RemoteNodes[i]->m_akRelPackSendTime[iRel] = fEngineTime;
 				SendUDP(m_RemoteNodes[i]->m_akRelPack[iRel], m_RemoteNodes[i]->m_aiRelPackSize[iRel], &m_RemoteNodes[i]->m_kAddress);
 				g_ZFObjSys.Logf("netpac", "Resending Packet: %d\n", m_RemoteNodes[i]->m_akRelPack[iRel]->m_kHeader.m_iOrder);
 			}
 		}
+
+// 		if(resent > 0)
+// 		{
+// 			cout<<"resent:"<<iBytes<<" bytes in "<<resent<<" packages"<<endl;
+// 		}
 
 		SendAckList(i, m_RemoteNodes[i]->m_kRelAckList);
 		m_RemoteNodes[i]->m_kRelAckList.clear();
