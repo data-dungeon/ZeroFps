@@ -1,10 +1,10 @@
 #ifndef _ENGINE_P_PFPATH_H_
 #define _ENGINE_P_PFPATH_H_
 
-#include "property.h"
-#include "engine_x.h"
-#include "zerofps.h"
-#include "astar.h"
+#include "../../engine/property.h"
+#include "../engine_systems_x.h"
+#include "../../engine/zerofps.h"
+#include "../common/astar.h"
 
 using namespace std;
 

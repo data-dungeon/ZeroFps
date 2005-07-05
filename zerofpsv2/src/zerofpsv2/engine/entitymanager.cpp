@@ -10,7 +10,7 @@
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 #include "../engine_systems/script_interfaces/si_properties.h"
-#include "p_pfmesh.h"
+#include "../engine_systems/propertys/p_pfmesh.h"
 #include "../basic/zfbasicfs.h"
 
 

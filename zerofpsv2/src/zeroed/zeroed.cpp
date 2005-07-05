@@ -17,7 +17,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
-#include "../zerofpsv2/engine/p_pfpath.h"
+#include "../zerofpsv2/engine_systems/propertys/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/ml_netmessages.h"

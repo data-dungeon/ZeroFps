@@ -4,7 +4,7 @@
 #include "p_item.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
-#include "../zerofpsv2/engine/p_pfpath.h"
+#include "../zerofpsv2/engine_systems/propertys/p_pfpath.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include "../zerofpsv2/basic/plane.h"
 #include <cmath>                    // for trigonometry functions

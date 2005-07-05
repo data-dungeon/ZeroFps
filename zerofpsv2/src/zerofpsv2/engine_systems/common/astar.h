@@ -1,11 +1,11 @@
 #ifndef _ENGINE_ASTAR_H_
 #define _ENGINE_ASTAR_H_
 
-#include "../basic/zfassert.h"
-#include "engine_x.h"
-#include "console.h"
-#include "entitymanager.h"
-#include "p_pfmesh.h"
+#include "../../basic/zfassert.h"
+#include "../engine_systems_x.h"
+#include "../../engine/console.h"
+#include "../../engine/entitymanager.h"
+#include "../propertys/p_pfmesh.h"
 
 class NaviMeshCell;
 

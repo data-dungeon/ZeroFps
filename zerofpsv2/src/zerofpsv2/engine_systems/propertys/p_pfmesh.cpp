@@ -1,11 +1,11 @@
 #include "p_pfmesh.h"
-#include "entity.h"
-#include "astar.h"
-#include "../engine_systems/propertys/p_mad.h"
-#include "../engine_systems/propertys/p_hmrp2.h"
-#include "../engine_systems/mad/mad_core.h"
-#include "../render/render.h"
-#include "../engine_systems/common/heightmap.h"
+#include "../../engine/entity.h"
+#include "../common/astar.h"
+#include "p_mad.h"
+#include "p_hmrp2.h"
+#include "../mad/mad_core.h"
+#include "../../render/render.h"
+#include "../common/heightmap.h"
 
 Vector3 CalcNormal(Vector3 VertA, Vector3 VertB, Vector3 VertC)
 {

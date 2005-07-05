@@ -7,7 +7,7 @@
  
   
 #include "mistserver.h"
-#include "../zerofpsv2/engine/p_pfpath.h"
+//#include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"

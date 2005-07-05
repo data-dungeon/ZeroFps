@@ -1,9 +1,9 @@
 #include "p_pfpath.h"
-#include "entity.h"
-#include "astar.h"
-#include "zerofps.h"
-#include "../engine_systems/propertys/p_mad.h"
-#include "../engine_systems/propertys/p_tcs.h"
+#include "../../engine/entity.h"
+#include "../common/astar.h"
+#include "../../engine/zerofps.h"
+#include "p_mad.h"
+#include "p_tcs.h"
 
 
 P_PfPath::P_PfPath()

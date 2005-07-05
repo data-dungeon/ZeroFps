@@ -14,7 +14,7 @@
 #include "../engine_systems/propertys/propertys.pkg"
 #include "network.h"
 #include "../basic/zfbasicfs.h"
-#include "astar.h"
+#include "../engine_systems/common/astar.h"
 
 #include "../render/glslprogram.h"
 //#include "../basic/zfresourcedb.h"

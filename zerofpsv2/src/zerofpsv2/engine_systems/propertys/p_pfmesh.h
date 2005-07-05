@@ -1,9 +1,9 @@
 #ifndef _ENGINE_P_PFMESH_H_
 #define _ENGINE_P_PFMESH_H_
 
-#include "property.h"
-#include "engine_x.h"
-#include "../basic/line2d.h"
+#include "../../engine/property.h"
+#include "../engine_systems_x.h"
+#include "../../basic/line2d.h"
 
 class P_Mad;
 class P_HMRP2;

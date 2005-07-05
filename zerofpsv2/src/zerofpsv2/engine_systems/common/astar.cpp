@@ -1,5 +1,5 @@
 #include "astar.h"
-#include "p_pfmesh.h"
+#include "../propertys/p_pfmesh.h"
 
 AStar::AStar()
 : ZFSubSystem("AStar")
