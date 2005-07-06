@@ -176,6 +176,9 @@
 				RelativePath=".\render.cpp">
 			</File>
 			<File
+				RelativePath=".\res_texture.cpp">
+			</File>
+			<File
 				RelativePath=".\texturemanager.cpp">
 			</File>
 			<File
@@ -217,6 +220,9 @@
 			</File>
 			<File
 				RelativePath=".\render_x.h">
+			</File>
+			<File
+				RelativePath=".\res_texture.h">
 			</File>
 			<File
 				RelativePath=".\texturemanager.h">

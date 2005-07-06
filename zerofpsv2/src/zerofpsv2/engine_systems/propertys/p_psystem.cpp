@@ -49,46 +49,6 @@ void P_PSystem::Update()
 					}
 				}
 			}
-		
-		
-// 			Vector3 kJointPos = Vector3(0,0,0);
-// 			// lol!!!1111 l0l! ugly h4c|<
-// 			if ( m_kPSystems[i].m_pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_bInheritPosFromJoint )
-// 			{
-// 				P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad");
-// 
-// 				pkMad->UpdateBones();
-// 				kJointPos = pkMad->GetJointPosition("root");
-// 			}
-// 
-// 			// returns true if the PSystem is finished
-// 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
-// 			{
-// 			
-// 			}
-// 			
-// 			
-// 				if ( !m_kPSystems[i].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat ) )
-// 				{
-// 						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());
-// 		
-// 						if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER)
-// 							&& m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
-// 								m_kPSystems[i].m_pkPSystem->Draw();
-// 				}
-// 				else
-// 				{
-// 					if ( m_kPSystems[i].m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
-// 						m_pkEntity->m_eRole == NETROLE_AUTHORITY )
-// 					{
-// 						m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
-// 					}
-// 	
-// 					delete m_kPSystems[i].m_pkPSystem;
-// 	
-// 					m_kPSystems[i].m_pkPSystem = 0;
-// 				}
-// 			}
 		}
 	}
 
@@ -308,7 +268,10 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 {	
 	pkNetPacket->Write(m_kPSystems.size());
 	for (int i = 0; i < m_kPSystems.size(); i++)
+	{
 		pkNetPacket->Write_Str( m_kPSystems[i].m_strPSName );
+		pkNetPacket->Write(m_kPSystems[i].m_pkPSystem->m_fAge );
+	}
 	
 	SetNetUpdateFlag(iConnectionID,false);   
 }
@@ -318,6 +281,7 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	int iSize;
+	float fAge;
 	string strPSName;
 	pkNetPacket->Read(iSize);
 
@@ -325,7 +289,6 @@ void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	for (int i = 0; i < iSize; i++)
 	{
 		pkNetPacket->Read_Str(strPSName);
-		
 		if(strPSName == "nons")
 			continue;
 	

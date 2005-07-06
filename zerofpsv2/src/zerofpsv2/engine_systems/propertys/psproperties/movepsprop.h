@@ -7,7 +7,7 @@
 class MovePSProp : public ParticleProperty
 {
 private:
-	Vector3 m_kForce;
+	Vector3 m_kForce, m_kRelPos;
 public:
 	void Update();
 	MovePSProp ( PSystem *pkParent );

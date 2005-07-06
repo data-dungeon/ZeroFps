@@ -166,7 +166,7 @@
 				RelativePath=".\application.cpp">
 			</File>
 			<File
-				RelativePath=".\astar.cpp">
+				RelativePath="..\engine_systems\common\astar.cpp">
 			</File>
 			<File
 				RelativePath=".\camera.cpp">
@@ -244,9 +244,6 @@
 				RelativePath="..\engine_systems\propertys\p_controller.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_crossrender.cpp">
-			</File>
-			<File
 				RelativePath="..\engine_systems\propertys\p_editicon.cpp">
 			</File>
 			<File
@@ -265,10 +262,10 @@
 				RelativePath="..\engine_systems\propertys\p_mad.cpp">
 			</File>
 			<File
-				RelativePath=".\p_pfmesh.cpp">
+				RelativePath="..\engine_systems\propertys\p_pfmesh.cpp">
 			</File>
 			<File
-				RelativePath=".\p_pfpath.cpp">
+				RelativePath="..\engine_systems\propertys\p_pfpath.cpp">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_primitives3d.cpp">
@@ -310,9 +307,6 @@
 				RelativePath=".\propertyfactory.cpp">
 			</File>
 			<File
-				RelativePath=".\res_texture.cpp">
-			</File>
-			<File
 				RelativePath="..\engine_systems\tcs\tcs.cpp">
 			</File>
 			<File
@@ -335,7 +329,7 @@
 				RelativePath=".\application.h">
 			</File>
 			<File
-				RelativePath=".\astar.h">
+				RelativePath="..\engine_systems\common\astar.h">
 			</File>
 			<File
 				RelativePath=".\camera.h">
@@ -407,9 +401,6 @@
 				RelativePath="..\engine_systems\propertys\p_controller.h">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_crossrender.h">
-			</File>
-			<File
 				RelativePath="..\engine_systems\propertys\p_editicon.h">
 			</File>
 			<File
@@ -428,10 +419,10 @@
 				RelativePath="..\engine_systems\propertys\p_mad.h">
 			</File>
 			<File
-				RelativePath=".\p_pfmesh.h">
+				RelativePath="..\engine_systems\propertys\p_pfmesh.h">
 			</File>
 			<File
-				RelativePath=".\p_pfpath.h">
+				RelativePath="..\engine_systems\propertys\p_pfpath.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_primitives3d.h">
@@ -476,9 +467,6 @@
 				RelativePath="..\engine_systems\propertys\propertys.pkg">
 			</File>
 			<File
-				RelativePath=".\res_texture.h">
-			</File>
-			<File
 				RelativePath="..\engine_systems\tcs\tcs.h">
 			</File>
 			<File
@@ -501,10 +489,10 @@
 				RelativePath="..\engine_systems\common\psystem.h">
 			</File>
 			<File
-				RelativePath=".\psystemmanager.cpp">
+				RelativePath="..\engine_systems\common\psystemmanager.cpp">
 			</File>
 			<File
-				RelativePath=".\psystemmanager.h">
+				RelativePath="..\engine_systems\common\psystemmanager.h">
 			</File>
 			<Filter
 				Name="PSProperties"

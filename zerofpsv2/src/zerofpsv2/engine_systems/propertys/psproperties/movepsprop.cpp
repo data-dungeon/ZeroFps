@@ -3,11 +3,13 @@
 #include "../../common/psystemmanager.h"
 #include "../../../engine/zerofps.h"
 #include "../../../basic/matrix4.h"
+#include "../p_psystem.h"
 
 // ------------------------------------------------------------------------------------------
 
 void MovePSProp::Update()
 {
+
 	// move ALL vertices...*puh*
 	float *pfVertices = m_pkParent->GetVertices();
 
@@ -17,6 +19,9 @@ void MovePSProp::Update()
 
 	int i;
 
+	// Relative movement?
+//	Vector3 kRelPos = m_pkParent->m_pkParent->GetEntity()->GetWorldPosV() - m_kRelPos;
+//	m_kRelPos = m_pkParent->m_pkParent->GetEntity()->GetWorldPosV();
 
 	// if force inherits direction of PSystem ( Update velocity )
 	if ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bForceInheritDirection )
@@ -30,6 +35,7 @@ void MovePSProp::Update()
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 		m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime + 
 															  m_pkParent->m_kParticles[i].m_kForce * float(pow(fFrameTime,2)/2.f);
+					
  
 	// get modelviewmatrix
 	float *afM = new float[16];
@@ -89,6 +95,7 @@ void MovePSProp::Update()
 
 MovePSProp::MovePSProp ( PSystem *pkParent )
 {
+	m_kRelPos.Set(0,0,0);
 	m_pkParent = pkParent;
 }
 
