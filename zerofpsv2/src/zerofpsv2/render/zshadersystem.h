@@ -12,7 +12,7 @@
 #include "texturemanager.h"
 #include "frustum.h"
 #include "light.h"
-#include "../engine/res_texture.h"
+#include "res_texture.h"
 #include "zvprogram.h"
 #include "zfprogram.h"
 #include "zvertexbuffer.h"

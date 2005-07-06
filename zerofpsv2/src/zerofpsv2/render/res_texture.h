@@ -4,10 +4,10 @@
 #include "../basic/zfresource.h"
 #include "../render/texturemanager.h"
 #include "../basic/zfsystem.h"
-#include "engine_x.h"
+#include "render_x.h"
 
 /// A Texture in the Resource SubSystem.
-class ENGINE_API ResTexture : public ZFResource
+class RENDER_API ResTexture : public ZFResource
 {
 private:
 
@@ -22,7 +22,7 @@ public:
 	int  CalculateSize();		
 };
 
-ENGINE_API ZFResource* Create__ResTexture();
+RENDER_API ZFResource* Create__ResTexture();
 
 #endif
 

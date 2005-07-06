@@ -13,7 +13,7 @@
 #include "entity.h"
 #include "camera.h"
 #include "i_zerofps.h"
-#include "res_texture.h"
+#include "../render/res_texture.h"
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
 

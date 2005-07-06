@@ -1,7 +1,7 @@
 #include "mad_modell.h"
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
-#include "../../engine/res_texture.h"
+#include "../../render/res_texture.h"
 #include "../../basic/zfassert.h"
 
 char szFullTexName[256];

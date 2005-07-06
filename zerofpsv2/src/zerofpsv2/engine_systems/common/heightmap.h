@@ -9,7 +9,7 @@
 #include "../../basic/rect.h"
 #include "../../basic/zfsystem.h"
 #include "../../render/texturemanager.h"
-#include "../../engine/res_texture.h"
+#include "../../render/res_texture.h"
 
 #define HM_FLAGVISIBLE1	1
 #define HM_FLAGVISIBLE2	2
