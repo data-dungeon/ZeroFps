@@ -1,4 +1,4 @@
-#include "../../engine/psystemmanager.h"
+#include "../common/psystemmanager.h"
 #include "p_psystem.h"
 #include "p_mad.h"
 #include "../../engine/entity.h"

@@ -2,7 +2,7 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/basicconsole.h"
 #include "../engine_systems/common/psystem.h"
-#include "../engine/psystemmanager.h"
+#include "../engine_systems/common/psystemmanager.h"
 #include "../basic/globals.h"
   
 FILE* pkGlDumpLog;

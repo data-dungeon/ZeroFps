@@ -1,11 +1,11 @@
 #include "psystemmanager.h"
-#include "../engine_systems/propertys/psproperties/colorpsprop.h"
-#include "../engine_systems/propertys/psproperties/movepsprop.h"
-#include "../engine_systems/propertys/psproperties/sizepsprop.h"
-#include "../engine_systems/propertys/psproperties/lightpsprop.h"
+#include "../propertys/psproperties/colorpsprop.h"
+#include "../propertys/psproperties/movepsprop.h"
+#include "../propertys/psproperties/sizepsprop.h"
+#include "../propertys/psproperties/lightpsprop.h"
 
-#include "../basic/zfsystem.h"
-#include "../basic/zfini.h"
+#include "../../basic/zfsystem.h"
+#include "../../basic/zfini.h"
 
 #include <iostream>
 	using namespace std;

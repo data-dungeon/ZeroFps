@@ -1,6 +1,6 @@
 #include "movepsprop.h"
 #include "../../common/psystem.h"
-#include "../../../engine/psystemmanager.h"
+#include "../../common/psystemmanager.h"
 #include "../../../engine/zerofps.h"
 #include "../../../basic/matrix4.h"
 

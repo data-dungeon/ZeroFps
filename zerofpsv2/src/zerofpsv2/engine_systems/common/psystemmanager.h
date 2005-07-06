@@ -1,9 +1,9 @@
 #ifndef _ENGINE_PSYSTEMMANAGER_H_
 #define _ENGINE_PSYSTEMMANAGER_H_
 
-#include "../engine_systems/common/psystem.h"
-#include "../basic/vector3.h"
-#include "../basic/zfini.h"
+#include "psystem.h"
+#include "../../basic/vector3.h"
+#include "../../basic/zfini.h"
 
 #include <string>
 #include <map>

@@ -1,6 +1,6 @@
 #include "sizepsprop.h"
 #include "../../common/psystem.h"
-#include "../../../engine/psystemmanager.h"
+#include "../../common/psystemmanager.h"
 
 // ------------------------------------------------------------------------------------------
 

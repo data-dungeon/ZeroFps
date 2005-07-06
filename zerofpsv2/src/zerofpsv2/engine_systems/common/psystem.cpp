@@ -1,4 +1,4 @@
-#include "../../engine/psystemmanager.h"
+#include "psystemmanager.h"
 #include "psystem.h"
 
 // ------------------------------------------------------------------------------------------

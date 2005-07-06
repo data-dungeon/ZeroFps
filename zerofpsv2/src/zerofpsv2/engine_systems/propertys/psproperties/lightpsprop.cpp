@@ -1,6 +1,6 @@
 #include "lightpsprop.h"
 #include "../../common/psystem.h"
-#include "../../../engine/psystemmanager.h"
+#include "../../common/psystemmanager.h"
 #include "../p_light.h"
 #include "../p_psystem.h"
 // ------------------------------------------------------------------------------------------
