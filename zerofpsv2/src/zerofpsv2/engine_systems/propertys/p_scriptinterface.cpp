@@ -86,13 +86,13 @@ namespace SI_PScriptInterface
  *  \ingroup Property
  *  */
 
-/**	\fn SISetHeartRate( Entity, HeartRate)
+/**	\fn SetHeartRate( Entity, HeartRate)
  		\relates SIScriptInterface
 		\param Entity Id of entity to set rate on.
 		\param HeartRate Time in Second between each heartbeat.
 		\brief Set a timer that run a heartbeat function on the entity.
 */
-	int SISetHeartRateLua(lua_State* pkLua)
+	int SetHeartRateLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
 			return 0;
@@ -126,7 +126,7 @@ void ENGINE_SYSTEMS_API Register_PScriptInterface(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_ScriptInterface", Create_P_ScriptInterface);					
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("SISetHeartRate",		SI_PScriptInterface::SISetHeartRateLua);
+	g_pkScript->ExposeFunction("SetHeartRate",		SI_PScriptInterface::SetHeartRateLua);
 }
 
 

@@ -1,6 +1,16 @@
 #ifndef _ZFPSGL_H_
 #define _ZFPSGL_H_
 
+
+#include <GL/GLee.h>
+#include "GL/glu.h"
+
+#define FOG_DISTANCE_MODE_NV 	0x855A
+#define EYE_RADIAL_NV			0x855B
+#define EYE_PLANE_ABSOLUTE_NV	0x855C
+
+
+/*
 #ifdef _WIN32
 // Bloody Windows
 //	#include "extgl.h"
@@ -12,22 +22,18 @@
 	#define GL_GLEXT_PROTOTYPES   //experimental	
 	#define GLAPI
 	
-//	#include <GL/GLee.h>
+	#include <GL/GLee.h>
 
-	#include <GL/gl.h>
-	#include <GL/glx.h>
-	#include <GL/glext.h>
-
+// 	#include <GL/gl.h>
+// 	#include <GL/glx.h>
+// 	#include <GL/glext.h>
 		
 #endif
+*/
 
-#include "GL/glu.h"
 //#include "GL/glut.h"
 
 
-#define FOG_DISTANCE_MODE_NV 	0x855A
-#define EYE_RADIAL_NV			0x855B
-#define EYE_PLANE_ABSOLUTE_NV	0x855C
 
 #endif
 

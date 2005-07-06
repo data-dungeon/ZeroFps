@@ -70,7 +70,6 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	// entity orientation
 	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
-	pkScript->ExposeFunction("PlaceObjectOnGround",	ObjectManagerLua::PlaceObjectOnGroundLua);
 
 	//zone management
 	pkScript->ExposeFunction("GetZoneID",				ObjectManagerLua::GetZoneIDLua);
@@ -78,8 +77,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetZoneModel",			ObjectManagerLua::SetZoneModelLua);
 
 	// Common used functions , used together whit P_ScriptInterface
-	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
-	pkScript->ExposeFunction("GetSelfID",				ObjectManagerLua::SIGetSelfIDLua);		
+	pkScript->ExposeFunction("GetSelfID",				ObjectManagerLua::GetSelfIDLua);		
 	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);		
 }
 
@@ -380,49 +378,6 @@ int HaveRelativOriLua(lua_State* pkLua)
 	return 0;
 }
 
-// Orient ******************************************************************************************************
-int PlaceObjectOnGroundLua(lua_State* pkLua)
-{/*
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
-			return 0;
-
-	double iObjectID;
-	g_pkScript->GetArg(pkLua, 0, &iObjectID);
-
-	Entity* pkObj = g_pkObjMan->GetEntityByID(iObjectID);		
-	if(pkObj) 
-	{
-		ZoneData* pkData = g_pkObjMan->GetZoneData(pkObj->GetCurrentZone());		
-		if(pkData == NULL || pkData->m_pkZone == NULL)
-			return false;
-
-		if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))
-		{
-			if(pkMad->TestLine(pkObj->GetWorldPosV(),Vector3(0,-1,0)))
-			{
-				Vector3 kPos = pkMad->GetLastColPos();
-				
-				pkObj->SetWorldPosV(kPos);
-				return true;
-			}
-		}
-		
-		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
-		if(pkMesh == NULL)
-			return false;
-
-		NaviMeshCell* pkCurrCell = pkMesh->GetCell(pkObj->GetLocalPosV());
-		if(pkCurrCell)
-		{
-			Vector3 pos = pkObj->GetLocalPosV(); 
-			pos.y = pkCurrCell->m_kVertex->y;
-			pkObj->SetLocalPosV(pos); 
-			m_iCurrentObject = -1;
-		}
-	}
-*/
-	return 0;
-}
 
 // takes objectID, objectID
 int DistanceToLua(lua_State* pkLua)
@@ -546,7 +501,7 @@ int SetZoneModelLua(lua_State* pkLua)
  	\relates SIEntityManger
 	\brief	Returns entity id for active entity.
 */
-int SIGetSelfIDLua(lua_State* pkLua)
+int GetSelfIDLua(lua_State* pkLua)
 {
 	g_pkScript->AddReturnValue(pkLua,g_kScriptState.g_iCurrentObjectID);
 	return 1;

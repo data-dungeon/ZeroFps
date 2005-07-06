@@ -55,8 +55,7 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);
 	
-	int ENGINE_SYSTEMS_API PlaceObjectOnGroundLua(lua_State* pkLua);
-
+	
 // 	int ENGINE_SYSTEMS_API SetObjectRotFromObjectLua(lua_State* pkLua);
 	
 	// Object Variables
@@ -92,7 +91,7 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API SetZoneModelLua(lua_State* pkLua);				//sets the zonemodel of zone id
 
 	// Common used functions , used together whit P_ScriptInterface
-	int ENGINE_SYSTEMS_API SIGetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
+	int ENGINE_SYSTEMS_API GetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
 	int ENGINE_SYSTEMS_API DistanceToLua(lua_State* pkLua);
 
 	Entity* GetEntityPtr(lua_State* pkLua, int iIndex);

@@ -101,11 +101,7 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	SetDisplay();
 
 
-#ifdef _WIN32
-	RenderDLL_InitExtGL();
-	//extgl_Initialize();
 	GLeeInit();
-#endif	
 
 
 	glMatrixMode(GL_MODELVIEW);
