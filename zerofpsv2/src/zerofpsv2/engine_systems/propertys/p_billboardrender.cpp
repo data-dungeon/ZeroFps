@@ -56,7 +56,7 @@ vector<PropertyValues> P_BillBoardRender::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_BillBoardRender::HandleSetValue( string kValueName ,string kValue )
+bool P_BillBoardRender::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "texture") == 0) 
 	{

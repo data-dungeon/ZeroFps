@@ -245,7 +245,7 @@ vector<PropertyValues> P_Vegitation::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_Vegitation::HandleSetValue( string kValueName ,string kValue )
+bool P_Vegitation::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "material") == 0) {
 		SetMaterial(kValue.c_str());

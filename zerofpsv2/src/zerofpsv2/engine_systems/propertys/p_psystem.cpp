@@ -177,7 +177,7 @@ P_PSystem::P_PSystem( string kPSType )
 
 // ------------------------------------------------------------------------------------------
 
-bool P_PSystem::HandleSetValue( string kValueName, string kValue )
+bool P_PSystem::HandleSetValue( const string& kValueName, const string& kValue )
 {
 	if( strcmp(kValueName.c_str(), "PSType") == 0) 
 	{

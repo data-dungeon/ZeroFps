@@ -117,7 +117,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName, string kValue );
+		bool HandleSetValue( const string& kValueName, const string& kValue );
 		float GetBoundingRadius();
 		bool SetupMeshData();
 	

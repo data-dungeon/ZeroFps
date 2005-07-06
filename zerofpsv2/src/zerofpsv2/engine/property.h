@@ -134,7 +134,7 @@ class ENGINE_API Property
 				
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
-		bool StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue);
+		bool StringToValue(const string& kValue, void *pkValue, PropertyValues *pkPropertyValue);
 		
 		vector<TPointerBase*> m_kPointerVector;
 		void PropertyFound(Property* pkProperty); 
@@ -148,10 +148,11 @@ class ENGINE_API Property
 		//netflags
 		void	SetNrOfConnections(int iConNR);
 
-
+		
+		
 		virtual vector<PropertyValues> GetPropertyValues();
-		virtual bool HandleSetValue( string kValueName ,string kValue );
-		virtual bool HandleGetValue( string kValueName );
+		virtual bool HandleSetValue( const string& kValueName ,const string& kValue );
+		virtual bool HandleGetValue( const string& kValueName );
 		
 		///////////EVIL GUBB WAS HERE
 		virtual void PointerFound(const type_info& Type) {};
@@ -179,47 +180,40 @@ class ENGINE_API Property
 		//////////////////////////////////////////////
 
 	public:
-		Property();
-		virtual ~Property();
-
-		int		m_iSortPlace;			//	place in update queue
-		bool		m_bSortDistance;
-		
-		int		m_iVersion;				//used for multiple versionsof load ,shuld be incresed if save data changes
-		
+		int		m_iSortPlace;			//	place in update queue (for rendering)
+		bool		m_bSortDistance;		// do we want to sort propertys by dystance from camera (for rendering)		
+		int		m_iVersion;				//used for multiple versionsof load ,shuld be incresed if save data changes		
 		int		m_iType;					// property type
-		int		m_iSide;					// server or client property
-		
+		int		m_iSide;					// server or client property		
 		bool		m_bNetwork;				// True if property needs to be sent o network.
 		bool		m_bSave;					// True if propertys should be saved with entity.
 		char		m_acName[50];			// Name of Property. Set when property is created.	
 
 
+		Property();
+		virtual ~Property();
+
 		// Property Edit Interface
 		//evil gubb code! haha/////////////////////////////////////////
-		bool SetValue(string kValueName ,string kValue);
-		bool SetValue(string kValueName, unsigned int iIndex ,string kValue);
-		bool CheckIfResize(string kValueName);
-		int GetNumberOfValues(string kValueName);
-		string GetValue(string kValueName);
-		string GetValue(string kValueName, unsigned int iIndex);
+		bool SetValue(const string& kValueName ,const string& kValue);
+		bool SetValue(const string& kValueName, unsigned int iIndex ,const string& kValue);
+		bool CheckIfResize(const string& kValueName);
+		int GetNumberOfValues(const string& kValueName);
+		string GetValue(const string& kValueName);
+		string GetValue(const string& kValueName, unsigned int iIndex);
 		vector<string> GetValueNames();
-		float GetUpperBound(string kValueName);
-		float GetLowerBound(string kValueName);
-		bool Resize(string kValueName, unsigned int uiNewSize);
-		bool CheckIfVector(string kValueName);
+		float GetUpperBound(const string& kValueName);
+		float GetLowerBound(const string& kValueName);
+		bool Resize(const string& kValueName, unsigned int uiNewSize);
+		bool CheckIfVector(const string& kValueName);
 		
-		//bool SetValue(string kValueName ,string kValue);
-		//string GetValue(string kValueName);
-		//vector<string> GetValueNames();
 		/////////////////////////////////////////////////////////7
-
+		
 		//handle netupdate flags		
 		void	SetNetUpdateFlag(int iConID,bool bValue);
 		void	SetNetUpdateFlag(bool bValue);
 		bool	GetNetUpdateFlag(int iConID);
 		void	ResetAllNetUpdateFlags();
-		
 		
 		// Game Messages
 		virtual void OnEvent(GameMessage& Msg);
@@ -229,15 +223,15 @@ class ENGINE_API Property
 		virtual void ZoneChange(int iCurrent,int iNew) {};
 		virtual void Init() {};											//executet when property is added to an entity
 		virtual void Update() {};										//executet once every game loop
-		virtual void PackTo(NetPacket* pkNetPacket, int iConnectionID)		{	};
-		virtual void PackFrom(NetPacket* pkNetPacket, int iConnectionID)	{	};
+		virtual void PackTo(NetPacket* pkNetPacket, int iConnectionID) {};
+		virtual void PackFrom(NetPacket* pkNetPacket, int iConnectionID) {};
 		
 		// Save / Load
-		virtual void Save(ZFIoInterface* pkFile)									{	};
-		virtual void Load(ZFIoInterface* pkFile,int iVersion)					{	};		
+		virtual void Save(ZFIoInterface* pkFile) {};
+		virtual void Load(ZFIoInterface* pkFile,int iVersion) {};		
 
 		// Inlines
-		inline void SetEntity(Entity* pkEntity)				{	m_pkEntity=pkEntity;							};
+		//inline void SetEntity(Entity* pkEntity)				{	m_pkEntity=pkEntity;							};
 		inline Entity *GetEntity()									{	return m_pkEntity;							};
 		inline bool IsPropertyType(const char* czType)		{	return (strcmp(czType,m_acName) == 0);	};
 		

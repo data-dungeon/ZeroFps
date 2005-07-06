@@ -21,7 +21,7 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		Tcs*				m_pkTcs;
 		
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );			
+		bool HandleSetValue( const string& kValueName ,const string& kValue );			
 		
 		//ZFResourceHandle* m_pkTexture;
 		

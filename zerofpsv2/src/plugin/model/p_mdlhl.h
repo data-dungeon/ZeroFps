@@ -207,7 +207,7 @@ class P_MdlHL : public Property
 		Render*				m_pkRender;
 
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 		HLSeqHeader*		m_pkAnimationHeader[32];
 

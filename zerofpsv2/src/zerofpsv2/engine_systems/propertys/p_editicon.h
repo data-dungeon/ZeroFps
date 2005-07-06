@@ -23,7 +23,7 @@ class ENGINE_SYSTEMS_API P_EditIcon : public Property
 		float					m_fScale;
 		
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );		
+		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 	
 	public:
 		P_EditIcon();

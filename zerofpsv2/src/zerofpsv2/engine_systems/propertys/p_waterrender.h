@@ -35,7 +35,7 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 		bool		m_bBlendDirUp;
 		
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );		
+		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		
 		
 		void DrawSurface();

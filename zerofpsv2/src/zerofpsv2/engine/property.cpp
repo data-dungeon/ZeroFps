@@ -77,12 +77,12 @@ bool Property::operator<(Property& kOther)
 	}
 }
 
-bool Property::HandleSetValue( string kValueName ,string kValue )
+bool Property::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	return false;
 }
 
-bool Property::HandleGetValue( string kValueName )
+bool Property::HandleGetValue( const string& kValueName )
 {
 	return false;
 }
@@ -111,7 +111,7 @@ vector<string> Property::GetValueNames()
 }
 
 
-string Property::GetValue(string kValueName)
+string Property::GetValue(const string& kValueName)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
@@ -130,7 +130,7 @@ string Property::GetValue(string kValueName)
 	return kStrTemp;
 }
 
-string Property::GetValue(string kValueName, unsigned int iIndex)
+string Property::GetValue(const string& kValueName, unsigned int iIndex)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	string kStrTemp = "invalid value";
@@ -202,7 +202,7 @@ string Property::GetValue(string kValueName, unsigned int iIndex)
 	return kStrTemp;
 }
 
-bool Property::SetValue(string kValueName, string kValue)
+bool Property::SetValue(const string& kValueName, const string& kValue)
 {
 	if(HandleSetValue(kValueName, kValue))
 		return true;
@@ -223,7 +223,7 @@ bool Property::SetValue(string kValueName, string kValue)
 }
 
 
-bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
+bool Property::SetValue(const string& kValueName, unsigned int iIndex, const string& kValue)
 {
 	if(HandleSetValue(kValueName, kValue))
 		return true;
@@ -342,7 +342,7 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 
 
 
-int Property::GetNumberOfValues(string kValueName)
+int Property::GetNumberOfValues(const string& kValueName)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
@@ -474,7 +474,7 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 }
 
 
-bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue)
+bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues *pkPropertyValue)
 {
 //	unsigned char cTemp1;
 	int iTemp1,iTemp2;
@@ -633,7 +633,7 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 
 
 
-float Property::GetUpperBound(string kValueName)
+float Property::GetUpperBound(const string& kValueName)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
@@ -652,7 +652,7 @@ float Property::GetUpperBound(string kValueName)
 	return 0;
 }
 
-float Property::GetLowerBound(string kValueName)
+float Property::GetLowerBound(const string& kValueName)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
@@ -671,7 +671,7 @@ float Property::GetLowerBound(string kValueName)
 	return 0;
 }
 
-bool Property::CheckIfResize(string kValueName)
+bool Property::CheckIfResize(const string& kValueName)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
@@ -689,7 +689,7 @@ bool Property::CheckIfResize(string kValueName)
 	return false;
 }
 
-bool Property::CheckIfVector(string kValueName)
+bool Property::CheckIfVector(const string& kValueName)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
@@ -707,7 +707,7 @@ bool Property::CheckIfVector(string kValueName)
 	return false;
 }
 
-bool Property::Resize(string kValueName, unsigned int uiNewSize)
+bool Property::Resize(const string& kValueName, unsigned int uiNewSize)
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())

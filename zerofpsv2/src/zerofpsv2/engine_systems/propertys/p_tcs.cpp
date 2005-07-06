@@ -426,7 +426,7 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_Tcs::HandleSetValue( string kValueName, string kValue )
+bool P_Tcs::HandleSetValue( const string& kValueName, const string& kValue )
 {
 	if( strcmp(kValueName.c_str(), "groupflag") == 0 ) 
 	{

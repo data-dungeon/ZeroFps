@@ -125,7 +125,7 @@ vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 	return kReturn;
 };
 
-bool P_Primitives3D::HandleSetValue( string kValueName ,string kValue )
+bool P_Primitives3D::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "color") == 0) 
 		SetNetUpdateFlag(true);

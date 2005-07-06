@@ -14,7 +14,7 @@ using namespace std;
 class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 	private:
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 	
 		Light*			m_pkLight;
 		Render*			m_pkRender;		// Ptr to render sys.

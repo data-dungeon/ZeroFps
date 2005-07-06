@@ -191,7 +191,7 @@ vector<PropertyValues> P_WaterRender::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_WaterRender::HandleSetValue( string kValueName ,string kValue )
+bool P_WaterRender::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "material") == 0) {
 		SetMaterial(kValue);		

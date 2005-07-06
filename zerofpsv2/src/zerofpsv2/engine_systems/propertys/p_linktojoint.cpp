@@ -111,7 +111,7 @@ vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_LinkToJoint::HandleSetValue( string kValueName ,string kValue )
+bool P_LinkToJoint::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_strToJoint") == 0) {
 		SetJoint(kValue.c_str());

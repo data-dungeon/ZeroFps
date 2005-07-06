@@ -42,7 +42,7 @@ vector<PropertyValues> P_MdlHL::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_MdlHL::HandleSetValue( string kValueName ,string kValue )
+bool P_MdlHL::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 /*	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) 
 	{

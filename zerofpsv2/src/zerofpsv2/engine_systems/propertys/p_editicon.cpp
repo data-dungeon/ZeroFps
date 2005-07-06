@@ -69,7 +69,7 @@ vector<PropertyValues> P_EditIcon::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_EditIcon::HandleSetValue( string kValueName ,string kValue )
+bool P_EditIcon::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "texture") == 0) 
 	{

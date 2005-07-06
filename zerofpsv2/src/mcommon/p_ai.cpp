@@ -548,7 +548,7 @@ vector<PropertyValues> P_AI::GetPropertyValues()
 
 
 
-bool P_AI::HandleSetValue( string kValueName, string kValue )
+bool P_AI::HandleSetValue( const string& kValueName, const string& kValue )
 {
 
 	return false;

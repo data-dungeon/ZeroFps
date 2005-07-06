@@ -38,7 +38,7 @@ class ENGINE_SYSTEMS_API P_Controller : public Property {
 		P_Controller();
         ~P_Controller();
 		
-		bool HandleSetValue( string kValueName, string kValue );
+		bool HandleSetValue( const string& kValueName, const string& kValue );
 
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);

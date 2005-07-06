@@ -16,7 +16,7 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 {
 	private:
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 		string	m_strToJoint;
 		int		m_iLinkEntityID;

@@ -276,7 +276,7 @@ vector<PropertyValues> P_Light::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_Light::HandleSetValue( string kValueName ,string kValue )
+bool P_Light::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(kValueName == "FlareMaterial")
 	{

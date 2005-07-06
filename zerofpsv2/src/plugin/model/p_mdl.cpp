@@ -518,7 +518,7 @@ vector<PropertyValues> P_Mdl::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_Mdl::HandleSetValue( string kValueName ,string kValue )
+bool P_Mdl::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "filename") == 0) 
 	{

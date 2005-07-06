@@ -28,7 +28,7 @@ class ENGINE_SYSTEMS_API P_PSystem : public Property
 		P_PSystem();
       ~P_PSystem();
 		
-		bool HandleSetValue( string kValueName, string kValue );
+		bool HandleSetValue( const string& kValueName, const string& kValue );
 
       //PSystem* GetPSystem()                                 { return m_pkPSystem; }
 

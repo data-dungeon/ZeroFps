@@ -123,7 +123,7 @@ class P_Mdl : public Property
 
 		void LoadModel(string strFileName);
 		int GetQuakeModellVersion(PAKFileFp *mdlfp, const char* filename);
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 		Vector3 GetTextureCoo(int iTriangle, int iVertex);
 

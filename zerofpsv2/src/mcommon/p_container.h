@@ -88,7 +88,7 @@ class MCOMMON_API P_Container: public Property
 		bool CanStack(P_Item* pkTarget,P_Item* pkItem);
 		
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 		
 		bool SetupTwohanded(bool bEnable);
 		bool SetDisabled(bool bDisabled);		//will disable this container if its empty		

@@ -53,7 +53,7 @@ class MCOMMON_API P_AI: public Property
 		int	m_iTarget;		
 		
 		vector<PropertyValues> GetPropertyValues(); 
- 		bool HandleSetValue( string kValueName, string kValue );
+ 		bool HandleSetValue( const string& kValueName, const string& kValue );
    
 		int FindClosestEnemy(float fMaxRange);
 		void UseOffensiveSkill();

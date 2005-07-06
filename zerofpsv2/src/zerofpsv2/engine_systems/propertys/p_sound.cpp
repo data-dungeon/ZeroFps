@@ -229,7 +229,7 @@ void P_Sound::Load(ZFIoInterface* pkFile,int iVersion)
 	SetNetUpdateFlag(true);
 }
 
-bool P_Sound::HandleSetValue( string kValueName ,string kValue )
+bool P_Sound::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	bool res = true;
 

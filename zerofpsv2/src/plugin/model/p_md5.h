@@ -119,7 +119,7 @@ class P_Md5 : public Property
 		int					m_iPlayAnim;
 
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 	public:
 		P_Md5();

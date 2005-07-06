@@ -43,7 +43,7 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 };
 

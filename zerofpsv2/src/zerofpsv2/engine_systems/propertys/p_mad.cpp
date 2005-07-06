@@ -573,7 +573,7 @@ vector<PropertyValues> P_Mad::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_Mad::HandleSetValue( string kValueName ,string kValue )
+bool P_Mad::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) {
 		SetBase(kValue.c_str());

@@ -187,7 +187,7 @@ vector<PropertyValues> P_ShadowBlob::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_ShadowBlob::HandleSetValue( string kValueName ,string kValue )
+bool P_ShadowBlob::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "scale") == 0) 
 	{

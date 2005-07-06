@@ -62,7 +62,7 @@ P_Controller::P_Controller()
 
 // ------------------------------------------------------------------------------------------
 
-bool P_Controller::HandleSetValue( string kValueName, string kValue )
+bool P_Controller::HandleSetValue( const string& kValueName, const string& kValue )
 {
 
 

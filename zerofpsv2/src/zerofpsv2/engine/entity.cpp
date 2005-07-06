@@ -110,7 +110,8 @@ Property* Entity::AddProperty(Property* pkNewProperty)
 		++kIt;
 	}
 	/////////////////7
-	pkNewProperty->SetEntity(this);
+	//pkNewProperty->SetEntity(this);
+	pkNewProperty->m_pkEntity = this;
 	m_akPropertys.push_back(pkNewProperty);
 	pkNewProperty->Init();
 	

@@ -347,7 +347,7 @@ vector<PropertyValues> P_Md2::GetPropertyValues()
 	return kReturn;
 }
 
-bool P_Md2::HandleSetValue( string kValueName ,string kValue )
+bool P_Md2::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kMadFile") == 0) 
 	{

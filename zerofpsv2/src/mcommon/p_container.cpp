@@ -120,7 +120,7 @@ vector<PropertyValues> P_Container::GetPropertyValues()
 }
 
 
-bool P_Container::HandleSetValue( string kValueName ,string kValue )
+bool P_Container::HandleSetValue( const string& kValueName ,const string& kValue )
 {
 
 	if(strcmp(kValueName.c_str(), "sizex") == 0) {

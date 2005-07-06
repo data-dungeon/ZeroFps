@@ -85,7 +85,7 @@ class P_Md2 : public Property
 		Render*				m_pkRender;
 
 		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( string kValueName ,string kValue );
+		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 		PAKFileFp			m_kFile;
 		q2mdlhead_s			m_kHead;

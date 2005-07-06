@@ -43,7 +43,7 @@ public:
 	void Save(ZFIoInterface* pkFile);
 	void Load(ZFIoInterface* pkFile,int iVersion);
 
-	bool HandleSetValue( string kValueName ,string kValue );
+	bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 	vector<PropertyValues> GetPropertyValues();
 
