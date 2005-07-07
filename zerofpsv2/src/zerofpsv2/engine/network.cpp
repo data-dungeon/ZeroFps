@@ -1438,7 +1438,7 @@ void NetWork::Run()
 			//if(iNumOfResends >= 20)	
 			if(iBytes > iSendSize) 
 			{
-				cout << "Hit Resend Limit("<<iSendSize<<") for client: " << i <<" bytes sent:"<<iBytes<< " packages:"<<iNumOfResends<< " Num of packets in que: " << m_RemoteNodes[i]->m_kRelSend.size() <<  endl;
+				//cout << "Hit Resend Limit("<<iSendSize<<") for client: " << i <<" bytes sent:"<<iBytes<< " packages:"<<iNumOfResends<< " Num of packets in que: " << m_RemoteNodes[i]->m_kRelSend.size() <<  endl;
 				break;
 			}
 		}
