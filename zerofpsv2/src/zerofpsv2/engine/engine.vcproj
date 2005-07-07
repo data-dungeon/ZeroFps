@@ -253,9 +253,6 @@
 				RelativePath="..\engine_systems\propertys\p_light.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_lightupdate.cpp">
-			</File>
-			<File
 				RelativePath="..\engine_systems\propertys\p_linktojoint.cpp">
 			</File>
 			<File
@@ -408,9 +405,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_light.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_lightupdate.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_linktojoint.h">
