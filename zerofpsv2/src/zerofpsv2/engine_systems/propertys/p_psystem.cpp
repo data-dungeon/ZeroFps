@@ -192,7 +192,7 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 		{
 			// PSType
 			pkPackage->Write_Str(m_kPSystems[i].m_strPSName);
-			//pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
+			pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
 		}
 	}
 
@@ -291,6 +291,8 @@ void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Read_Str(strPSName);
 		if(strPSName == "nons")
 			continue;
+
+		pkNetPacket->Read(fAge, sizeof(float);
 	
 		SetPSType( strPSName );
 	}
