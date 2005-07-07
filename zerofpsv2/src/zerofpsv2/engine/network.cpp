@@ -1412,9 +1412,15 @@ void NetWork::Run()
 		}
 
 
-		int iSendSize = int(GetClientNetSpeed(i) / m_pkZeroFps->GetNetworkFps()) / 2;				
+		//get send size
+	 	int iSendSize;		
+		if(m_pkZeroFps->GetSyncNetwork())
+			iSendSize = int(GetClientNetSpeed(i) / m_pkZeroFps->GetSystemFps()) / 2;
+ 		else	
+			iSendSize = int(GetClientNetSpeed(i) / m_pkZeroFps->GetNetworkFps()) / 2;		
+				
 		int iNumOfResends = 0;	 					 		
- 		int iBytes = 0;			
+ 		int iBytes = 0;	 				
 		for(set<int>::iterator it = m_RemoteNodes[i]->m_kRelSend.begin(); it != m_RemoteNodes[i]->m_kRelSend.end(); it++)
 		{
 			int iRel = m_RemoteNodes[i]->GetRel( (*it) );

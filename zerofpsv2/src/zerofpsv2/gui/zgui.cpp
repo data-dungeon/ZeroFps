@@ -657,8 +657,10 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
 						if(bIsTextbox)
 						{
 							string text;
-							if(GetClipboardText(text))
-								ZGuiWnd::m_pkFocusWnd->SetText((char*)text.c_str());
+							
+							// Dvoid tröttna på att folk pastar utan att dom har något i utklip
+							//if(GetClipboardText(text))
+							//	ZGuiWnd::m_pkFocusWnd->SetText((char*)text.c_str());
 						}
 					}
 					else
