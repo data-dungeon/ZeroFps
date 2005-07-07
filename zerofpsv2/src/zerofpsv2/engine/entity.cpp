@@ -122,13 +122,23 @@ Property* Entity::AddProperty(Property* pkNewProperty)
 */
 Property* Entity::AddProperty(const char* acName)
 {
-	ZFAssert(acName, "Entity::AddProperty(): acName is NULL");
+	ZFAssert(acName, "Entity::AddProperty(): acName is NULL");	
 	Property* pProp = m_pkPropertyFactory->CreateProperty(acName);
 	
-	if(!pProp)	return NULL;
+	if(!pProp)	
+		return NULL;
+	
+	return AddProperty(pProp);
+}
 
-	AddProperty(pProp);
-	return pProp;
+/**	\brief	Adds a property to an Entity if it does not have it yet.
+*/
+Property* Entity::AddProxyProperty(const char* acName)
+{	
+	if(Property* pProp = GetProperty(acName))
+		return pProp;
+	
+	return AddProperty(acName);
 }
 
 /**	\brief	Removes the property from the Entity ( but does not delete it).
@@ -267,17 +277,7 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	
 }
 
-/**	\brief	Adds a property to an Entity if it does not have it yet.
-*/
-Property* Entity::AddProxyProperty(const char* acName)
-{
-	Property* pProp = GetProperty(acName);
-	if(pProp)
-		return pProp;
-	AddProperty(acName);
-	pProp = GetProperty(acName);
-	return pProp;
-}
+
 
 bool Entity::Update(const char* acName)
 {

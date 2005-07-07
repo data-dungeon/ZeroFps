@@ -141,8 +141,7 @@ class ENGINE_API Entity
 			WORLD_ROT_Q,	
 			LOCAL_ROT_Q,
 			WORLD_ROT_V,
-			LOCAL_ROT_V,
-			
+			LOCAL_ROT_V,			
 			WORLD_POS_V,		
 		};
 	
@@ -207,7 +206,7 @@ class ENGINE_API Entity
 		//network
 		vector<bitset<MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;
 		vector<bitset<MAX_NETUPDATEFLAGS> >	m_kNetIgnoreFlags;
-		vector<bool>									m_kExistOnClient;
+		vector<bool>								m_kExistOnClient;
 					
 		Entity();		
 		
@@ -221,10 +220,13 @@ class ENGINE_API Entity
 		void	ResetAllNetFlags(int iConID);									// reset all update flags to true		
 		void	ResetAllNetFlagsAndChilds(int iConID);						// reset all update flags to true				
 		
-		
+		//called on creation
 		void	SetNrOfConnections(int iConNR);
 
-		
+		//internal property handling
+		void			AddToDeletePropertyList(const string& strName);
+		void			UpdateDeletePropertyList();
+
 		
 		//property handling, or something
 		void 	PropertyLost(Property* pkProp);
@@ -240,20 +242,17 @@ class ENGINE_API Entity
 	
 		~Entity();
 		
-// 		// Entity Type Handling
-// 		bool IsA(string strStringType);									///< Returns true if this Entity is based on type.
-
 		// Property Mangment
-		Property* 	AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
+		Property* 	AddProperty(Property* pkNewProperty);					// Add a propyrty by ptr.
 		void 			RemoveProperty(Property* pkProp);						// Remove property by pointer.
 		
-		Property* 	AddProperty(const char* acName);					// Create/Add a property by name.
+		Property* 	AddProperty(const char* acName);							// Create/Add a property by name.
 		bool 			DeleteProperty(const char* acName);						// Remove property by name.
-		Property* 	GetProperty(const char* acName);					// Returns property by name (first one only). 
+		Property* 	GetProperty(const char* acName);							// Returns property by name (first one only). 
 		void 			GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
 		void 			GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
-		Property* 	AddProxyProperty(const char* acName);				///< Add a property if not exist.
-		bool 			Update(const char* acName);								///< Run update on property 'name'.
+		Property* 	AddProxyProperty(const char* acName);												///< Add a property if not exist.
+		bool 			Update(const char* acName);															///< Run update on property 'name'.
 
 		// Child/Parent Entity mangement.
 		void 	AddChild(Entity* pkEntity);								// Set a Entity to be child to this.	
@@ -266,8 +265,6 @@ class ENGINE_API Entity
 		void 	DeleteAllChilds();											// Remove all childs from this Entity.
 		void 	GetAllEntitys(vector<Entity*> *pakEntitys ,bool bForceAll = false,bool bCheckSendStatus =false); // get all entitys + childs (bForceAll = dont care aout the obects update status
 		
-		void	AddToDeletePropertyList(const string& strName);
-		void	UpdateDeletePropertyList();
 
 
 		bool AttachToZone();		
@@ -285,11 +282,9 @@ class ENGINE_API Entity
 		void	SetExistOnClient(int iConID,bool bStatus);
 		bool	GetExistOnClient(int iConID);
 
+		//load/save
 		void Load(ZFIoInterface* pkFile,bool bLoadID = true,bool bLoadChilds = true);
 		void Save(ZFIoInterface* pkFile);
-
-		void StaticData(int iClient, NetPacket* pkNetPacket);
-		void GetStaticData(int iEntityID);
 
 		// Collision / Shape.
 		void Touch(int iId);
@@ -339,23 +334,23 @@ class ENGINE_API Entity
 
 		//interpolation
 		void			SetInterpolate(bool bInterpolate);
-		bool			GetInterpolate()						{	return m_bInterpolate;		};
-		void			SetInterpolateFactor(float fIF)	{	m_fInterPolateFactor = fIF;};	
+		bool			GetInterpolate()						{	return m_bInterpolate;			};
+		void			SetInterpolateFactor(float fIF)	{	m_fInterPolateFactor = fIF;	};	
 				
 		// Inlines & get/set functions
-		inline bool IsZone() 								{	return m_bZone;			};
-		inline int GetEntityID()							{	return m_iEntityID;		};
-		inline int GetUpdateStatus()						{	return m_iUpdateStatus;	};
-		inline bool GetSave()								{	return m_bSave;			};
-		inline void SetSave(bool bSave)					{	m_bSave = bSave;			};
-		inline string GetName()								{	return m_strName;			};
-		inline string GetType()								{	return m_strType;			};
-		inline ZFResourceHandle* GetEntityScript()   {	return m_pScriptFileHandle;};
-		
-		inline Vector3 GetVel()								{	return m_kVel;				};		
-		inline Vector3 GetAcc()								{	return m_kAcc;				};
-		inline float GetRadius()							{	return m_fRadius;			};		
-		inline int GetCurrentZone()  						{	return m_iCurrentZone;	};
+		inline bool IsZone() 								{	return m_bZone;					};
+		inline int GetEntityID()							{	return m_iEntityID;				};
+		inline int GetUpdateStatus()						{	return m_iUpdateStatus;			};
+		inline bool GetSave()								{	return m_bSave;					};
+		inline void SetSave(bool bSave)					{	m_bSave = bSave;					};
+		inline string GetName()								{	return m_strName;					};
+		inline string GetType()								{	return m_strType;					};
+		inline bool IsType(const string& strType)		{	return m_strType == strType;	};	///< Returns true if this Entity is based on type.
+		inline ZFResourceHandle* GetEntityScript()   {	return m_pScriptFileHandle;	};		
+		inline Vector3 GetVel()								{	return m_kVel;						};		
+		inline Vector3 GetAcc()								{	return m_kAcc;						};
+		inline float GetRadius()							{	return m_fRadius;					};		
+		inline int GetCurrentZone()  						{	return m_iCurrentZone;			};
 
 		//network ignore flags
 		void	SetNetIgnoreFlag(int iConID,int iFlagID,bool bValue)			{	m_kNetIgnoreFlags[iConID][iFlagID] = bValue;		};

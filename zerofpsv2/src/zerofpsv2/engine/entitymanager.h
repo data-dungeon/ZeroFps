@@ -61,7 +61,8 @@ create, update and destroy entity's. It also handles to operation of replicating
 to other connected users that need to now about them.
 */
 
-class ENGINE_API EntityManager : public ZFSubSystem{
+class ENGINE_API EntityManager : public ZFSubSystem
+{
 	private:
 		enum FuncId_e
 		{
@@ -250,8 +251,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void PackEntityToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject,int iSendSize);
 		void PackToClients();																		//Packs and Sends to ALL clients.
 		
-		void StaticData(int iClient, NetPacket* pkNetPacket);
-		void GetStaticData(int iEntityID);
 
 		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a Entity.
 		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.

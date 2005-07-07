@@ -1022,41 +1022,6 @@ void EntityManager::PackToClients()
 }
 
 
-void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
-{
-	int iEntityID;
-	pkNetPacket->Read(&iEntityID,sizeof(iEntityID));
-	
-	Entity* pkEnt = GetEntityByID( iEntityID );
-	if(!pkEnt)
-		return;
-
-	Entity* pkStatic = NULL;//pkEnt->GetStaticEntity();
-	if(!pkStatic)
-		return;
-
-	vector<Entity*>	kObjects;
-
-	kObjects.clear();
-	pkStatic->GetAllEntitys(&kObjects);
-	PackEntityToClient(iClient, kObjects,false,100);
-	
-}
-
-/* Send Request for static data to server. */
-void EntityManager::GetStaticData(int iEntityID)
-{
-	NetPacket NP;
-
-	NP.Clear();
-	NP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
-	NP.Write((char) ZFGP_GETSTATICDATA);
-	NP.Write(&iEntityID,sizeof(iEntityID));
-	NP.Write(ZFGP_ENDOFPACKET);
-	NP.TargetSetClient(0);
-	m_pkNetWork->Send2(&NP);
-//	m_pkNetWork->SendToClient(0, &NP);
-}
 
 // Debug / Help Functions		
 void EntityManager::DisplayTree()

@@ -1363,29 +1363,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				m_pkApp->OnNetworkMessage( pkNetPacket );
 				break;
 
-			
-			/*
-			case ZFGP_ZONELIST: 
-				//Logf("netpac", "  HandleNetworkPacket(ZFGP_ZONELIST)\n");
-				m_pkEntityManager->UpdateZoneList(pkNetPacket);
-				break;
-
-			case ZFGP_GETSTATICDATA: 
-				m_pkEntityManager->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
-				break;
-			
-			case ZFGP_DELETEOBJECT:
-			{
-				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
-				int iID=-1;
-				pkNetPacket->Read(iID);
-				m_pkEntityManager->Delete(iID);
-				cout<<"Got delete packate from server , deleting entity:"<<iID<<endl;
-				//m_pkEntityManager->UpdateDeleteList(pkNetPacket);
-				break;
-			}
-			*/			
-			
+						
 			default:
 				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
 				return;
