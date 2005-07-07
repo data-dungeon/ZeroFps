@@ -124,7 +124,6 @@ class RENDER_API Light : public ZFSubSystem
 		void Add(LightSource* kNewLight);
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
-		void Update(Vector3 kPos);
 		void Update(LightProfile* pkLightProfile,const Vector3& kRefPos);
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { } 
 

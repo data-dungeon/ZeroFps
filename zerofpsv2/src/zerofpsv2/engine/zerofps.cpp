@@ -1776,7 +1776,6 @@ void ZeroFps::RegisterPropertys()
 {
 	//render propertys
 	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);			
-	m_pkPropertyFactory->Register("P_LightUpdate",		Create_LightUpdateProperty);							
 	m_pkPropertyFactory->Register("P_Light",				Create_LightProperty);					
 	m_pkPropertyFactory->Register("P_LinkToJoint",		Create_LinkToJoint);										
 	m_pkPropertyFactory->Register("P_Camera",				Create_CameraProperty);			

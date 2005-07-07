@@ -848,7 +848,6 @@ void ZeroEd::SetupPreviewWnd(const char* szMadFile)
 		m_pkPreviewEntity = m_pkEntityManager->CreateEntity();
 		m_pkPreviewEntity->SetSave(false);
 		m_pkPreviewEntity->SetWorldPosV(Vector3(0,0,0));
-		//m_pkPreviewEntity->AddProperty("P_LightUpdate");
 		m_pkPreviewEntity->AddProperty("P_Mad");
 
 		float aspect = (float) GetWnd("PreviewRenderLabel")->GetScreenRect().Width() /

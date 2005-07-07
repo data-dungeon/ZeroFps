@@ -5,7 +5,6 @@
 #include "p_skyboxrender.h"
 #include "p_waterrender.h"
 #include "p_track.h"
-#include "p_lightupdate.h"
 #include "p_worldinfo.h"
 #include "p_hmrp2.h"
 #include "p_billboardrender.h"
