@@ -192,7 +192,7 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 		{
 			// PSType
 			pkPackage->Write_Str(m_kPSystems[i].m_strPSName);
-			pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
+			//pkPackage->Write(m_kPSystems[i].m_pkPSystem->m_fAge);
 		}
 	}
 
