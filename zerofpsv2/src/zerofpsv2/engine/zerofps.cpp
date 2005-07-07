@@ -1414,7 +1414,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		{
 			iEntId = kSelected[i];
 			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
-				pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+				pkObj->SetWorldPosV(pkObj->GetWorldPosV() + kMove);
 		}
 	}
 
@@ -1446,7 +1446,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 			if(pkObj->IsZone())
 				return;	
 		
-			pkObj->SetLocalPosV(kMove);
+			pkObj->SetWorldPosV(kMove);
 		}
 	}
 
