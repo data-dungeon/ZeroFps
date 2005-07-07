@@ -270,7 +270,7 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
 		pkNetPacket->Write_Str( m_kPSystems[i].m_strPSName );
-		pkNetPacket->Write(m_kPSystems[i].m_pkPSystem->m_fAge );
+		//pkNetPacket->Write(m_kPSystems[i].m_pkPSystem->m_fAge );
 	}
 	
 	SetNetUpdateFlag(iConnectionID,false);   
@@ -292,7 +292,7 @@ void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		if(strPSName == "nons")
 			continue;
 
-		pkNetPacket->Read(fAge, sizeof(float);
+		//pkNetPacket->Read(fAge, sizeof(float);
 	
 		SetPSType( strPSName );
 	}
