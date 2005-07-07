@@ -1411,35 +1411,31 @@ void NetWork::Run()
 			m_RemoteNodes[i]->Clear();
 		}
 
-// 		int resent = 0;
-// 		int iBytes = 0;
-		int iNumOfResends = 0;
+
+		int iSendSize = int(GetClientNetSpeed(i) / m_pkZeroFps->GetNetworkFps()) / 2;				
+		int iNumOfResends = 0;	 					 		
+ 		int iBytes = 0;			
 		for(set<int>::iterator it = m_RemoteNodes[i]->m_kRelSend.begin(); it != m_RemoteNodes[i]->m_kRelSend.end(); it++)
 		{
 			int iRel = m_RemoteNodes[i]->GetRel( (*it) );
 
 			if(( m_RemoteNodes[i]->m_akRelPackSendTime[iRel] + 0.25 ) < fEngineTime)
 			{
-// 				resent ++;
-// 				iBytes += m_RemoteNodes[i]->m_aiRelPackSize[iRel];
+ 				iBytes += m_RemoteNodes[i]->m_aiRelPackSize[iRel];
+				iNumOfResends++;
 				
 				m_RemoteNodes[i]->m_akRelPackSendTime[iRel] = fEngineTime;
 				SendUDP(m_RemoteNodes[i]->m_akRelPack[iRel], m_RemoteNodes[i]->m_aiRelPackSize[iRel], &m_RemoteNodes[i]->m_kAddress);
 				g_ZFObjSys.Logf("netpac", "Resending Packet: %d\n", m_RemoteNodes[i]->m_akRelPack[iRel]->m_kHeader.m_iOrder);
-				iNumOfResends++;
 			}
 
-			if(iNumOfResends >= 20)	
+			//if(iNumOfResends >= 20)	
+			if(iBytes > iSendSize) 
 			{
-				cout << "Hit Resend Limit for client: " << i << ". Num of packets in que: " << m_RemoteNodes[i]->m_kRelSend.size() <<  endl;
+				cout << "Hit Resend Limit("<<iSendSize<<") for client: " << i <<" bytes sent:"<<iBytes<< " packages:"<<iNumOfResends<< " Num of packets in que: " << m_RemoteNodes[i]->m_kRelSend.size() <<  endl;
 				break;
 			}
 		}
-
-// 		if(resent > 0)
-// 		{
-// 			cout<<"resent:"<<iBytes<<" bytes in "<<resent<<" packages"<<endl;
-// 		}
 
 		SendAckList(i, m_RemoteNodes[i]->m_kRelAckList);
 		m_RemoteNodes[i]->m_kRelAckList.clear();
