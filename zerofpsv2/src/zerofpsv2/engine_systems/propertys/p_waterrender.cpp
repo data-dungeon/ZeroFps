@@ -100,6 +100,7 @@ void P_WaterRender::DrawSurface()
 	
 	t = m_pkZeroFps->GetEngineTime();
 	
+	//first
 	for(int x = int(-m_kSize.x);x< m_kSize.x;x+=m_iStep)
 	{
 		fY1 = sin(x*0.5+t)*m_fWave  + m_kSize.y;
@@ -107,16 +108,20 @@ void P_WaterRender::DrawSurface()
 	
 		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
 		{
-			m_pkZShaderSystem->AddQuadUV(Vector2(x*0.1,z*0.1),Vector2(x*0.1+0.1,z*0.1),Vector2(x*0.1+0.1,z*0.1+0.1),Vector2(x*0.1,z*0.1+0.1));
+			m_pkZShaderSystem->AddQuadUV(	Vector2(x*0.1,z*0.1),
+													Vector2(x*0.1+0.1,z*0.1),
+													Vector2(x*0.1+0.1,z*0.1+0.1),
+													Vector2(x*0.1,z*0.1+0.1));
+													
  			m_pkZShaderSystem->AddQuadN(kNormal,kNormal,kNormal,kNormal);
 			
 			m_pkZShaderSystem->AddQuadV(	Vector3(x,fY1,z),Vector3(x+m_iStep,fY2,z),
-													Vector3(x+m_iStep,fY2,z+m_iStep),Vector3(x,fY1,z+m_iStep));
-		
+													Vector3(x+m_iStep,fY2,z+m_iStep),Vector3(x,fY1,z+m_iStep));		
 		}
 	}
-
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+
+	
 	
 	m_pkZShaderSystem->MatrixPop();
 }
