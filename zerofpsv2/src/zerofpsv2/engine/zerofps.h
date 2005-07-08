@@ -52,11 +52,11 @@ enum enginestates
 #define	ZFGP_DELETEOBJECT		5
 #define	ZFGP_REQOWNOBJECT		6
 #define	ZFGP_GIVEOWNOBJECT	7
-#define	ZFGP_COMMAND			8
-#define	ZFGP_EDIT				9
-#define  ZPGP_SS_APP				10		
-#define  ZPGP_ZED_ZONELIST		11
-#define	ZPGP_DELETELIST		12
+#define	ZFGP_COMMAND			12
+#define	ZFGP_EDIT				13
+#define  ZPGP_SS_APP				14		
+#define  ZPGP_ZED_ZONELIST		15
+#define	ZPGP_DELETELIST		16
 
 #define	ZFGP_ENDOFPACKET		128
 

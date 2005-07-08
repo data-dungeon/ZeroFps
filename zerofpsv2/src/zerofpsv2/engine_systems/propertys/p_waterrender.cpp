@@ -125,6 +125,8 @@ void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write(m_kSize);
 	pkNetPacket->Write(m_iStep);	
+	pkNetPacket->Write_Str(m_strMaterial);
+	
 	SetNetUpdateFlag(iConnectionID,false);
 }
  
@@ -132,6 +134,8 @@ void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Read(m_kSize);
 	pkNetPacket->Read(m_iStep);
+	pkNetPacket->Read_Str(m_strMaterial);	
+	SetMaterial(m_strMaterial);
 }
 
 
