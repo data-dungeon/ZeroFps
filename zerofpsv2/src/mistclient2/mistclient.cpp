@@ -1301,22 +1301,30 @@ void MistClient::ShowLag()
 		if(ZGuiWnd* pkLagWnd = (ZGuiLabel*)GetWnd("LagWnd"))
 			pkLagWnd->Show();
 	
-		if(ZGuiLabel* pkLagLable = (ZGuiLabel*)GetWnd("LagLabel"))
+		ZGuiLabel* pkLagLable = (ZGuiLabel*)GetWnd("LagLabel");
+		ZGuiLabel* pkLossLable = (ZGuiLabel*)GetWnd("LossLabel");
+	
+		if(pkLagLable && pkLossLable)
 		{
 			pkLagLable->Show();
+			pkLossLable->Show();
 			
 			static float fDelay = 0;
  			static float fTotal = 0;
+ 			static float fTotalLoss = 0;
 			static int   iSamples = 0;
 			
  			fTotal += m_pkNetwork->GetPing(0);
+ 			fTotalLoss += m_pkNetwork->GetBadPackages();
  			iSamples++;
 			
 			if(m_pkZeroFps->GetEngineTime() - fDelay > 2.0)
 			{
 				pkLagLable->SetText((char*)IntToString(int(fTotal/iSamples)).c_str());
-				
+				pkLossLable->SetText((char*)IntToString(int(fTotalLoss/iSamples)).c_str());
+					
 				fTotal = 0;
+				fTotalLoss = 0;
 				iSamples = 0;
 				fDelay = m_pkZeroFps->GetEngineTime();
 			}

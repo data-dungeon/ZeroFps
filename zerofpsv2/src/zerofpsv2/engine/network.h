@@ -191,6 +191,8 @@ private:
 
 	int						m_iMaxIncomingFrame;					// Max incoming networkpackages we handle each frame.
    
+   int						m_iBadPackages;
+   
 	// Console Variables
 	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
 	int						m_iMaxClients;							// Num of max connected clients.
@@ -258,6 +260,7 @@ public:
 	
 	int GetClientNetSpeed(int iId);
 	int GetPing(int iConID);
+	int GetBadPackages()								{return m_iBadPackages;	};
 	bool IsConnected(int iId);
 	
 	// NetStrings

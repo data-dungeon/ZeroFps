@@ -349,7 +349,8 @@ void MistClient::LoadInGameGui()
 	GetWnd("ChatTextbox")->SetTextColor(255,255,255); 
 	GetWnd("SayTextbox")->SetTextColor(255,255,255); 
 
-	GetWnd("LagLabel")->SetTextColor(255,255,255); 
+	GetWnd("LagLabel")->SetTextColor(0,255,0); 
+	GetWnd("LossLabel")->SetTextColor(255,0,0); 
 
 	//GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit	(för att	kunna	ändra	trasparens med	färgvärdet)
 	GetWnd("SayTextbox")->m_bUseAlhpaTest =	false;

@@ -31,6 +31,7 @@ NetWork::NetWork()
 	m_fMSNextPing			= 0;
 	m_strServerName		= "Mistlands_Server";
 	m_strPublishIp			= "none";
+	m_iBadPackages			= 0;
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
@@ -1212,7 +1213,7 @@ void NetWork::SendAckList(int iClient, vector<int>& kAckList)
 void NetWork::Run()
 {	
 	int iRecvBytes = 0;
-
+	m_iBadPackages = 0;	
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
 
 	if( m_eNetStatus == NET_NONE )	return;
@@ -1333,6 +1334,9 @@ void NetWork::Run()
 					}
 					else
 					{
+						//count nr of bad packages this frame
+						m_iBadPackages++;
+					
 						if(NetP.m_kData.m_kHeader.m_iOrder < m_RemoteNodes[iClientID]->m_iReliableRecvOrder)
 						{
 							//cout << "Duplicate Message: ";
