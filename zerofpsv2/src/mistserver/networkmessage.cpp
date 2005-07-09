@@ -431,24 +431,26 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			
 
 			//Get item
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iItemID))
-				if(!(pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item")))			
-				{
-					cout<<"WARNING: MLNM_CS_REQ_ITEMINFO  could not find item "<<iItemID<<endl;
-					break;
-				}
+			pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(iItemID,"P_Item");	
+			
+			if(!pkItem)
+			{
+				cout<<"WARNING: MLNM_CS_REQ_ITEMINFO could not find item"<<endl;
+				break;			
+			}
 
 			//get in container
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(pkItem->GetInContainerID()))
-				pkInContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
-				
+			pkInContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(pkItem->GetInContainerID(),"P_Container");
+
 			//get players character entity
 			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-				if(!(pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID)))
-				{
-					cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
-					break;
-				}			
+				pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID);
+							
+			if(!pkCharacter)
+			{
+				cout<<"WARNING: MLNM_CS_REQ_ITEMINFO could not find any character"<<endl;
+				break;			
+			}
 			
 				
 			//is item in a container?
@@ -542,32 +544,35 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			P_Item* 			pkItem = 				NULL;
 			Entity*			pkCharacter = 			NULL;
 			
-			cout<<"got move package  item:"<<iItemID<<" targetcontainer:"<<iTargetContainer<<" pos:"<<iPosX<<"x"<<iPosY<<" count:"<<iCount<<endl;
+			//cout<<"got move package  item:"<<iItemID<<" targetcontainer:"<<iTargetContainer<<" pos:"<<iPosX<<"x"<<iPosY<<" count:"<<iCount<<endl;
 			
 			//get container
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iTargetContainer))
-				pkTargetContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
+			pkTargetContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(iTargetContainer,"P_Container");
 
 			//Get item
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iItemID))
-				if(!(pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item")))			
-				{
-					cout<<"WARNING: MLNM_CS_MOVE_ITEM  could not find item "<<iItemID<<endl;
-					break;
-				}
+			pkItem = (P_Item*)m_pkEntityManager->GetPropertyFromEntityID(iItemID,"P_Item");
+			
+			//item is missing, return
+			if(!pkItem)
+			{
+				cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find item"<<endl;
+				break;
+			}
 
 			//get in container
-			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(pkItem->GetInContainerID()))
-				pkInContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
+			pkInContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(pkItem->GetInContainerID(),"P_Container");
 				
 			//get players character entity
 			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-				if(!(pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID)))
-				{
-					cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
-					break;
-				}
-							
+				pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID);
+			
+			//character is missing,return 
+			if(!pkCharacter)
+			{
+				cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
+				break;
+			}
+				
 				
 			//item is not in any container	
 			if(!pkInContainer)
@@ -589,7 +594,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						break;					
 					}								
 							
-					cout<<"picking up item from ground"<<endl;
+					//cout<<"picking up item from ground"<<endl;
 					
 					//try adding item from gound									
 					if(!pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
@@ -625,7 +630,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//if we have a position, try moving there
 					if(iPosX != -1)
 					{
-						cout<<"no target container, moving within this container"<<endl;
+						//cout<<"no target container, moving within this container"<<endl;
 					
 						if(!pkInContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 							SayToClients("Could not move item","Server",-1,PkNetMessage->m_iClientID);				
@@ -637,7 +642,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					//no position, try drop
 					else
 					{
-						cout<<"got no position, droping item"<<endl;
+						//cout<<"got no position, droping item"<<endl;
 						
 						
 						Vector3 kOffset(0,0,0);
@@ -668,7 +673,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						break;					
 					}				
 				
-					cout<<"moving item to another container"<<endl;
+					//cout<<"moving item to another container"<<endl;
 					if(!pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 						SayToClients("Could not move item to that container","Server",-1,PkNetMessage->m_iClientID);	
 					
