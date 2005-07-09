@@ -32,13 +32,15 @@ NetWork::NetWork()
 	m_strServerName		= "Mistlands_Server";
 	m_strPublishIp			= "none";
 	m_iBadPackages			= 0;
+	m_iMaxClientNetSpeed = 50000;
 
 	// Register Variables
-	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
-	RegisterVariable("n_mslink",				&m_strMasterServer,	CSYS_STRING);	
-	RegisterVariable("n_mspublish",			&m_bPublishServer,	CSYS_BOOL);	
-   RegisterVariable("n_servername",			&m_strServerName,		CSYS_STRING);
-   RegisterVariable("n_publiship",			&m_strPublishIp,		CSYS_STRING);
+	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
+	RegisterVariable("n_mslink",				&m_strMasterServer,		CSYS_STRING);	
+	RegisterVariable("n_mspublish",			&m_bPublishServer,		CSYS_BOOL);	
+   RegisterVariable("n_servername",			&m_strServerName,			CSYS_STRING);
+   RegisterVariable("n_publiship",			&m_strPublishIp,			CSYS_STRING);
+   RegisterVariable("n_maxnetspeed",		&m_iMaxClientNetSpeed,	CSYS_INT);
 	
 
 
@@ -900,17 +902,29 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			m_pkConsole->Printf("'%s' try to join as '%s' in editmode '%d'", m_szAddressBuffer, szLogin, iConnectAsEditor);
 
 			//wanted speed to low
-			if( (iNetSpeed<1000) || (iNetSpeed>100000) ) 
-			{
-				m_pkConsole->Printf("Join Ignored: invalid netspeed.");
-				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
-				kNetPRespons.Write_Str( string("Invalid netspeed.") );
-				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
-				SendRaw(&kNetPRespons);
-				break;
-			}
+// 			if( (iNetSpeed<1000) || iNetSpeed>100000 ) 
+// 			{
+// 				m_pkConsole->Printf("Join Ignored: invalid netspeed.");
+// 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+// 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
+// 				kNetPRespons.Write_Str( string("Invalid netspeed.") );
+// 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
+// 				SendRaw(&kNetPRespons);
+// 				break;
+// 			}
 			
+			//check netspeed
+			if(iNetSpeed < 1000)
+			{
+				m_pkConsole->Printf("Client joined with to low netspeed (%d), setting netspeed 1000",iNetSpeed);
+				iNetSpeed = 1000;
+			}
+						
+			if(iNetSpeed > m_iMaxClientNetSpeed)
+			{
+				m_pkConsole->Printf("Client joined with to hi netspeed (%d), setting netspeed %d",iNetSpeed,m_iMaxClientNetSpeed);
+				iNetSpeed = m_iMaxClientNetSpeed;
+			}			
 			
 			//max connections
 			if(GetNumOfClients() == m_iMaxNumberOfNodes) 
