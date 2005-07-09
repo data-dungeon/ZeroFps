@@ -186,7 +186,7 @@ private:
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
 	float						m_fStatsUpdate;
-	int						m_iMaxClientNetSpeed;
+	int						m_iMaxOutput;
 	int						m_iDefPort;
 
 	int						m_iMaxIncomingFrame;					// Max incoming networkpackages we handle each frame.

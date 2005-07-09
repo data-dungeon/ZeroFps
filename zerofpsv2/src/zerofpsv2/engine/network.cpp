@@ -362,11 +362,6 @@ int NetWork::GetClientNetSpeed(int iId)
 	int iNetSpeed = m_RemoteNodes[iId]->m_iNetSpeed;
 	int iMaxSpeed = m_iMaxOutput / GetNumOfClients();
 
- 	if(iNetSpeed > iMaxSpeed)
- 	{
- 		cout<<"netspeed:"<<iMaxSpeed<<endl;
- 	}
-
 	return Min(iNetSpeed,iMaxSpeed);
 }
 
