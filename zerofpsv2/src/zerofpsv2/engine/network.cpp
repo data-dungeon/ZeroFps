@@ -32,7 +32,7 @@ NetWork::NetWork()
 	m_strServerName		= "Mistlands_Server";
 	m_strPublishIp			= "none";
 	m_iBadPackages			= 0;
-	m_iMaxClientNetSpeed = 50000;
+	m_iMaxOutput 			= 50000;
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
@@ -40,7 +40,7 @@ NetWork::NetWork()
 	RegisterVariable("n_mspublish",			&m_bPublishServer,		CSYS_BOOL);	
    RegisterVariable("n_servername",			&m_strServerName,			CSYS_STRING);
    RegisterVariable("n_publiship",			&m_strPublishIp,			CSYS_STRING);
-   RegisterVariable("n_maxnetspeed",		&m_iMaxClientNetSpeed,	CSYS_INT);
+   RegisterVariable("n_maxoutput",			&m_iMaxOutput,				CSYS_INT);
 	
 
 
@@ -282,10 +282,11 @@ void NetWork::NetString_Request(int iIndex)
 int NetWork::GetNumOfClients(void)
 {
 	int iNumOfClients = 0;
-	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
+	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) 
+	{
 		if(m_RemoteNodes[i]->m_eConnectStatus != NETSTATUS_DISCONNECT)
 			iNumOfClients++;
-		}
+	}
 
 	return iNumOfClients;
 }
@@ -358,7 +359,15 @@ bool NetWork::IsConnected(int iId)
 
 int NetWork::GetClientNetSpeed(int iId)
 {
-	return m_RemoteNodes[iId]->m_iNetSpeed;
+	int iNetSpeed = m_RemoteNodes[iId]->m_iNetSpeed;
+	int iMaxSpeed = m_iMaxOutput / GetNumOfClients();
+
+ 	if(iNetSpeed > iMaxSpeed)
+ 	{
+ 		cout<<"netspeed:"<<iMaxSpeed<<endl;
+ 	}
+
+	return Min(iNetSpeed,iMaxSpeed);
 }
 
 void NetWork::StartSocket(bool bStartServer,int iPort)
@@ -920,10 +929,10 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				iNetSpeed = 1000;
 			}
 						
-			if(iNetSpeed > m_iMaxClientNetSpeed)
+			if(iNetSpeed > 1000000)
 			{
-				m_pkConsole->Printf("Client joined with to hi netspeed (%d), setting netspeed %d",iNetSpeed,m_iMaxClientNetSpeed);
-				iNetSpeed = m_iMaxClientNetSpeed;
+				m_pkConsole->Printf("Client joined with to hi netspeed (%d), setting netspeed %d",iNetSpeed,m_iMaxOutput);
+				iNetSpeed = 1000000;
 			}			
 			
 			//max connections
