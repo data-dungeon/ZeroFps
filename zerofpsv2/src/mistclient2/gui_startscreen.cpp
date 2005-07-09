@@ -506,6 +506,7 @@ void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 {
 	SetGuiCapture(true);
 
+	ShowWnd("SkillBar",	false);
 	ShowWnd("ActionBar",	false);
 	ShowWnd("ChatDlgMainWnd",	false);
 
