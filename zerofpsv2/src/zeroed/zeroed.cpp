@@ -340,27 +340,29 @@ void ZeroEd::Init()
 
 
 	//initiate our camera
-	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.1,250);	
+	int iFov = 70;
+	
+	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[0]->SetName("persp");
 	m_pkCamera[0]->SetFog(Vector4(1,1,1,1),300,400,true);
 	//m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
 	//m_pkFps->SetRenderTarget(m_pkCamera[0]);
 
-	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.1,250);	
+	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[1]->SetName("top");
 	//m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
 	m_pkCamera[1]->SetViewMode("top");
 	m_pkCamera[1]->SetFog(Vector4(1,1,1,1),300,400,true);
 	//m_pkFps->SetRenderTarget(m_pkCamera[1]);
 	
-	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.1,250);	
+	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[2]->SetName("front");
 	//m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
 	m_pkCamera[2]->SetViewMode("front");
 	m_pkCamera[2]->SetFog(Vector4(1,1,1,1),300,400,true);	
 	//m_pkFps->SetRenderTarget(m_pkCamera[2]);
 
-	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.1,250);	
+	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[3]->SetName("right");
 	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
@@ -656,7 +658,7 @@ void ZeroEd::OnSystem()
 									
 				m_kGrabPos = kNewGrabPos;
 				
-				m_kGrabCurrentPos = m_pkActiveCamera->GetPos() + Get3DMousePos(true)*m_fArmLength;
+				m_kGrabCurrentPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fArmLength;
 				Vector3 kForce = (m_kGrabCurrentPos - m_kGrabPos)*20;
 
 				pkTcs->ApplyForce(m_kGrabPos,kForce,false);
@@ -853,7 +855,7 @@ HeightMap* ZeroEd::SetPointer()
 	P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 	if(!hmrp)		return NULL;
 
-	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
+	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 
 /*	Vector3 start	= m_pkFps->GetCam()->GetPos();
@@ -990,7 +992,7 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 			pkObjNew->Load(&kFile,false);
 			kFile.Close();
 	
-			pkObjNew->SetWorldPosV(m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2);
+			pkObjNew->SetWorldPosV(m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2);
 		}
 	}
 }
@@ -1458,7 +1460,7 @@ Entity*	ZeroEd::GetTargetObject2()
 
 Entity* ZeroEd::GetTargetObject()
 {
-	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
+	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 //	dir.Set(0,1,0);
 
@@ -1612,7 +1614,7 @@ void ZeroEd::UpdateZoneMarkerPos()
 {
 	if(m_pkActiveCameraObject)
 	{
-		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*m_fZoneMarkerDistance;
+		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMouseDir(false)*m_fZoneMarkerDistance;
 		
 		if(m_iAutoSnapZoneCorner == -1)
 		{
@@ -1666,12 +1668,12 @@ void ZeroEd::UpdateZoneMarkerPos()
 
 void ZeroEd::UpdateObjectMakerPos()
 {
-	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*m_fObjectMarkerDistance;
+	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fObjectMarkerDistance;
 
 
 	if(m_pkActiveCameraObject && m_iEditMode == EDIT_AMBIENTSOUNDS)
 	{
-		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false) * 15;
+		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMouseDir(false) * 15;
 	
 		m_kObjectMarkerPos.x = round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x;
 		m_kObjectMarkerPos.y = 0;

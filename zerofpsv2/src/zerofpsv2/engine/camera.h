@@ -248,6 +248,7 @@ class ENGINE_API Camera : public I_Camera
 		string	GetCameraDesc();
 		Vector3	GetViewPortSize();
 		Vector3	GetViewPortCorner();
+		Vector3	Get3DCursorDir(float x,float y,bool bMouse=true);
 
 		//fullscreen shader stuff		
 		void SetBloomEnabled(bool bEn)			{	m_bBloomEnabled = bEn;			}

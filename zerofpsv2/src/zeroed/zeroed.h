@@ -226,7 +226,6 @@ class ZeroEd :public Application , public ZGuiApp {
 
 
 		//picking
-		Vector3	Get3DMousePos(bool m_bMouse);
 		Vector3	Get3DMouseDir(bool bMouse);
 		Entity*	GetTargetObject();		
 		Entity*	GetTargetObject2();		

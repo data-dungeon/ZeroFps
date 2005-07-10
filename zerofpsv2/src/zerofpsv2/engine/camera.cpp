@@ -1192,3 +1192,48 @@ void Camera::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled
 }
 
 
+Vector3 Camera::Get3DCursorDir(float fMouseX,float fMouseY,bool bMouse)
+{
+	Vector3 dir;
+	float x,y;		
+
+	Vector3 kViewSize, kViewCorner;
+	kViewSize = GetViewPortSize();
+	kViewCorner = GetViewPortCorner();
+
+	if(bMouse)
+	{
+  		x = -0.5f + (float) (fMouseX - kViewCorner.x) / (float) kViewSize.x;
+  		y = -0.5f + (float) ((m_pkRender->GetHeight() - fMouseY) - kViewCorner.y) / (float) kViewSize.y;
+
+		if(GetViewMode() == Camera::CAMMODE_PERSP) 
+		{
+			x*=2;
+			y*=2;
+			dir.Set(x,y,0);
+		}
+		else 
+		{			
+			dir.Set(x,y,0);
+		}
+	}
+	else
+	{
+		dir.Set(0,0,0);
+	}
+	
+	Matrix4 pr = GetProjectionMatrix();
+	pr = pr.Inverse();	
+	dir = pr.VectorTransform(dir);
+	
+	
+	//cout<<dir.x<<" "<<dir.y<<endl;
+	
+	Matrix4 rm = GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+
+	
+	return dir;	
+
+}

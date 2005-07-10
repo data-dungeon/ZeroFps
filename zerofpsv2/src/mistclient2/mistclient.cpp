@@ -2141,27 +2141,27 @@ Entity* MistClient::GetTargetObject()
 		
 		//-------------
 		
-// 		bool bSphereOnly = false;
-// 		if(kObjects[i]->GetProperty("P_CharacterProperty"))
-// 			bSphereOnly = true;
+ 		if(kObjects[i]->GetProperty("P_Ml") || 
+ 			kObjects[i]->GetProperty("P_Item") || 
+ 			kObjects[i]->GetProperty("P_CharacterProperty"))
+ 		{		
+			//get mad property and do a linetest		
+			if(P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+			{
+				if(mp->TestLine(start,dir))
+				{	
+					float d = (start - kObjects[i]->GetWorldPosV()).Length();
 		
-		
-		//get mad property and do a linetest		
-		if(P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
-		{
-			if(mp->TestLine(start,dir))
-			{	
-				float d = (start - kObjects[i]->GetWorldPosV()).Length();
-	
-				if(d < closest)
-				{
-					closest = d;
-					pkClosest = kObjects[i];
-				}				
-			}
-		}		
-		
+					if(d < closest)
+					{
+						closest = d;
+						pkClosest = kObjects[i];
+					}				
+				}
+			}		
+		}	
 	}
+	
 	
 	return pkClosest;
 }
@@ -2169,60 +2169,65 @@ Entity* MistClient::GetTargetObject()
 /*	Return 3D postion of mouse in world. */
 Vector3 MistClient::Get3DMouseDir(bool bMouse)
 {
-	Vector3 dir;
-	float x,y;		
+	float x;
+	float y;
+	m_pkInputHandle->MouseXY(x,y);		
 	
-	//screen propotions
-	float xp=4;
-	float yp=3;
-
-	Vector3 kViewSize, kViewCorner;
-	kViewSize = m_pkCamera->GetViewPortSize();
-	kViewCorner = m_pkCamera->GetViewPortCorner();
-	
-	if(bMouse)
-	{
-		// Zeb was here! Nu k? vi med operativsystemets egna snabba musmark?
-		// allts?m?te vi anv?da den position vi f? d?ifr?.
-		m_pkInputHandle->UnitMouseXY(x,y);
-		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-		
-		
-		/*
-		int mx;		
-		int my;
-		
-		//m_pkInputHandle->SDLMouseXY(mx,my);
-		
-		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-		*/
-		
-		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
-		{
-			dir.Set(x*xp,-y*yp,-2.15);			//for 70 deg fov
- 			//dir.Set(x*xp,-y*yp,-1.64);				//for 85 deg fov
-			dir.Normalize();
-		}
-		else
-		{
-			dir.Set(0,0,-1);
-			//dir.Normalize();
-			//return dir;
-		}
-	}
-	else
-	{
-		dir.Set(0,0,-1.5);
-		dir.Normalize();	
-	}
-	
-	Matrix4 rm = m_pkCamera->GetRotM();
-	rm.Transponse();
-	dir = rm.VectorTransform(dir);
-	
-	return dir;
+	return m_pkCamera->Get3DCursorDir(x,y,bMouse);
+// 	Vector3 dir;
+// 	float x,y;		
+// 	
+// 	//screen propotions
+// 	float xp=4;
+// 	float yp=3;
+// 
+// 	Vector3 kViewSize, kViewCorner;
+// 	kViewSize = m_pkCamera->GetViewPortSize();
+// 	kViewCorner = m_pkCamera->GetViewPortCorner();
+// 	
+// 	if(bMouse)
+// 	{
+// 		// Zeb was here! Nu k? vi med operativsystemets egna snabba musmark?
+// 		// allts?m?te vi anv?da den position vi f? d?ifr?.
+// 		m_pkInputHandle->UnitMouseXY(x,y);
+// 		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+// 		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+// 		
+// 		
+// 		/*
+// 		int mx;		
+// 		int my;
+// 		
+// 		//m_pkInputHandle->SDLMouseXY(mx,my);
+// 		
+// 		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
+// 		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
+// 		*/
+// 		
+// 		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
+// 		{
+// 			dir.Set(x*xp,-y*yp,-2.15);			//for 70 deg fov
+//  			//dir.Set(x*xp,-y*yp,-1.64);				//for 85 deg fov
+// 			dir.Normalize();
+// 		}
+// 		else
+// 		{
+// 			dir.Set(0,0,-1);
+// 			//dir.Normalize();
+// 			//return dir;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		dir.Set(0,0,-1.5);
+// 		dir.Normalize();	
+// 	}
+// 	
+// 	Matrix4 rm = m_pkCamera->GetRotM();
+// 	rm.Transponse();
+// 	dir = rm.VectorTransform(dir);
+// 	
+// 	return dir;
 }
 
 

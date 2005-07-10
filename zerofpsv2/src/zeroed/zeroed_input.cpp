@@ -469,14 +469,14 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 			{
 				if(m_pkInputHandle->Pressed(MOUSEWUP))
 					m_fZoneMarkerDistance += 1.0;
-				if(m_pkInputHandle->Pressed(MOUSEWDOWN))
+				if(m_pkInputHandle->Pressed(MOUSEWDOWN) && m_fZoneMarkerDistance > 0)
 					m_fZoneMarkerDistance -= 1.0;
 			}
 			else if(m_iEditMode == EDIT_OBJECTS)
 			{
 				if(m_pkInputHandle->Pressed(MOUSEWUP))
 					m_fObjectMarkerDistance += 0.2;
-				if(m_pkInputHandle->Pressed(MOUSEWDOWN))
+				if(m_pkInputHandle->Pressed(MOUSEWDOWN) && m_fObjectMarkerDistance > 0.5)
 					m_fObjectMarkerDistance -= 0.2;
 			}
 		}
@@ -630,117 +630,14 @@ void ZeroEd::Input()
 /*	Return 3D postion of mouse in world. */
 Vector3 ZeroEd::Get3DMouseDir(bool bMouse)
 {
-	Vector3 dir;
-	float x,y;		
+	int x;
+	int y;
+	m_pkInputHandle->SDLMouseXY(x,y);		
 	
-	//screen propotions
-	float xp=4;
-	float yp=3;
-
-	Vector3 kViewSize, kViewCorner;
-	kViewSize = m_pkActiveCamera->GetViewPortSize();
-	kViewCorner = m_pkActiveCamera->GetViewPortCorner();
-	
-	if(bMouse)
-	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInputHandle->UnitMouseXY(x,y);
-		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-		int mx;		
-		int my;
-		
-		m_pkInputHandle->SDLMouseXY(mx,my);
-		
-		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-
-		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)
-		{
-			dir.Set(x*xp,y*yp,-1.5);
-			dir.Normalize();
-		}
-		else
-		{
-			dir.Set(0,0,-1);
-			//dir.Normalize();
-			//return dir;
-		}
-	}
-	else
-	{
-		dir.Set(0,0,-1.5);
-		dir.Normalize();	
-	}
-	
-	Matrix4 rm = m_pkActiveCamera->GetRotM();
-	rm.Transponse();
-	dir = rm.VectorTransform(dir);
-	
-	return dir;
+	return m_pkActiveCamera->Get3DCursorDir(x,y,bMouse);
 }
 
-/*	Returns 3D dir of mouse click in world. */
-Vector3 ZeroEd::Get3DMousePos(bool m_bMouse=true)
-{
-	Vector3 dir;
-	float x,y;		
-	
-	//screen propotions
-	float xp=4;
-	float yp=3;
 
-	Vector3 kViewSize, kViewCorner;
-	kViewSize = m_pkActiveCamera->GetViewPortSize();
-	kViewCorner = m_pkActiveCamera->GetViewPortCorner();
-
-	if(m_bMouse)
-	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInputHandle->UnitMouseXY(x,y);
-		/*
-			x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-			y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-		*/
-		int mx;		
-		int my;
-		
-		m_pkInputHandle->SDLMouseXY(mx,my);		
-		
-		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-		
-		//cout << "ViewCorner: " << kViewCorner.x << ", " << kViewCorner.y << endl;
-		//cout << "kViewSize: " << kViewSize.x << ", " << kViewSize.y << endl;
-
-		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
-		{
-			dir.Set(x*xp,y*yp,-1.5);
-			dir.Normalize();
-		}
-		else 
-		{
-			dir.x = x* m_pkActiveCamera->GetOrthoSize().x;
-			dir.y = y* m_pkActiveCamera->GetOrthoSize().y;
-			dir.z = -1.5; 
-//			cout << "Cam XY: " << dir.x << "," << dir.y << endl;
-		}
-	}
-	else
-	{
-		dir.Set(0,0,-1.5);
-		//dir.Normalize();	
-	}
-	
-	Matrix4 rm = m_pkActiveCamera->GetRotM();
-	rm.Transponse();
-	dir = rm.VectorTransform(dir);
-
-	
-	return dir;
-}
 
 
 
