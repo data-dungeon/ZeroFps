@@ -359,6 +359,9 @@ bool NetWork::IsConnected(int iId)
 
 int NetWork::GetClientNetSpeed(int iId)
 {
+	if(m_RemoteNodes[iId]->m_eConnectStatus == NETSTATUS_DISCONNECT)
+		return 0;
+
 	int iNetSpeed = m_RemoteNodes[iId]->m_iNetSpeed;
 	int iMaxSpeed = m_iMaxOutput / GetNumOfClients();
 
@@ -487,12 +490,16 @@ void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const
 	m_kServerAddress = NetP.m_kAddress;
 }
 
-void NetWork::RequestServerInfo(IPaddress kIp)
+void NetWork::RequestServerInfo(ServerInfo* pkServer)
 {
+	//save request time
+	pkServer->m_fRequestTime = m_pkZeroFps->GetEngineTime();
+
+	
 	NetPacket NetP;
 
 	NetP.Clear();
-	NetP.m_kAddress = kIp;
+	NetP.m_kAddress = pkServer->m_kServerIp;
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((char) ZF_NETCONTROL_LIST);
@@ -531,10 +538,12 @@ void NetWork::GotServerInfo(NetPacket* pkNetPacket)
 	{
 		if( IsAddressEquals(&m_kServers[i].m_kServerIp, &pkNetPacket->m_kAddress))
 		{
+			m_kServers[i].m_fRequestTime = m_pkZeroFps->GetEngineTime() - m_kServers[i].m_fRequestTime;
 			m_kServers[i].m_iNumOfPlayers = iNumOfPlayers;
 			m_kServers[i].m_iMaxPlayers = iMaxPlayers;
 			m_kServers[i].m_bUpdated = true;
-			strcpy(m_kServers[i].m_acServerName, szServerName);
+			
+			strcpy(m_kServers[i].m_acServerName, szServerName);						
 			GetSystem().SendSystemMessage(string("Application"),string("serverlist"),0,NULL);
 			return;
 		}
@@ -625,12 +634,13 @@ void NetWork::MS_GotServers(NetPacket* pkNetPack)
 		kServer.m_bUpdated			= false;
 		kServer.m_iNumOfPlayers		= 0;
 		kServer.m_iMaxPlayers		= 0;
+		kServer.m_fRequestTime		= -1;
 		strcpy(kServer.m_acServerName, "Unkown");
 
 		pkNetPack->Read(kServer.m_kServerIp);	
 		AddressToStr(&kServer.m_kServerIp, SzAdress);
 		m_pkConsole->Printf("[%d]: %s\n",i, SzAdress);
-		RequestServerInfo(kServer.m_kServerIp);
+		RequestServerInfo(&kServer);
 		m_kServers.push_back(kServer);
 	}
 
@@ -655,16 +665,14 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 
 	if(m_iMaxIncomingFrame)
 	{
-		if(SDLNet_UDP_Recv(m_pkSocket, &kPacket)) {
+		if(SDLNet_UDP_Recv(m_pkSocket, &kPacket))
+		{
 			pkNetPacket->m_kAddress = kPacket.address;
 			pkNetPacket->m_iLength	= kPacket.len - sizeof(ZFNetHeader);
 			g_ZFObjSys.Logf("netpac", "Recv From Net");
 			return true;
-			}
+		}
 	}
-	// dvoid tr�tna p�jobbiga utskrifter
-	//else
-	//	cout << "Hit max per frame number"<< endl;
 
 
 	for(unsigned int i=0; i<m_RemoteNodes.size(); i++)
@@ -1437,9 +1445,9 @@ void NetWork::Run()
 		//get send size
 	 	int iSendSize;		
 		if(m_pkZeroFps->GetSyncNetwork())
-			iSendSize = int(GetClientNetSpeed(i) / m_pkZeroFps->GetSystemFps()) / 2;
+			iSendSize = int( (GetClientNetSpeed(i) / m_pkZeroFps->GetSystemFps()) * 0.5f);
  		else	
-			iSendSize = int(GetClientNetSpeed(i) / m_pkZeroFps->GetNetworkFps()) / 2;		
+			iSendSize = int( (GetClientNetSpeed(i) / m_pkZeroFps->GetNetworkFps()) * 0.5f);		
 				
 		int iNumOfResends = 0;	 					 		
  		int iBytes = 0;	 				

@@ -162,7 +162,9 @@ public:
 	char				m_acServerName[MAX_NETWORKNAME];		// Name of server.
 	bool				m_bUpdated;									// True if we got info about this server.
 	unsigned char	m_iNumOfPlayers;
-	unsigned char	m_iMaxPlayers;								
+	unsigned char	m_iMaxPlayers;	
+								
+	float 			m_fRequestTime;
 };
 
 
@@ -302,7 +304,7 @@ public:
 	void DrawConnectionGraphs();
 	void DevShow_ClientConnections();
 
-	void RequestServerInfo(IPaddress kIp);
+	void RequestServerInfo(ServerInfo* pkServer);
 	void SendServerInfo(IPaddress kIp);
 	void GotServerInfo(NetPacket* pkNetPacket);
 

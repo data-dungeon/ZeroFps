@@ -94,6 +94,11 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				}
 			}
 			else
+			if(strController == "UpdateServerListBn")
+			{
+				g_kMistClient.m_pkNetwork->MS_RequestServers();			
+			}			
+			else
 			if(strController == "ConnectBn")
 			{
 				string strName, strIP;
