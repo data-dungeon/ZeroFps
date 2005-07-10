@@ -45,7 +45,7 @@ P_AI::P_AI()
 	m_bStateChanged	= false;
 
 
-	m_fSeeDistance = 		15;
+	m_fSeeDistance = 		16;
 	m_fAttackDistance =	10;
 	m_fStrikeRange = 		2;
 	
@@ -599,7 +599,7 @@ namespace SI_P_AI
 */
 	int SetAITargetLua(lua_State* pkLua)
 	{
-		if(g_pkScript->GetNumArgs(pkLua) != 3)
+		if(!g_pkScript->VerifyArg(pkLua,2))
 			return 0;		
 
 			
@@ -610,7 +610,9 @@ namespace SI_P_AI
 		g_pkScript->GetArgInt(pkLua, 1,&iTargetID);
 		
 		if(P_AI* pkAI = (P_AI*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_AI"))
+		{
 			pkAI->SetTarget(iTargetID);
+		}
 	
 		return 0;			
 	}
@@ -621,24 +623,22 @@ namespace SI_P_AI
 */
 	int SetAIStateLua(lua_State* pkLua)
 	{
-		if( g_pkScript->GetNumArgs(pkLua) == 2 )
-		{
-			double dEntID, dAIState;
-			g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
-			g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;		
 	
-			Entity* pkObj = g_pkObjMan->GetEntityByID(int(dEntID));
-	
-			if ( !pkObj )
-				return 0;
-	
-			// Get P_AI
-			if(P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI"))
-				pkAI->SetState(int(dAIState));
-	
+		double dEntID, dAIState;
+		g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
+		g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
+
+		Entity* pkObj = g_pkObjMan->GetEntityByID(int(dEntID));
+
+		if ( !pkObj )
 			return 0;
-		}
-	
+
+		// Get P_AI
+		if(P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI"))
+			pkAI->SetState(int(dAIState));
+
 		return 0;
 	}	
 }
