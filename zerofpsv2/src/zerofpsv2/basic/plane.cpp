@@ -24,7 +24,7 @@ Plane& Plane::operator=( const Plane& kIn )
 }
 
 // Methods
-void Plane::Set( Vector3 kNormal, const Vector3& kPos)
+void Plane::Set( const Vector3& kNormal, const Vector3& kPos)
 {
 	m_kNormal=kNormal;
 

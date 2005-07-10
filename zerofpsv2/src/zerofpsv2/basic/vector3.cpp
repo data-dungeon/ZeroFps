@@ -63,7 +63,7 @@ bool Vector3::NearlyZero( const float e ) const
 	return (fabs(x) < e && fabs(y) < e && fabs(z) < e);
 }
 
-Vector3 Vector3::Proj(const Vector3& v )				
+Vector3 Vector3::Proj(const Vector3& v ) const			
 {
 	static float dot,len,scale;
 	static Vector3 p;

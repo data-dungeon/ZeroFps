@@ -2,6 +2,7 @@
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/engine/zerofps.h"
 
@@ -290,6 +291,34 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	else
 		m_bGrabing = false;	
 	
+	if(m_pkInputHandle->Pressed(KEY_LALT) )
+	{
+		if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Tcs"))
+		{
+// 			float fForce = m_pkZeroFps->GetFrameTime();
+			Vector3 kForce = Vector3::ZERO;
+			
+			if(m_pkInputHandle->VKIsDown("moveleft")) kForce.x -= 1;
+			if(m_pkInputHandle->VKIsDown("moveright"))kForce.x += 1;
+			if(m_pkInputHandle->VKIsDown("movefrw")) 	kForce.z -= 1;
+			if(m_pkInputHandle->VKIsDown("moveback")) kForce.z += 1;
+			
+			Matrix4 kRot = m_pkActiveCamera->GetRotM();			
+			kRot.Transponse();
+			
+			kForce = kRot.VectorTransform(kForce);
+			kForce.y = 0;
+			kForce.Normalize();
+			
+			if(m_pkInputHandle->VKIsDown("moveup"))	kForce.y += 1;
+			if(m_pkInputHandle->VKIsDown("movedown")) kForce.y -= 1;
+			
+			kForce *= m_pkZeroFps->GetFrameTime() * 20;
+			
+			pkTcs->ApplyImpulsForce(kForce);			
+		}
+	}
+	
 			
 	//remove			
 	if(m_pkInputHandle->VKIsDown("remove"))	
@@ -337,12 +366,16 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	else 
 	{
 		kMove.Set(0,0,0);
-		if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkZeroFps->GetFrameTime(),0,0);			
-		if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkZeroFps->GetFrameTime(),0,0);			
-		if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkZeroFps->GetFrameTime());			
-		if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkZeroFps->GetFrameTime());			
-		if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkZeroFps->GetFrameTime(),0);			
-		if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkZeroFps->GetFrameTime(),0);
+		
+		if(!m_pkInputHandle->Pressed(KEY_LALT))
+		{
+			if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkZeroFps->GetFrameTime(),0,0);			
+			if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkZeroFps->GetFrameTime(),0,0);			
+			if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkZeroFps->GetFrameTime());			
+			if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkZeroFps->GetFrameTime());			
+			if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkZeroFps->GetFrameTime(),0);			
+			if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkZeroFps->GetFrameTime(),0);
+		}
 
 		if(m_pkInputHandle->VKIsDown("moveent")) 
 		{
@@ -356,6 +389,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		//kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
 		m_pkZeroFps->RouteEditCommand(&kNp);
+		
 	}
 
 

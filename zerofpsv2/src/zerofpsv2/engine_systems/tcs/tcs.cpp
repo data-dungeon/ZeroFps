@@ -953,6 +953,12 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 				//BOX VS MESH
 				TestBoxVsMesh(pkBody1,pkBody2,pkCollissions);
 			}
+			else if(((pkBody1->m_iTestType==E_BOX) && (pkBody2->m_iTestType==E_SPHERE)) || 
+				((pkBody1->m_iTestType==E_SPHERE) && (pkBody2->m_iTestType==E_BOX)))
+			{
+				//BOX VS SPHERE
+				TestBoxVsSphere(pkBody1,pkBody2,pkCollissions);
+			}			
 			else if( (pkBody1->m_iTestType==E_BOX) && (pkBody2->m_iTestType==E_BOX) )
 			{
 				//BOX VS BOX
@@ -1792,6 +1798,69 @@ void Tcs::TestBoxVsBox(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	pk
 
 }
 
+void Tcs::TestBoxVsSphere(P_Tcs* pkBox,P_Tcs* pkSphere,vector<Tcs_collission*>*	pkCollissions)
+{
+	if(pkSphere->m_iTestType == E_BOX)
+	{
+		P_Tcs* b2c = pkSphere;	
+		pkSphere = pkBox;
+		pkBox = b2c;	
+	}	
+
+
+	static Matrix4 kIRM;
+	static Vector3 kSpherePos;
+	
+	kIRM = pkBox->m_kNewRotation.Inverse();
+	kSpherePos = kIRM.VectorTransform(pkSphere->m_kNewPos - pkBox->m_kNewPos);
+	
+	kSpherePos += pkBox->m_kNewPos;
+
+	static Plane kPlanes[6];
+
+	kPlanes[0].Set(Vector3(1,0,0),	Vector3(pkBox->m_kNewPos.x+pkBox->m_kBoxSize.x,	pkBox->m_kNewPos.y,	pkBox->m_kNewPos.z));
+	kPlanes[1].Set(Vector3(-1,0,0),	Vector3(pkBox->m_kNewPos.x-pkBox->m_kBoxSize.x,	pkBox->m_kNewPos.y,	pkBox->m_kNewPos.z));
+	kPlanes[2].Set(Vector3(0,1,0),	Vector3(pkBox->m_kNewPos.x,	pkBox->m_kNewPos.y+pkBox->m_kBoxSize.y,pkBox->m_kNewPos.z));
+	kPlanes[3].Set(Vector3(0,-1,0),	Vector3(pkBox->m_kNewPos.x,	pkBox->m_kNewPos.y-pkBox->m_kBoxSize.y,pkBox->m_kNewPos.z));
+	kPlanes[4].Set(Vector3(0,0,1),	Vector3(pkBox->m_kNewPos.x,	pkBox->m_kNewPos.y,	pkBox->m_kNewPos.z+pkBox->m_kBoxSize.z));
+	kPlanes[5].Set(Vector3(0,0,-1),	Vector3(pkBox->m_kNewPos.x,	pkBox->m_kNewPos.y,	pkBox->m_kNewPos.z-pkBox->m_kBoxSize.z));
+
+	float fD = 0;
+	int t = 0;
+	for(int i =0;i<6;i++)
+	{
+		float d = kPlanes[i].SphereTest(kSpherePos,pkSphere->m_fRadius);
+	
+		if(d > 0)
+		{
+			return;		
+		}
+		
+		if(d < fD)
+		{
+			fD = d;
+			t = i;
+		}
+	}
+	
+	//cout<<"box vs sphere collission "<<t<<endl;
+	
+	Tcs_collission* temp = new Tcs_collission;
+	temp->Clear();
+	
+	temp->pkBody1 = pkBox;
+	temp->pkBody2 = pkSphere;		
+		
+// 	temp->kPositions.push_back(pkSphere->m_kNewPos - pkBox->m_kNewRotation.VectorTransform(kPlanes[t].m_kNormal)*pkSphere->m_fRadius);
+//   	temp->kNormals.push_back(pkBox->m_kNewRotation.VectorTransform(kPlanes[t].m_kNormal));	
+//    	temp->kNormals.push_back( (pkSphere->m_kNewPos - temp->kPositions[0]).Unit());	
+  	temp->kNormals.push_back( (pkBox->m_kNewPos - pkSphere->m_kNewPos).Unit());	
+ 	temp->kPositions.push_back(pkSphere->m_kNewPos - temp->kNormals[0]*pkSphere->m_fRadius);  	
+//  	temp->kNormals.push_back(pkBox->m_kNewRotation.VectorTransform(kPlanes[t].m_kNormal));
+		
+	pkCollissions->push_back(temp);			
+}
+
 void Tcs::TestBoxVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	pkCollissions)
 {
 	//flip bodys body1 is always the box and body2 is always the mesh
@@ -1825,23 +1894,6 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	
 	if( !pkBody2->m_pkVertex || !pkBody2->m_pkFaces || !pkBody1->m_pkVertex || !pkBody1->m_pkFaces)
 		return;		
 
-/*			
-	bool retry = 			true;
-	bool didpen = 			false;
-	int nroftests = 		1;
-	float fLastColTime = fAtime;
-	float fCT = 			0;
-	float	fLastNoColTime = 0;
-	float fStep = 			fAtime / 8.0;
-	
-	
-	
-
-	memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-	memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
-	UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
-	UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
-*/	
 	//m_iNrOfTests++;	
 	if(CollideMeshVSMesh3(pkBody1,pkBody2,NULL))
 	{
@@ -1861,69 +1913,6 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	
 			delete temp;
 	}
 
-/*		
-	//first do a check att max time
-	if(!CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,NULL))
-		return;
-	
-	while(retry && (fCT <= fAtime) )
-	{
-		retry = false;
-		
-		//check if we already passed the first known collission
-		if(pkCollission->fAtime != -1)
-			if(fCT > pkCollission->fAtime)
-				return;
-				
-	
-		memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
-		UpdateBodyVelnPos(m_pkBodyCopy1,fCT);
-		UpdateBodyVelnPos(m_pkBodyCopy2,fCT);			
-			
-		m_iNrOfTests++;		
-		if(CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,NULL))
-		{			
-			fLastColTime = fCT;
-			didpen = true;
-			break;
-		}
-		else
-		{
-			fLastNoColTime = fCT;
-			retry = true;
-			fCT += fStep;
-		}		
-	}
-	
-
-	
-	if(didpen)
-	{	
-		if((pkCollission->fAtime > fLastNoColTime) || (pkCollission->fAtime == -1))
-		{	
-		
-			//Tcs_collission* pkTempCol = new Tcs_collission;
-			pkCollission->Clear();
-		
-			//now collect collission points for col time
-			memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
-			memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
-			UpdateBodyVelnPos(m_pkBodyCopy1,fLastColTime);
-			UpdateBodyVelnPos(m_pkBodyCopy2,fLastColTime);		
-			m_iNrOfTests++;			
-			if(CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,pkCollission))
-			{
-				cout<<"FUCKING DAM SHIT SOMEHING IS DAAAMN WRONG HERE"<<endl;
-				return;
-			}
-		
-			pkCollission->pkBody1 = pkBody1;
-			pkCollission->pkBody2 = pkBody2;		
-			pkCollission->fAtime =	fLastNoColTime;
-		}
-	}	
-*/	
 }
 
 bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCol) 

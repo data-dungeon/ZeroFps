@@ -37,7 +37,7 @@ class BASIC_API Plane
 		}	
 		
 		void Set(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2);
-		void Set(Vector3 kNormal, const Vector3& kPos);
+		void Set(const Vector3& kNormal, const Vector3& kPos);
 	
 		bool PointInside(const Vector3& kPoint);
 		bool SphereInside(const Vector3& kCenter, const float& fRadius);
