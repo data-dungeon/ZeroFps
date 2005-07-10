@@ -23,6 +23,8 @@ public:
 	bool Run();
 	bool ShutDown();
 
+
+
 private:
 	SDLNet_SocketSet	m_kSocketSet;
 
@@ -52,6 +54,8 @@ private:
 	void PrintInfo();
 	bool HandleNet();
 
+
+	bool AddressToStr(IPaddress* pkAddress, char* szString);
 };
 
 #endif

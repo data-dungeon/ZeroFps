@@ -92,6 +92,11 @@ void ZFMasterServer::AddServer(IPaddress kServerIp, char* szGameName)
 	kServer.m_fLastUpdate = m_fTime+rand()%60;
 	strcpy(kServer.m_szGameName, szGameName);
 	m_kServers.push_back(kServer);
+   
+	
+	char addr[256];
+	AddressToStr(&kServerIp,addr);   
+   cout << "added server: "<<addr<<endl;
    cout << "Num of servers is " << (int)m_kServers.size() << endl;
 }
 
@@ -102,24 +107,47 @@ void ZFMasterServer::RemoveServer(IPaddress kServer)
  		if(IsAddressEquals(&((*it).m_ServerIP), &kServer))
 		{
 			m_kServers.erase(it);
-			cout << "Server found, removing" << endl;
+			
+			char addr[256];
+			AddressToStr(&kServer,addr);   			
+			cout << "Removing server: " <<addr<< endl;
+		   cout << "Num of servers is " << (int)m_kServers.size() << endl;			
 			return;
 		}
 	}
 
-	cout << "Server not registred" << endl;
+	char addr[256];
+	AddressToStr(&kServer,addr);
+	cout << "Server not registred: " <<addr<< endl;
 }
 
+bool ZFMasterServer::AddressToStr(IPaddress* pkAddress, char* szString)
+{
+	int iPort = 0;
+	iPort = iPort | ((pkAddress->port >> 8) & 0xff);  
+	iPort = iPort | ((pkAddress->port << 8) & 0xff00);  
+
+	sprintf(szString, "%d.%d.%d.%d:%d", (pkAddress->host) & 0xff, (pkAddress->host >> 8) & 0xff,
+				(pkAddress->host >> 16) & 0xff, (pkAddress->host >> 24) & 0xff, iPort);
+	return true;
+}
 
 
 void ZFMasterServer::OnServerStart(NetPacket* pkNetPacket)
 {
 	char szGameName[MAX_GAME_NAME];
-	cout << "ServerStart: " << endl;
 	pkNetPacket->Read_Str(szGameName);
+
+	cout<<"Request server add"<<endl;
 
 	IPaddress kFromIp;
 	kFromIp = pkNetPacket->m_kAddress;
+
+	//DVOID  , antar port 4242
+	kFromIp.port = 0;
+	kFromIp.port = kFromIp.port | ((4242 >> 8) & 0xff);  
+	kFromIp.port = kFromIp.port | ((4242 << 8) & 0xff00);  							
+
 
 	int SpoofIp;
 	pkNetPacket->Read(SpoofIp);
@@ -131,8 +159,18 @@ void ZFMasterServer::OnServerStart(NetPacket* pkNetPacket)
 
 void ZFMasterServer::OnServerDown(NetPacket* pkNetPacket)
 {
-	cout << "Server shutdown" << endl;
-	RemoveServer(pkNetPacket->m_kAddress);
+	cout<<"Request server remove"<<endl;
+	
+	IPaddress kFromIp;
+	kFromIp = pkNetPacket->m_kAddress;
+
+	//DVOID  , antar port 4242
+	kFromIp.port = 0;
+	kFromIp.port = kFromIp.port | ((4242 >> 8) & 0xff);  
+	kFromIp.port = kFromIp.port | ((4242 << 8) & 0xff00);  							
+
+	
+	RemoveServer(kFromIp);
 }
 
 void ZFMasterServer::OnClientReqList(NetPacket* pkNetPack)
