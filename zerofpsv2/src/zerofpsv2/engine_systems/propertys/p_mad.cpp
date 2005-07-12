@@ -918,7 +918,7 @@ bool P_Mad::operator<(Property& kOther)
 	{
 		if(m_iSortPlace == kOther.m_iSortPlace)
 		{	
-			if(kOther.IsPropertyType("P_Mad"))			
+			if(kOther.IsType("P_Mad"))			
 				if(P_Mad* pkMad = static_cast<P_Mad*>(&kOther))
 					return (m_iFirstMaterialID < pkMad->m_iFirstMaterialID);			
 		}

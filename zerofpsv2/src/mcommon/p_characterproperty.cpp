@@ -1112,7 +1112,7 @@ bool P_CharacterProperty::CanRest()
 				continue;
 		
 			//we only care about character propertys
- 			if(!pkProp->IsPropertyType("P_CharacterProperty"))
+ 			if(!pkProp->IsType("P_CharacterProperty"))
  				continue;
 				
 			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
@@ -2039,7 +2039,7 @@ void P_CharacterProperty::SendBuffList()
 	for(int i = 0;i<kProps.size();i++)
 	{
 		//if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
-		if(!kProps[i]->IsPropertyType("P_Buff"))
+		if(!kProps[i]->IsType("P_Buff"))
 			continue;
 		
 		if(P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]))			
@@ -2226,7 +2226,7 @@ void P_CharacterProperty::RemoveBuff(const string& strBuffName)
 
 	for(int i = 0;i<kProps.size();i++)
 	{
-		if(!kProps[i]->IsPropertyType("P_Buff"))
+		if(!kProps[i]->IsType("P_Buff"))
 			continue;
 		
 		if(P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]))			

@@ -76,7 +76,7 @@ EntityManager::EntityManager()
 	m_iTrackerLOS				= 25;	
 	m_iObjectDistance			= 50;
 	m_fZoneUnloadTime			= 30;	
-	m_iMaxZoneIO 				= 1;	
+	m_iMaxZoneIO 				= 4;	
 	m_bAiShowInfo				= false;
 
 	m_pkWorldEntity			= NULL;
@@ -2812,9 +2812,11 @@ void EntityManager::UpdateZoneStatus()
 	static ZoneData* pkZone;
 	static float fCurrentTime;
 	
-
+	
+	int iIoOps = 0;
 	fCurrentTime = m_pkZeroFps->GetEngineTime();
 
+	
 	iZones = m_kZones.size();
 	for(int i=0;i<iZones;i++) 
 	{
@@ -2839,9 +2841,10 @@ void EntityManager::UpdateZoneStatus()
 				//zone is unloaded , lests load it
 				if(pkZone->m_iStatus == EZS_UNLOADED)
 				{
-					//cout<<"Loading zone "<<i<<endl;
+					if(iIoOps >= m_iMaxZoneIO)
+						continue;
+					iIoOps++;
 					
-					//m_kZones[i].m_iStatus = EZS_LOADED;					
 					// zone status is set in loadzone()
 					LoadZone(i);
 					
@@ -2872,7 +2875,12 @@ void EntityManager::UpdateZoneStatus()
 				if(pkZone->m_iStatus == EZS_CACHED)
 				{
 					if( (fCurrentTime - pkZone->m_fInactiveTime) > m_fZoneUnloadTime)
-					{
+					{						
+						if(iIoOps >= m_iMaxZoneIO)
+							continue;
+
+						iIoOps++;
+					
 						//cout<<"cached zone timed out, unloading "<<i<<endl;
 						
 						pkZone->m_iStatus = EZS_UNLOADED;						

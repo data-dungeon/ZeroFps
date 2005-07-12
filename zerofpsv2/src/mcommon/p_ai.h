@@ -12,13 +12,14 @@ using namespace std;
 
 enum MCOMMON_API AI_STATES
 {
+	eAI_STATE_NONE 		=	0,
 	eAI_STATE_RANDOMWALK =	1,
 	eAI_STATE_LOOKAT		=	2,
 	eAI_STATE_CHASE		=	3,
 	eAI_STATE_ATTACK 		=	5,
 	eAI_STATE_GUARD 		=	4,
 	eAI_STATE_DEAD			=	6,
-
+	eAI_STATE_AVOIDING	=	7,
 
 };
 
@@ -36,6 +37,7 @@ class MCOMMON_API P_AI: public Property
 		
 		int	m_iState;
 		int	m_iNextState;
+		int	m_iPrevState;
 		bool	m_bStateChanged;
 		
 		
@@ -49,6 +51,8 @@ class MCOMMON_API P_AI: public Property
 		
 		float	m_fFindTime;
 		
+		float m_fCollisionTime;
+		
 		//look at
 		int	m_iTarget;		
 		
@@ -60,6 +64,8 @@ class MCOMMON_API P_AI: public Property
 		float GetOffensiveRange();
 		
 		bool ValidTarget(int iTarget);
+		
+		bool CharacterCollision(Vector3* pkNormal);
 		
 	public:
 

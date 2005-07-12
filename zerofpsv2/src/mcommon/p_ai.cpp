@@ -40,8 +40,9 @@ P_AI::P_AI()
 	m_pkCharacterControl = NULL;
 	m_pkCharacterProperty = NULL;
 	
-	m_iState				= 1;
-	m_iNextState		= 0;
+	m_iState				= eAI_STATE_GUARD;
+	m_iNextState		= eAI_STATE_NONE;
+	m_iPrevState		= eAI_STATE_NONE;
 	m_bStateChanged	= false;
 
 
@@ -54,6 +55,7 @@ P_AI::P_AI()
 	m_iTarget	= -1;
 	
 	m_fFindTime = 0;
+	m_fCollisionTime = 0;
 	
 	SetState(eAI_STATE_GUARD);
 }
@@ -143,6 +145,15 @@ void P_AI::Update()
 
 void P_AI::Process(int iEvent)
 {
+	
+	if(m_iState != eAI_STATE_AVOIDING && m_pkZeroFps->GetEngineTime() > m_fCollisionTime + 3)
+	{
+		m_fCollisionTime = m_pkZeroFps->GetEngineTime();
+		Vector3 kNormal;
+		if(CharacterCollision(&kNormal))
+			SetState(eAI_STATE_AVOIDING);
+	}
+
 	States(iEvent, m_iState);	
 
 	// Check if state has changed and send events
@@ -153,6 +164,7 @@ void P_AI::Process(int iEvent)
 		
 		m_bStateChanged = false;
 		States(EVENT_Exit, m_iState);
+		m_iPrevState = m_iState;
 		m_iState = m_iNextState;
 		States(EVENT_Enter, m_iState);
 	}
@@ -161,6 +173,36 @@ void P_AI::Process(int iEvent)
 bool P_AI::States(int iEvent, int iState)
 {
 	BeginStateMachine
+		State(eAI_STATE_AVOIDING)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_AVOIDING");
+								
+				Vector3 kNormal;
+				if(CharacterCollision(&kNormal))
+				{
+					m_pkCharacterControl->RotateTowards(m_pkEntity->GetWorldPosV() - kNormal);
+				}											
+									
+			OnUpdate
+				if(m_pkZeroFps->GetEngineTime() > m_fCollisionTime + 0.25)
+				{
+					m_fCollisionTime = m_pkZeroFps->GetEngineTime();
+					
+					Vector3 kNormal;
+					if(CharacterCollision(&kNormal))
+						m_pkCharacterControl->RotateTowards(m_pkEntity->GetWorldPosV() - kNormal);
+					else
+						SetState(m_iPrevState);
+									
+				}
+				
+				m_pkCharacterControl->SetControl(eCRAWL,true);						
+				m_pkCharacterControl->SetControl(eUP,true);
+	
+			OnExit
+				m_pkCharacterControl->SetControl(eCRAWL,false);						
+				m_pkCharacterControl->SetControl(eUP,false);
+	
 		State(eAI_STATE_RANDOMWALK)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_RANDOMWALK");
@@ -168,6 +210,7 @@ bool P_AI::States(int iEvent, int iState)
 			OnUpdate
 				if(m_bWalk)
 				{
+				
 					float fRot = m_pkCharacterControl->GetYAngle();				
 					fRot += Randomf(20)-10;
 					m_pkCharacterProperty->SetCombatMode(false);
@@ -402,27 +445,6 @@ float P_AI::GetOffensiveRange()
 	}
 	
 	return -1;
-	
-// 	m_pkCharacterProperty
-// 	
-// 
-// 	float fRange = -1;
-// 
-// 	vector<Skill*>* kSkills =m_pkCharacterProperty->GetSkillList();
-// 	
-// 	for(int i =0;i<kSkills->size();i++)
-// 	{
-// 		if((*kSkills)[i]->GetSkillType() == eOFFENSIVE)
-// 		{
-// 			if((*kSkills)[i]->GetTimeLeft() == 0)
-// 			{
-// 				if((*kSkills)[i]->GetRange() > fRange)
-// 					fRange = (*kSkills)[i]->GetRange();
-// 			}
-// 		}
-// 	}	
-// 
-// 	return fRange;
 }
 
 void P_AI::UseOffensiveSkill()
@@ -441,6 +463,46 @@ void P_AI::UseOffensiveSkill()
 		}
 	}
 
+}
+
+bool P_AI::CharacterCollision(Vector3* pkNormal)
+{
+	vector<Property*> kPropertys;
+	Entity* pkZone = NULL;
+
+	//does this entity use zones?
+	if(m_pkEntity->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent();
+	}
+	else if(m_pkEntity->GetParent()->GetUseZones())
+	{
+		pkZone = m_pkEntity->GetParent()->GetParent();
+	}
+	
+	pkZone->GetAllPropertys(&kPropertys,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER);
+	
+	Vector3 kPos = m_pkEntity->GetWorldPosV();
+	int iSize = kPropertys.size();
+	for(int i = 0;i<iSize;i++)
+	{
+		if(kPropertys[i]->GetEntity() == m_pkEntity)
+			continue;
+		
+		if(!kPropertys[i]->IsType("P_CharacterProperty"))
+			continue;
+		
+		if(((P_CharacterProperty*)kPropertys[i])->IsDead())
+			continue;
+		
+		if(kPos.DistanceTo(kPropertys[i]->GetEntity()->GetWorldPosV()) < 1.0)
+		{		
+			*pkNormal = (kPropertys[i]->GetEntity()->GetWorldPosV() - kPos).Unit();
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 int P_AI::FindClosestEnemy(float fMaxRange)
@@ -488,7 +550,7 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 				continue;
 		
 			//we only care about character propertys
- 			if(!pkProp->IsPropertyType("P_CharacterProperty"))
+ 			if(!pkProp->IsType("P_CharacterProperty"))
  				continue;
 				
 			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
