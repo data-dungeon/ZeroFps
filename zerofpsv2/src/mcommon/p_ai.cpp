@@ -408,8 +408,8 @@ bool P_AI::States(int iEvent, int iState)
 
 bool P_AI::ValidTarget(int iTarget)
 {
-	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTarget,"P_CharacterProperty"))
-		if(!pkCP->IsDead())
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTarget,"P_CharacterProperty"))	
+		if(!pkCP->IsDead() && m_pkCharacterProperty->IsEnemy(iTarget))
 			return true;	
 
 	return false;	
