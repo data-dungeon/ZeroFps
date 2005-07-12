@@ -406,6 +406,7 @@ void Camera::MakeBloom()
 	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);
 	glBindTexture(GL_TEXTURE_2D, m_iBloomTexture);	
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());	
+	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
