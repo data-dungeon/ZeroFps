@@ -173,10 +173,11 @@ void Console::Draw(void)
 	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine, m_iInputPos, iMarker );	
 	float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 
-	if(fCurrTime > m_fMarkerToggleTime) {
-		m_fMarkerToggleTime = fCurrTime + 0.5; 
+	if(fCurrTime > m_fMarkerToggleTime) 
+	{
+		m_fMarkerToggleTime = fCurrTime + 0.25; 
 		m_bShowMarker = !m_bShowMarker;
-		}
+	}
 }
 
 void Console::ConsoleCmd(CON_CMD eCmd)
@@ -184,7 +185,12 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 	// Any command turns of autocomplete
 	m_bAutoCompleteOn = false;
 
-	switch(eCmd) {
+	switch(eCmd) 
+	{
+		case CONCMD_AUTOCOMPLETE:
+			AutoComplete();
+			break;
+	
 		case CONCMD_TOGGLE:			
 			glPopAttrib();
 			
@@ -303,57 +309,19 @@ void Console::Update(void)
 		if(!kKey.m_bPressed)
 			continue;
 		
-		CON_CMD eCmd = CONCMD_NONE;		// We assume we don't need to do any console cmd.
-
-		//check funktion keys
-		if(kKey.m_iKey == KEY_PAGEUP)		eCmd = CONCMD_SCROLLUP;
-		if(kKey.m_iKey == KEY_PAGEDOWN)	eCmd = CONCMD_SCROLLDOWN;
-		if(kKey.m_iKey == KEY_UP)			eCmd = CONCMD_HISTORYUP;
-		if(kKey.m_iKey == KEY_DOWN)		eCmd = CONCMD_HISTORYDOWN;
-		if(kKey.m_iKey == KEY_END)			eCmd = CONCMD_SCROLLEND;
-		if(kKey.m_iKey == KEY_LEFT)		eCmd = CONCMD_MARKERLEFT;
-		if(kKey.m_iKey == KEY_RIGHT)		eCmd = CONCMD_MARKERRIGHT;
-		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
-		if(kKey.m_iKey == KEY_BACKQUOTE)	eCmd = CONCMD_TOGGLE;
-		if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
-		if(kKey.m_iKey == KEY_TAB)			
+		//stop repeating if key changes	
+		if(s_kLastKeyPressed.m_iKey != kKey.m_iKey)
 		{
-			AutoComplete();
-			kKey.m_iKey = 0;
+			s_bKeyrepeatActivated = false;		
+			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();				
 		}
-
-		//if a function-key was pressed, execute function and return
-		if(eCmd != CONCMD_NONE)
-		{
-			//cout << "Running Cmd" << endl;
-			if(bUpdate) {
-				PREVTIME = fCurrTime;
-				ConsoleCmd( eCmd );
-				}
-			return;
-		}
-
-		//is this a valid key?
-		if( !( (kKey.m_iKey >= 32 && kKey.m_iKey <= 126) || kKey.m_iKey==8 || kKey.m_iKey==13) )
-			continue;
-
-		//type text
-		if(strlen(m_aCommand) < COMMAND_LENGHT) 
-		{
-			//if a new button was pressed, disable keyrepeat and reset repeat timers
-			if(s_kLastKeyPressed.m_iKey != kKey.m_iKey)
-			{
-				s_bKeyrepeatActivated = false;		
-				s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-				s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();				
-			}
-				
-			//set last pressed key
-			s_kLastKeyPressed = kKey;
-
-			//add character to typed command
-			InsertKey(FormatKey(kKey));
-		}
+		
+		//set last pressed key
+		s_kLastKeyPressed = kKey;
+		
+		//apply key
+		KeyPressed(kKey);
 	}
 
 	//fixar keyrepeat
@@ -362,7 +330,7 @@ void Console::Update(void)
 		if(m_pkInputHandle->Pressed((Buttons)s_kLastKeyPressed.m_iKey))
 		{
 	
-		float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+		float fCurrTime = m_pkEngine->GetEngineTime();
 		const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.1f;
 		
 		if(s_bKeyrepeatActivated == false)
@@ -373,7 +341,6 @@ void Console::Update(void)
 				s_bKeyrepeatActivated = true;
 				s_fKeyrepeatCheckTime = fCurrTime;
 				s_fLastRepeatTime = fCurrTime;
-				cout<<"aktiverar keyrepeaet"<<endl;
 			}
 		}
 		else
@@ -381,7 +348,7 @@ void Console::Update(void)
 			// Är det dags att skriva ett nytt tecken?
 			if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
 			{
-				InsertKey(FormatKey(s_kLastKeyPressed));
+				KeyPressed(s_kLastKeyPressed);
 				s_fLastRepeatTime = fCurrTime;
 			}
 		}		
@@ -393,6 +360,44 @@ void Console::Update(void)
 			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
 		}			
 	}
+}
+
+void Console::KeyPressed(QueuedKeyInfo& kKey)
+{
+	//no command
+	CON_CMD eCmd = CONCMD_NONE;	
+
+	//check funktion keys
+	if(kKey.m_iKey == KEY_PAGEUP)		eCmd = CONCMD_SCROLLUP;
+	if(kKey.m_iKey == KEY_PAGEDOWN)	eCmd = CONCMD_SCROLLDOWN;
+	if(kKey.m_iKey == KEY_UP)			eCmd = CONCMD_HISTORYUP;
+	if(kKey.m_iKey == KEY_DOWN)		eCmd = CONCMD_HISTORYDOWN;
+	if(kKey.m_iKey == KEY_END)			eCmd = CONCMD_SCROLLEND;
+	if(kKey.m_iKey == KEY_LEFT)		eCmd = CONCMD_MARKERLEFT;
+	if(kKey.m_iKey == KEY_RIGHT)		eCmd = CONCMD_MARKERRIGHT;
+	if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
+	if(kKey.m_iKey == KEY_BACKQUOTE)	eCmd = CONCMD_TOGGLE;
+	if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
+	if(kKey.m_iKey == KEY_TAB)			eCmd = CONCMD_AUTOCOMPLETE;
+
+	//if a function-key was pressed, execute function and return
+	if(eCmd != CONCMD_NONE)
+	{
+		ConsoleCmd( eCmd );
+		return;
+	}
+
+	//is this a valid key?
+	if( !( (kKey.m_iKey >= 32 && kKey.m_iKey <= 126) || kKey.m_iKey==8 || kKey.m_iKey==13) )
+		return;
+
+	//type text
+	if(strlen(m_aCommand) < COMMAND_LENGHT) 
+	{			
+		//add character to typed command
+		InsertKey(FormatKey(kKey));
+	}
+
 }
 
 

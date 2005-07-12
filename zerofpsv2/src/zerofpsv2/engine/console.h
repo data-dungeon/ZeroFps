@@ -34,7 +34,8 @@ class ENGINE_API Console : public BasicConsole
 			CONCMD_HISTORYDOWN,		// Scroll down in console inut history.
 			CONCMD_MARKERLEFT,		// Move input cursor to the left.
 			CONCMD_MARKERRIGHT,		// Move input cursor to the right.
-			CONCMD_TOGGLEINSERT		// Toggle insert and overwrite mode.
+			CONCMD_TOGGLEINSERT,		// Toggle insert and overwrite mode.
+			CONCMD_AUTOCOMPLETE,
 		};
 
 		ZeroFps*					m_pkEngine;		
@@ -68,6 +69,7 @@ class ENGINE_API Console : public BasicConsole
 		bool						m_bAutoCompleteOn;				// True if autocomplete is on progress
 
 		//void FormatKey(int& r_iKey);
+		void KeyPressed(QueuedKeyInfo& kKey);
 		char FormatKey(QueuedKeyInfo& kKey);
 		void InsertKey(unsigned char ucKey);
 	
