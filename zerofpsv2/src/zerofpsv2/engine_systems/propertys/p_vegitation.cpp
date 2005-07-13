@@ -494,7 +494,7 @@ void P_Vegitation::BuildArrays()
 	int iPositions = m_akPositions.size();
 	for(int i =0;i<iPositions;i++ )
 	{
-		Vector3 off(Randomf(1)-0.5,0,Randomf(1)-0.5);
+		Vector3 off(Randomf(kScale.x*1.5)+0.25,0,Randomf(kScale.z*1.5)+0.25);
 	
 		//cross vertises
 		m_kVertexArray.push_back(m_akPositions[i].kPos +topleft+off);

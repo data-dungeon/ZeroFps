@@ -23,14 +23,9 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 			float fWindStart;
 		};
 
-// 		struct LodLevel
-// 		{
-			vector<Vector3>	m_kVertexArray;
-// 			vector<Vector3>	m_kNormalArray;
-			vector<Vector2>	m_kTextureArray;
-			vector<Vector4>	m_kColorArray;
-// 		};
-// 		vector<LodLevel>	m_kLodLevels;*/
+		vector<Vector3>	m_kVertexArray;
+		vector<Vector2>	m_kTextureArray;
+		vector<Vector4>	m_kColorArray;
 		
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
