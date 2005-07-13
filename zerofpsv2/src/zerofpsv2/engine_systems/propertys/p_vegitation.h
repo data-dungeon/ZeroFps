@@ -51,6 +51,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		int					m_iAmount;
 		int					m_iSize;		
 		float					m_fWind;
+		bool					m_bCastShadow;
 		
 		LightProfile		m_kLightProfile;				//used for lighting		
 		

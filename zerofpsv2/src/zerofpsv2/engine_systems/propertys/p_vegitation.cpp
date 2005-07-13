@@ -22,6 +22,7 @@ P_Vegitation::P_Vegitation()
 	
 	m_CheckedForHM = false;
 	m_pkMaterial = new ZFResourceHandle;
+	m_bCastShadow = true;
 	
 	Clear();
 	
@@ -94,6 +95,11 @@ void P_Vegitation::Update()
 
  	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
  		return;
+
+// 	if(!( (m_pkZeroFps->GetShadowMapRealtime() || m_bCastShadow) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
+// 		  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
+// 		return;
+
 
 	static Vector3 kObjectPos;
 	kObjectPos = m_pkEntity->GetWorldPosV();
