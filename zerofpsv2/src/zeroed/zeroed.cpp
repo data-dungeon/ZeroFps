@@ -761,6 +761,14 @@ void ZeroEd::OnIdle()
 		m_pkZeroFps->DevPrint_Show(true); 
 	}
 	
+	
+ 	m_pkZeroFps->DevPrintf("common","[CULLING]");
+ 	if(m_pkActiveCamera)
+ 	{
+ 		m_pkZeroFps->DevPrintf("common","Sphere: %d",m_pkActiveCamera->GetFrustum()->GetSphereCulls());
+		m_pkZeroFps->DevPrintf("common","Cube  : %d",m_pkActiveCamera->GetFrustum()->GetCubeCulls());
+		m_pkZeroFps->DevPrintf("common","Point : %d",m_pkActiveCamera->GetFrustum()->GetPointCulls());
+ 	}
 }
 
 

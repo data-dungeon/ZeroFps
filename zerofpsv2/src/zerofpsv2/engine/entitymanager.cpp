@@ -455,6 +455,9 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 
 }
 
+
+
+
 bool EntityManager::IsUpdate(int iFlags)
 {
 	if(m_iUpdateFlags & iFlags)
@@ -3172,7 +3175,6 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 				}
 		}*
 }
-*/
 
 
 
@@ -3186,3 +3188,42 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 
 
+
+void EntityManager::UpdateRenderPropertys(Entity* pkRootEntity,bool bForceRootOnly,bool bUpdateList)
+{
+	m_iUpdateFlags = PROPERTY_TYPE_RENDER | PROPERTY_SIDE_CLIENT;	
+	
+	if(bUpdateList)
+	{	
+		m_akPropertys.clear();	
+		
+		//get propertys
+		if(bForceRootOnly)
+		{
+			if(pkRootEntity)
+				pkRootEntity->GetRenderPropertys(&m_akPropertys,true);
+			else
+				m_pkWorldEntity->GetRenderPropertys(&m_akPropertys,true);
+		}
+		else
+		{	
+			if(pkRootEntity)
+				pkRootEntity->GetRenderPropertys(&m_akPropertys);
+			else
+				m_pkWorldEntity->GetRenderPropertys(&m_akPropertys);
+		}
+	
+		//sort
+		sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+	}		
+	
+		
+	//update render propertys update counter	
+	m_iRenderUpdates += m_akPropertys.size();
+
+	//run update in all propertys
+	int iPropertys = m_akPropertys.size();
+	for(int i = 0;i<iPropertys;i++)
+		m_akPropertys[i]->Update();
+
+}*/

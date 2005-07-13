@@ -2,8 +2,9 @@
  
 Frustum::Frustum()// : ZFSubSystem("Frustum") 
 {
-	
-  
+	m_iCubeCulls = 0;
+  m_iSphereCulls = 0;
+  m_iPointCulls = 0;
 
 }
 
@@ -63,6 +64,8 @@ void Frustum::GetFrustum(const Matrix4& kProjectionMatrix,const Matrix4& kModelV
 
 bool Frustum::PointInFrustum( const Vector3& kPoint)
 {
+	m_iPointCulls++;
+
 	for(int p = 0; p < 6; p++ ){
 		if( m_akFrustum[p].x * kPoint.x + m_akFrustum[p].y * kPoint.y + m_akFrustum[p].z * kPoint.z + m_akFrustum[p].w <= 0 )
 			return false;         
@@ -74,6 +77,8 @@ bool Frustum::PointInFrustum( const Vector3& kPoint)
 
 bool Frustum::SphereInFrustum(const Vector4& kPoint)
 {
+	m_iSphereCulls++;
+
 	static float d;
 
 	for(int p = 0; p < 6; p++ )
@@ -90,6 +95,8 @@ bool Frustum::SphereInFrustum(const Vector4& kPoint)
 
 bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
 {
+	m_iSphereCulls++;
+
 	static float d;
 
 	for(int p = 0; p < 6; p++ )
@@ -105,6 +112,8 @@ bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
 
 bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez )
 {
+	m_iCubeCulls++;
+
 	static Vector3 kCubeNeg;
 	static Vector3 kCubePos;
 	
@@ -136,6 +145,8 @@ bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,
 
 bool Frustum::CubeInFrustum( const Vector3& kMin,const Vector3& kMax)
 {
+	m_iCubeCulls++;
+
 	for(int p = 0; p < 6; p++ )
 	{
 		if( m_akFrustum[p].x * (kMin.x) + m_akFrustum[p].y * (kMin.y) + m_akFrustum[p].z * (kMin.z) + m_akFrustum[p].w > 0 )
@@ -162,6 +173,8 @@ bool Frustum::CubeInFrustum( const Vector3& kMin,const Vector3& kMax)
 
 bool Frustum::CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation )
 {
+	m_iCubeCulls++;
+
 	static int p;
 	static Vector3 kEdge[8];
 

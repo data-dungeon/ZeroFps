@@ -20,8 +20,17 @@ class RENDER_API Frustum
 		Vector4 		m_akFrustum[6];
 		Plane			m_akFrustumPlanes[6];
 		
+		int	m_iCubeCulls;
+		int	m_iSphereCulls;
+		int	m_iPointCulls;
+		
 	public:
 		Frustum();
+		
+		int	GetCubeCulls()		{	int i = m_iCubeCulls;m_iCubeCulls=0; return i;		};
+		int	GetSphereCulls()	{	int i = m_iSphereCulls;m_iSphereCulls=0; return i;	};
+		int	GetPointCulls()	{	int i = m_iPointCulls;m_iPointCulls=0; return i;	};
+		
 		void 	GetFrustum(const Matrix4& kProjectionMatrix,const Matrix4& kModelViewMatrix);
 		
 		bool 	PointInFrustum(const Vector3& kPoint);		

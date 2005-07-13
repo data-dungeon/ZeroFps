@@ -1034,6 +1034,7 @@ void Camera::DrawWorld()
 			//draw LIT light				
 			m_iCurrentRenderMode = RENDER_SHADOWED;
   			m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);				
+
 		
 			//draw shadowed scene
 			if(pkLight)
@@ -1075,6 +1076,7 @@ void Camera::DrawWorld()
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);		
 		m_iCurrentRenderMode = RENDER_SHADOWED;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);
+
 	
 		//update shadow map
 		m_pkZShadow->Update();
@@ -1082,6 +1084,7 @@ void Camera::DrawWorld()
 		//update all render propertys that shuld NOT be shadowed
 		m_iCurrentRenderMode = RENDER_NOSHADOWLAST;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);
+		
 		
 		m_iCurrentRenderMode = RENDER_NONE;	
 	}
@@ -1161,6 +1164,7 @@ void Camera::DrawShadowedScene()
 	
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);	
+
 	
 	
 	glActiveTextureARB(GL_TEXTURE3_ARB);

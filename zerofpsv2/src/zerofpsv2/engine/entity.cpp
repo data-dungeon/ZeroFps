@@ -244,6 +244,8 @@ void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
+	
+
 /**	\brief	Returns a vector with propertys for the Entity and child Entitys.
 	
 	Returns a vector with the the propertys that have the correct type and side flags.
@@ -2824,3 +2826,63 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+void Entity::GetRenderPropertys(vector<Property*> *akPropertys,bool bNoChilds)
+{
+	//return if no updates shuld be done
+	if(m_iUpdateStatus & UPDATE_NONE)
+		return;
+
+	int iChilds = m_akChilds.size();
+
+	//cull
+// 	if(m_bZone && iChilds > 0) 
+// 	{	
+// // 		if(!m_pkZeroFps->GetCam()->GetFrustum()->PointInFrustum(GetWorldPosV()))
+// // 			return;
+// 	
+// 		if(ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentZone))
+// 		{	
+// 			float fRad = sqrt(pkData->m_kSize.x*pkData->m_kSize.x + pkData->m_kSize.y*pkData->m_kSize.y + pkData->m_kSize.z*pkData->m_kSize.z) / 2.0;
+// 			if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(GetWorldPosV(),fRad * 1.5))
+// 				return;
+// 		}
+// 	}
+
+	//add this Entitys propertys to the vector
+	static Property* pkProp;
+	int iPropertys = m_akPropertys.size();
+	for(int i = 0;i < iPropertys;i++)
+	{
+		pkProp = m_akPropertys[i];
+		if( (pkProp->m_iType & PROPERTY_TYPE_RENDER) &&
+			 (pkProp->m_iSide & PROPERTY_SIDE_CLIENT) )
+			akPropertys->push_back(pkProp);	
+	}	
+	
+	//return if no child updates shuld be done
+	if(m_iUpdateStatus & UPDATE_NOCHILDS || bNoChilds)
+		return;
+	
+	
+	//go trough all childs and get propertys
+	for(int i =0;i<iChilds;i++)
+		m_akChilds[i]->GetRenderPropertys(akPropertys);	
+}*/
