@@ -118,6 +118,7 @@ public:
 
 	//bool SetSoundVolume(float fVolume);
 	//float GetSoundVolume() { return m_fSoundVolume; }
+	void SetMusic(const string& strMusic);
 
 	int PlayAudio(string strName, Vector3 kPos=m_kPos, Vector3 kDir=Vector3(0,0,1), int flags=0, float fGain=1.0f);
 	bool StopAudio(int iID, bool bRelease=true);
@@ -173,12 +174,17 @@ private:
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
 	
-	//bool m_bEnableSound; // enable/disable sound
-	//bool m_bEnableMusic; // enable/disable music
 	float m_fReferenceDistance; // ReferenceDistance (ljud styrka)
-
 	bool m_bIsValid;
-//	float m_fSoundVolume, m_fMusicVolume;
+	
+	
+	//music
+	int		m_iMusicID;
+	float		m_fMusicFade;
+	string	m_strCurrentMusic;
+	string	m_strNextMusic;
+	bool		m_bMusicChange;
+	float		m_fMusicGain;
 	
 	static Vector3 m_kPos;
 	Vector3 m_kHead;
@@ -208,6 +214,9 @@ private:
 	int ModifyResHandlePriority(string strFileName, int mod);
 	int GetResHandlePriority(string strFileName);
 	bool GetSoundWithLowestPriority(string& strRes);
+
+	//  Music
+	void UpdateMusic();
 
 	//
 	// Ambient sound area

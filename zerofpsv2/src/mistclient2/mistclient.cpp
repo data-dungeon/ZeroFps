@@ -57,7 +57,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strQuickStartAddress = "127.0.0.1:4242";
 	m_pkMakerEntity		= NULL;
 
-	m_strMenuMusic			=	"";//data/music/2nd_maintheme.ogg";
+	m_strMenuMusic			=	"data/music/menu_music.ogg";
 
 	m_strLoginName			= "player";
    m_strLoginPW 			= "topsecret";
@@ -168,14 +168,15 @@ void MistClient::OnInit()
 
  	GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
 
-	//start menu music
-	g_ZFObjSys.RunCommand(string(string("audioplay ")+m_strMenuMusic).c_str(),CSYS_SRC_SUBSYS);	
+	//set menu music
+	m_pkAudioSys->SetMusic(m_strMenuMusic);
 	
 	if(m_bQuickStart)
 	{
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
 	}
 	m_pkNetwork->ClientStart();
+
 
 }
 
@@ -1939,8 +1940,6 @@ void MistClient::OnClientStart(void)
 
 void MistClient::OnClientConnected() 
 {
-	g_ZFObjSys.RunCommand(string(string("audiostop ")+m_strMenuMusic).c_str(),CSYS_SRC_SUBSYS);
-
 	m_pkConsole->Printf("Successfully connected to server");
 
 

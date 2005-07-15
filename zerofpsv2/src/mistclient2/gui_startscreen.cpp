@@ -7,6 +7,8 @@
 #include "../mcommon/p_enviroment.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../mcommon/ml_netmessages.h"
+#include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+
 
 extern MistClient g_kMistClient;
 
@@ -535,5 +537,9 @@ void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 	{
 		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
 		m_pkInventoryDlg->Close();
+		
+		//set menu music
+		m_pkAudioSys->SetMusic(m_strMenuMusic);
+
 	}
 }

@@ -212,6 +212,15 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
 	m_fReferenceDistance = 1.0f;
+	
+	
+	m_iMusicID 			= -1;
+	m_fMusicFade 		= 0;
+	m_strCurrentMusic	= "";
+	m_strNextMusic		= "";
+	m_bMusicChange 	= false;
+	m_fMusicGain		= 1;
+	
 	//m_bEnableSound = true;
 	//m_bEnableMusic = true;
 
@@ -221,6 +230,7 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 
 	m_fMainVolume = 1.0f;
 	RegisterVariable("a_mainvolume",&m_fMainVolume,CSYS_FLOAT);
+	RegisterVariable("a_musicvolume",&m_fMusicGain,CSYS_FLOAT);
 
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -802,6 +812,9 @@ void ZFAudioSystem::Update()
 			DeleteSound(kRestart[i], true);
 		}
 	}
+	
+	
+	UpdateMusic();
 }
 
 
@@ -1434,7 +1447,8 @@ bool ZFAudioSystem::MoveAudio(int iID, Vector3 kNewPos, Vector3 kNewDir, float f
 ///////////////////////////////////////////////////////////////////////////////
 
 bool ZFAudioSystem::SetGain(int iID, float fGain)
-{/*
+{
+/*
 	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
 
 	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
@@ -1480,7 +1494,8 @@ bool ZFAudioSystem::SetGain(int iID, float fGain)
 
 	if(pkSound == NULL)
 	{
-		printf("Failed to set Gain for sound!\n");
+		//printf("Failed to set Gain %d for sound: %i \n",fGain,iID);
+		cout<<"Failed to set Gain "<<fGain<<" for sound:"<<iID<<endl;
 	}
 
 	return false;
@@ -1767,4 +1782,70 @@ ZFAudioSystem::AmbientArea::~AmbientArea()
 {
 	for(int i=0; i<m_kPolygon.size(); i++)
 		delete m_kPolygon[i];
+}
+
+
+void ZFAudioSystem::SetMusic(const string& strMusic)
+{
+	m_strNextMusic = strMusic;
+	m_bMusicChange = true;
+}
+
+void ZFAudioSystem::UpdateMusic()
+{
+	//want to change music
+	if(m_bMusicChange)
+	{	
+		//is playing music?
+		if(m_iMusicID != -1)
+		{
+			//fade gain until < 0 then remove it
+			if(m_fMusicFade > 0)
+			{
+				float fDelta = Min(m_pkZeroFps->GetFrameTime(),0.1f) * 0.5;
+				m_fMusicFade -=  fDelta;
+								
+				if(m_fMusicFade < 0.0)
+					m_fMusicFade = 0.0;
+
+			}
+			else
+			{
+				StopAudio(m_iMusicID);
+				m_iMusicID = -1;
+				m_strCurrentMusic = "";
+			}
+		}
+		//not playing music
+		else
+		{
+			//dont want to change anymore
+			m_bMusicChange = false;
+		
+			//have a new one to start?
+			if(!m_strNextMusic.empty())
+			{
+				//cout<<"Changing music to:"<<m_strNextMusic<<endl;
+			
+				m_fMusicFade = 0;
+				m_strCurrentMusic = m_strNextMusic;
+				m_strNextMusic = "";
+				m_iMusicID = PlayAudio(m_strCurrentMusic,Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP, 0);
+			}			
+		}
+	}
+	else
+	{
+		if(m_iMusicID != -1 && m_fMusicFade < 1)
+		{								
+			float fDelta = Min(m_pkZeroFps->GetFrameTime(),0.1f) * 0.5;
+			m_fMusicFade += fDelta;
+			if(m_fMusicFade > 1.0)
+				m_fMusicFade = 1.0;
+				
+		}
+	}
+
+	if(m_iMusicID != -1)
+		SetGain(m_iMusicID,m_fMusicFade*m_fMusicGain);
 }

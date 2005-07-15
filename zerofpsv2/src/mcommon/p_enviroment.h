@@ -44,11 +44,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		
 		ZMaterial*		m_pkSunMat;
 		ZMaterial*		m_pkSunFlareMat;
-		
-		int				m_iMusicID;
-		float				m_fFadeTimer, m_fGain;
-		void				FadeGain(bool bOut);
-		
+				
 		//time
 		int				m_iCurrentSecond;				//current second of a day
 		float				m_fTimeScale;				

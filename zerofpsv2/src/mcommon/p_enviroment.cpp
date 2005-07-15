@@ -31,11 +31,7 @@ P_Enviroment::P_Enviroment()
 	m_strCurrentZoneEnviroment =	"Default";
 	m_strLastSetEnviroment=			"";	
 	m_pkZoneEnvSetting = 			NULL;
-	
-	m_iMusicID =						-1;
-	m_fGain = 0.0f;
-	m_fFadeTimer = -1;
-	
+		
 	m_fTimeScale =						1;
 	m_iCurrentSecond = 				0;
 	
@@ -104,8 +100,11 @@ P_Enviroment::~P_Enviroment()
 		m_pkEnviroment->UnRegister(this);	
 	}
 	
-	if(m_iMusicID != -1)
-		m_pkAudioSystem->StopAudio(m_iMusicID,true);	
+	if(m_bEnabled)
+	{
+		if(!m_strCurrentMusic.empty())
+			m_pkAudioSystem->SetMusic("");
+	}
 }
 
 
@@ -277,52 +276,10 @@ void P_Enviroment::UpdateEnviroment()
 	
 
 	//music
-
 	if(m_kCurrentEnvSetting.m_strMusic != m_strCurrentMusic)
 	{
-		//cout<<"music changed"<<endl;
-		if(m_iMusicID != -1)
-		{
-			if(m_fGain > 0)
-			{
-				FadeGain(true);
-				m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
-				return;
-			}
-			else
-			{
-				m_fGain = 0.0f;
-				m_fFadeTimer = -1;
-			}
-		}
-
-		if(m_iMusicID != -1)
-		{
-			m_pkAudioSystem->StopAudio(m_iMusicID,true);
-			m_iMusicID = -1;
-			m_strCurrentMusic = "";
-		}
-	
-		if(m_kCurrentEnvSetting.m_strMusic.length() != 0)
-		{
-			//cout<<"starting music"<<endl;
-			m_fGain = 0.0f;
-			m_strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;		
-			m_iMusicID = m_pkAudioSystem->PlayAudio(m_kCurrentEnvSetting.m_strMusic, 
-				Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP, m_fGain);
-			m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
-		}
-	}
-
-	if(m_iMusicID != -1 && m_fGain < MAX_VOL)
-	{
-		FadeGain(false);
-		m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
-	}
-	else
-	{
-		m_fFadeTimer = -1;
-		m_fGain = MAX_VOL;
+		m_pkAudioSystem->SetMusic(m_kCurrentEnvSetting.m_strMusic);
+		m_strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;
 	}
 
 
@@ -790,25 +747,7 @@ void P_Enviroment::DrawSky()
 
 
 
-void P_Enviroment::FadeGain(bool bOut)
-{
-	const float FADE_TIME = 10.0f;
 
-	float fTime = m_pkEntityManager->GetSimTime();
-
-	if(m_fFadeTimer < 0)
-		m_fFadeTimer = fTime;
-
-	float fTimeSinceLastFrame = fTime - m_fFadeTimer;
-	float dif = fTimeSinceLastFrame / FADE_TIME;
-
-	if(bOut)
-		m_fGain -= dif;
-	else
-		m_fGain += dif;
-
-	m_fFadeTimer = fTime;
-}
 
 void P_Enviroment::DrawSun()
 {
