@@ -2,13 +2,15 @@
  
 GLSLProgram::GLSLProgram()
 {
-	m_iProgramID = NO_GLSLPROGRAM;
+	for(int i= 0;i<9;i++)
+		m_iProgramIDs[i] = NO_GLSLPROGRAM;
+		
 	m_pkShader = NULL;
 }
 
 GLSLProgram::~GLSLProgram()
 {
-	if(m_iProgramID == NO_VPROGRAM)
+	if(m_iProgramIDs[0] == NO_VPROGRAM)
 		return;
 
 	UnLoad();
@@ -44,86 +46,88 @@ bool GLSLProgram::Load(string  strFile)
 	strVShader = strFile.substr(0,iSplit);
 	strFShader = strFile.substr(iSplit+1,strFile.length());
 	
-
-	//load and compile shaders
-	GLenum iVSID = NO_GLSLPROGRAM;
-	GLenum iFSID = NO_GLSLPROGRAM;
-		
-	if(!strVShader.empty())
-		iVSID = LoadAndCompile(strVShader,eVERTEX_SHADER);
-
-	if(!strFShader.empty())
-		iFSID = LoadAndCompile(strFShader,eFRAGMENT_SHADER);
-
-	//no shader was loaded
-	if(iVSID == NO_GLSLPROGRAM && iFSID == NO_GLSLPROGRAM)
+	for(int i =0;i<9;i++)
 	{
-		cout<<"WARNING: glslprogram not created, no shader loaded"<<endl;
-		return false;	
-	}
-		
-	//create program object
-	m_iProgramID = glCreateProgramObjectARB();
-		
-	//attach shaders to program
-	if(iVSID != NO_GLSLPROGRAM)
-	{
-		glGetError();
-		glAttachObjectARB(m_iProgramID, iVSID);
-		if(glGetError() != GL_NO_ERROR)
+		//load and compile shaders
+		GLenum iVSID = NO_GLSLPROGRAM;
+		GLenum iFSID = NO_GLSLPROGRAM;
+			
+		if(!strVShader.empty())
+			iVSID = LoadAndCompile(strVShader,eVERTEX_SHADER,i);
+	
+		if(!strFShader.empty())
+			iFSID = LoadAndCompile(strFShader,eFRAGMENT_SHADER,i);
+	
+		//no shader was loaded
+		if(iVSID == NO_GLSLPROGRAM && iFSID == NO_GLSLPROGRAM)
 		{
-			cout<<"error while attaching vertex program: "<<strVShader<<endl;
+			cout<<"WARNING: glslprogram not created, no shader loaded"<<endl;
+			return false;	
+		}
+			
+		//create program object
+		m_iProgramIDs[i] = glCreateProgramObjectARB();
+			
+		//attach shaders to program
+		if(iVSID != NO_GLSLPROGRAM)
+		{
+			glGetError();
+			glAttachObjectARB(m_iProgramIDs[i], iVSID);
+			if(glGetError() != GL_NO_ERROR)
+			{
+				cout<<"error while attaching vertex program: "<<strVShader<<endl;
+			}
+		}
+		
+		if(iFSID != NO_GLSLPROGRAM)
+		{
+			glGetError();
+			glAttachObjectARB(m_iProgramIDs[i], iFSID);
+			if(glGetError() != GL_NO_ERROR)
+			{
+				cout<<"error while attaching fragment program: "<<iFSID<<endl;
+			}		
+		}
+	
+		// Link The Program Object
+		glLinkProgramARB(m_iProgramIDs[i]);
+		
+		GLint iRet;
+		glGetObjectParameterivARB(m_iProgramIDs[i],GL_OBJECT_LINK_STATUS_ARB,&iRet);
+		if(iRet == GL_FALSE)
+		{	
+			cout<<"ERROR: While linking GLSL program: "<<strFile<<endl;		
+				
+			//get log
+			static char log[1024];
+			int iLogSize = 0;
+			glGetInfoLogARB(m_iProgramIDs[i],1024,&iLogSize,log);
+			
+			if(iLogSize != 0)
+				cout<<log<<endl;			
+		
+			glDeleteObjectARB(m_iProgramIDs[i]);
+			m_iProgramIDs[i] = NO_GLSLPROGRAM;	
+		}
+		
+		
+		//remove shader objects
+		if(iVSID != NO_GLSLPROGRAM)
+			glDeleteObjectARB(iVSID);
+		if(iFSID != NO_GLSLPROGRAM)
+			glDeleteObjectARB(iFSID);
+		
+		
+		if(m_iProgramIDs[i] == NO_GLSLPROGRAM)
+		{
+			return false;
 		}
 	}
-	
-	if(iFSID != NO_GLSLPROGRAM)
-	{
-		glGetError();
-		glAttachObjectARB(m_iProgramID, iFSID);
-		if(glGetError() != GL_NO_ERROR)
-		{
-			cout<<"error while attaching fragment program: "<<iFSID<<endl;
-		}		
-	}
-
-	// Link The Program Object
-	glLinkProgramARB(m_iProgramID);
-	
-	GLint iRet;
-	glGetObjectParameterivARB(m_iProgramID,GL_OBJECT_LINK_STATUS_ARB,&iRet);
-	if(iRet == GL_FALSE)
-	{	
-		cout<<"ERROR: While linking GLSL program: "<<strFile<<endl;		
-			
-		//get log
-		static char log[1024];
-		int iLogSize = 0;
-		glGetInfoLogARB(m_iProgramID,1024,&iLogSize,log);
-		
-		if(iLogSize != 0)
-			cout<<log<<endl;			
-	
-		glDeleteObjectARB(m_iProgramID);
-		m_iProgramID = NO_GLSLPROGRAM;	
-	}
-	
-	
-	//remove shader objects
-	if(iVSID != NO_GLSLPROGRAM)
-		glDeleteObjectARB(iVSID);
-	if(iFSID != NO_GLSLPROGRAM)
-		glDeleteObjectARB(iFSID);
-	
-	
-	if(m_iProgramID == NO_GLSLPROGRAM)
-	{
-		return false;
-	}	
 //  	cout<<"GLSL program created:"<<strFile<<" id "<<m_iProgramID<<endl;
 	return true;
 }
 
-GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType)
+GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType,int iLights)
 {
 	GLenum iShaderID;
 
@@ -137,7 +141,7 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 	string strData;
 	
 	//load shader
-	if(!LoadDataFromFile(&strData,strFile))
+	if(!LoadDataFromFile(&strData,strFile,iLights))
 	{
 		glDeleteObjectARB(iShaderID);
 		return NO_GLSLPROGRAM;
@@ -171,7 +175,7 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 	return iShaderID;
 }
 
-bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
+bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile,int iLights)
 {
 	static string strGLSLdir = "/data/glsl/";
 
@@ -195,6 +199,40 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
 	
 	//deallocate temporary buffert
 	delete pkData;
+	
+
+	//fix light stuff	
+	int iStartPos = pkString->find("#FOR_EACH_LIGHT_START",0) ;		//21
+	int iStopPos = pkString->find("#FOR_EACH_LIGHT_STOP",0);			//20
+
+	if(iStartPos != -1 && iStopPos != -1)
+	{
+		//copy to seperat buffer
+ 		string strLbuffert = pkString->substr(iStartPos+21,iStopPos - iStartPos-21);
+		
+		//erase from shader buffer
+		pkString->erase(iStartPos,(iStopPos+20) - (iStartPos));
+		
+		for(int i = iLights-1;i>0;i--)
+		{
+			string strLights = IntToString(i);			
+			string strTemp = strLbuffert;
+		
+			int iLight = 0;		
+			while(iLight != -1)
+			{
+				iLight = strTemp.find("#LIGHT",0);							
+				if(iLight != -1)
+					strTemp.replace(iLight,6,strLights);
+			}
+			
+			pkString->insert(iStartPos,strTemp);
+			
+		}			
+		
+	// 		cout<<"FIXED:"<<*pkString<<":END"<<endl;		
+	// 		exit(1);
+	}
 	
 
 	//find include files
@@ -232,7 +270,7 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
 	//append includes on the top
 	for(int i =0;i<kIncludes.size();i++)
 	{		
- 		if(!LoadDataFromFile(pkString,kIncludes[i]))
+ 		if(!LoadDataFromFile(pkString,kIncludes[i],iLights))
  		{
  			cout<<"ERROR while including: "<<kIncludes[i]<<"|"<<endl;
  		}
@@ -244,16 +282,18 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile)
 
 bool GLSLProgram::UnLoad()
 {
-	if(m_iProgramID == NO_GLSLPROGRAM)
-		return false;
-
 	if(!SetupShaderPointer())
 		return false;
 
 			
-	glDeleteObjectARB(m_iProgramID);	
-	
-	m_iProgramID = NO_GLSLPROGRAM;
+	for(int i =0;i<9;i++)
+	{
+		if(m_iProgramIDs[i] != NO_GLSLPROGRAM)
+		{
+			glDeleteObjectARB(m_iProgramIDs[i]);		
+			m_iProgramIDs[i] = NO_GLSLPROGRAM;
+		}
+	}
 	
 	return true;
 }

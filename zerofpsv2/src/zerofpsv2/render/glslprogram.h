@@ -31,20 +31,20 @@ class RENDER_API GLSLProgram : public ZFResource
 	
 		bool	SetupShaderPointer();
 		
-		GLenum LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType);
+		GLenum LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType,int iLights);
 		
-		bool LoadDataFromFile(string* pkString,const string& strFile);
+		bool LoadDataFromFile(string* pkString,const string& strFile,int iLights);
 // 		char* GetLine(ZFVFile* pkFile);
 		
 	public:
-		GLenum	m_iProgramID;	
+		GLenum	m_iProgramIDs[9];	
+		
 
 		GLSLProgram();
 		~GLSLProgram();
 		
 		bool Create(string  strName);
 		int CalculateSize();
-
 
 		bool Load(string  strFile);
 		bool UnLoad();

@@ -1553,7 +1553,7 @@ void ZShaderSystem::UpdateVertexProgramParameters()
 void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 {
 	static GLenum iProgram;
-	
+		
 	if(!m_bSupportGLSLProgram)
 		return;
 
@@ -1562,10 +1562,10 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 	if(!m_bForceDisableGLSL)
 	{
 		if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
-			iProgram = pkRt->m_iProgramID;
+			iProgram = pkRt->m_iProgramIDs[m_pkLight->GetNrOfActiveLights()];
 		else if(m_bUseDefaultGLSLProgram)
 				if(GLSLProgram* pkRt = (GLSLProgram*)m_pkDefaultGLSLProgram->GetResourcePtr())
-					iProgram = pkRt->m_iProgramID;
+					iProgram = pkRt->m_iProgramIDs[m_pkLight->GetNrOfActiveLights()];
 	}
 		
 		
@@ -1573,6 +1573,8 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
  		return;
 	
 	glGetError(); 		
+ 		
+//   	cout<<"bidning "<<iProgram<<"  "<<m_pkLight->GetNrOfActiveLights()<<endl;
  		
 	//bind program
 	glUseProgramObjectARB(iProgram);			
