@@ -141,15 +141,7 @@ void P_CharacterControl::Update()
 		SetCharacterState(eNONE);
 		return;
 	}
-		
-	
-// 	if(m_fLockTime != -1)
-// 	{
-// 		if(m_pkEntityManager->GetSimTime() < m_fLockTime)
-// 			return;
-// 		else
-// 			m_fLockTime = -1;	
-// 	}
+
 	
 	//is sitting ?
 	if(m_iConnectionID != -1)
@@ -168,20 +160,12 @@ void P_CharacterControl::Update()
 		if(P_TcsTrigger* pkTrigger = (P_TcsTrigger*)m_pkEntityManager->GetPropertyFromEntityID(m_pkTcs->GetTrigger(),"P_TcsTrigger"))
 		{
 			if(pkTrigger->GetTriggerID() == 10)
-			{
-				
-				m_fSurfacePos = pkTrigger->GetEntity()->GetWorldPosV().y + pkTrigger->GetBoxSize().y;				
-				
-			
-				//0.5 in water
+			{				
+				m_fSurfacePos = pkTrigger->GetEntity()->GetWorldPosV().y + pkTrigger->GetBoxSize().y;								
 				float fDepth = m_pkEntity->GetWorldPosV().y - m_fSurfacePos;
-				cout<<"depth "<<fDepth<<endl;
 				
 				m_bInWater = fDepth < -0.8;
-				m_bOnWaterSurface = fDepth > -1.8;
-				
-				if(m_bInWater)
-					cout<<"im in wata"<<endl;
+				m_bOnWaterSurface = fDepth > -1.8;				
 			}
 		}
 	}		
@@ -212,13 +196,7 @@ void P_CharacterControl::Update()
 	{
 		m_pkEntityManager->Delete(m_pkWaterEnt);
 		m_pkWaterEnt = NULL;
-// 		m_pkEntity->DeleteProperty("P_PSystem");
-// 		m_bHaveWaterPsystem = false;
-/*		if(P_PSystem* pkPSys = (P_PSystem*)m_pkEntity->AddProxyProperty("P_PSystem"))
-		{
-			m_bHaveWaterPsystem = false;
-			pkPSys->SetPSType("");	
-		}	*/
+
 	}
 	
 	//setup water effects on character
@@ -435,7 +413,7 @@ void P_CharacterControl::SetNoClientRotation(bool bRot)
 
 bool P_CharacterControl::Sit()
 {
-	if(m_iCharacterState == eIDLE_STANDING)
+	if(m_iCharacterState == eIDLE_STANDING && !m_bOnWaterSurface && !m_bInWater)
 	{
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntity->GetProperty("P_CharacterProperty"))
 			if(!pkCP->CanRest())
