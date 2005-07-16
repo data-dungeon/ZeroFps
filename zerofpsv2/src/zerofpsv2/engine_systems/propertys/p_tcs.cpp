@@ -30,7 +30,7 @@ P_Tcs::P_Tcs()
 	m_kBoxSize=				Vector3(1,1,1);
 	m_iTestType=			E_SPHERE;
 	m_fRadius=				0.5;	
-	m_bGravity=				false;
+	m_bGravity=				true;
 	m_bCharacter=			false;
 	m_fLegLength=			1;
 	m_fScale=				1;

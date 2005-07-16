@@ -52,7 +52,7 @@ class ENGINE_SYSTEMS_API P_TcsTrigger : public Property
 
 		
 		int GetTriggerID()												{	return m_iTriggerID;	};
-			
+		Vector3 GetBoxSize()												{	return m_kBoxSize;	};
 		
 
 		

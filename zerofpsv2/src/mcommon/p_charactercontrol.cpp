@@ -1,6 +1,7 @@
 #include "p_charactercontrol.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_tcstrigger.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_psystem.h" 
 
 #include "p_characterproperty.h"
 
@@ -62,6 +63,10 @@ P_CharacterControl::P_CharacterControl()
 	m_kFallPos			=	Vector3::ZERO;
 	m_fFallDamage		=	0;
 	m_bFirstFallUpdate=	true;
+	
+	m_bHaveWaterPsystem = true;
+	m_bOnWaterSurface		=false;
+	m_pkWaterEnt		=	NULL;
 	
 	m_kControls.reset();
 	
@@ -156,6 +161,7 @@ void P_CharacterControl::Update()
 
 	//water check
 	m_bInWater = false;
+	m_bOnWaterSurface = false;
 	if(m_pkTcs->GetTrigger() != -1)
 	{
 		//check for trigger
@@ -163,24 +169,74 @@ void P_CharacterControl::Update()
 		{
 			if(pkTrigger->GetTriggerID() == 10)
 			{
-				m_bInWater = true;
+				
+				m_fSurfacePos = pkTrigger->GetEntity()->GetWorldPosV().y + pkTrigger->GetBoxSize().y;				
+				
+			
+				//0.5 in water
+				float fDepth = m_pkEntity->GetWorldPosV().y - m_fSurfacePos;
+				cout<<"depth "<<fDepth<<endl;
+				
+				m_bInWater = fDepth < -0.8;
+				m_bOnWaterSurface = fDepth > -1.8;
+				
+				if(m_bInWater)
+					cout<<"im in wata"<<endl;
 			}
 		}
 	}		
 
 	
-	//disable gravity if in water
+	//water surface psystem
+	if(m_bOnWaterSurface)
+	{
+		if(!m_pkWaterEnt)
+		{
+			if(m_pkWaterEnt = m_pkEntityManager->CreateEntity())
+			{				
+				m_pkWaterEnt->SetSave(false);			
+				m_pkWaterEnt->SetParent(m_pkEntity);
+				
+				if(P_PSystem* pkPSys = (P_PSystem*)m_pkWaterEnt->AddProperty("P_PSystem"))
+					pkPSys->SetPSType("watersurface");	
+			}			
+		}
+		else
+		{
+			Vector3 pos = m_pkEntity->GetIWorldPosV();
+			pos.y = m_fSurfacePos-0.9;
+			m_pkWaterEnt->SetWorldPosV(pos);	
+		}
+	}
+	else if(m_pkWaterEnt)
+	{
+		m_pkEntityManager->Delete(m_pkWaterEnt);
+		m_pkWaterEnt = NULL;
+// 		m_pkEntity->DeleteProperty("P_PSystem");
+// 		m_bHaveWaterPsystem = false;
+/*		if(P_PSystem* pkPSys = (P_PSystem*)m_pkEntity->AddProxyProperty("P_PSystem"))
+		{
+			m_bHaveWaterPsystem = false;
+			pkPSys->SetPSType("");	
+		}	*/
+	}
+	
+	//setup water effects on character
 	if(m_bInWater)
 	{
+		m_pkTcs->SetAirFriction(5);
 		m_pkTcs->SetGravity(false);
 		SetCharacterState(eIDLE_SWIMING);
+		
 	}
 	else
+	{
+		m_pkTcs->SetAirFriction(0.1);
 		m_pkTcs->SetGravity(true);
+	}
 				
-	Vector3 kVel(0,0,0);					
-
-				
+	
+	Vector3 kVel(0,0,0);						
 	if(m_kControls[eUP]) 	kVel.z +=  1;
 	if(m_kControls[eDOWN])	kVel.z += -1;
 	if(m_kControls[eLEFT])	kVel.x +=  1; 
@@ -233,9 +289,9 @@ void P_CharacterControl::Update()
 		m_bFirstFallUpdate = false;
 	}
 	
-	if(m_pkTcs->GetOnGround())
+	if(m_pkTcs->GetOnGround() )
 	{
-		if(m_bFalling)
+		if(m_bFalling && !m_bInWater)
 		{				
 			float fDistance = fabs(m_kFallPos.y - m_pkEntity->GetWorldPosV().y);
 			if(fDistance > 3)
@@ -262,7 +318,7 @@ void P_CharacterControl::Update()
 	
 	
 	//check if where walking or running or nothing
-	if(kVel.Length() > 0 && m_pkTcs->GetOnGround())
+	if(kVel.Length() > 0 && m_pkTcs->GetOnGround() && !m_bInWater)
 	{
 		if(m_kControls[eCRAWL] || m_bForceCrawl)
 		{
@@ -319,8 +375,13 @@ void P_CharacterControl::Update()
 	
 		if(m_kControls[eJUMP])
 		{			
-			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,3,0));			
+			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,6,0));			
 		}	
+		
+		if(m_kControls[eCRAWL])
+		{			
+			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,-4,0));			
+		}			
 	}
 	
 	

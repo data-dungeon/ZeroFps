@@ -164,7 +164,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3 GetVel(Vector3 kPos,bool bLocal = true);
 		
 		//sets 
-      void SetRotVel (Vector3 kRotVel)			{Wakeup();m_kRotVelocity = kRotVel; }		
+		void SetAirFriction(float fFriction)	{m_fAirFriction = fFriction;				}
+      void SetRotVel (Vector3 kRotVel)			{Wakeup();m_kRotVelocity = kRotVel; 	}		
 		void SetLinVel (Vector3 kLinVel)			{Wakeup();m_kLinearVelocity = kLinVel; }				
 		void SetTestType(int iTest)				{m_iTestType = iTest;	};
 		void SetRadius(float t) 					{m_fRadius = t;			};
