@@ -1236,6 +1236,7 @@ void P_CharacterProperty::OnDeath()
 	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
 	{
 		pkTcs->SetTestType(E_NONE);
+		pkTcs->SetAirFriction(15);		//make sure character wont bounce around
 	}
 	
 	

@@ -440,6 +440,8 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 	{
 		if(m_kBodys[i]->InActive())
 			continue;
+			
+			
 					
 		if(m_kBodys[i]->m_bCharacter)
 		{					
