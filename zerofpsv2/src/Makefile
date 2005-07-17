@@ -11,7 +11,6 @@ all:
 #	cd dm_arcad/; $(MAKE) $@
 #	cd zgresedit; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
-#	cd fps_test/; $(MAKE) $@
 	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 	cd tools/tool/zguiresed/; $(MAKE) $@
@@ -35,7 +34,6 @@ clean:
 #	cd dm_arcad/; $(MAKE) $@
 #	cd zgresedit/; $(MAKE) $@	
 	cd zeroed/; $(MAKE) $@
-#	cd fps_test/; $(MAKE) $@
 	cd stopemup/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
 	cd tools/tool/zguiresed/; $(MAKE) $@
