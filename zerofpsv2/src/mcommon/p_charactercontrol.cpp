@@ -23,7 +23,7 @@ AnimationSet::AnimationSet()
 	m_strJump				=	"jump";
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"sit_ground";
-	m_strIdleSwimming		=	"swim-idle";
+	m_strIdleSwimming		=	"swim_idle";
 	m_strEmote				=	"taunt";		
 	m_strDie					=	"die";	
 	m_strDead				=	"dead";	
