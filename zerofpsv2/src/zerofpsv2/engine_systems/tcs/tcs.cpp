@@ -445,29 +445,19 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 		{					
 			bool bTuchedGround = false;
 			 
-			//if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			if(CharacterLineTest(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{		
-				//make sure thers no x/z movement (some tests are not exact
-				m_kLastLineTestColPos.x = m_kBodys[i]->m_kNewPos.x;
-				m_kLastLineTestColPos.z = m_kBodys[i]->m_kNewPos.z;
+				distance = fabs(m_kBodys[i]->m_kNewPos.y - m_kLastLineTestColPos.y);
 				
-				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastLineTestColPos);
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
 					bTuchedGround = true;
 				
-					//m_kBodys[i]->m_kNewPos = m_kLastLineTestColPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
 					m_kBodys[i]->m_bOnGround = true;
-					//m_kBodys[i]->m_kLinearVelocity.y= 0;
-				
-					//ground breaks
-					m_kBodys[i]->m_kLinearVelocity -= 10*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);											
-					
 					
 					//set UP velocity depending on how far player has sunken into the ground
-					m_kBodys[i]->m_kLinearVelocity.y = (m_kBodys[i]->m_fLegLength - distance) * 20.0;
-					
+ 					//m_kBodys[i]->m_kLinearVelocity.y = (m_kBodys[i]->m_fLegLength - distance) * 20.0;
+ 					m_kBodys[i]->m_kLinearVelocity.y = Min((m_kBodys[i]->m_fLegLength - distance) * 20.0,100.0);
 				}
 			}
 			
@@ -475,16 +465,6 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 			if(!bTuchedGround)
 			{
 				m_kBodys[i]->m_bOnGround = false;			
-				
-
-				//add breaks to character :D					
-				float fOld = m_kBodys[i]->m_kLinearVelocity.y;
-			
-				//air breaks
-				m_kBodys[i]->m_kLinearVelocity -= 4*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
-			
-				//m_kBodys[i]->m_kLinearVelocity.Set(0,fOld,0);
-				m_kBodys[i]->m_kLinearVelocity.y = fOld;
 			}		
 		}
 	}

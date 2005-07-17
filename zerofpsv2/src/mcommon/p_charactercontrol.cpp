@@ -198,18 +198,21 @@ void P_CharacterControl::Update()
 		m_pkWaterEnt = NULL;
 
 	}
-	
+
 	//setup water effects on character
 	if(m_bInWater)
 	{
-		m_pkTcs->SetAirFriction(5);
+		m_pkTcs->SetAirFriction(15);
 		m_pkTcs->SetGravity(false);
-		SetCharacterState(eIDLE_SWIMING);
-		
+		SetCharacterState(eIDLE_SWIMING);		
 	}
 	else
 	{
-		m_pkTcs->SetAirFriction(0.1);
+		if(m_pkTcs->GetOnGround())
+			m_pkTcs->SetAirFriction(15);
+		else
+			m_pkTcs->SetAirFriction(0.1);
+			
 		m_pkTcs->SetGravity(true);
 	}
 				
@@ -239,15 +242,19 @@ void P_CharacterControl::Update()
 	
 	//multiply by character speed	
 	if(kVel.Length() > 0)
-		kVel = kVel.Unit() * m_fSpeed;
+		kVel = kVel.Unit() * m_fSpeed*1.5;
 	
 	//check if where crawling
-	if(m_kControls[eCRAWL] || m_bForceCrawl)
+	if((m_kControls[eCRAWL] || m_bForceCrawl) && !m_bInWater)
 		kVel *= 0.45;
 		
 	//character moves slower while in the air
-	if(!m_pkTcs->GetOnGround())
-		kVel *= 0.25;
+	if(!m_pkTcs->GetOnGround() && !m_bInWater)
+		kVel *= 0.001;
+		
+	if(m_bInWater)
+		kVel *= 0.45;
+		
 					
 		
 	//apply movement force					
@@ -274,8 +281,7 @@ void P_CharacterControl::Update()
 			float fDistance = fabs(m_kFallPos.y - m_pkEntity->GetWorldPosV().y);
 			if(fDistance > 3)
 			{
-				m_fFallDamage += (fDistance - 3)*15; 
-			
+				m_fFallDamage += (fDistance - 3)*15; 			
 				//cout<<"OUCH falldamage "<<(fDistance - 3)*15<< " total:"<<m_fFallDamage<<endl;
 			}
 		}
@@ -339,7 +345,7 @@ void P_CharacterControl::Update()
 					{
 						if(m_pkTcs->GetOnGround())
 						{
-							m_bHaveJumped = true;
+							m_bHaveJumped = true;					
 							m_pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
 						}
 					}
@@ -353,12 +359,12 @@ void P_CharacterControl::Update()
 	
 		if(m_kControls[eJUMP])
 		{			
-			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,6,0));			
+			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,20,0));			
 		}	
 		
 		if(m_kControls[eCRAWL])
 		{			
-			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,-4,0));			
+			m_pkTcs->ApplyForce(Vector3(0,0,0),Vector3(0,-15,0));			
 		}			
 	}
 	
