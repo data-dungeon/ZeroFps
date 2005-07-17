@@ -457,7 +457,9 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 					
 					//set UP velocity depending on how far player has sunken into the ground
  					//m_kBodys[i]->m_kLinearVelocity.y = (m_kBodys[i]->m_fLegLength - distance) * 20.0;
- 					m_kBodys[i]->m_kLinearVelocity.y = Min((m_kBodys[i]->m_fLegLength - distance) * 20.0,100.0);
+ 					m_kBodys[i]->m_kLinearVelocity.y = Min((m_kBodys[i]->m_fLegLength - distance) * 60.0,50.0);
+//  					m_kBodys[i]->m_kLinearVelocity.y = fabs(m_kBodys[i]->m_kLinearVelocity.y)*2.0;
+//  					cout<<"vel:"<<m_kBodys[i]->m_kLinearVelocity.y<<endl;
 				}
 			}
 			
