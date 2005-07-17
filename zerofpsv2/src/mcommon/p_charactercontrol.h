@@ -99,7 +99,6 @@ class MCOMMON_API P_CharacterControl: public Property
 		bool			m_bInWater;
 		float			m_fSurfacePos;
 		bool			m_bOnWaterSurface;
-		bool			m_bHaveWaterPsystem;
 		Entity*		m_pkWaterEnt;
 		
 		float			m_fSoundWalkDelay;

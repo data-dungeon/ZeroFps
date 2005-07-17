@@ -64,8 +64,7 @@ P_CharacterControl::P_CharacterControl()
 	m_fFallDamage		=	0;
 	m_bFirstFallUpdate=	true;
 	
-	m_bHaveWaterPsystem = true;
-	m_bOnWaterSurface		=false;
+	m_bOnWaterSurface	=	false;
 	m_pkWaterEnt		=	NULL;
 	
 	m_kControls.reset();
