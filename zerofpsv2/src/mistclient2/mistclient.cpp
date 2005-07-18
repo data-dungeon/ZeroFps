@@ -39,7 +39,6 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.SetPreLogName("mistclient2");
-	g_ZFObjSys.Log_Create("mistclient2");
 	
 	m_iPickedEntityID 	= 	-1;
 	m_fDelayTime  			=	0;
@@ -2098,6 +2097,8 @@ bool MistClient::ShutDown()
 
 bool MistClient::StartUp()
 {
+	g_ZFObjSys.Log_Create("mistclient2");
+
    ReadWriteServerList(true);
    return true;
 }

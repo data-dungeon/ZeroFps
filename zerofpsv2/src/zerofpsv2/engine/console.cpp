@@ -11,7 +11,6 @@ Console::Console()
   : BasicConsole("Console"), MAX_CMD_HISTRORY_LENGTH(50) {
    	
 
-	GetSystem().Log_Create("console"); 
 	
 	// Register Variables
 	RegisterVariable("conlog",			&m_bLog,			CSYS_BOOL);	
@@ -23,6 +22,9 @@ bool Console::StartUp()
 	m_pkInput	= static_cast<Input*>(GetSystem().GetObjectPtr("Input"));	
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
+
+	GetSystem().Log_Create("console"); 
+
 
 	m_iBufferSize			= 100;
 	m_kText.resize(m_iBufferSize);

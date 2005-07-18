@@ -22,6 +22,7 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/mainmcommon.h"
+#include <time.h>
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
@@ -54,18 +55,21 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	return true;
 }
 
+bool ZeroEd::StartUp()		
+{ 
+	g_ZFObjSys.Log_Create("zeroed");
+
+	return true; 
+}
 
 ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
-
 	g_ZFObjSys.SetPreLogName("zeroed");
-	g_ZFObjSys.Log_Create("zeroed");
 
 	//register mcommon systems
 	MCommon_RegisterSystems();
-	
-	
+		
 	// Set Default values	
 	m_bEditSun					=	true;
 	m_bSoloMode					=	true;

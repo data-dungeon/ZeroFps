@@ -115,8 +115,8 @@ ZFSystem::ZFSystem()
 {
 	ZFSystem::pkInstance = this;
 
-	m_pkLogFile = fopen("zerofps.txt", "wt");	// Open Master Log File.
-	setvbuf(m_pkLogFile, NULL, _IONBF, 0);		// Set Non buffer mode.
+	m_pkLogFile = NULL;
+	m_strPreLogName = "Zerofps";
 
 #ifdef _DEBUG
 	g_Logf("Starting ZeroFps Object System\n");
@@ -692,6 +692,8 @@ bool ZFSystem::Log_Create(const char* szName)
 	NewLogFile.m_strName = szName;
 	NewLogFile.m_strFileName = m_strPreLogName + "-" + string(szName) + ".txt";
 	
+	NewLogFile.m_strFileName = "logs/" + NewLogFile.m_strFileName;
+
 	NewLogFile.m_pkFilePointer = fopen(NewLogFile.m_strFileName.c_str(), "wt");
 	setvbuf(NewLogFile.m_pkFilePointer , NULL, _IONBF, 0);		// Set Non buffer mode.
 	
@@ -887,6 +889,11 @@ void ZFSystem::Printf(const char* szMessageFmt,...)
 void ZFSystem::SetPreLogName(string strPreLogName)
 {
 	m_strPreLogName = strPreLogName;
+
+	// Open master logfile.
+	string strMasterLogFile = m_strPreLogName + ".txt";
+	m_pkLogFile = fopen(strMasterLogFile.c_str(), "wt");	// Open Master Log File.
+	setvbuf(m_pkLogFile, NULL, _IONBF, 0);						// Set Non buffer mode.
 }
 
 

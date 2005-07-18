@@ -319,7 +319,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void SoloToggleView();
 
 
-		bool StartUp()		{ return true; }
+		bool StartUp();
 		bool ShutDown()	{ return true; }
 		bool IsValid()		{ return true; }
 

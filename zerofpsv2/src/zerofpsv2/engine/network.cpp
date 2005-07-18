@@ -12,10 +12,6 @@ NetWork* g_pkNetWork;
 NetWork::NetWork()
 : ZFSubSystem("NetWork")
 {
-	// Create Log Files.
-	GetSystem().Log_Create("net");
-	GetSystem().Log_Create("netpac");
-
 	strcpy(m_szGameName, "ZeroFps");
 	m_bAcceptClientConnections = false;
 	m_pkSocket						= NULL;
@@ -42,8 +38,6 @@ NetWork::NetWork()
    RegisterVariable("n_publiship",			&m_strPublishIp,			CSYS_STRING);
    RegisterVariable("n_maxoutput",			&m_iMaxOutput,				CSYS_INT);
 	
-
-
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);
 	Register_Cmd("n_dns", FID_DNS);
@@ -60,10 +54,12 @@ NetWork::NetWork()
 bool NetWork::StartUp()	
 { 
 	m_pkConsole	= static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
-
 	m_pkZeroFps	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-
 	g_pkNetWork  = this;
+
+	// Create Log Files.
+	GetSystem().Log_Create("net");
+	GetSystem().Log_Create("netpac");
 
 	int iInitRes = SDLNet_Init();
 

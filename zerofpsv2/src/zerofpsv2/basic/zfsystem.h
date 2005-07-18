@@ -203,7 +203,7 @@ public:
 	void Printf(const char* szMessageFmt,...);			// Print to console if created.
 
 	void SetPreLogName(string strPreLogName);
-
+	string GetPreLogName()	{ return m_strPreLogName; }
 
 	friend class CmdSystem;
 };

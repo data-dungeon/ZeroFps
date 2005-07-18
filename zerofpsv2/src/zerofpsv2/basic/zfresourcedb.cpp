@@ -146,7 +146,6 @@ ZFResourceDB::ZFResourceDB()
 
 	
 
-	g_ZFObjSys.Log_Create("resdb");
 }
 
 ZFResourceDB::~ZFResourceDB()
@@ -156,6 +155,7 @@ ZFResourceDB::~ZFResourceDB()
 
 bool ZFResourceDB::StartUp()	
 { 
+	g_ZFObjSys.Log_Create("resdb");
 	return true; 
 }
 

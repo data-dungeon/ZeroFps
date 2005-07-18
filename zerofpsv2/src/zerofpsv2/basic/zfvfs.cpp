@@ -115,6 +115,9 @@ bool ZFVFileSystem::StartUp()
 { 
 	char* strDir = m_pkBasicFS->GetCWD();	
 	cout << "WorkingDir is: " << strDir << endl;
+	m_pkBasicFS->CreateDir("logs/");
+	m_pkBasicFS->CreateDir("screenshots/");
+	
 	return true;
 }
 

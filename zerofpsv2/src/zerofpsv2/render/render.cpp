@@ -4,7 +4,8 @@
 #include "../engine_systems/common/psystem.h"
 #include "../engine_systems/common/psystemmanager.h"
 #include "../basic/globals.h"
-  
+#include <time.h>
+
 FILE* pkGlDumpLog;
   
 Render::Render()  
@@ -1508,10 +1509,25 @@ void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 	glReadPixels(0,0, m_iWidth,m_iHeight,GL_RGBA, GL_UNSIGNED_BYTE, kScreen.m_pkPixels); 
 
 	char szImageName[256];
-	sprintf(szImageName, "screen_%d.tga", m_iScreenShootNum);
-	m_iScreenShootNum++;
+	char szName[256];
+	string strAppName = GetSystem().GetPreLogName();
+
+	//sprintf(szImageName, "screen_%d.tga", m_iScreenShootNum);
+	//m_iScreenShootNum++;
+
+	time_t	kTime;
+	time(&kTime);
+	struct tm *pkLocalTime;
+	pkLocalTime = localtime( &kTime );
+	strftime(szName, 250, "%y%m%d_%H%M%S ", pkLocalTime);
+	sprintf(szImageName, "screenshots/%s_%s.tga", strAppName.c_str(), szName);
+	
 	kScreen.Save(szImageName ,false);
 }
+
+			
+
+
 
 //char* BASIC_API BoolStr(bool bFlag);												//returns string "true" or "false" i think	
 

@@ -45,7 +45,6 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	
 	g_ZFObjSys.SetPreLogName("mistserver");
-	g_ZFObjSys.Log_Create("mistserver");
 
 	//register mcommon systems
 	MCommon_RegisterSystems();
@@ -906,6 +905,7 @@ void MistServer::OnClientStart(void)
 bool MistServer::StartUp()	
 { 
 //	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
+	g_ZFObjSys.Log_Create("mistserver");
 	return true; 
 }
 
