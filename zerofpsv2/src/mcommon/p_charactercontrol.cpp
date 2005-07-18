@@ -19,7 +19,7 @@ AnimationSet::AnimationSet()
 	m_strSwimForward		=	"swim_foward";
 	m_strSwimBackward		=	"swim_backward";
 	m_strSwimLeft			=	"swim_left";
-	m_strSwimRight			=	"swim_rright";
+	m_strSwimRight			=	"swim_right";
 	m_strJump				=	"jump";
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"sit_ground";
