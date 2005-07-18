@@ -20,7 +20,7 @@ so you already have them :).
 ### Download all libs you need.
  X  Name            Version  	Link						
 (A) STL port        5.0-0125    http://www.stlport.org/ (Windows Only)			
-(B) GLEE            3.05        http://elf-stone.com/downloads.php
+(B) GLEE            5.03        http://elf-stone.com/downloads.php
 (C) SDL             1.2.7       http://www.libsdl.org
 (D) SDL_net         1.2.5       http://www.libsdl.org/projects/SDL_net/
 (E) Lua             5.0.2       http://www.lua.org/
