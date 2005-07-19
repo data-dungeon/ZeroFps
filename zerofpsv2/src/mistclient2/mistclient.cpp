@@ -894,6 +894,7 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-stun.lua",8);
 			SendAddSkillToSkillbar("skill-freeze.lua",9);
 			SendAddSkillToSkillbar("skill-camp.lua",10);
+			SendAddSkillToSkillbar("skill-create_food.lua",11);
 		}
 	
 // 	if(m_pkInputHandle->Pressed(KEY_O))
@@ -1482,6 +1483,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			SendAddSkillToSkillbar("skill-stun.lua",8);
 			SendAddSkillToSkillbar("skill-freeze.lua",9);
 			SendAddSkillToSkillbar("skill-camp.lua",10);
+			SendAddSkillToSkillbar("skill-create_food.lua",11);
 			//--------------------------
 		
 			break;
