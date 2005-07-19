@@ -187,7 +187,7 @@ void P_CharacterControl::Update()
 		else
 		{
 			Vector3 pos = m_pkEntity->GetIWorldPosV();
-			pos.y = m_fSurfacePos-0.9;
+			pos.y = m_fSurfacePos-1.0;
 			m_pkWaterEnt->SetWorldPosV(pos);	
 		}
 	}

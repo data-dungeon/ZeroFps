@@ -875,8 +875,8 @@ void ZMaterial::SetupEnums()
 	m_kEnums["SRC_ALPHA_SATURATE_BLEND_SRC"] = 	8;
 
 	//blends dst
-	m_kEnums["ZERO_BLEND_SRC"] = 						0;
-	m_kEnums["ONE_BLEND_SRC"] = 						1;
+	m_kEnums["ZERO_BLEND_DST"] = 						0;
+	m_kEnums["ONE_BLEND_DST"] = 						1;
 	m_kEnums["SRC_COLOR_BLEND_DST"] = 				2;
 	m_kEnums["ONE_MINUS_SRC_COLOR_BLEND_DST"] = 	3;
 	m_kEnums["SRC_ALPHA_BLEND_DST"] = 				4;

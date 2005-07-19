@@ -15,7 +15,7 @@ P_Light::P_Light()
 	strcpy(m_acName,"P_Light");
 	m_bNetwork = true;
 	m_iVersion = 5;
-	m_iSortPlace=10;
+	m_iSortPlace=9;
 	
 	m_pkLightSource=new LightSource();
 

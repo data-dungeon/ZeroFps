@@ -113,7 +113,7 @@ P_PSystem::P_PSystem()
 
 	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
-	m_iSortPlace =	9;
+	m_iSortPlace =	4;
 	m_iVersion = 3;
 	
 	strcpy(m_acName,"P_PSystem");
@@ -129,7 +129,7 @@ P_PSystem::P_PSystem( string kPSType )
 
 	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;	
-	m_iSortPlace =	9;
+	m_iSortPlace =	4;
 
 	strcpy(m_acName,"P_PSystem");
 	SetPSType ( kPSType );

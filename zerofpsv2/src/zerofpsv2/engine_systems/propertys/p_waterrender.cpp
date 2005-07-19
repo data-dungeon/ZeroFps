@@ -15,7 +15,7 @@ P_WaterRender::P_WaterRender()
 	
 	m_iVersion = 2;
 
-	m_iSortPlace	=	4;
+	m_iSortPlace	=	10;
 	m_fBlendValue	=	0.7;
 	m_bBlendDirUp	=  false;
 
