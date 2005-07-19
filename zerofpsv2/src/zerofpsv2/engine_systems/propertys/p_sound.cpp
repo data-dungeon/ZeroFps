@@ -71,11 +71,15 @@ void P_Sound::Update()
 
 		if(m_bLoop == false)
 		{
-			m_pkAudioSystem->StopAudio(m_iID);	//DVOID fix, ljud kunde läcka ibland, gjorde en failsafe =D
+			//m_pkAudioSystem->StopAudio(m_iID);	//DVOID fix, ljud kunde läcka ibland, gjorde en failsafe =D
+			Vector3 kPos = pkEnt->GetIWorldPosV();
 						
 			m_iID = m_pkAudioSystem->PlayAudio(m_strFileName, 
-				pkEnt->GetIWorldPosV(), pkEnt->GetVel(), 0, m_fGain);
+				kPos, pkEnt->GetVel(), 0, m_fGain);
 			m_strFileName = "";
+		
+			cout<<"starting non looping sound"<<m_strFileName<<"  id "<<m_iID<<",pos "<<kPos.x<<" "<<kPos.y<<" "<<kPos.z<<endl;
+
 		}
 		else
 		{
@@ -170,10 +174,12 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+
 	pkNetPacket->Read_Str( m_strFileName);
 	pkNetPacket->Read(m_bLoop); 
 	pkNetPacket->Read_Str(m_strStopFileName);
 	pkNetPacket->Read(m_fGain);
+
 }
 
 vector<PropertyValues> P_Sound::GetPropertyValues()
