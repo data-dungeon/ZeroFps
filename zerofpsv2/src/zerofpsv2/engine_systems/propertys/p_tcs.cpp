@@ -1088,7 +1088,7 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_Tcs", Create_P_Tcs);					
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("ApplyImpuls",			SI_PTcs::ApplyImpulsLua);
+	g_pkScript->ExposeFunction("ApplyImpulse",			SI_PTcs::ApplyImpulsLua);
 	g_pkScript->ExposeFunction("SetRotVel",			SI_PTcs::SetObjectRotVelLua);
 	g_pkScript->ExposeFunction("SetLinVel",			SI_PTcs::SetObjectLinVelLua);	
 	g_pkScript->ExposeFunction("SetLinVelTowards",	SI_PTcs::SetObjectLinVelTowardsLua);	
