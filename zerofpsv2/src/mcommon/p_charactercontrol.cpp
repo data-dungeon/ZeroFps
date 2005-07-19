@@ -2,6 +2,7 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_tcstrigger.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_sound.h" 
 
 #include "p_characterproperty.h"
 
@@ -182,13 +183,19 @@ void P_CharacterControl::Update()
 				
 				if(P_PSystem* pkPSys = (P_PSystem*)m_pkWaterEnt->AddProperty("P_PSystem"))
 					pkPSys->SetPSType("watersurface");	
+			
+				if(P_Sound* pkSound = (P_Sound*)m_pkWaterEnt->AddProperty("P_Sound"))
+					pkSound->StartSound("data/sound/water_splash.wav",false,1.0);
+			
 			}			
 		}
-		else
+		
+		if(m_pkWaterEnt)
 		{
-			Vector3 pos = m_pkEntity->GetIWorldPosV();
-			pos.y = m_fSurfacePos-1.0;
-			m_pkWaterEnt->SetWorldPosV(pos);	
+			static Vector3 kPos;
+			kPos = m_pkEntity->GetIWorldPosV();
+			kPos.y = m_fSurfacePos-1.0;
+			m_pkWaterEnt->SetWorldPosV(kPos);	
 		}
 	}
 	else if(m_pkWaterEnt)

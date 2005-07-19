@@ -71,15 +71,11 @@ void P_Sound::Update()
 
 		if(m_bLoop == false)
 		{
-			//m_pkAudioSystem->StopAudio(m_iID);	//DVOID fix, ljud kunde läcka ibland, gjorde en failsafe =D
-			Vector3 kPos = pkEnt->GetIWorldPosV();
-						
+			m_pkAudioSystem->StopAudio(m_iID);	//DVOID fix, ljud kunde läcka ibland, gjorde en failsafe =D
+			
 			m_iID = m_pkAudioSystem->PlayAudio(m_strFileName, 
-				kPos, pkEnt->GetVel(), 0, m_fGain);
+				pkEnt->GetIWorldPosV(), pkEnt->GetVel(), 0, m_fGain);
 			m_strFileName = "";
-		
-			cout<<"starting non looping sound"<<m_strFileName<<"  id "<<m_iID<<",pos "<<kPos.x<<" "<<kPos.y<<" "<<kPos.z<<endl;
-
 		}
 		else
 		{
