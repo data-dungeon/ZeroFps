@@ -1874,7 +1874,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		if(iState == eWALKING_WATER)
 		{
 			if(m_iCurrentCharacterState != eWALKING_WATER)
-				m_iWalkWaterSoundID = m_pkAudioSystem->PlayAudio(m_strWalkWaterSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+				m_iWalkWaterSoundID = m_pkAudioSystem->PlayAudio(m_strWalkWaterSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,0.1);
 			else
 				m_pkAudioSystem->MoveAudio(m_iWalkWaterSoundID, GetEntity()->GetIWorldPosV());
 		}
@@ -1885,7 +1885,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		if(iState == eRUNNING_WATER)
 		{
 			if(m_iCurrentCharacterState != eRUNNING_WATER)
-				m_iRunWaterSoundID = m_pkAudioSystem->PlayAudio(m_strRunWaterSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+				m_iRunWaterSoundID = m_pkAudioSystem->PlayAudio(m_strRunWaterSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,0.1);
 			else
 				m_pkAudioSystem->MoveAudio(m_iRunWaterSoundID, GetEntity()->GetIWorldPosV());
 		}
@@ -1915,7 +1915,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(m_iCurrentCharacterState != eSWIMMING)
 			{	
-				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,0.1);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iSwimSoundID,GetEntity()->GetIWorldPosV());
