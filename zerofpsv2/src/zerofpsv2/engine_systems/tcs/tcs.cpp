@@ -1275,7 +1275,7 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 		if(	(pkBody == pkTester) || 
 				(!pkTester->m_akWalkableGroups[pkBody->m_iGroup]) )
 			continue;
-			
+
 	
 		//check if entitys are in neighbour zone
 		if(!IsInNerbyZone(pkTester,pkBody))
