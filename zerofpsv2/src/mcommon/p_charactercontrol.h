@@ -27,6 +27,8 @@ enum CharcterStates
 	eJUMPING	=		5,
 	eIDLE_SWIMING= 6,
 	eNONE	       = 7,
+	eWALKING_WATER=8,
+	eRUNNING_WATER=9,
 };
 
 enum CharacterMoveDirection

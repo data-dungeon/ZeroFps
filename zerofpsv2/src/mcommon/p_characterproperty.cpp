@@ -620,11 +620,14 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
 	m_strRunSound			=	"data/sound/footstep_forest_run.wav";
 	m_strJumpSound			=	"data/sound/jump.wav";
-	m_strSwimSound			=	"swim.wav";	
+	m_strSwimSound			=	"data/sound/walkwater.wav";	
+	m_strWalkWaterSound	=	"data/sound/walkwater.wav";	
+	m_strRunWaterSound	=	"data/sound/walkwater.wav";	
 	m_iWalkSoundID 		= 	-1;
 	m_iRunSoundID 			= 	-1;
 	m_iSwimSoundID 		= 	-1;
-	
+	m_iWalkWaterSoundID	=	-1;
+	m_iRunWaterSoundID	=	-1;
 	
 	//setup material
 	m_pkTextMaterial = new ZMaterial;
@@ -1867,6 +1870,28 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			}
 		}	
 		
+		//walk watersound
+		if(iState == eWALKING_WATER)
+		{
+			if(m_iCurrentCharacterState != eWALKING_WATER)
+				m_iWalkWaterSoundID = m_pkAudioSystem->PlayAudio(m_strWalkWaterSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+			else
+				m_pkAudioSystem->MoveAudio(m_iWalkWaterSoundID, GetEntity()->GetIWorldPosV());
+		}
+		else if(m_iCurrentCharacterState == eWALKING_WATER)
+			m_pkAudioSystem->StopAudio(m_iWalkWaterSoundID);
+		
+		//run watersound
+		if(iState == eRUNNING_WATER)
+		{
+			if(m_iCurrentCharacterState != eRUNNING_WATER)
+				m_iRunWaterSoundID = m_pkAudioSystem->PlayAudio(m_strRunWaterSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+			else
+				m_pkAudioSystem->MoveAudio(m_iRunWaterSoundID, GetEntity()->GetIWorldPosV());
+		}
+		else if(m_iCurrentCharacterState == eRUNNING_WATER)
+			m_pkAudioSystem->StopAudio(m_iRunWaterSoundID);		
+		
 		//run sound
 		if(iState == eRUNNING)
 		{
@@ -2560,6 +2585,8 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_strRunSound);
 	pkNetPacket->Write_Str(m_strJumpSound);
 	pkNetPacket->Write_Str(m_strSwimSound);
+	pkNetPacket->Write_Str(m_strWalkWaterSound);		
+	pkNetPacket->Write_Str(m_strRunWaterSound);		
 	
 	SetNetUpdateFlag(iConnectionID,false);
 	
@@ -2600,7 +2627,8 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read_Str(m_strRunSound);
 	pkNetPacket->Read_Str(m_strJumpSound);
 	pkNetPacket->Read_Str(m_strSwimSound);		
-
+	pkNetPacket->Read_Str(m_strWalkWaterSound);		
+	pkNetPacket->Read_Str(m_strRunWaterSound);		
 }
 
 bool P_CharacterProperty::UseMana(float fMana)

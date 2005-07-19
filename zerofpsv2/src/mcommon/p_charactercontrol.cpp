@@ -213,6 +213,8 @@ void P_CharacterControl::Update()
 			m_pkTcs->SetAirFriction(0.1);
 			
 		m_pkTcs->SetGravity(true);
+		
+				
 	}
 				
 	
@@ -306,17 +308,26 @@ void P_CharacterControl::Update()
 		if(m_kControls[eCRAWL] || m_bForceCrawl)
 		{
 			m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
-			SetCharacterState(eWALKING);
+			
+			if(m_bOnWaterSurface)
+				SetCharacterState(eWALKING_WATER);
+			else
+				SetCharacterState(eWALKING);
 		}
 		else
 		{
 			m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
-			SetCharacterState(eRUNNING);
+			
+			if(m_bOnWaterSurface)
+				SetCharacterState(eRUNNING_WATER);
+			else
+				SetCharacterState(eRUNNING);
 		}
 	}
 	
 	//set idle standing i we havent touched the ground for some time
-	if(GetCharacterState() == eWALKING || GetCharacterState() == eRUNNING)
+	int iState = GetCharacterState();
+	if(iState == eWALKING || iState == eRUNNING || iState == eRUNNING_WATER || iState == eWALKING_WATER)
 	{
 		if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
 		{
@@ -521,8 +532,9 @@ void P_CharacterControl::UpdateAnimation()
 				pkMad->SetNextAnimation(MAD_NOLOOP);
 			}			
 		}
+		
 		//RUNNING
-		if(iState == eRUNNING)
+		if(iState == eRUNNING || iState == eRUNNING_WATER)
 		{
 			switch(GetMovedirection())
 			{
@@ -545,7 +557,7 @@ void P_CharacterControl::UpdateAnimation()
 			}			
 		}
 		//WALKING
-		else if(iState == eWALKING)
+		else if(iState == eWALKING || iState == eWALKING_WATER)
 		{
 			switch(GetMovedirection())
 			{

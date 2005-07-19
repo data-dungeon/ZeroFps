@@ -491,6 +491,10 @@ bool ZFAudioSystem::LoadSound(string strFileName)
 
 			return true;
 		}
+		else
+		{
+			cout<<"failed to load sound:"<<strFileName<<endl;
+		}
 	}
 	else
 	{
@@ -1495,7 +1499,7 @@ bool ZFAudioSystem::SetGain(int iID, float fGain)
 	if(pkSound == NULL)
 	{
 		//printf("Failed to set Gain %d for sound: %i \n",fGain,iID);
-		cout<<"Failed to set Gain "<<fGain<<" for sound:"<<iID<<endl;
+// 		cout<<"Failed to set Gain "<<fGain<<" for sound:"<<iID<<endl;
 	}
 
 	return false;

@@ -213,10 +213,14 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//basic sounds
 		bool		m_bWalkSound;		
 		
+		string	m_strWalkWaterSound;
+		string	m_strRunWaterSound;
 		string	m_strWalkSound;
 		string	m_strRunSound;
 		string	m_strJumpSound;
 		string	m_strSwimSound;		
+		int		m_iRunWaterSoundID;		
+		int		m_iWalkWaterSoundID;
 		int		m_iWalkSoundID;
 		int		m_iRunSoundID;
 		int		m_iSwimSoundID;
