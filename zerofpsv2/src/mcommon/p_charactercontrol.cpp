@@ -46,6 +46,7 @@ P_CharacterControl::P_CharacterControl()
 	m_fLockTime = 			-1;
 	m_bEnabled=				true;
 	m_bNoClientRotate=	false;
+	m_fNoFrictionTime	=	-1;
 	
 	m_fYAngle = 			0;
 	m_fPAngle = 			0;	
@@ -128,18 +129,17 @@ void P_CharacterControl::Update()
 	
 	if(!m_bEnabled || (m_pkEntityManager->GetSimTime() < m_fLockTime) )
 	{
-// 		if(m_fLockTime != -1)
-// 			if(m_pkEntityManager->GetSimTime() >= m_fLockTime)
-// 				m_fLockTime = -1;
-	
 		if(m_iConnectionID != -1)
 		{
 	 		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,false);
 	 		SetNoClientRotation(true);
 	 	}
 			
-		SetCharacterState(eNONE);
-		return;
+		//SetCharacterState(eNONE);
+		
+		m_kControls.reset();
+		
+		//return;
 	}
 
 	
@@ -219,11 +219,14 @@ void P_CharacterControl::Update()
 		else
 			m_pkTcs->SetAirFriction(0.1);
 			
-		m_pkTcs->SetGravity(true);
-		
-				
+		m_pkTcs->SetGravity(true);						
 	}
 				
+	//force no friction				
+	if((m_pkEntityManager->GetSimTime() < m_fNoFrictionTime))
+	{
+		m_pkTcs->SetAirFriction(1);						
+	}			
 	
 	Vector3 kVel(0,0,0);						
 	if(m_kControls[eUP]) 	kVel.z +=  1;
@@ -464,6 +467,15 @@ void P_CharacterControl::Lock(float fTime)
 	{	
 		pkMad->SetAnimation(m_kAnimationSets[m_iCurrentSet].m_strIdleStanding.c_str(), 0);
 	}
+}
+
+void P_CharacterControl::SetNoFriction(float fTime)
+{
+	//dont lock if we already have a longer lock time
+	if( m_pkEntityManager->GetSimTime() + fTime < m_fNoFrictionTime)
+		return;
+
+	m_fNoFrictionTime = m_pkEntityManager->GetSimTime() + fTime;
 }
 
 void P_CharacterControl::RotateTowards(const Vector3& kPos)
@@ -948,7 +960,26 @@ namespace SI_P_CharacterControl
 				pkCC->DoAnimation(strAnim);
 		
 		return 0;
-	}			
+	}		
+		
+	int SetCharacterNoFrictionLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		int iState;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &id);
+		g_pkScript->GetArgInt(pkLua, 1, &iState);
+		
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->SetNoFriction(iState);
+		
+		return 0;
+	}		
+		
 }
 
 
@@ -967,7 +998,7 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("ClearCharacterControls",	SI_P_CharacterControl::ClearCharacterControlsLua);
 	g_pkScript->ExposeFunction("SetCharacterState",			SI_P_CharacterControl::SetCharacterStateLua);
 	
-	
+	g_pkScript->ExposeFunction("SetCharacterNoFriction",	SI_P_CharacterControl::SetCharacterNoFrictionLua);
 	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
 	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);
 	

@@ -895,6 +895,7 @@ namespace SI_PTcs
 			{
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
+					//cout<<"applyuing impulse:"<<kDir.x<<" "<<kDir.y<<" "<<kDir.z<<endl;
 					pkTcs->ApplyImpulsForce(kDir);
 					return 1;
 				}

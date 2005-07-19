@@ -85,6 +85,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		float			m_fSpeed;
 		float			m_fJumpForce;
+		float			m_fNoFrictionTime;
 		
 		float			m_fYAngle;
 		float			m_fPAngle;
@@ -161,13 +162,13 @@ class MCOMMON_API P_CharacterControl: public Property
 		//movement stats																												
 		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}
 		void SetJumpForce(float fJump)						{	m_fJumpForce = fJump;		}
-
 		
 		//animation stuff
 		void DoEmote(int iEmoteID);
 		void DoAnimation(const string& strAnim);
 		
 		//locking
+		void SetNoFriction(float fTime);		
 		void Lock(float fTime);
 		void SetEnabled(bool bEnabled)						{	m_bEnabled = bEnabled;		}
 		bool GetEnabled()											{	return m_bEnabled;			}
