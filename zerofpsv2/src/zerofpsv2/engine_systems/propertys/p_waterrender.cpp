@@ -101,10 +101,11 @@ void P_WaterRender::DrawSurface()
 	t = m_pkZeroFps->GetEngineTime();
 	
 	//first
+	float xo = m_pkEntity->GetWorldPosV().x;
 	for(int x = int(-m_kSize.x);x< m_kSize.x;x+=m_iStep)
 	{
-		fY1 = sin(x*0.5+t)*m_fWave  + m_kSize.y;
-		fY2 = sin((x+m_iStep)*0.5+t)*m_fWave + m_kSize.y;
+		fY1 = sin((x+xo)*0.5+t)*m_fWave  + m_kSize.y;
+		fY2 = sin((x+xo+m_iStep)*0.5+t)*m_fWave + m_kSize.y;
 	
 		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
 		{
