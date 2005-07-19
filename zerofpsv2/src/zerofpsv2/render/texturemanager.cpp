@@ -60,8 +60,8 @@ bool TextureManager::ShutDown()
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)
 {
-	pkTex->b_bClamp			= false;
-	pkTex->m_bCompression	= false;
+	pkTex->m_bClamp			= false;
+	pkTex->m_bCompression	= true;
 	pkTex->m_bMipMapping		= true;
 	pkTex->m_bNoFilter		= false;
 	pkTex->m_bAlphaOnly		= false;
@@ -72,10 +72,10 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 			pkTex->m_bMipMapping		=	false;
 		}
 		if((iOption & T_COMPRESSION)) {
-			pkTex->m_bCompression	=	true;
+			pkTex->m_bCompression	=	false;
 		}
 		if((iOption & T_CLAMP)) {
-			pkTex->b_bClamp			=	true;
+			pkTex->m_bClamp			=	true;
 		}	
 		if((iOption & T_ALPHA)) {
 			pkTex->m_bAlphaOnly		=	true;
@@ -119,6 +119,9 @@ int TextureManager::GetOptionsFromFileName(string strName)
 	{
 		switch(StrFlags[i]) 
 		{
+			case 'p':
+				iOptions = iOptions | T_COMPRESSION;
+				break;			
 			case 'c':
 				iOptions = iOptions | T_CLAMP;
 				break;
@@ -249,7 +252,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 //  		}
 //  	}	
 //  	else 	
-	if(m_bSupportARBTC)
+	if(m_bSupportARBTC && pkTex->m_bCompression)
 	{		
 		switch(iInternalFormat)
 		{
@@ -261,7 +264,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 
 				
 	//setup clamping
-	if(pkTex->b_bClamp)
+	if(pkTex->m_bClamp)
 	{				
 		//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);		

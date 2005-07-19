@@ -42,7 +42,7 @@ struct texture
 
 	bool				m_bMipMapping;		// True if we would like to have mipmapping.
 	bool				m_bCompression;
-	bool				b_bClamp;			// Texture Clamping.
+	bool				m_bClamp;			// Texture Clamping.
 	bool				m_bAlphaOnly;
 	bool				m_bNoFilter;
 	
