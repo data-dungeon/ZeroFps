@@ -764,11 +764,13 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 		pkPackObj = GetTopPriorityEntity(kObjects);
 
 		
+		
 		if(!pkPackObj)
 		{
 			//cout<<"end of queue"<<endl;
 			break;
 		}
+		
 		
 		//entity has something to send?
 		if(!pkPackObj->HaveSomethingToSend(iClient))  
@@ -776,7 +778,6 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 			//cout << "No need to send object " <<pkPackObj->GetEntityID()<< endl;
 			continue;
 		}		
-		
 		
 				
 		kEntityNp.Clear();
@@ -876,7 +877,7 @@ Entity* EntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects)
 			fMax = kObjects[i]->m_fPriority;
 			pkEnt = kObjects[i];
 		}
-	}	
+	}
 
 
 	if(pkEnt)
