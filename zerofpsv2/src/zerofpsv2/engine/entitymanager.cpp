@@ -748,7 +748,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 		 iObj =  m_pkNetWork->m_RemoteNodes[iClient]->m_iCurrentObject;	
 	}
 
-	UpdatePriority(kObjects,pkReferens);
+	UpdatePriority(kObjects,pkReferens,iClient);
 	
 
 	NetPacket kEntityNp;	
@@ -772,12 +772,12 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 		}
 		
 		
-		//entity has something to send?
-		if(!pkPackObj->HaveSomethingToSend(iClient))  
-		{
-			//cout << "No need to send object " <<pkPackObj->GetEntityID()<< endl;
-			continue;
-		}		
+// 		//entity has something to send?
+// 		if(!pkPackObj->HaveSomethingToSend(iClient))  
+// 		{
+// 			//cout << "No need to send object " <<pkPackObj->GetEntityID()<< endl;
+// 			continue;
+// 		}		
 		
 				
 		kEntityNp.Clear();
@@ -847,13 +847,19 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 	}
 }
 
-void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens)
+void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens,int iClientID)
 {
 	float fTime = m_pkZeroFps->GetEngineTime();
 	int iSize = kObjects.size();
 	for(int i =0;i<iSize;i++)
-	{
-		kObjects[i]->m_fPriority =  0;
+	{		
+		if(!kObjects[i]->HaveSomethingToSend(iClientID))
+		{
+			kObjects[i]->m_fPriority =  -1;		
+			continue;
+		}
+		
+		kObjects[i]->m_fPriority =  0;		
 		kObjects[i]->m_fPriority += kObjects[i]->GetRadius();
  		kObjects[i]->m_fPriority += (fTime - kObjects[i]->m_fLastSent);
  		

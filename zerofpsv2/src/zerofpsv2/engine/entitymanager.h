@@ -249,7 +249,7 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		void PackEntityToClient(int iClient, vector<Entity*>& kEntitys,bool bZoneObject,int iSendSize,Entity* pkReferens);
 		void PackToClients();																		//Packs and Sends to ALL clients.
 		
-		void UpdatePriority(vector<Entity*>& kEntitys,Entity* pkReferens);
+		void UpdatePriority(vector<Entity*>& kEntitys,Entity* pkReferens,int iClientID);
 		Entity* GetTopPriorityEntity(vector<Entity*>& kObjects);
 
 		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a Entity.
