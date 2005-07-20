@@ -131,7 +131,9 @@ class ENGINE_API Entity
 		
 		vector<EntityVariable>  m_kVariables;
 		int							m_iEntityID;						///< Uniq ID for every entiy in the world
-
+		float							m_fPriority;
+		float							m_fLastSent;
+		
 	protected:
 		enum HAVE_DATA				//used in m_kGotData
 		{

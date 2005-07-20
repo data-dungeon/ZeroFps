@@ -246,9 +246,11 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void UpdateState(NetPacket* pkNetPacket);												//Updates Entity.
 		void HandleDeleteQueue(NetPacket* pkNetPacket);		
-		void PackEntityToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject,int iSendSize);
+		void PackEntityToClient(int iClient, vector<Entity*>& kEntitys,bool bZoneObject,int iSendSize,Entity* pkReferens);
 		void PackToClients();																		//Packs and Sends to ALL clients.
 		
+		void UpdatePriority(vector<Entity*>& kEntitys,Entity* pkReferens);
+		Entity* GetTopPriorityEntity(vector<Entity*>& kObjects);
 
 		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a Entity.
 		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.

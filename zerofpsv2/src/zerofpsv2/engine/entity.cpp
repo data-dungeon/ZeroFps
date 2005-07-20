@@ -58,6 +58,9 @@ Entity::Entity()
 	m_fInterPolateFactor = 20;						//lower factor = slower moving objects/smoother movements
 	m_iLastInterPolateFrame = 0;
 	m_ucIcon					= 0;
+	
+	m_fPriority				= -1;
+	m_fLastSent				= m_pkZeroFps->GetEngineTime();
 
 	//clear child list
 	m_akChilds.clear();	

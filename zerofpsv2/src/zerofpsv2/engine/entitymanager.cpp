@@ -719,7 +719,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 
 
 
-void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject,int iSendSize)
+void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bool bZoneObject,int iSendSize,Entity* pkReferens)
 {
 	int iPacketSize = 	0;
 	int iEndOfObject = 	-1;
@@ -727,7 +727,6 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 	int iMaxPacketSize = 800;
 	unsigned int iObj = 	0;	
 	
-	Entity* pkPackObj;
 	//int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
 	int iMaxSendSize = iSendSize;
 		
@@ -749,23 +748,39 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 		 iObj =  m_pkNetWork->m_RemoteNodes[iClient]->m_iCurrentObject;	
 	}
 
-	NetPacket kEntityNp;
+	UpdatePriority(kObjects,pkReferens);
 	
-	for(; iObj < kObjects.size(); iObj++)	
-	{
-		pkPackObj = kObjects[iObj];
 
+	NetPacket kEntityNp;	
+	Entity* pkPackObj = NULL;
+
+// 	for(; iObj < kObjects.size(); iObj++)	
+// 	{
+	while(1)
+	{
+
+// 		pkPackObj = kObjects[iObj];
+		//check priority
+		pkPackObj = GetTopPriorityEntity(kObjects);
+
+		
+		if(!pkPackObj)
+		{
+			//cout<<"end of queue"<<endl;
+			break;
+		}
+		
+		//entity has something to send?
 		if(!pkPackObj->HaveSomethingToSend(iClient))  
 		{
 			//cout << "No need to send object " <<pkPackObj->GetEntityID()<< endl;
 			continue;
-		}
+		}		
+		
 		
 				
 		kEntityNp.Clear();
-
 		kEntityNp.Write(pkPackObj->m_iEntityID);
-		
 		pkPackObj->PackTo(&kEntityNp,iClient);
 		iPacketSize++; 
 
@@ -814,6 +829,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 				break;
 			}
 		}
+
 	}
 	
 	
@@ -830,7 +846,50 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 	}
 }
 
+void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens)
+{
+	float fTime = m_pkZeroFps->GetEngineTime();
+	int iSize = kObjects.size();
+	for(int i =0;i<iSize;i++)
+	{
+		kObjects[i]->m_fPriority =  0;
+		kObjects[i]->m_fPriority += kObjects[i]->GetRadius();
+ 		kObjects[i]->m_fPriority += (fTime - kObjects[i]->m_fLastSent);
+ 		
+ 		if(pkReferens)
+ 		{
+ 			kObjects[i]->m_fPriority += Max(m_iTrackerLOS - pkReferens->GetWorldPosV().DistanceTo(kObjects[i]->GetWorldPosV()),0.0) / 2.0;
+ 		}
+	}
+}
 
+Entity* EntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects)
+{
+	float fMax = -1;
+	Entity* pkEnt = NULL;
+	
+	int iSize = kObjects.size();
+	for(int i =0;i<iSize;i++)
+	{
+		if(kObjects[i]->m_fPriority > fMax)
+		{
+			fMax = kObjects[i]->m_fPriority;
+			pkEnt = kObjects[i];
+		}
+	}	
+
+
+	if(pkEnt)
+	{
+		//reset its priority
+		pkEnt->m_fPriority = -1;
+		
+		//update send time
+		pkEnt->m_fLastSent = m_pkZeroFps->GetEngineTime();		
+	}
+
+	return pkEnt;
+}
 
 bool IsInsideVector(int iVal, vector<int>& iArray)
 {
@@ -906,7 +965,7 @@ void EntityManager::PackToClients()
 			kObjects.clear();
 			kObjects.push_back(pkEnt);	
 
- 			PackEntityToClient(0, kObjects,false,m_pkZeroFps->GetConnectionSpeed());
+ 			PackEntityToClient(0, kObjects,false,m_pkZeroFps->GetConnectionSpeed(),NULL);
 					
 			m_OutNP.Write(ZFGP_ENDOFPACKET);
 			m_pkNetWork->Send2(&m_OutNP);
@@ -962,13 +1021,17 @@ void EntityManager::PackToClients()
 		}
 
 		//send all tracked object first =)
+		Entity* pkReferensEnt = NULL;		
 		kObjects.clear();	
 		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
 			if((*it)->m_iConnectID == (int) iClient)
+			{
+				pkReferensEnt = (*it)->GetEntity();
 				(*it)->GetEntity()->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
+			}
 		}				
-		PackEntityToClient(iClient, kObjects,false,iSendSize);		
+		PackEntityToClient(iClient, kObjects,false,iSendSize,NULL);		
 		
 		//clear list and start sending normal entitys
 		kObjects.clear();		
@@ -999,7 +1062,7 @@ void EntityManager::PackToClients()
 		}
 		
 		//send all entitys in zones data
-		PackEntityToClient(iClient, kObjects,true,iSendSize);			//send in true to packtoclient 
+		PackEntityToClient(iClient, kObjects,true,iSendSize,pkReferensEnt);			//send in true to packtoclient 
 		
 		//pack and send clients delete list
 		SendDeleteQueue(iClient);
