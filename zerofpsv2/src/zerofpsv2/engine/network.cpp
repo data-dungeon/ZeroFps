@@ -476,7 +476,8 @@ void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const
 	//NetP.SetTarget(szIp);
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
-	NetP.Write((char) ZF_NETCONTROL_JOIN);
+	NetP.Write((char) ZF_NETCONTROL_JOIN2);
+	NetP.Write_Version(m_pkZeroFps->m_kVersion);
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
 	NetP.Write((int) bConnectAsEditor);
@@ -498,7 +499,7 @@ void NetWork::RequestServerInfo(ServerInfo* pkServer)
 	NetP.m_kAddress = pkServer->m_kServerIp;
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
-	NetP.Write((char) ZF_NETCONTROL_LIST);
+	NetP.Write((char) ZF_NETCONTROL_LIST2);
 	SendRaw(&NetP);
 }
 
@@ -510,7 +511,8 @@ void NetWork::SendServerInfo(IPaddress kIp)
 	NetP.m_kAddress = kIp;
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
-	NetP.Write((char) ZF_NETCONTROL_SERVERINFO);
+	NetP.Write((char) ZF_NETCONTROL_SERVERINFO2);
+	NetP.Write_Version(m_pkZeroFps->m_kVersion);
 	NetP.Write_Str(m_strServerName.c_str());
 	NetP.Write(GetNumOfClients());
 	NetP.Write(m_iMaxNumberOfNodes);
@@ -524,7 +526,9 @@ void NetWork::GotServerInfo(NetPacket* pkNetPacket)
 	char szServerName[256];
 	int iNumOfPlayers;
 	int iMaxPlayers;
+	ZFVersion kVersion;
 
+	pkNetPacket->Read_Version( kVersion );
 	pkNetPacket->Read_Str(szServerName);
 	pkNetPacket->Read(iNumOfPlayers);
 	pkNetPacket->Read(iMaxPlayers);
@@ -538,6 +542,7 @@ void NetWork::GotServerInfo(NetPacket* pkNetPacket)
 			m_kServers[i].m_iNumOfPlayers = iNumOfPlayers;
 			m_kServers[i].m_iMaxPlayers = iMaxPlayers;
 			m_kServers[i].m_bUpdated = true;
+			m_kServers[i].m_kVersion = kVersion;
 			
 			strcpy(m_kServers[i].m_acServerName, szServerName);						
 			GetSystem().SendSystemMessage(string("Application"),string("serverlist"),0,NULL);
@@ -879,28 +884,53 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 	int 	iConnectAsEditor;
 	int	iNetSpeed;
 	int	iNetID;
+	ZFVersion kVersion;
 
 	switch(ucControlType) {
 		// If controll handle_controllpacket.
-		case ZF_NETCONTROL_LIST:
+		case ZF_NETCONTROL_LIST2:
 			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
 			// Broadcast to find servers.
 			// Server respons with name.
 			SendServerInfo(pkNetPacket->m_kAddress);
 			break;
 
-		case ZF_NETCONTROL_SERVERINFO:
+		
+		case 1:
+			m_pkConsole->Printf("Ignore - NetWork::HandleControlMessage(ZF_NETCONTROL_LIST2)");
+			break;
+		case 17:
+			m_pkConsole->Printf("Ignore - NetWork::HandleControlMessage(ZF_NETCONTROL_SERVERINFO)");
+			break;
+		case 2:
+			m_pkConsole->Printf("Ignore - NetWork::HandleControlMessage(ZF_NETCONTROL_JOIN)");
+			break;
+
+		case ZF_NETCONTROL_SERVERINFO2:
 			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_LIST)");
 			GotServerInfo(pkNetPacket);
 			break;
 
-		case ZF_NETCONTROL_JOIN:
+		case ZF_NETCONTROL_JOIN2:
 			// Sent to join a server.
 			//m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOIN)");
 			AddressToStr(&pkNetPacket->m_kAddress, m_szAddressBuffer);
 
 			// Server respons with yes/no.
 			kNetPRespons.Clear();
+
+			pkNetPacket->Read_Version( kVersion );
+			if(kVersion != m_pkZeroFps->m_kVersion)		
+			{
+				m_pkConsole->Printf("Join Ignored: Client version don't match.");
+				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
+				kNetPRespons.Write_Str( string("The servers is running another version then you.") );
+				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
+				SendRaw(&kNetPRespons);
+				break;
+			}
+	
 
 			pkNetPacket->Read_Str(szLogin);
 			pkNetPacket->Read_Str(szPass);

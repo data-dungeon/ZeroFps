@@ -226,6 +226,9 @@
 				RelativePath=".\zfsystem.cpp">
 			</File>
 			<File
+				RelativePath=".\zfversion.cpp">
+			</File>
+			<File
 				RelativePath=".\zfvfs.cpp">
 			</File>
 			<File
@@ -330,6 +333,9 @@
 			</File>
 			<File
 				RelativePath=".\zfsystem.h">
+			</File>
+			<File
+				RelativePath=".\zfversion.h">
 			</File>
 			<File
 				RelativePath=".\zfvfs.h">

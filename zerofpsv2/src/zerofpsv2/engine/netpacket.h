@@ -7,6 +7,7 @@
 #include "../basic/zfassert.h"
 #include "engine_x.h"
 #include <SDL/SDL_net.h>
+#include "../basic/zfversion.h"
 
 using namespace std;
 
@@ -74,6 +75,8 @@ public:
 	void Write_Str(const string& strString);
 	void Read_Str(string& strString);
 	
+	void Write_Version(const ZFVersion& kVersion);
+	void Read_Version(ZFVersion& kVersion);
 
 	template <class Any> 
 	void Write(Any type) {

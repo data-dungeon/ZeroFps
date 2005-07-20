@@ -49,6 +49,8 @@ Property* Create_LinkToJoint();
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
+	m_kVersion.Set(0,4,1);
+
 	// StartUp SDL
 	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)
 	{
@@ -1182,7 +1184,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_VERSION:
-			m_pkConsole->Printf( ZF_VERSION_NUM );
+//			m_pkConsole->Printf( ZF_VERSION_NUM );
+			m_pkConsole->Printf( "Version Num: %d.%d.%d", m_kVersion.m_iMajor, m_kVersion.m_iMinor,m_kVersion.m_iBuild );
 			break;
 
 		case FID_CREDITS:

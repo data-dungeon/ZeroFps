@@ -267,6 +267,21 @@ void NetPacket::Read_Str(char* szString)
 	m_iPos += strlen(szString) + 1;
 }
 
+void NetPacket::Write_Version(const ZFVersion& kVersion)
+{
+	Write((void*)&kVersion.m_iMajor, sizeof(kVersion.m_iMajor));	
+	Write((void*)&kVersion.m_iMinor, sizeof(kVersion.m_iMinor));	
+	Write((void*)&kVersion.m_iBuild, sizeof(kVersion.m_iBuild));	
+}
+
+void NetPacket::Read_Version(ZFVersion& kVersion)
+{
+	Read(&kVersion.m_iMajor, sizeof(kVersion.m_iMajor));	
+	Read(&kVersion.m_iMinor, sizeof(kVersion.m_iMinor));	
+	Read(&kVersion.m_iBuild, sizeof(kVersion.m_iBuild));	
+
+}
+
 void NetPacket::Write_NetStr (const char* szString)
 {
 	int iIndex = g_pkNetWork->NetString_GetIndex(szString);

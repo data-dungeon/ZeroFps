@@ -2546,8 +2546,10 @@ void MistClient::OnSystemMessage(const string& strType,int iNrOfParam,const void
 			if(!pkServerIp[i].m_bUpdated)
 				sprintf(szTitle, "No respons",pkServerIp[i].m_acServerName);
 			else						
-				sprintf(szTitle, "%s [Ping %d][Players %d/%d]",pkServerIp[i].m_acServerName,(int)(pkServerIp[i].m_fRequestTime*1000), pkServerIp[i].m_iNumOfPlayers,
-																			pkServerIp[i].m_iMaxPlayers);
+				sprintf(szTitle, "%s [%d.%d.%d] [Ping %d][Players %d/%d]",pkServerIp[i].m_acServerName,
+					pkServerIp[i].m_kVersion.m_iMajor, pkServerIp[i].m_kVersion.m_iMinor, pkServerIp[i].m_kVersion.m_iBuild,
+					(int)(pkServerIp[i].m_fRequestTime*1000), 
+					pkServerIp[i].m_iNumOfPlayers,	pkServerIp[i].m_iMaxPlayers);
 						
 			AddRemoveServer(szTitle, szIp,true);
 

@@ -24,8 +24,8 @@ using namespace std;
 #define ZF_NETTYPE_UNREL				2	// Unrel message that ZeroFps handles.
 #define ZF_NETTYPE_REL					3	// Rel Udp message that ZeroFps handles.
 
-#define ZF_NETCONTROL_LIST				1	// Req server info. 
-#define ZF_NETCONTROL_JOIN				2	//	Req Join.
+//#define ZF_NETCONTROL_LIST				1	// Req server info. 
+//#define ZF_NETCONTROL_JOIN				2	//	Req Join.
 #define ZF_NETCONTROL_JOINYES			3	// Join OK.
 #define ZF_NETCONTROL_JOINNO			4	//	No Join - : string 
 #define ZF_NETCONTROL_DISCONNECT		5	//	Disconnect message. Close connection.
@@ -36,9 +36,12 @@ using namespace std;
 #define ZF_NETCONTROL_REQNETSTRING	10	//
 #define ZF_NETCONTROL_ACKREL			15	// Ack that we got a rel pack.	
 #define ZF_NETCONTROL_SERVERLISTPAGE	16	// Info from masterserver	
-#define ZF_NETCONTROL_SERVERINFO		17	// Info from a server.	
+//#define ZF_NETCONTROL_SERVERINFO		17	// Info from a server.	
 #define ZF_NETCONTROL_PING				18	
 #define ZF_NETCONTROL_PONG				19		
+#define ZF_NETCONTROL_JOIN2			20	
+#define ZF_NETCONTROL_SERVERINFO2	21	
+#define ZF_NETCONTROL_LIST2			22
 
 #define MAX_NET_CLIENTS					4		// Max number of clients (nodes).
 #define ZF_NET_NOCLIENT					-1		// ID for a non client.
@@ -159,11 +162,11 @@ class ServerInfo
 {
 public:
 	IPaddress		m_kServerIp;								// Address of the server.
+	ZFVersion		m_kVersion;									// Server version number.
 	char				m_acServerName[MAX_NETWORKNAME];		// Name of server.
 	bool				m_bUpdated;									// True if we got info about this server.
 	unsigned char	m_iNumOfPlayers;
 	unsigned char	m_iMaxPlayers;	
-								
 	float 			m_fRequestTime;
 };
 

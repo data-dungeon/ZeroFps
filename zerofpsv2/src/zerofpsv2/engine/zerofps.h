@@ -16,8 +16,7 @@
 #include "../render/res_texture.h"
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
-
-#define ZF_VERSION_NUM		"ZF 0.01"
+#include "../basic/zfversion.h"
 
 using namespace std;
 
@@ -216,6 +215,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 
 
 	public:
+		ZFVersion		m_kVersion;
 
 		/*
 			All Engine Systems in ZeroFps. Listed in the same order they are created in
