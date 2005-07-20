@@ -335,7 +335,7 @@ void P_CharacterControl::Update()
 	//set idle standing i we havent touched the ground for some time
 	int iState = GetCharacterState();
 	
-	if((iState == eSWIMMING || iState == eIDLE_SWIMING) && !m_bInWater)
+	if((iState == eSWIMMING || iState == eIDLE_SWIMING) && !m_bInWater && m_pkTcs->GetOnGround())
 	{
 		SetCharacterState(eIDLE_STANDING);	
 	}	
