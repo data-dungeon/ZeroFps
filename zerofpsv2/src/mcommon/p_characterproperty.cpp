@@ -1790,7 +1790,7 @@ void P_CharacterProperty::Update()
 
 void P_CharacterProperty::DrawEditor()
 {
-	if(!m_pkEntityManager->m_bAiShowInfo)
+	if(!m_pkZeroFps->m_bAiShowInfo)
 		return;
 
 	string strText;
@@ -2579,8 +2579,7 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_bCombatMode);
 	pkNetPacket->Write(m_bDead);
 	
-	pkNetPacket->Write(m_bWalkSound);
-		
+	pkNetPacket->Write(m_bWalkSound);		
 	pkNetPacket->Write_Str(m_strWalkSound);
 	pkNetPacket->Write_Str(m_strRunSound);
 	pkNetPacket->Write_Str(m_strJumpSound);
@@ -2621,8 +2620,7 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_bCombatMode);	
 	pkNetPacket->Read(m_bDead);	
 	
-	pkNetPacket->Read(m_bWalkSound);
-	
+	pkNetPacket->Read(m_bWalkSound);	
 	pkNetPacket->Read_Str(m_strWalkSound);
 	pkNetPacket->Read_Str(m_strRunSound);
 	pkNetPacket->Read_Str(m_strJumpSound);

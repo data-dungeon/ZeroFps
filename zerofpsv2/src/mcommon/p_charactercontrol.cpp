@@ -418,7 +418,13 @@ void P_CharacterControl::Update()
 		GetEntity()->SetLocalRotM(kRot);	
 	}	
 	
+	
+	
+	
 	//update animation
+	if(!m_bEnabled || (m_pkEntityManager->GetSimTime() < m_fLockTime) )
+		return;
+
 	UpdateAnimation();
 
 }

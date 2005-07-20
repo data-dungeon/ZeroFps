@@ -115,7 +115,6 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		int						m_iTotalNetEntityData;
 		int						m_iNumOfNetEntitys;
 		NetPacket				m_OutNP;							// Used to create/send updates to clients.		
-		//vector< queue<int> >	m_kClientDeleteQueues;
 		
 
 		//other strange variables =D
@@ -180,7 +179,6 @@ class ENGINE_API EntityManager : public ZFSubSystem
 
 	public:
 		ZFScriptSystem* 		m_pkScript;
-		bool	m_bAiShowInfo;
 		
 
 		EntityManager();

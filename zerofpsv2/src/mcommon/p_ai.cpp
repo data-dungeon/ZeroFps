@@ -95,7 +95,7 @@ void P_AI::DrawCircle(float fRadius, char* szEditColor)
 
 void P_AI::DrawEditor()
 {
-	if(!m_pkEntityManager->m_bAiShowInfo)
+	if(!m_pkZeroFps->m_bAiShowInfo)
 		return;
 
 	DrawCircle(m_fStrikeRange,		"ai/rngstrike");

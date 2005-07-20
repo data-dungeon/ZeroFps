@@ -133,7 +133,12 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bShadowMap				= true;
 	m_iShadowMapQuality		= 1024;
 	
+	m_bAiShowInfo				= false;
+	
+	
 	// Register Variables
+	RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
+	
 	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
 	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),		CSYS_BOOL);	
 	RegisterVariable("e_log",				g_ZFObjSys.GetLogEnabledPointer(),			CSYS_BOOL);		

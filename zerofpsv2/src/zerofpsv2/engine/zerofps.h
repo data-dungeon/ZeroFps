@@ -263,6 +263,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 		int		m_iNumOfMadRender;
 		
+		bool		m_bAiShowInfo;
+
 		
 		
 		InputHandle*	m_pkInputHandle;
