@@ -219,7 +219,8 @@ void P_CharacterControl::Update()
 		else
 			m_pkTcs->SetAirFriction(0.1);
 			
-		m_pkTcs->SetGravity(true);						
+		m_pkTcs->SetGravity(true);
+			
 	}
 				
 	//force no friction				
@@ -266,8 +267,7 @@ void P_CharacterControl::Update()
 	if(m_bInWater)
 		kVel *= 0.45;
 		
-					
-		
+							
 	//apply movement force					
 	if(!kVel.IsZero())
 	{
@@ -309,9 +309,6 @@ void P_CharacterControl::Update()
 	}
 	
 	
-	
-	
-	
 	//check if where walking or running or nothing
 	if(kVel.Length() > 0 && m_pkTcs->GetOnGround() && !m_bInWater)
 	{
@@ -337,6 +334,12 @@ void P_CharacterControl::Update()
 	
 	//set idle standing i we havent touched the ground for some time
 	int iState = GetCharacterState();
+	
+	if((iState == eSWIMMING || iState == eIDLE_SWIMING) && !m_bInWater)
+	{
+		SetCharacterState(eIDLE_STANDING);	
+	}	
+	
 	if(iState == eWALKING || iState == eRUNNING || iState == eRUNNING_WATER || iState == eWALKING_WATER)
 	{
 		if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
