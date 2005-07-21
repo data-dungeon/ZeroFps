@@ -761,7 +761,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 
 // 		pkPackObj = kObjects[iObj];
 		//check priority
-		pkPackObj = GetTopPriorityEntity(kObjects);
+		pkPackObj = GetTopPriorityEntity(kObjects,iClient);
 
 		
 		
@@ -859,9 +859,12 @@ void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens,
 			continue;
 		}
 		
+		if(kObjects[i]->m_kLastSent[iClientID] == -1)
+			kObjects[i]->m_kLastSent[iClientID] = fTime;
+		
 		kObjects[i]->m_fPriority =  0;		
-		kObjects[i]->m_fPriority += kObjects[i]->GetRadius();
- 		kObjects[i]->m_fPriority += (fTime - kObjects[i]->m_fLastSent);
+ 		kObjects[i]->m_fPriority += kObjects[i]->GetRadius();
+  		kObjects[i]->m_fPriority += (fTime - kObjects[i]->m_kLastSent[iClientID]);
  		
  		if(pkReferens)
  		{
@@ -870,7 +873,7 @@ void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens,
 	}
 }
 
-Entity* EntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects)
+Entity* EntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects,int iClientID)
 {
 	float fMax = -1;
 	Entity* pkEnt = NULL;
@@ -892,7 +895,7 @@ Entity* EntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects)
 		pkEnt->m_fPriority = -1;
 		
 		//update send time
-		pkEnt->m_fLastSent = m_pkZeroFps->GetEngineTime();		
+		pkEnt->m_kLastSent[iClientID] = m_pkZeroFps->GetEngineTime();		
 	}
 
 	return pkEnt;

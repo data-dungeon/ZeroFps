@@ -60,7 +60,6 @@ Entity::Entity()
 	m_ucIcon					= 0;
 	
 	m_fPriority				= -1;
-	m_fLastSent				= m_pkZeroFps->GetEngineTime();
 
 	//clear child list
 	m_akChilds.clear();	
@@ -1649,6 +1648,7 @@ void	Entity::SetNrOfConnections(int iConNR)
 	m_kNetUpdateFlags.resize(iConNR);
 	m_kNetIgnoreFlags.resize(iConNR);
 	m_kExistOnClient.resize(iConNR);
+	m_kLastSent.resize(iConNR);
 
 	ResetAllNetFlags();
 }
@@ -1672,6 +1672,10 @@ bool	Entity::GetExistOnClient(int iConID)
 
 void	Entity::ResetAllNetFlags()
 {
+	for(int i = 0;i<m_kLastSent.size();i++)
+		m_kLastSent[i] = -1;
+
+
 	for(int i = 0;i<m_kExistOnClient.size();i++)
 		m_kExistOnClient[i] = false;
 
@@ -1696,6 +1700,7 @@ void	Entity::ResetAllNetFlags()
 
 void	Entity::ResetAllNetFlags(int iConID)
 {
+	m_kLastSent[iConID] = -1;
 	m_kExistOnClient[iConID] = false;	
 
 	m_kNetIgnoreFlags[iConID].reset();	//reset all bits to false
@@ -1713,6 +1718,7 @@ void	Entity::ResetAllNetFlags(int iConID)
 
 void	Entity::ResetAllNetFlagsAndChilds(int iConID)
 {
+	m_kLastSent[iConID] = -1;
 	m_kExistOnClient[iConID] = false;
 
 	m_kNetIgnoreFlags[iConID].reset();	//reset all bits to false
