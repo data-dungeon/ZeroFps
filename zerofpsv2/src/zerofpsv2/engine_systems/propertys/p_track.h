@@ -18,8 +18,6 @@ using namespace std;
 /// Property to track objects to activate zones.
 class ENGINE_SYSTEMS_API P_Track : public Property {
 	private:
-		EntityManager* m_pkOBjM;
-		ZeroFps*			m_pkFps;
 		
 		vector<PropertyValues> GetPropertyValues();
 		

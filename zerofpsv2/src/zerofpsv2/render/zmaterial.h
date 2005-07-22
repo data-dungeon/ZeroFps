@@ -162,9 +162,10 @@ namespace SI_ZMATERIAL
 	
 	extern RENDER_API ZFScriptSystem*	g_pkScript;
 	extern RENDER_API ZeroFps*				g_pkZeroFps;
+	extern RENDER_API ZShaderSystem*		g_pkZShaderSystem;
 	
-	int RENDER_API PassBeginLua(lua_State* pkLua);
-	int RENDER_API PassEndLua(lua_State* pkLua);
+// 	int RENDER_API PassBeginLua(lua_State* pkLua);
+// 	int RENDER_API PassEndLua(lua_State* pkLua);
 }
 
 RENDER_API ZFResource* Create__Material();

@@ -954,11 +954,11 @@ ZFResource* Create__Material()
 //MATERIAL LUA INTERFACE
 namespace SI_ZMATERIAL
 {
-	ZMaterial*			g_pkCurrentMaterial = NULL;
+	ZMaterial*			g_pkCurrentMaterial = 	NULL;
 	int					g_iCurrentMaterialPass = -1;
-	bool					g_bHaveGLSLSupport;
-	ZFScriptSystem*	g_pkScript = NULL;
-	ZeroFps*				g_pkZeroFps = NULL;
+	ZFScriptSystem*	g_pkScript = 				NULL;
+	ZeroFps*				g_pkZeroFps = 				NULL;
+	ZShaderSystem*		g_pkZShaderSystem = 		NULL;
 	
 /**	\fn PassBegin( iPass )
 		\param iPass Rendering pass to start setting parameters for.
@@ -977,9 +977,7 @@ namespace SI_ZMATERIAL
 		}
 			
 		//get pass id
-		g_pkScript->GetArgInt(pkLua, 0, &g_iCurrentMaterialPass);	
-		
-		
+		g_pkScript->GetArgInt(pkLua, 0, &g_iCurrentMaterialPass);					
 		//cout<<"starting new pass "<<g_iCurrentMaterialPass<<endl;
 		
 		while(g_pkCurrentMaterial->GetNrOfPasses() <= g_iCurrentMaterialPass)
@@ -1008,9 +1006,7 @@ namespace SI_ZMATERIAL
 		}			
 					
 		//cout<<"ending pass"<<endl;
-
-		g_pkCurrentMaterial->LuaMaterialEndPass(g_iCurrentMaterialPass);
-		
+		g_pkCurrentMaterial->LuaMaterialEndPass(g_iCurrentMaterialPass);		
 						
 		return 0;		
 	}		
@@ -1027,9 +1023,8 @@ namespace SI_ZMATERIAL
 
 		double dRet = 0;
 			
-		if(ZShaderSystem* pkZShaderSystem =  static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")))
-			if(pkZShaderSystem->SupportGLSLProgram())
-				dRet = 1;	
+		if(g_pkZShaderSystem->SupportGLSLProgram())
+			dRet = 1;	
 		
 		g_pkScript->AddReturnValue(pkLua, dRet);				
 		return 1;		
@@ -1039,7 +1034,7 @@ namespace SI_ZMATERIAL
 		\brief *** Unknown ZMaterial.cpp:965.
 		\relates Material
 */		
-	int ShadowMap(lua_State* pkLua)
+	int UseShadowMapLua(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,0))
 			return 0;		
@@ -1051,18 +1046,39 @@ namespace SI_ZMATERIAL
 		g_pkScript->AddReturnValue(pkLua, dRet);				
 		return 1;		
 	}			
+	
+	
+/**	\fn ShadowMap( )
+		\brief *** Unknown ZMaterial.cpp:965.
+		\relates Material
+*/		
+	int SupportSpecMapLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,0))
+			return 0;		
+
+		double dRet = 0;					
+		if(g_pkZShaderSystem->SupportGLSLProgram() && g_pkZeroFps->GetSpecMap())
+			dRet = 1;	
+		
+		g_pkScript->AddReturnValue(pkLua, dRet);				
+		return 1;		
+	}				
 }
 
 
 void RegisterSI_Material()
 {
-	SI_ZMATERIAL::g_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
-	SI_ZMATERIAL::g_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	SI_ZMATERIAL::g_pkScript = 			static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	SI_ZMATERIAL::g_pkZeroFps = 			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	SI_ZMATERIAL::g_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassBegin",				SI_ZMATERIAL::PassBeginLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassEnd",				SI_ZMATERIAL::PassEndLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportGLSLProgram",	SI_ZMATERIAL::SupportGLSLProgramLua);
-	SI_ZMATERIAL::g_pkScript->ExposeFunction("ShadowMap",				SI_ZMATERIAL::ShadowMap);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("UseShadowMap",			SI_ZMATERIAL::UseShadowMapLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportSpecMap",		SI_ZMATERIAL::SupportSpecMapLua);
+
 };
 
 

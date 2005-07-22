@@ -159,7 +159,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int				m_iShadowMapMode;
 		int				m_iShadowMapQuality;
 		bool				m_bVegetation;
+		bool				m_bSpecMap;
 		float				m_fViewDistance;		
+		
 		
 		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
 		
@@ -340,6 +342,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
 		
 		bool GetShadowMap()					{	return m_bShadowMap;				}
+		bool GetSpecMap()						{	return m_bSpecMap;				}
 		bool GetShadowMapRealtime()		{	return m_bShadowMapRealtime;	}
 		int  GetShadowMapMode()				{	return m_iShadowMapMode;		}
 		int  GetShadowMapQuality()			{	return m_iShadowMapQuality;	}

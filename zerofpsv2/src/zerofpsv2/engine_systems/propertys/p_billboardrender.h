@@ -10,27 +10,29 @@
 using namespace std;
 
 
-class ENGINE_SYSTEMS_API P_BillBoardRender : public Property {
-		TextureManager* m_pkTexMan;
-		Render* m_pkRender;	
-		ZeroFps* m_pkFps;
+class ENGINE_SYSTEMS_API P_BillBoardRender : public Property 
+{
+ 		ZShaderSystem*		m_pkZShaderSystem;
+		Render*				m_pkRender;	
 			
-		string m_kTexture; 
-		
-		int m_iTexture; 
-		Vector3 m_kAxis;	
+		ZFResourceHandle* m_pkMaterial;
+		string				m_strMaterial;
 		float m_fScale;
+		
 		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 	
+		void DrawBillboard();
+	
 	public:
 		P_BillBoardRender();
+		~P_BillBoardRender();
+		
 		void Update();
 
-		void SetTexture(const char* acTexure);
-		void SetScale(float fScale) {m_fScale=fScale;};
-		void UpdateSet();
+		void SetMaterial(const string& strMaterial);
+		void SetScale(float fScale) 							{m_fScale=fScale;	SetNetUpdateFlag(true);	};
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);

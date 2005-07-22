@@ -2,12 +2,9 @@
 
 P_Track::P_Track() 
 {
-	m_pkOBjM			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));	
-	m_pkFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
 	strcpy(m_acName,"P_Track");		
-	m_iType = PROPERTY_TYPE_NORMAL;
-	m_iSide = PROPERTY_SIDE_SERVER;
+	m_iType = 0;
+	m_iSide = 0;
 
 	m_bOneZoneOnly				= false;
 	m_iCurrentTrackedZone	= -1;
@@ -18,13 +15,13 @@ P_Track::P_Track()
 
 P_Track::~P_Track() 
 {
-	m_pkOBjM->RemoveTracker(this);
+	m_pkEntityManager->RemoveTracker(this);
 }
 
 
 void P_Track::Init() 
 {
-	m_pkOBjM->AddTracker(this);
+	m_pkEntityManager->AddTracker(this);
 }
 
 void P_Track::SetClient(int iId)
@@ -35,7 +32,6 @@ void P_Track::SetClient(int iId)
 
 void P_Track::Update() 
 {
-
 
 }
 

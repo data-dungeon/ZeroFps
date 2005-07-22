@@ -360,7 +360,8 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 
 void Render::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial)
 {
-	Matrix4 temp = kCamRotMatrix;
+	static Matrix4 temp;
+	temp=kCamRotMatrix;
 	temp.Transponse();
 
 	m_pkZShaderSystem->BindMaterial(pkMaterial);

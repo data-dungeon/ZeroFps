@@ -17,14 +17,6 @@
 #include "../engine_systems/common/astar.h"
 
 #include "../render/glslprogram.h"
-//#include "../basic/zfresourcedb.h"
-
-//#include "../engine_systems/audio/zfaudiosystem.h"
-//#include "../basic/zfini.h"
-//#include "../render/zshadersystem.h"
-
-
-// #include "../engine_systems/common/zshadow.h"
 #include "../engine_systems/tcs/tcs.h"
 
 #define	ZF_MIN_PLAYERS	1
@@ -134,6 +126,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iShadowMapMode			= 1;
 	m_bShadowMap				= true;
 	m_iShadowMapQuality		= 1024;
+	m_bSpecMap					= true;
 	
 	m_bAiShowInfo				= false;
 	
@@ -164,6 +157,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
 	RegisterVariable("r_vegetation",		&m_bVegetation,			CSYS_BOOL);	
 	RegisterVariable("r_viewdistance",	&m_fViewDistance,			CSYS_FLOAT);	
+	RegisterVariable("r_specmap",			&m_bSpecMap,				CSYS_BOOL);		
 	
 	RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
 	RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);
@@ -1802,7 +1796,6 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);
 	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
-	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("P_EditIcon",			Create_EditIcon);						
 	
 	Register_P_Sound(this);
