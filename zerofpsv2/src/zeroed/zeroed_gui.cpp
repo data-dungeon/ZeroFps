@@ -366,7 +366,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 							ShowWnd("SelectFileWnd", true, true);
 
 							if(m_iSelectFileState != SELECT_SOUND)
-								BuildFileTree("SelectFileTree", "data/sound", ".wav");
+								BuildFileTree("SelectFileTree", "data/audio", ".wav");
 
 							m_iSelectFileState = SELECT_SOUND;
 						}
@@ -767,7 +767,7 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		case SELECT_SOUND:
 
-			strFullpath = string("data/sound/");
+			strFullpath = string("data/audio/");
 
 			if(szParentNodeText)
 				strFullpath += string(szParentNodeText);

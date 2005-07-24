@@ -17,7 +17,7 @@
 #include "../../basic/matrix3.h"
 #include "oggstream.h"
 
-#define DUMMY_SOUND "/data/sound/dummy.wav"
+#define DUMMY_SOUND "/data/audio/dummy.wav"
 #define HEARABLE_DISTANCE 25.0f
 
 // PlayAudio options 

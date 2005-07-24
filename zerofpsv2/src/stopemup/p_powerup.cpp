@@ -154,7 +154,7 @@ void P_Powerup::Touch(int iID)
 						case 1:
 						{
 							pkGun->m_iDamage = 5;
-							pkGun->SetSound("data/sound/auto_gun.wav");
+							pkGun->SetSound("auto_gun.wav");
 							pkGun->m_strDirectHitObject = "/data/script/objects/ybergun-bullethit.lua";
 							pkGun->m_strProjectile = "";
 							pkGun->m_fFireDelay = 0.1;
@@ -166,7 +166,7 @@ void P_Powerup::Touch(int iID)
 						//flash gun
 						case 2:
 						{
-							pkGun->SetSound("data/sound/12ga_shotgun.wav");
+							pkGun->SetSound("12ga_shotgun.wav");
 							pkGun->m_strProjectile = "/data/script/objects/bullet.lua";
 							pkGun->m_fFireDelay = 0.4;
 							pkGun->m_fBulletVel = 20;
@@ -180,7 +180,7 @@ void P_Powerup::Touch(int iID)
 						//spread gun
 						case 7:
 						{
-							pkGun->SetSound("data/sound/spreadgun.wav");
+							pkGun->SetSound("spreadgun.wav");
 							pkGun->m_strProjectile = "/data/script/objects/spreadgun-bullet.lua";
 							pkGun->m_fFireDelay = 0.5;
 							pkGun->m_fBulletVel = 20;
@@ -195,7 +195,7 @@ void P_Powerup::Touch(int iID)
 						//mini gun
 						case 3:
 						{
-							pkGun->SetSound("data/sound/auto_gun.wav");							
+							pkGun->SetSound("auto_gun.wav");							
 							pkGun->m_iDamage = 2;
 							pkGun->m_strDirectHitObject = "/data/script/objects/bullethit.lua";
 							pkGun->m_strProjectile = "";

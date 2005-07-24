@@ -23,7 +23,7 @@ P_Gun::P_Gun()
 	m_fBulletVel = 	20;
 	m_strProjectile = "";
 	m_iDamage = 		1;
-	m_strSound = 		"data/sound/auto_gun.wav";
+	m_strSound = 		"auto_gun.wav";
 	m_strDirectHitObject = "data/script/objects/bullethit.lua";
 }
 

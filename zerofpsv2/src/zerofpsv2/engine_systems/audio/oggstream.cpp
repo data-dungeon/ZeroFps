@@ -89,8 +89,8 @@ bool OggStream::Open(string strFileName)
 	m_strFileName = strFileName;
 
 	//all oggs reside in data/music, 
-	if(strFileName.find("data/music/") == -1)
-		strFileName ="data/music/" + strFileName;
+	if(strFileName.find("data/audio/") == -1)
+		strFileName ="data/audio/" + strFileName;
 	else
 		cout<<"Warning: old resource path:"<<strFileName<<endl;
 

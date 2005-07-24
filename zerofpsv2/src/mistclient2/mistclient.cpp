@@ -56,7 +56,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strQuickStartAddress = "127.0.0.1:4242";
 	m_pkMakerEntity		= NULL;
 
-	m_strMenuMusic			=	"menu_music.ogg";
+	m_strMenuMusic			=	"music/menu_music.ogg";
 
 	m_strLoginName			= "player";
    m_strLoginPW 			= "topsecret";

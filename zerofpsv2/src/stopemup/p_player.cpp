@@ -66,7 +66,7 @@ void P_Player::Touch(int iID)
 		{		
 			//play hit sound
 			if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
-				pkSound->StartSound("data/sound/hit.wav",false);
+				pkSound->StartSound("hit.wav",false);
 		
 				
 			Damage(5);
