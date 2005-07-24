@@ -79,7 +79,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	//default fss
 	m_pkFSSMaterial = new ZMaterial;
 	//m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes("#fssblackwhite.frag.glsl");
-	m_pkFSSMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
+	m_pkFSSMaterial->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
 	m_pkFSSMaterial->GetPass(0)->m_bLighting = false;
 	m_pkFSSMaterial->GetPass(0)->m_bDepthTest = false;
 
@@ -87,14 +87,14 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	//BLOOM 
 	m_pkBloomMaterial1 = new ZMaterial;
 	m_pkBloomMaterial1->GetPass(0)->m_pkSLP->SetRes("#bloom1.frag.glsl");
-	m_pkBloomMaterial1->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
+	m_pkBloomMaterial1->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
 	m_pkBloomMaterial1->GetPass(0)->m_bLighting = false;
 	m_pkBloomMaterial1->GetPass(0)->m_bDepthTest = false;
 	
 	m_pkBloomMaterial2 = new ZMaterial;
 	m_pkBloomMaterial2->GetPass(0)->m_pkSLP->SetRes("#bloom2.frag.glsl");
-	m_pkBloomMaterial2->GetPass(0)->m_kTUs[0]->SetRes("data/textures/notex.bmp");
-	m_pkBloomMaterial2->GetPass(0)->m_kTUs[1]->SetRes("data/textures/notex.bmp");
+	m_pkBloomMaterial2->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
+	m_pkBloomMaterial2->GetPass(0)->m_kTUs[1]->SetRes("notex.bmp");
 	m_pkBloomMaterial2->GetPass(0)->m_bLighting = false;
 	m_pkBloomMaterial2->GetPass(0)->m_bDepthTest = false;
 	

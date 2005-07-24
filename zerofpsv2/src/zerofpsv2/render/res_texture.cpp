@@ -19,6 +19,21 @@ ResTexture::~ResTexture()
 
 bool ResTexture::Create(string strName)
 {
+// 	if(strName.find("data/textures/") == -1)
+// 	{
+// 		int iOptions = strName.find('#');
+// 		if(iOptions == -1)		
+// 			strName ="data/textures/" + strName;
+// 		else
+// 		{
+// 			strName = strName.substr(0,iOptions+1) + "data/textures/" + strName.substr(iOptions+1,strName.length());
+// 			//cout<<"new name "<<strName<<endl;
+// 		}	
+// 	}
+// 	else
+// 		cout<<"Warning: old resource path:"<<strName<<endl;
+	
+	
 	strTextureName = strName;
 
 	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));

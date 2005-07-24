@@ -44,12 +44,12 @@ void P_EditIcon::Update()
 	switch(iIcon)
 	{
 		case 0:	return;	break;
-		case 1:	SetTexture("/data/textures/editicon/camera.tga");	break;
-		case 2:	SetTexture("/data/textures/editicon/light.tga");	break;
-		case 3:	SetTexture("/data/textures/editicon/psystem.tga");	break;
-		case 4:	SetTexture("/data/textures/editicon/water.tga");	break;
+		case 1:	SetTexture("editicon/camera.tga");	break;
+		case 2:	SetTexture("editicon/light.tga");	break;
+		case 3:	SetTexture("editicon/psystem.tga");	break;
+		case 4:	SetTexture("editicon/water.tga");	break;
 		default:
-			SetTexture("/data/textures/editicon/noedit.tga");
+			SetTexture("editicon/noedit.tga");
 	}
 
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture, true,true,false);

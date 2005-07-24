@@ -335,7 +335,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 // 					pkLight->SetAmbient(kCurrentAmbient);		
 // 					pkLight->SetRot(kSunPos);	
 
-					string szMadFile = string("data/mad/") + string("player2.mad");
+					string szMadFile = string("player2.mad");
 					((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
 					((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetAnimation("idle",0);
 
@@ -426,14 +426,14 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				{
 					Entity* pkEnt = g_kMistClient.m_pkEntityManager->GetEntityByID(pkCam->GetRootEntityID());
 
-					string szMadFile = string("data/mad/");
+					string szMadFile;
 					
 					if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "human_female")
-						szMadFile += string("player.mad");
+						szMadFile = string("player.mad");
 					else if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "human_male")
-						szMadFile += string("player2.mad");
+						szMadFile = string("player2.mad");
 					else if(string(g_kMistClient.GetSelItem((char*)strController.c_str())) == "goblin_male")
-						szMadFile += string("goblin.mad");
+						szMadFile = string("goblin.mad");
 
 					P_Mad* pkMad = ((P_Mad*)pkEnt->GetProperty("P_Mad"));
 

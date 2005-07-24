@@ -39,10 +39,10 @@ ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool b
 	TextureManager* pkTexMan = static_cast<TextureManager*>(
 		g_ZFObjSys.GetObjectPtr("TextureManager"));
 
-	int tex = pkTexMan->Load("data/textures/gui/mark.tga",0);
+	int tex = pkTexMan->Load("gui/mark.tga",0);
 	m_vkMenuIcons.push_back(new ZGuiSkin(tex, false));
 
-	tex = pkTexMan->Load("data/textures/gui/open_submenu.tga",0);
+	tex = pkTexMan->Load("gui/open_submenu.tga",0);
 	m_vkMenuIcons.push_back(new ZGuiSkin(tex, false));
 	
 

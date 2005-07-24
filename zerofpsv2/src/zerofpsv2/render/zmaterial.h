@@ -139,8 +139,8 @@ class RENDER_API ZMaterial : public ZFResource
 		ZMaterialSettings* GetPass(int iPass) const;
 		ZMaterialSettings* AddPass();
 				
-		bool LoadIniMaterial(const char* acFile);
-		bool LoadLuaMaterial(const char* acFile);
+		bool LoadIniMaterial(const string& strFile);
+		bool LoadLuaMaterial(const string& strFile);
 		
 		void Clear();
 	

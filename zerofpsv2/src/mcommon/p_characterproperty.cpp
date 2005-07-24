@@ -617,12 +617,12 @@ P_CharacterProperty::P_CharacterProperty()
 		m_kSkillBar.push_back(string(""));
 		
 	//basic sounds
-	m_strWalkSound			=	"data/sound/footstep_forest.wav";
-	m_strRunSound			=	"data/sound/footstep_forest_run.wav";
-	m_strJumpSound			=	"data/sound/jump.wav";
-	m_strSwimSound			=	"data/sound/walkwater.wav";	
-	m_strWalkWaterSound	=	"data/sound/walkwater.wav";	
-	m_strRunWaterSound	=	"data/sound/walkwater.wav";	
+	m_strWalkSound			=	"footstep_forest.wav";
+	m_strRunSound			=	"footstep_forest_run.wav";
+	m_strJumpSound			=	"jump.wav";
+	m_strSwimSound			=	"walkwater.wav";	
+	m_strWalkWaterSound	=	"walkwater.wav";	
+	m_strRunWaterSound	=	"walkwater.wav";	
 	m_iWalkSoundID 		= 	-1;
 	m_iRunSoundID 			= 	-1;
 	m_iSwimSoundID 		= 	-1;
@@ -631,7 +631,7 @@ P_CharacterProperty::P_CharacterProperty()
 	
 	//setup material
 	m_pkTextMaterial = new ZMaterial;
-	m_pkTextMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
+	m_pkTextMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/fetfont.tga");
 	m_pkTextMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 	m_pkTextMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 	m_pkTextMaterial->GetPass(0)->m_bLighting = 				false;		
@@ -2580,12 +2580,12 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_bDead);
 	
 	pkNetPacket->Write(m_bWalkSound);		
-	pkNetPacket->Write_Str(m_strWalkSound);
+/*	pkNetPacket->Write_Str(m_strWalkSound);
 	pkNetPacket->Write_Str(m_strRunSound);
 	pkNetPacket->Write_Str(m_strJumpSound);
 	pkNetPacket->Write_Str(m_strSwimSound);
 	pkNetPacket->Write_Str(m_strWalkWaterSound);		
-	pkNetPacket->Write_Str(m_strRunWaterSound);		
+	pkNetPacket->Write_Str(m_strRunWaterSound);	*/	
 	
 	SetNetUpdateFlag(iConnectionID,false);
 	
@@ -2621,12 +2621,12 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_bDead);	
 	
 	pkNetPacket->Read(m_bWalkSound);	
-	pkNetPacket->Read_Str(m_strWalkSound);
+/*	pkNetPacket->Read_Str(m_strWalkSound);
 	pkNetPacket->Read_Str(m_strRunSound);
 	pkNetPacket->Read_Str(m_strJumpSound);
 	pkNetPacket->Read_Str(m_strSwimSound);		
 	pkNetPacket->Read_Str(m_strWalkWaterSound);		
-	pkNetPacket->Read_Str(m_strRunWaterSound);		
+	pkNetPacket->Read_Str(m_strRunWaterSound);	*/	
 }
 
 bool P_CharacterProperty::UseMana(float fMana)

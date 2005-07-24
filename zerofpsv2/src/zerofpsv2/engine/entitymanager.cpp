@@ -1490,7 +1490,7 @@ void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 	if(!pkMatText)
 	{
 		pkMatText = new ZMaterial;
-		pkMatText->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/defguifont.tga");
+		pkMatText->GetPass(0)->m_kTUs[0]->SetRes("text/defguifont.tga");
 		pkMatText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkMatText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		pkMatText->GetPass(0)->m_bLighting = 				false;		

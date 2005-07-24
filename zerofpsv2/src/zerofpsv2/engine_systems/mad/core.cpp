@@ -489,11 +489,14 @@ void Mad_Core::LoadMesh(const char* MDFileName)
 
 bool Mad_Core::Create(string MadFileName)
 {
+	//setup data path
+	if(MadFileName.find("data/mad/") == -1)
+		MadFileName = "data/mad/"+MadFileName;
+//  	else
+//  		cout<<"Warning: old resource path:"<<MadFileName<<endl;
+	
 	strcpy(Name,MadFileName.c_str());
 
-	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
-		int gam = 1;
-	}
 
 	ZFVFile kZFile;
 	if( !kZFile.Open(MadFileName,0,false) ) {

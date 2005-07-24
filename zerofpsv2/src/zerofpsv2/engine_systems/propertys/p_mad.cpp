@@ -1016,7 +1016,7 @@ int AddMesh(lua_State* pkLua)
 		\brief Change the mad used.
 		\relates Mad
 		\param EntityID Id of entity to change model on.
-		\param szFile The path and name of the model. Ex "/data/mad/barrel.mad".
+		\param szFile The path and name of the model. Ex "barrel.mad".
 */
 int SetMadfileLua(lua_State* pkLua)
 {

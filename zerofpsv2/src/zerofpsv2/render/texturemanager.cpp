@@ -329,25 +329,40 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	
 	This is the low level loading function that handles the loading.
 */
-Image* TextureManager::LoadImage(const char *szFileName)
+Image* TextureManager::LoadImage(const string& strFileName)
 {
+	string strFile;
+
+	if(strFileName.find("data/textures/") == -1)
+	{
+		strFile ="data/textures/" + strFileName;
+	}
+	else
+	{
+		strFile = strFileName;
+		cout<<"Warning: old resource path:"<<strFileName<<endl;
+	}
+
+
 	Image* kImage = new Image;
 	if(!kImage)
 		return NULL;
 	
 	ZFVFile kFile;
-	if(! kFile.Open(szFileName,0, false)) {
+	if(! kFile.Open(strFile,0, false)) 
+	{
 		delete kImage;
-		fprintf(stderr, "Unable to Open %s: \n", szFileName);
+		fprintf(stderr, "Unable to Open %s: \n", strFile.c_str());
 		return(NULL);
-		}
+	}
 
-	if(! kImage->load(kFile.m_pkFilePointer, szFileName)) {
+	if(! kImage->load(kFile.m_pkFilePointer, strFile.c_str())) 
+	{
 		delete kImage;
 		kFile.Close();
-		fprintf(stderr, "Unable to Read %s: \n", szFileName);
+		fprintf(stderr, "Unable to Read %s: \n", strFile.c_str());
 		return(NULL);
-		}
+	}
 
 	kFile.Close();
 	return kImage;

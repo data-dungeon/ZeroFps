@@ -18,6 +18,13 @@ ZVProgram::~ZVProgram()
 
 bool ZVProgram::Create(string  strName)
 {
+	//setup data path
+	if(strName.find("data/vertexprograms/") == -1)
+		strName = "data/vertexprograms/"+strName;
+	else
+		cout<<"Warning: old resource path:"<<strName<<endl;
+		
+		
 	return Load(strName);
 }
 

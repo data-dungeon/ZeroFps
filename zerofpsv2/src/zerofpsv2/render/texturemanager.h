@@ -28,7 +28,7 @@ enum OPTIONS
 	T_NOFILTER		=	64,		// use nearest mfilter .
 };
 
-#define ERROR_TEXTURE	"data/textures/notex.bmp"
+#define ERROR_TEXTURE	"notex.bmp"
 #define	NO_TEXTURE	-1		// Texuremanger index for a non existing texture.
 
 /**	\brief	Texture file name and all paramerers.
@@ -85,7 +85,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 
 		texture*	GetFreeTexture();												// Returns a free texture manger texture object.
       void FreeTexture(texture* pkTex);									// Free texture manger texture object.
-		Image* LoadImage(const char *szFileName);	
+		Image* LoadImage(const string& strFileName);	
 		bool LoadTexture(texture *pkTex,const char* acFilename);	
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);

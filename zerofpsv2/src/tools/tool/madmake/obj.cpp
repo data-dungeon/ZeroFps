@@ -340,7 +340,7 @@ void ModellObj::SaveMaterials()
 
 		if(strlen(szTextName))
 		{
-			fprintf(pkFp, "tu0=data/textures/%s\n", m_kMayaMat[i].m_strDiffuseColorTexture.c_str());
+			fprintf(pkFp, "tu0=%s\n", m_kMayaMat[i].m_strDiffuseColorTexture.c_str());
 		}
 		else
 		{

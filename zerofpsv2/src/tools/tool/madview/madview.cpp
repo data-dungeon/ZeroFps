@@ -61,7 +61,7 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("listjoint", FID_LISTJOINT);	
 
 
-	m_strMadFile = "data/mad/cube.mad";
+	m_strMadFile = "cube.mad";
 	m_bHaveOpenMadFromCmdLine = false;
 } 
 

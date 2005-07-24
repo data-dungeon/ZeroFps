@@ -27,7 +27,7 @@ P_Vegitation::P_Vegitation()
 	Clear();
 	
 	
-	SetMaterial("data/material/forest_grass.zmt");	
+	SetMaterial("forest_grass.zmt");	
 	SetScale(Vector3(1,0.7,1));
 	m_fWind = 10;	
 	

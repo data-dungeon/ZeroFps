@@ -18,6 +18,7 @@ GLSLProgram::~GLSLProgram()
 
 bool GLSLProgram::Create(string  strName)
 {
+
 	return Load(strName);
 }
 
@@ -45,7 +46,7 @@ bool GLSLProgram::Load(string  strFile)
 	
 	strVShader = strFile.substr(0,iSplit);
 	strFShader = strFile.substr(iSplit+1,strFile.length());
-	
+		
 	for(int i =0;i<9;i++)
 	{
 		//load and compile shaders
@@ -177,7 +178,7 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 
 bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile,int iLights)
 {
-	static string strGLSLdir = "/data/glsl/";
+	static string strGLSLdir = "data/glsl/";
 
 	ZFVFile kFile;
 	

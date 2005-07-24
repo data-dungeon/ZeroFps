@@ -28,7 +28,7 @@ P_Light::P_Light()
 	m_fFlareSize = 0.0;
 	
 	m_pkMaterial = new ZFResourceHandle;
-	SetMaterial("data/material/flare-white.zmt");
+	SetMaterial("flare-white.zmt");
 	
 }
 
@@ -94,7 +94,7 @@ void P_Light::DrawFlare()
 	{
 		pkTestMat = new ZMaterial;
 	
-		pkTestMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/clear.tga");
+		pkTestMat->GetPass(0)->m_kTUs[0]->SetRes("clear.tga");
 		pkTestMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkTestMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;
 		pkTestMat->GetPass(0)->m_bDepthMask = 				false;

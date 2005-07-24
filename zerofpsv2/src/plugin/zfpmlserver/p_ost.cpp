@@ -18,7 +18,7 @@ P_Ost::P_Ost()
 	
 		
 	m_pkFogMaterial = new ZMaterial;
-	m_pkFogMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/fogplane.tga");
+	m_pkFogMaterial->GetPass(0)->m_kTUs[0]->SetRes("fogplane.tga");
 	m_pkFogMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 	m_pkFogMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_NONE;		
 	m_pkFogMaterial->GetPass(0)->m_bLighting = 				true;		

@@ -756,7 +756,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 
    char szFontData[512], szFontTex[512];
    sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", szFontName);
-   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", szFontName);
+   sprintf(szFontTex, "gui/fonts/%s.tga", szFontName);
 	pkDefaultFont->Create(szFontData, m_pkTextureMan->Load(szFontTex));
 	m_pkResMan->Add("defguifont", pkDefaultFont);
 
@@ -1350,7 +1350,7 @@ ZFScript* ZGuiApp::GetGuiScript()
 
 int ZGuiApp::LoadGuiTextureByRes(string strFile)
 {
-	string strFullName = "data/textures/gui/" + strFile;
+	string strFullName = "gui/" + strFile;
 
 	map<string, string>::iterator res = m_kGuiImagePaths.find(strFile);
 	if(res != m_kGuiImagePaths.end())
@@ -1612,7 +1612,7 @@ bool ZGuiApp::SetFont(string strWnd, string strFont, int r, int g, int b, int gl
 	{
 		char szFontData[512], szFontTex[512];
 		sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strFont.c_str());
-		sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strFont.c_str());
+		sprintf(szFontTex, "gui/fonts/%s.tga", strFont.c_str());
 
 		pkFont = new ZGuiFont((char*)strFont.c_str());
 		if(pkFont->Create(szFontData, m_pkTextureMan->Load(szFontTex, 0), glyph))
@@ -1772,11 +1772,11 @@ void ZGuiApp::FindGuiTextureByResolution()
 
 	TEST tt[5] = 
 	{
-		{&kTexMap_640x480, "data/textures/gui/640x480/", 640*480 },
-		{&kTexMap_800x600, "data/textures/gui/800x600/", 800*600 },
-		{&kTexMap_1024x768, "data/textures/gui/1024x768/", 1024*768 }, 
-		{&kTexMap_1280x1024, "data/textures/gui/1280x1024/", 1280*1024 }, 
-		{&kTexMap_1600x1200, "data/textures/gui/1600x1200/", 1600*1200 }
+		{&kTexMap_640x480, "gui/640x480/", 640*480 },
+		{&kTexMap_800x600, "gui/800x600/", 800*600 },
+		{&kTexMap_1024x768, "gui/1024x768/", 1024*768 }, 
+		{&kTexMap_1280x1024, "gui/1280x1024/", 1280*1024 }, 
+		{&kTexMap_1600x1200, "gui/1600x1200/", 1600*1200 }
 	};
 
 	int iCurrentRes = GetWidth() * GetHeight();

@@ -27,7 +27,7 @@ P_WaterRender::P_WaterRender()
 	m_fWave = 0.1;
 	
 	m_pkMaterial = new ZFResourceHandle;
-	SetMaterial("data/material/water.zmt");	
+	SetMaterial("water.zmt");	
 }
 
 void P_WaterRender::SetMaterial(const string& strMaterial)

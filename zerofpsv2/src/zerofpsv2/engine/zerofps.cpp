@@ -347,7 +347,7 @@ void ZeroFps::CreateMaterials()
 {
 	//devpage material
 	m_pkDevPageMaterial = new ZMaterial;
-	m_pkDevPageMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/devstr.bmp");
+	m_pkDevPageMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/devstr.bmp");
 	m_pkDevPageMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 	m_pkDevPageMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 	m_pkDevPageMaterial->GetPass(0)->m_bLighting = 				false;		
@@ -1032,8 +1032,8 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 
 void ZeroFps::DrawDevStrings()
 {
-	static int iGraphTexture = m_pkTexMan->Load("data/textures/graph.bmp");
-	static int iMaxTexture = m_pkTexMan->Load("data/textures/notex.bmp");
+	static int iGraphTexture = m_pkTexMan->Load("graph.bmp");
+	static int iMaxTexture = m_pkTexMan->Load("notex.bmp");
 
 	unsigned int page;
 	if(!m_bDevPagesVisible || m_bMinimized) 
@@ -1107,7 +1107,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	Entity*	pkEnt;
 	P_Mad*	pkMad;
-	string	strMad("/data/mad/");
+	string	strMad("");
 
 	switch(cmdid) {
 		case FID_SETDISPLAY:
@@ -1763,7 +1763,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".jpg"), Create__ResTexture	);
-	m_pkResourceDB->RegisterResource( string(".jpeg"), Create__ResTexture);	
+	m_pkResourceDB->RegisterResource( string(".jpeg"),Create__ResTexture	);	
 	
 	m_pkResourceDB->RegisterResource( string(".zmt"), Create__Material	);
 	m_pkResourceDB->RegisterResource( string(".zlm"), Create__Material	);
@@ -1771,7 +1771,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".zvp"), Create__ZVProgram	);
 	m_pkResourceDB->RegisterResource( string(".zfp"), Create__ZFProgram	);	
 	m_pkResourceDB->RegisterResource( string(".lua"), Create__ZFScript  	);
-	m_pkResourceDB->RegisterResource( string(".glsl"), Create__GLSLProgram 	);
+	m_pkResourceDB->RegisterResource( string(".glsl"),Create__GLSLProgram);
 }
 
 void ZeroFps::RegisterPropertys()

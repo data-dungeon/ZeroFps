@@ -15,13 +15,13 @@ void ZeroEd::SetupGuiEnviroment()
 	}
 
 	GetWnd("worktab")->Hide();
-	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
+	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("gui/blue_cursor.bmp", 0),
+		m_pkTexMan->Load("gui/blue_cursor_a.bmp", 0), 32, 32);
 
    char szFontData[512], szFontTex[512];
    sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "book_antiqua_10_bold_outlined");
 
-   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "book_antiqua_10_bold_outlined");
+   sprintf(szFontTex, "gui/fonts/%s.tga", "book_antiqua_10_bold_outlined");
    ZGuiFont* pkOutLineFont = new ZGuiFont("OutLineFont");
 
    pkOutLineFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), 1);
@@ -678,7 +678,7 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	{
 		if(szClickNodeText && bHaveChilds == false)
 		{
-			string strFullpath = string("data/mad/zones/");
+			string strFullpath = string("zones/");
 
 			if(szParentNodeText)
 				strFullpath += string(szParentNodeText);
@@ -747,7 +747,7 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 		{
 		case SELECT_MAD:
 
-			strFullpath = string("data/mad/");
+			strFullpath = string("");
 
 			if(szParentNodeText)
 				strFullpath += string(szParentNodeText);

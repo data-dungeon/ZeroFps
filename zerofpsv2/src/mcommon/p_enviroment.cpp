@@ -40,12 +40,12 @@ P_Enviroment::P_Enviroment()
 	m_fPosOfDay = 						0;
 	m_fPosOfPart =						0;
 	
-	m_kThunderSounds.push_back("data/sound/thunder/thunder1.wav");
-	m_kThunderSounds.push_back("data/sound/thunder/thunder2.wav");
-	m_kThunderSounds.push_back("data/sound/thunder/thunder3.wav");
+	m_kThunderSounds.push_back("thunder/thunder1.wav");
+	m_kThunderSounds.push_back("thunder/thunder2.wav");
+	m_kThunderSounds.push_back("thunder/thunder3.wav");
 	
 	m_pkRainSplashMat = new ZMaterial;
-		m_pkRainSplashMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/rainsplash.tga");
+		m_pkRainSplashMat->GetPass(0)->m_kTUs[0]->SetRes("rainsplash.tga");
 		m_pkRainSplashMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		m_pkRainSplashMat->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;		
 		m_pkRainSplashMat->GetPass(0)->m_bLighting = 			true;			
@@ -56,7 +56,7 @@ P_Enviroment::P_Enviroment()
 		m_pkRainSplashMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 
 	m_pkSunMat = new ZMaterial;
-		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sun.tga");
+		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("sun.tga");
 		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		m_pkSunMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		m_pkSunMat->GetPass(0)->m_bLighting = 				false;			
@@ -67,7 +67,7 @@ P_Enviroment::P_Enviroment()
 		m_pkSunMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 
 	m_pkSunFlareMat = new ZMaterial;
-		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/sunflare.tga");
+		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("sunflare.tga");
 		m_pkSunFlareMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		m_pkSunFlareMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		m_pkSunFlareMat->GetPass(0)->m_bLighting = 				false;			
@@ -495,8 +495,8 @@ void P_Enviroment::DrawSky()
 	if(!pkSkyBackMat)
 	{
 		pkSkyBackMat = new ZMaterial;
-			pkSkyBackMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
-			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/sky.tga");
+			pkSkyBackMat->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes("enviroment/sky.tga");
 			pkSkyBackMat->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSkyBackMat->GetPass(0)->m_iPolygonModeFront =	FILL_POLYGON;
@@ -515,8 +515,8 @@ void P_Enviroment::DrawSky()
 	if(!pkSkyFrontMat)
 	{
 		pkSkyFrontMat = new ZMaterial;
-			pkSkyFrontMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
-			pkSkyFrontMat->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/space.tga");
+			pkSkyFrontMat->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkSkyFrontMat->GetPass(0)->m_kTUs[1]->SetRes("enviroment/space.tga");
 			pkSkyFrontMat->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSkyFrontMat->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
@@ -539,8 +539,8 @@ void P_Enviroment::DrawSky()
 	if(!pkSpace)
 	{
 		pkSpace = new ZMaterial;
-			pkSpace->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
-			pkSpace->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/space.tga");
+			pkSpace->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkSpace->GetPass(0)->m_kTUs[1]->SetRes("enviroment/space.tga");
 			//pkSpace->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSpace->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
@@ -560,8 +560,8 @@ void P_Enviroment::DrawSky()
 	if(!pkCloudMatLow)
 	{
 		pkCloudMatLow = new ZMaterial;
-			pkCloudMatLow->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
-			pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/cloud.tga");
+			pkCloudMatLow->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes("enviroment/cloud.tga");
 			pkCloudMatLow->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
 			
 			pkCloudMatLow->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
@@ -580,8 +580,8 @@ void P_Enviroment::DrawSky()
 	if(!pkCloudMatHi)
 	{
 		pkCloudMatHi = new ZMaterial;
-			pkCloudMatHi->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enviroment/skyalpha.tga");
-			pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes("data/textures/enviroment/cloud2.tga");
+			pkCloudMatHi->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes("enviroment/cloud2.tga");
 			pkCloudMatHi->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
 			
 			pkCloudMatHi->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
@@ -751,9 +751,6 @@ void P_Enviroment::DrawSky()
 
 void P_Enviroment::DrawSun()
 {
-	//textures
-	static int iSunTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
-	static int iSunFlareTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
 	
 	//max number of samples 
 	static int iMaxSamples = int(0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight()));

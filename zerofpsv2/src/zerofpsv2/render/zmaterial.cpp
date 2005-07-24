@@ -235,7 +235,7 @@ void ZMaterial::Clear()
 }
 
 
-bool ZMaterial::LoadLuaMaterial(const char* acFile)
+bool ZMaterial::LoadLuaMaterial(const string& strFile)
 {
 	Clear();
 
@@ -249,7 +249,7 @@ bool ZMaterial::LoadLuaMaterial(const char* acFile)
 		m_pkMaterialScript = new ZFScript;
 	
 	//load script
-	if(m_pkMaterialScript->Create(acFile))
+	if(m_pkMaterialScript->Create(strFile))
 	{
  		SI_ZMATERIAL::g_pkCurrentMaterial = this;
 		if(m_pkScript->Call(m_pkMaterialScript, "Main",0,0))
@@ -259,7 +259,7 @@ bool ZMaterial::LoadLuaMaterial(const char* acFile)
 		}
 		else
 		{
-			cout<<"Lua material "<<acFile<< " did not contain any Main() function"<<endl;
+			cout<<"Lua material "<<strFile<< " did not contain any Main() function"<<endl;
 		}
 		
 		SI_ZMATERIAL::g_pkCurrentMaterial = NULL;
@@ -485,10 +485,12 @@ bool ZMaterial::PassGetLuaChar(char* czName,char* cTemp)
 	return false;
 }
 
-bool ZMaterial::LoadIniMaterial(const char* acFile)
+bool ZMaterial::LoadIniMaterial(const string& strFile)
 {
+	
+	
 	//TRY to load ZLM material first
-	string zlmfile = acFile;
+	string zlmfile = strFile;
 	zlmfile = zlmfile.substr(0,zlmfile.length()-3)+string("zlm");
 	if(LoadLuaMaterial(zlmfile.c_str()))
 		return true;
@@ -497,11 +499,11 @@ bool ZMaterial::LoadIniMaterial(const char* acFile)
 	bool open=false;
 	
 	//try to open material file
-	if(m_kIni.Open(acFile,0))		
+	if(m_kIni.Open(strFile.c_str(),0))		
 		open=true;
 	else		//if file didt open, try to load a default texture
 	{
-		cout<<"Error loading shader: "<<acFile<<" using nomaterial"<<endl;
+		cout<<"Error loading shader: "<<strFile<<" using nomaterial"<<endl;
 		if(m_kIni.Open("data/material/nomaterial.zmt",0))
 			open=true;
 	}
@@ -510,7 +512,7 @@ bool ZMaterial::LoadIniMaterial(const char* acFile)
 	{
 		Clear();
 	
-		m_strName = acFile;
+		m_strName = strFile;
 		
 		if(!LoadGlobalSection())
 			return false;
@@ -527,7 +529,7 @@ bool ZMaterial::LoadIniMaterial(const char* acFile)
 	}
 	else
 	{
-		cout<<"error loading shader:"<<acFile<<endl;
+		cout<<"error loading shader:"<<strFile<<endl;
 		return false;
 	}
 
@@ -771,6 +773,11 @@ bool ZMaterial::LoadPass(int iPass)
 
 bool ZMaterial::Create(string strName)
 {
+	if(strName.find("data/material/") == -1)
+		strName ="data/material/" + strName;
+	else
+		cout<<"Warning: old resource path:"<<strName<<endl;
+	
 	if(strName.substr(strName.length()-4) == ".zmt")
 	{
 		//cout<<"loading ini material"<<endl;
@@ -779,7 +786,7 @@ bool ZMaterial::Create(string strName)
 	else if(strName.substr(strName.length()-4) == ".zlm")
 	{
 		//cout<<"loading lua material"<<endl;
-	 	return LoadLuaMaterial(strName.c_str());		
+	 	return LoadLuaMaterial(strName);		
 	}
 
 	assert(0);	// This should never happen?

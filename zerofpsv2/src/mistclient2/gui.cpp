@@ -292,7 +292,7 @@ void MistClient::SetupGUI()
 // 			pkLight->SetAmbient(kCurrentAmbient);		
 // 			pkLight->SetRot(kSunPos);	
 
-			string szMadFile = string("data/mad/") + string("player2.mad");
+			string szMadFile = string("player2.mad");
 			((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
 
 			float aspect = (float) pkModelWnd->GetScreenRect().Width() /

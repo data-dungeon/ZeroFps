@@ -185,7 +185,7 @@ void P_CharacterControl::Update()
 					pkPSys->SetPSType("watersurface");	
 			
 				if(P_Sound* pkSound = (P_Sound*)m_pkWaterEnt->AddProperty("P_Sound"))
-					pkSound->StartSound("data/sound/water_splash.wav",false,1.0);
+					pkSound->StartSound("water_splash.wav",false,1.0);
 			
 			}			
 		}

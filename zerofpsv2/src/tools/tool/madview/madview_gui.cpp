@@ -158,7 +158,7 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		if(m_iSelFileMode == SEL_MAD)
 		{
-			strFullpath = string("data/mad/");
+			strFullpath = string("");
 
 			if(szParentNodeText)
 				strFullpath += string(szParentNodeText);
@@ -275,7 +275,7 @@ void MadView::ChangeMad(string strName)
 
 	// Update information in textboxes
 	string strFormated = m_strMadFile;
-	strFormated.erase(0, strlen("data/mad/"));
+// 	strFormated.erase(0, strlen("data/mad/"));
 	sprintf(szText, "Name: %s", strFormated.c_str());
 	SetText("MadNameLabel", szText, true);
 

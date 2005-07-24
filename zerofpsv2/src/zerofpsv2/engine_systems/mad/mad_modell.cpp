@@ -409,7 +409,7 @@ void Mad_Modell::LoadTextures()
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 			
-			sprintf(szFullTexName,"data/material/%s.zmt",pkTexInfo->ucTextureName);
+			sprintf(szFullTexName,"%s.zmt",pkTexInfo->ucTextureName);
 			m_pkMesh->GetLODMesh(0)->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);
 		}
 	}
@@ -436,7 +436,7 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 
 			if(strcmp(pkTexInfo->ucTextureName, szOrgName) == 0)
 			{
-				sprintf(szFullTexName, "data/textures/%s.bmp", szNew);
+				sprintf(szFullTexName, "%s.bmp", szNew);
 				
 				//create resource handle if it does not exist
 				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ] == NULL)
