@@ -2233,6 +2233,8 @@ P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 	if(Entity* pkEnt = m_pkEntityManager->CreateEntityFromScript((m_strBuffDir+strBuffName).c_str()))	
 	{	
 		pkEnt->SetParent(GetEntity());
+		pkEnt->SetLocalPosV(Vector3(0,0,0));
+		pkEnt->SetRelativeOri(true);
 		
 		cout<<"added buff "<<strBuffName<<endl;
 		
