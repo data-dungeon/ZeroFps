@@ -492,8 +492,8 @@ bool Mad_Core::Create(string MadFileName)
 	//setup data path
 	if(MadFileName.find("data/mad/") == -1)
 		MadFileName = "data/mad/"+MadFileName;
-//  	else
-//  		cout<<"Warning: old resource path:"<<MadFileName<<endl;
+ 	else
+ 		cout<<"Warning: old resource path:"<<MadFileName<<endl;
 	
 	strcpy(Name,MadFileName.c_str());
 
