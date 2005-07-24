@@ -68,10 +68,7 @@ bool ZFSoundRes::Create(string strName)
 		return false;
 
 	//setup data path
-// 	if(strName.find("data/audio/") == -1)
-		strName = "data/audio/"+strName;
-// 	else
-// 		cout<<"Warning: old resource path:"<<strName<<endl;
+	strName = "data/audio/"+strName;
 
 
 	// Använd det virituella filsytemet för att kolla om filen finns och

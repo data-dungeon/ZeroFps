@@ -86,13 +86,9 @@ bool OggStream::Create()
 
 bool OggStream::Open(string strFileName)
 {
-	m_strFileName = strFileName;
-
 	//all oggs reside in data/music, 
-	if(strFileName.find("data/audio/") == -1)
-		strFileName ="data/audio/" + strFileName;
-	else
-		cout<<"Warning: old resource path:"<<strFileName<<endl;
+	strFileName ="data/audio/" + strFileName;
+
 
 	if(m_bPlaying)
 		Stop();
