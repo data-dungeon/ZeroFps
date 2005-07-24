@@ -41,7 +41,7 @@ Property* Create_LinkToJoint();
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
-	m_kVersion.Set(0,4,1);
+	m_kVersion.Set(0,4,2);
 
 	// StartUp SDL
 	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)
