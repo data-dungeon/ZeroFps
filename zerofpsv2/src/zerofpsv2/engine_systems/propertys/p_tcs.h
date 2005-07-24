@@ -64,7 +64,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool		m_bRemoveOnSleep;
 		bool		m_bNoColRespons;
 		
-		int		m_iTrigging;
+		map<int,bool>	m_kTrigging;
 
 		Vector3	m_kExternalLinearForce;
 		Vector3	m_kExternalRotForce;
@@ -183,7 +183,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float GetRadius()			{ return m_fRadius;					};
 		Vector3 GetLinVel()		{ return m_kLinearVelocity;		};
 		float GetLegLength()		{ return m_fLegLength;				};
-		int	GetTrigger()		{ return m_iTrigging;				};		
+//		int	GetTrigger()		{ return m_iTrigging;				};		
+		const map<int,bool>&	GetTriggers()	{ return m_kTrigging;	};
 		float GetAirFriction()	{ return m_fAirFriction;			};
 		
 		//tests

@@ -154,10 +154,11 @@ void P_CharacterControl::Update()
 	//water check
 	m_bInWater = false;
 	m_bOnWaterSurface = false;
-	if(m_pkTcs->GetTrigger() != -1)
+	const map<int,bool>& kTriggers = m_pkTcs->GetTriggers();
+	for(map<int,bool>::const_iterator it = kTriggers.begin();it != kTriggers.end();it++)
 	{
 		//check for trigger
-		if(P_TcsTrigger* pkTrigger = (P_TcsTrigger*)m_pkEntityManager->GetPropertyFromEntityID(m_pkTcs->GetTrigger(),"P_TcsTrigger"))
+		if(P_TcsTrigger* pkTrigger = (P_TcsTrigger*)m_pkEntityManager->GetPropertyFromEntityID((*it).first,"P_TcsTrigger"))
 		{
 			if(pkTrigger->GetTriggerID() == 10)
 			{				
@@ -165,7 +166,8 @@ void P_CharacterControl::Update()
 				float fDepth = m_pkEntity->GetWorldPosV().y - m_fSurfacePos;
 				
 				m_bInWater = fDepth < -0.8;
-				m_bOnWaterSurface = fDepth > -1.8;				
+				m_bOnWaterSurface = fDepth > -1.8;	
+				break;			
 			}
 		}
 	}		

@@ -57,13 +57,6 @@ void P_TcsTrigger::Trigger(P_Tcs* pkTcs)
 {
 	static vector<ScriptFuncArg> args(1);
 	static int iID;
-	
-	if(pkTcs->m_iTrigging == m_pkEntity->GetEntityID())
-		return;
-
-
-	pkTcs->m_iTrigging = m_pkEntity->GetEntityID();
-
 
 	iID = pkTcs->GetEntity()->GetEntityID();
 	args[0].m_kType.m_eType = tINT;

@@ -56,7 +56,6 @@ P_Tcs::P_Tcs()
 	m_bRemoveOnSleep =	false;
 	m_bNoColRespons =		false;
 	m_bActive = 			false;
-	m_iTrigging	=			-1;
 	
 	m_fMoveDistance = 	0;
 	

@@ -267,7 +267,6 @@ void Tcs::UpdateTriggers()
 	static int iBodys;
 	static int iTriggers;
 	static Vector3 kPos;
-	static bool bTrigged;
 	
 	iTriggers = m_kTriggers.size();
 	iBodys = m_kBodys.size();
@@ -278,16 +277,20 @@ void Tcs::UpdateTriggers()
 	//loop all bodys
 	for(unsigned int i=0;i<iBodys;i++)
 	{	
-		bTrigged = false;
 		pkBody  = m_kBodys[i];
 					
 		if(pkBody->m_bStatic)
 			continue;
 
+		//sett all triggers to negative value
+		for(map<int,bool>::iterator it = pkBody->m_kTrigging.begin();it != pkBody->m_kTrigging.end();it++)
+			(*it).second = false;
+		
+
 		//for each body loop all triggers
-		for(unsigned int i=0;i<iTriggers;i++)
+		for(unsigned int j=0;j<iTriggers;j++)
 		{	
-			pkTrigger = m_kTriggers[i];			
+			pkTrigger = m_kTriggers[j];			
 			
 			kPos = pkTrigger->GetEntity()->GetWorldPosV();		
 			
@@ -297,8 +300,11 @@ void Tcs::UpdateTriggers()
 				case eSPHERE:
 					if(pkBody->m_kNewPos.DistanceTo(kPos) < pkTrigger->m_fRadius)
 					{
-						pkTrigger->Trigger(pkBody);
-						bTrigged = true;
+						//not trigged?
+						if(pkBody->m_kTrigging.find(pkTrigger->GetEntity()->GetEntityID()) == pkBody->m_kTrigging.end())
+							pkTrigger->Trigger(pkBody);
+						
+						pkBody->m_kTrigging[pkTrigger->GetEntity()->GetEntityID()] = true;							
 					}
 					break;
 
@@ -307,16 +313,29 @@ void Tcs::UpdateTriggers()
 						pkBody->m_kNewPos.y > kPos.y-pkTrigger->m_kBoxSize.y && pkBody->m_kNewPos.y < kPos.y+pkTrigger->m_kBoxSize.y &&
 						pkBody->m_kNewPos.z > kPos.z-pkTrigger->m_kBoxSize.z && pkBody->m_kNewPos.z < kPos.z+pkTrigger->m_kBoxSize.z)
 					{
-						pkTrigger->Trigger(pkBody);
-						bTrigged = true;
+						//not trigged?
+						if(pkBody->m_kTrigging.find(pkTrigger->GetEntity()->GetEntityID()) == pkBody->m_kTrigging.end())
+							pkTrigger->Trigger(pkBody);
+						
+						pkBody->m_kTrigging[pkTrigger->GetEntity()->GetEntityID()] = true;
 					}	
 					break;								
 			}					
 		}
 		
-		//notting trigged, reset trigged id
-		if(!bTrigged)
-			pkBody->m_iTrigging = -1;
+		//check if any triggers has ben released
+		for(map<int,bool>::iterator it = pkBody->m_kTrigging.begin();it != pkBody->m_kTrigging.end();it++)
+		{
+			if((*it).second == false)
+			{
+				map<int,bool>::iterator bakup = it;				
+				it++;								
+				pkBody->m_kTrigging.erase(bakup);				
+				
+				if(it == pkBody->m_kTrigging.end())
+					break;
+			}		
+		}
 	}
 }
 
