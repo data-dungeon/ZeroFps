@@ -141,14 +141,14 @@ void P_CharacterControl::Update()
 		
 		//return;
 	}
-
-	
-	//is sitting ?
-	if(m_iConnectionID != -1)
+	else
 	{
-		m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,true);	
-	}
-	
+		//is sitting ?
+		if(m_iConnectionID != -1)
+		{
+			m_pkEntity->SetNetIgnoreFlag(m_iConnectionID,NETUPDATEFLAG_ROT,true);	
+		}
+	}	
 	
 
 	//water check
@@ -402,6 +402,17 @@ void P_CharacterControl::Update()
 
 
 	
+
+	
+
+	
+	
+	
+	
+	//update animation
+	if(!m_bEnabled || (m_pkEntityManager->GetSimTime() < m_fLockTime) )
+		return;
+
 	// dont let the client rotate a sitting character
 	if(m_iCharacterState == eSITTING)
 	{
@@ -419,13 +430,6 @@ void P_CharacterControl::Update()
 		kRot.Transponse();				
 		GetEntity()->SetLocalRotM(kRot);	
 	}	
-	
-	
-	
-	
-	//update animation
-	if(!m_bEnabled || (m_pkEntityManager->GetSimTime() < m_fLockTime) )
-		return;
 
 	UpdateAnimation();
 
