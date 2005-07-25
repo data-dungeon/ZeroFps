@@ -178,14 +178,14 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetHmap(HeightMap* pkMap) 			{m_pkHmap = pkMap; 		};
 		
 		//gets		
-		bool  InActive()			{ return ( m_bStatic || m_bSleeping || m_bTempStatic || !m_bActive);	}
-		bool  GetOnGround() 		{ return m_bOnGround;				};
-		float GetRadius()			{ return m_fRadius;					};
-		Vector3 GetLinVel()		{ return m_kLinearVelocity;		};
-		float GetLegLength()		{ return m_fLegLength;				};
-//		int	GetTrigger()		{ return m_iTrigging;				};		
-		const map<int,bool>&	GetTriggers()	{ return m_kTrigging;	};
-		float GetAirFriction()	{ return m_fAirFriction;			};
+		bool  InActive()							{ return ( m_bStatic || m_bSleeping || m_bTempStatic || !m_bActive);	}
+		bool  GetOnGround() 						{ return m_bOnGround;				};
+		float GetRadius()							{ return m_fRadius;					};
+		Vector3 GetLinVel()						{ return m_kLinearVelocity;		};
+		float GetLegLength()						{ return m_fLegLength;				};		
+		const map<int,bool>&	GetTriggers()	{ return m_kTrigging;				};
+		bool IsTrigging(int iTriggerID)		{ return m_kTrigging.find(iTriggerID) != m_kTrigging.end();	};
+		float GetAirFriction()					{ return m_fAirFriction;			};
 		
 		//tests
 		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);

@@ -1074,6 +1074,27 @@ namespace SI_PTcs
 		return 0;
 	}
 
+
+	int IsTriggingLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;
+		
+		int iBodyID;	
+		int iTriggerID;
+		int iRetVal = 0;
+			
+		g_pkScript->GetArgInt(pkLua, 0, &iBodyID);		
+		g_pkScript->GetArgInt(pkLua, 1, &iTriggerID);		
+	
+	
+		if(P_Tcs* pkBody = (P_Tcs*)g_pkObjMan->GetPropertyFromEntityID(iBodyID,"P_Tcs"))
+			if(pkBody->IsTrigging(iTriggerID))
+				iRetVal = 1;
+	
+		g_pkScript->AddReturnValue(pkLua, double(iRetVal) );									
+		return 1;
+	}
 }
 
 
@@ -1088,11 +1109,12 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_Tcs", Create_P_Tcs);					
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("ApplyImpulse",			SI_PTcs::ApplyImpulsLua);
+	g_pkScript->ExposeFunction("ApplyImpulse",		SI_PTcs::ApplyImpulsLua);
 	g_pkScript->ExposeFunction("SetRotVel",			SI_PTcs::SetObjectRotVelLua);
 	g_pkScript->ExposeFunction("SetLinVel",			SI_PTcs::SetObjectLinVelLua);	
 	g_pkScript->ExposeFunction("SetLinVelTowards",	SI_PTcs::SetObjectLinVelTowardsLua);	
-	g_pkScript->ExposeFunction("Bounce",				SI_PTcs::BounceLua);				
+	g_pkScript->ExposeFunction("Bounce",				SI_PTcs::BounceLua);					
+	g_pkScript->ExposeFunction("IsTrigging",			SI_PTcs::IsTriggingLua);			
 }
 
 
