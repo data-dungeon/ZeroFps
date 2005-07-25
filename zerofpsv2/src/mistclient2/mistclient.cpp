@@ -1528,6 +1528,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			SendAddSkillToSkillbar("skill-camp.lua",10);
 			SendAddSkillToSkillbar("skill-create_food.lua",11);
 			SendAddSkillToSkillbar("skill-push.lua",12);
+			SendAddSkillToSkillbar("skill-poison_cloud.lua",13);
 			//--------------------------
 		
 			break;

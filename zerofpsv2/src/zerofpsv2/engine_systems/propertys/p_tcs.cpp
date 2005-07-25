@@ -1087,11 +1087,10 @@ namespace SI_PTcs
 		g_pkScript->GetArgInt(pkLua, 0, &iBodyID);		
 		g_pkScript->GetArgInt(pkLua, 1, &iTriggerID);		
 	
-	
 		if(P_Tcs* pkBody = (P_Tcs*)g_pkObjMan->GetPropertyFromEntityID(iBodyID,"P_Tcs"))
 			if(pkBody->IsTrigging(iTriggerID))
 				iRetVal = 1;
-	
+
 		g_pkScript->AddReturnValue(pkLua, double(iRetVal) );									
 		return 1;
 	}

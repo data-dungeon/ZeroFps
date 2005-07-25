@@ -403,7 +403,7 @@ int TextureManager::Load(const char* szFileName, int iOption)
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
 
-	//cout<<"loading texture:"<<szFileName<<endl;
+//	cout<<"loading texture:"<<szFileName<<endl;
 		
 //	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", szFileName);
 

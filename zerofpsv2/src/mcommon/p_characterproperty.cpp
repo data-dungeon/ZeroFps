@@ -2256,14 +2256,13 @@ void P_CharacterProperty::RemoveBuff(const string& strBuffName)
 	{
 		if(!kProps[i]->IsType("P_Buff"))
 			continue;
-		
-		if(P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]))			
+
+		P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]);
+
+		if(pkBuff->GetEntity()->GetName() == strBuffName)
 		{
-			if(pkBuff->m_strName == strBuffName)
-			{
-				cout<<"removing buffs by name: "<<strBuffName<<endl;
-				RemoveBuff(pkBuff);
-			}
+			cout<<"removing buffs by name: "<<pkBuff->GetEntity()->GetName()<<endl;
+			RemoveBuff(pkBuff);
 		}
 	}
 }
@@ -3189,18 +3188,26 @@ namespace SI_P_CharacterProperty
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
 			return 0;		
 
-			
-		int iCharcterID;
-		string strBuff;
 		
+		int iCharcterID;
+		double dBuffID;
+		string strBuff;
+		P_Buff* pkBuff = 0;
+
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
 		g_pkScript->GetArgString(pkLua, 1,strBuff);
 		
-		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
-			pkCP->AddBuff(strBuff);		
+			pkBuff = pkCP->AddBuff(strBuff);		
+
+		if (pkBuff)
+			dBuffID = pkBuff->GetEntity()->GetEntityID();
+		else 
+			dBuffID = 0;
 	
-		return 0;			
+		g_pkScript->AddReturnValue(pkLua, dBuffID);
+
+		return 1;			
 	}
 
 /**	\fn RemoveBuff( EntityID, strBuff )
@@ -3209,20 +3216,25 @@ namespace SI_P_CharacterProperty
 */
 	int RemoveBuffLua(lua_State* pkLua)
 	{
+		cout << "1" << endl;
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
 			return 0;		
+		cout << "2" << endl;
 
 			
-		int iCharcterID;
+		int iCharacterID;
 		string strBuff;
 		
-		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 0, &iCharacterID);
 		g_pkScript->GetArgString(pkLua, 1,strBuff);
 		
 		
-		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
+		{
 			pkCP->RemoveBuff(strBuff);		
-	
+			cout << "3" << endl;
+		}
+
 		return 0;			
 	}
 		
@@ -3415,7 +3427,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 
 	//buffs
 	g_pkScript->ExposeFunction("AddBuff",			SI_P_CharacterProperty::AddBuffLua);
-	g_pkScript->ExposeFunction("RemoveBuff",		SI_P_CharacterProperty::RemoveBuffLua);
+	g_pkScript->ExposeFunction("DeleteBuff",		SI_P_CharacterProperty::RemoveBuffLua);
 	
 	//skills
 	g_pkScript->ExposeFunction("AddSkill",			SI_P_CharacterProperty::AddSkillLua);

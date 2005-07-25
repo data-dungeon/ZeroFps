@@ -272,16 +272,14 @@ void ZShaderSystem::SetupPass(int iPass)
 	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,	&pkSettings->m_kMatSpecular.x);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,	&pkSettings->m_kMatEmission.x);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,	&pkSettings->m_fShininess);
-	
+
 	//enable color material if wanted
 	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);		
-	glEnable(GL_COLOR_MATERIAL);	
 	glColor4fv(&(pkSettings->m_kVertexColor.x));		
-// 	glDisable(GL_COLOR_MATERIAL);	
+	glEnable(GL_COLOR_MATERIAL);	
 
-// 	if( !pkSettings->m_bColorMaterial)
+	if( !pkSettings->m_bColorMaterial )
 		glDisable(GL_COLOR_MATERIAL);
-	
 		
 	//line width
 	glLineWidth(pkSettings->m_fLineWidth);

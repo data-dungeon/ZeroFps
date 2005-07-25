@@ -295,9 +295,6 @@
 				RelativePath="..\engine_systems\propertys\p_waterrender.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\propertys\p_worldinfo.cpp">
-			</File>
-			<File
 				RelativePath=".\property.cpp">
 			</File>
 			<File
@@ -447,9 +444,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_waterrender.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_worldinfo.h">
 			</File>
 			<File
 				RelativePath=".\property.h">
