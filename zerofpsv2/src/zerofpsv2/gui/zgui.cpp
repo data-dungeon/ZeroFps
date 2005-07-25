@@ -558,6 +558,12 @@ ZGuiSkin** ZGui::GetCursorSkin()
 	return &m_pkCursorSkin;
 }
 
+void ZGui::SetCursorTexture(int iTextureID, int iMaskTextureID)
+{
+	m_pkCursorSkin->m_iBkTexID = iTextureID;
+	m_pkCursorSkin->m_iBkTexAlphaID = iMaskTextureID;
+}
+
 void ZGui::SetCursor(int x, int y, int TextureID,int MaskTextureID,int Width,int Height)
 {
 	m_pkCursorSkin->m_iBkTexID = TextureID;

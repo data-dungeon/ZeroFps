@@ -191,11 +191,12 @@ class MistClient :public Application, public ZGuiApp {
 		void DrawTargetMarker();
 		void DrawMouseOverMarker(const Vector3& kPos,float fSize);
 		void DrawHUDEffect(int iHUDEffect);
+		void UpdateCursorImage();
 		
 		//picking
 		Entity* GetTargetObject();
 		Vector3 Get3DMouseDir(bool bMouse);
-
+		
 				
 	public:
 		//application virtuals

@@ -103,6 +103,7 @@ public:
 	bool Activate(bool bActive);
 	
 	void SetCursor(int x, int y, int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
+	void SetCursorTexture(int iTextureID, int iMaskTextureID = -1);
 	void ShowCursor(bool bShow);
 	ZGuiSkin** GetCursorSkin();
 

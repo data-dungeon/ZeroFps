@@ -362,21 +362,21 @@ void MistClient::RenderInterface(void)
 	if(m_iTargetID != -1)
 		DrawTargetMarker();
 
-	//draw under cursor marker
-	if(m_iPickedEntityID != -1 && m_bGuiCapture)
-		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item"))
-			{
-				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
-				{
-					if(pkItem->GetEntity()->GetParent()->IsZone())
-						DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
-				}
-				else
-				{			
-					DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
-				}
-			}
+// 	//draw under cursor marker
+// 	if(m_iPickedEntityID != -1 && m_bGuiCapture)
+// 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+// 			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item"))
+// 			{
+// 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+// 				{
+// 					if(pkItem->GetEntity()->GetParent()->IsZone())
+// 						DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
+// 				}
+// 				else
+// 				{			
+// 					DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
+// 				}
+// 			}
 
 // 	static int iCurrentMarked = -1;
 // 	static float fOldScale =-1;
@@ -475,17 +475,60 @@ void MistClient::OnIdle()
 		}
 	}
 
-// 	if(m_iCharacterID == -1) 
-// 	{
-// 		NetPacket kNp;				
-// 		kNp.Clear();
-// 		kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
-// 		kNp.TargetSetClient(0);
-// 		SendAppMessage(&kNp);	
-// 	}
 
-	// Set Color here.
+ 	//SetMouse pointer
+	UpdateCursorImage();
+}
 
+void MistClient::UpdateCursorImage()
+{
+	if(m_pkGui->m_bHandledMouse)
+		return;
+
+	static int iFriendTex = g_kMistClient.LoadGuiTextureByRes("actionicon_equip.tga");
+	static int iEnemyTex = g_kMistClient.LoadGuiTextureByRes("cursor_enemy.tga");
+	static int iItemTex = g_kMistClient.LoadGuiTextureByRes("actionicon_backpack.tga");
+	static int iUseTex = g_kMistClient.LoadGuiTextureByRes("use.tga");
+	static int iNormalTex = g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga");
+
+	bool bHaveSet = false;
+
+ 	if(m_iPickedEntityID != -1 && m_bGuiCapture)
+ 	{
+ 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+ 		{
+ 			if(P_CharacterProperty* pkChar = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+ 			{
+				if(P_CharacterProperty* pkPlayer = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iCharacterID,"P_CharacterProperty"))
+				{				
+					if(pkPlayer->GetFaction() == pkChar->GetFaction())
+						m_pkGui->SetCursorTexture(iFriendTex);
+					else
+						m_pkGui->SetCursorTexture(iEnemyTex);	
+													
+					bHaveSet = true;
+				}
+			}	
+ 			else if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+ 			{
+ 				if(pkItem->GetEntity()->GetParent()->IsZone())
+ 				{
+					m_pkGui->SetCursorTexture(iItemTex);
+					bHaveSet = true;
+				}
+ 			}
+ 			else if(pkEnt->GetProperty("P_Ml"))
+ 			{
+ 				m_pkGui->SetCursorTexture(iUseTex);
+ 				bHaveSet = true;
+ 			}
+ 		}
+	}
+	
+	if(!bHaveSet)
+	{
+		m_pkGui->SetCursorTexture(iNormalTex);	
+	}
 
 }
 
