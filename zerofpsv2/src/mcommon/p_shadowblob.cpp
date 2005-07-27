@@ -1,5 +1,6 @@
 #include "p_shadowblob.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
 
 P_ShadowBlob::P_ShadowBlob()
 {
@@ -108,7 +109,17 @@ Vector3 P_ShadowBlob::GetShadowPos()
 	
 	float closest = 999999999;
 	Vector3 kPos = Vector3::ZERO;
-	Entity* pkClosest = NULL;	
+	
+	//test hmap first
+	if(P_Heightmap* pkHM = (P_Heightmap*)m_pkEntity->GetParent()->GetProperty("P_Heightmap"))
+	{
+		float y = pkHM->GetHeight(start.x,start.z);
+		
+		kPos.Set(start.x,y,start.z);
+		closest = start.DistanceTo(kPos);
+	}
+	
+	//check mads
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{		
 		if(!kObjects[i]->IsZone())
@@ -129,7 +140,6 @@ Vector3 P_ShadowBlob::GetShadowPos()
 				if(d < closest)
 				{
 					closest = d;
-					pkClosest = kObjects[i];
 					kPos = mp->GetLastColPos();
 				}				
 			}
