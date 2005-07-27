@@ -1295,17 +1295,16 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 				(!pkTester->m_akWalkableGroups[pkBody->m_iGroup]) )
 			continue;
 
-	
 		//check if entitys are in neighbour zone
 		if(!IsInNerbyZone(pkTester,pkBody))
 			continue;							
 		
-			
 		switch(pkBody->m_iTestType)
 		{
 			case E_HMAP:
 			case E_MESH:
 				if(CharacterTestLineVSSphere(kStart,kPos2,pkBody))
+				{
 					if(CharacterTestLineVSMesh(kStart,kDir,pkBody))
 					{
 						d = kStart.DistanceTo(m_kLastTestPos);				
@@ -1316,6 +1315,7 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 							pkClosest = pkBody;
 						}													
 					}					
+				}
 				break;
 /*				
 			case E_HMAP:
@@ -1498,7 +1498,6 @@ bool Tcs::CharacterTestLineVSSphere(const Vector3& kP1,const Vector3& kP2,P_Tcs*
 	kdis=k.Length();
 	Distance = sqrt( (cdis*cdis) - (kdis*kdis) );
 	
-
 	if(Distance < pkB->m_fRadius)
 	{			
 		m_kLastTestPos = pkB->m_kNewPos - c.Unit() * pkB->m_fRadius; //kP1 + k;

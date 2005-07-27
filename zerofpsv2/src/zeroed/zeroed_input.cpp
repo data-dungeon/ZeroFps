@@ -2,6 +2,7 @@
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/engine/zerofps.h"
@@ -129,11 +130,26 @@ void ZeroEd::Input_EditZone()
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
 
 		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
-		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
-		{
-			m_pkZeroFps->AddHMProperty(pkData->m_pkZone, m_kZoneSize);
+
+ 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
+ 		{
+ 			P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
+ 			pkHM->SetSize(m_kZoneSize.x,m_kZoneSize.z);
+ 			
+			P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");
+			pp->SetTestType(E_HMAP);
+			pp->SetStatic(true);			
 		}
-	}		
+	} 			
+ 			
+ 			//m_pkZeroFps->AddHMProperty(pkData->m_pkZone, m_kZoneSize);
+ 		
+
+// 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
+// 		{
+// 			m_pkZeroFps->AddHMProperty(pkData->m_pkZone, m_kZoneSize);
+// 		}
+			
 	
 	if(m_pkInputHandle->VKIsDown("remove"))	
 	{	

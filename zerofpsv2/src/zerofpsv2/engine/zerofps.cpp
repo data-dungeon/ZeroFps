@@ -1798,6 +1798,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 	m_pkPropertyFactory->Register("P_EditIcon",			Create_EditIcon);						
 	
+	
 	Register_P_Sound(this);
 	Register_MadProperty(this);
 	Register_PTcs(this);
@@ -1806,6 +1807,8 @@ void ZeroFps::RegisterPropertys()
 	Register_PScriptInterface(this);
 	Register_PPSystem(this);
 	Register_PHmrp(this);
+	Register_HeightmapProperty(this);
+
 
 	Register_SIEntityProperty(this);
 }

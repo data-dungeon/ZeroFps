@@ -3,6 +3,7 @@
 #include "../common/heightmap.h"
 
 #include "p_hmrp2.h"
+#include "p_heightmap.h"
 #include "../tcs/tcs.h"
 
 using namespace ObjectManagerLua;
@@ -121,7 +122,7 @@ void P_Tcs::Update()
 			if(!m_bHavePolygonData)
 			{
 				m_bHavePolygonData = SetupMeshData();
-				m_fRadius = GetBoundingRadius();
+				//m_fRadius = GetBoundingRadius();
 			}
 		}
 		else			//if no polygon test, check if we shuld at least get radius from mesh
@@ -464,6 +465,8 @@ float P_Tcs::GetBoundingRadius()
 		return pkHm->GetRadius();
 	}
 
+
+
 	return -1;
 }
 
@@ -492,9 +495,10 @@ bool P_Tcs::SetupMeshData()
 				m_pkFaces = pkCoreMech->GetLODMesh(0)->GetFacesPointer();
 				m_pkVertex = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
 				m_pkNormal = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
-				
-				m_fScale = pkMP->m_fScale;
-				
+				 
+				m_fScale = pkMP->m_fScale;				
+				m_fRadius = pkMP->GetRadius();
+									
 				//printf("TCS: Found The Mesh (%d, %d, %d)\n",m_pkFaces->size(), m_pkVertex->size(), m_pkNormal->size() );
 				return true;
 			}
@@ -527,6 +531,38 @@ bool P_Tcs::SetupMeshData()
 
 		return true;
 	}
+
+
+	if(P_Heightmap* pkHm = static_cast<P_Heightmap*>(m_pkEntity->GetProperty("P_Heightmap")))	
+	{
+	
+		// Setup Collision Data
+		vector<Mad_Face>	kFace;
+		vector<Vector3>	kVertex;
+		vector<Vector3>	kNormal;
+// 		pkHm->m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());
+ 		pkHm->GetCollData(&kFace,&kVertex,&kNormal);
+
+// 		cout<<"TCS: found heightmap "<<kFace.size()<<" "<< kVertex.size()<<" "<< kNormal.size()<<endl;
+// 		printf("TCS: Found The Mesh (%d, %d, %d)\n",kFace.size(), kVertex.size(), kNormal.size() );
+
+		// Transform all vertex from Local to World.
+// 		for(unsigned int i=0; i<kVertex.size(); i++) 
+// 			kVertex[i] += pkHm->m_pkHeightMap->m_kCornerOffset;	//m_pkEntity->GetWorldPosV();	// + pkHm->m_pkHeightMap->m_kCornerPos;
+
+		// Set Data.
+		//SetPolygonTest(true);	
+		float fRadius = pkHm->CalculateRadius();
+		
+		SetTestType(E_HMAP);
+		SetStatic(true);			
+		SetData(kFace,kVertex,kNormal, fRadius);	 
+// 		SetHmap(pkHm->m_pkHeightMap);
+		SetGroup(0);
+
+		return true;
+	}
+
 
 	// cout<<"TCS: error mech NOT found"<<endl;
 	return false;
