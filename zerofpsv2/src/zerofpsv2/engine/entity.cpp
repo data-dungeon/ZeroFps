@@ -2296,6 +2296,42 @@ int SetParameterLua(lua_State* pkLua)
 	return 0;
 }
 
+/**	\fn GetParameter(Entity, Property, szName )
+ 	\relates SIEntity
+   \brief Get the value of a variable in a property.
+   \param Entity Entity to get.
+   \param Property The property whith the parameter we wish to get.
+   \param szName Name of variable to get.
+
+	Gets the variable from the given entity and property. If
+	entity or property is non valid nothing will happen. 
+*/
+int GetParameterLua(lua_State* pkLua)
+{
+	if(!g_pkScript->VerifyArg(pkLua, 3))
+		return 0;
+
+	Entity* pkEnt = GetEntityPtr(pkLua, 0);
+	if(!pkEnt)	return 0;
+
+	char acProperty[50];
+	g_pkScript->GetArg(pkLua, 1, acProperty);
+	Property* pkProp = pkEnt->GetProperty(acProperty);
+	if(!pkProp)
+	{
+		g_pkScript->Error(pkLua, "Warning: Entity %d dont have property %s", pkEnt->GetEntityID(), acProperty);
+		return 0;
+	}
+
+	string strName;
+	g_pkScript->GetArgString(pkLua, 2, strName);
+	
+	string strValue = pkProp->GetValue(strName);
+	
+	g_pkScript->AddReturnValue(pkLua, (char*)strValue.c_str(), strValue.size());
+
+	return 1;
+}
 // Entity Values ******************************************************************************************************
 /**	\fn GetObjectType( Entity )
  		\relates SIEntity
@@ -2808,6 +2844,7 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("AddProperty",			SI_Entity::AddPropertyLua);
 	g_pkScript->ExposeFunction("SetParameter",		SI_Entity::SetParameterLua);
+	g_pkScript->ExposeFunction("GetParameter",		SI_Entity::GetParameterLua);
 	g_pkScript->ExposeFunction("DelProperty",		   SI_Entity::DelPropertyLua);		
 
 	// Entity Values

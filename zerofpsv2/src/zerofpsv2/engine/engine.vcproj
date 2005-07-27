@@ -247,6 +247,9 @@
 				RelativePath="..\engine_systems\propertys\p_editicon.cpp">
 			</File>
 			<File
+				RelativePath="..\engine_systems\propertys\p_heightmap.cpp">
+			</File>
+			<File
 				RelativePath="..\engine_systems\propertys\p_hmrp2.cpp">
 			</File>
 			<File
@@ -396,6 +399,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_editicon.h">
+			</File>
+			<File
+				RelativePath="..\engine_systems\propertys\p_heightmap.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_hmrp2.h">
