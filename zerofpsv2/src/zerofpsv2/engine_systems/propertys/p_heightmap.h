@@ -54,6 +54,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void SetSize(int iWidth,int iHeight);
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		float CalculateRadius();
+		float GetHeight(float x,float y);
 };
 
 Property* Create_HeightmapProperty();

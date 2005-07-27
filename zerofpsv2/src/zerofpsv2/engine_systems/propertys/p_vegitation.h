@@ -9,9 +9,10 @@
 #include "../../engine/zerofps.h"
 #include "../../basic/zfresource.h"
 
+#include "p_heightmap.h"
+
 using namespace std;
 
-class P_HMRP2;
 
 /// Property to create bushes / trees.
 class ENGINE_SYSTEMS_API P_Vegitation : public Property {
@@ -75,7 +76,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		void AddPos(const Vector3& kPos);
 		void Clear();
 				
-		void Random(P_HMRP2* pkHmrp2 = NULL);
+		void Random(P_Heightmap* pkHM = NULL);
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);

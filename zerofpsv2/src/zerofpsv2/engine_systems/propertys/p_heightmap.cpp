@@ -328,6 +328,51 @@ void P_Heightmap::Smoth()
 		}
 }
 
+float P_Heightmap::GetHeight(float x,float y)
+{		
+	x-=m_pkEntity->GetWorldPosV().x;
+	y-=m_pkEntity->GetWorldPosV().z;
+
+  	x+=m_iWidth / 2.0;
+  	y+=m_iHeight / 2.0;
+
+
+// 	cout<<"x:"<<x<<endl;
+
+	x /= m_fScale;
+	y /= m_fScale;
+	
+	int iX = int(x);
+	int iY = int(y);
+// 	cout<<"ix:"<<iX<<endl;
+
+
+	if(iX < 0 || iX >= m_iRows || iY < 0 || iY >= m_iCols)
+		return 10;
+
+
+// 	float fHeight = m_kHeightData[iY*m_iRows + iX];
+	
+	float fXD = x - float(iX);
+	float fYD = y - float(iY);
+	
+
+	float H1 = m_kHeightData[iY*m_iRows + iX];
+	float H2 = m_kHeightData[iY*m_iRows + iX+1];
+	float H3 = m_kHeightData[(iY+1)*m_iRows + iX];
+	float H4 = m_kHeightData[(iY+1)*m_iRows + iX+1];
+
+	float fIX1 = H1*(1.0-fXD) + H2*(fXD);
+	float fIX2 = H3*(1.0-fXD) + H4*(fXD);
+// 	float fIY1 = H1*(1.0-fYD) + H3*(fYD);
+// 	float fIY2 = H2*(1.0-fYD) + H4*(fYD);
+
+	float fHeight = fIX1*(1.0-fYD) + fIX2*(fYD);
+
+	return fHeight+ m_pkEntity->GetWorldPosV().y;
+// 	return m_kHeightData[iY*m_iRows + iX] + m_pkEntity->GetWorldPosV().y;
+}
+
 void P_Heightmap::Save(ZFIoInterface* pkPackage)
 {
 	pkPackage->Write(m_iWidth);

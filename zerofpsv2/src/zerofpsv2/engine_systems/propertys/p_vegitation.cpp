@@ -47,13 +47,13 @@ void P_Vegitation::Init()
 	
 }
 
-void P_Vegitation::Random(P_HMRP2* pkHmrp2)
+void P_Vegitation::Random(P_Heightmap* pkHM)
 {
 	int size = m_iSize * 100;
 
 	Clear();
 	
-	if(pkHmrp2)
+	if(pkHM)
 	{
 		float sx = m_pkEntity->GetWorldPosV().x;
 		float sz = m_pkEntity->GetWorldPosV().z;
@@ -61,10 +61,10 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 	
 		for(int i=0;i<m_iAmount;i++)
 		{
-			float x = (rand()%size -(size/2)) /100.0f;
-			float z = (rand()%size -(size/2)) /100.0f;
+			float x = Randomf(m_iSize) - float(m_iSize) / 2.0;
+			float z = Randomf(m_iSize) - float(m_iSize) / 2.0;
 			
-			float y = pkHmrp2->m_pkHeightMap->Height(x+sx,z+sz);
+			float y = pkHM->GetHeight(x+sx,z+sz);
 			
 			AddPos(Vector3(float(x),float(y-sy -0.1),float(z)));
 		}
@@ -121,11 +121,11 @@ void P_Vegitation::Update()
 		Entity* hme = m_pkEntity->GetParent();
 		if(hme)
 		{
-			P_HMRP2* pkhmrp = (P_HMRP2*)hme->GetProperty("P_HMRP2");
-			if(pkhmrp)
+			P_Heightmap* pkHM = (P_Heightmap*)hme->GetProperty("P_Heightmap");
+			if(pkHM)
 			{
 				//cout<<"this zone has a heightmap, using it to get Y values"<<endl;				
-				Random(pkhmrp);
+				Random(pkHM);
 			}
 		}		
 	}
