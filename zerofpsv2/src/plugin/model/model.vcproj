@@ -150,6 +150,9 @@
 				RelativePath=".\p_mdlhl.cpp">
 			</File>
 			<File
+				RelativePath=".\p_obj.cpp">
+			</File>
+			<File
 				RelativePath=".\zssqpack.cpp">
 			</File>
 		</Filter>
@@ -168,6 +171,9 @@
 			</File>
 			<File
 				RelativePath=".\p_mdlhl.h">
+			</File>
+			<File
+				RelativePath=".\p_obj.h">
 			</File>
 			<File
 				RelativePath=".\zssqpack.h">

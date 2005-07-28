@@ -100,7 +100,7 @@
 				OutputFile="../../../../bin/madmake.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="../../../../bin"
+				AdditionalLibraryDirectories="../../../../lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/madmake.pdb"
 				SubSystem="1"/>

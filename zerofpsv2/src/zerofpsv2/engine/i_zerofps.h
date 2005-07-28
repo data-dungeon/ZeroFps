@@ -31,6 +31,7 @@ public:
 	virtual Camera* GetCam()= 0;		
 						
 	virtual bool GetShadowMap() = 0;						
+	virtual bool GetSpecMap() = 0;
 						
 	virtual DevStringPage* DevPrint_FindPage(const string& strName)= 0;	
 	virtual	void DrawDevStrings()= 0;

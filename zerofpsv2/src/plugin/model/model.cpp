@@ -13,6 +13,7 @@
 		p_md2:	Loads .md2 models from Quake 2 engine.
 		p_md5:	Loads md5 files (.md5mesh/.md5anim) from doom3 engine.
 		p_mdlhl:	Loads .mdl models from halflife engine.
+		p_obj:	Loads .obj 3d files.
 
 		zssqpack:	Subsystem for loading files from quake1/quake2 pack files.
 */
@@ -24,6 +25,7 @@
 #include "p_md2.h"
 #include "p_md5.h"
 #include "p_mdlhl.h"
+#include "p_obj.h"
 
 using namespace std;
 
@@ -49,6 +51,7 @@ extern "C"
 		Register_P_Md2( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
 		Register_P_Md5( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
 		Register_P_MdlHL( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
+		Register_P_Obj( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
 		return true;
 	}
 
