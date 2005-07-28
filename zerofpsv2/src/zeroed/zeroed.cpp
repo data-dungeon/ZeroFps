@@ -735,14 +735,17 @@ void ZeroEd::OnIdle()
 	
 	if(m_iEditMode == EDIT_HMAP) 
 	{
-		
+	
 		m_SelectedEntitys.clear();
+		m_iCurrentObject = -1;
 		ZoneData* pkZone= m_pkEntityManager->GetZone(m_kDrawPos);
 		if(pkZone)
 			if(pkZone->m_pkZone)
 			{
 				vector<Entity*> kZones;
 				pkZone->m_pkZone->GetZoneNeighbours(&kZones);
+				
+				m_iCurrentObject = pkZone->m_pkZone->GetEntityID(); 
 				
 				for(int i = 0;i<kZones.size();i++)
 					m_SelectedEntitys.insert(kZones[i]->GetEntityID());
@@ -876,15 +879,12 @@ void ZeroEd::RenderInterface(void)
 
 void ZeroEd::SetPointer()
 {
-	
-	
-// 	m_kDrawPos.Set(0,0,0);
 
-	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2;
+	Vector3 start	= m_pkActiveCamera->GetPos();// + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 
 	m_kDrawPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fZoneMarkerDistance;;	
-
+// 	return;
 
 // 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 // 	if(!pkEntity)	return;
@@ -922,23 +922,13 @@ void ZeroEd::SetPointer()
 void ZeroEd::HMModifyCommand(float fSize)
 {
  	static vector<HMSelectionData> kSelVertex;
-	
-	
-	float fTime = m_pkZeroFps->GetFrameTime();
-	P_Heightmap* hmrp = NULL;
-	
-// 	m_kSelectedHMVertex.clear();
-// 	m_SelectedEntitys.clear();
-// 	ZoneData* pkZone= m_pkEntityManager->GetZone(m_kDrawPos);
-// 	if(pkZone->m_pkZone)
-// 		m_SelectedEntitys.insert(pkZone->m_pkZone);
 
 	//loop all heightmaps
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
  		kSelVertex.clear();
 	
-		if(hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
+		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
 			//get selected vertexes 
 			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
@@ -948,21 +938,10 @@ void ZeroEd::HMModifyCommand(float fSize)
 				if(fSize == 0.0)
 					hmrp->Smooth(&kSelVertex);
 				else
-					hmrp->Modify(&kSelVertex, fSize * fTime);
-			}	
-	
+					hmrp->Modify(&kSelVertex, fSize * m_pkZeroFps->GetFrameTime());
+			}		
 		}		
 	}
-
-/*
-	if(m_kSelectedHMVertex.size() > 0 && hmrp) 
-	{
-		if(fSize == 0.0)
-			hmrp->Smooth(&m_kSelectedHMVertex);
- 		else
- 			hmrp->Modify(&m_kSelectedHMVertex, fSize * fTime);
-// 		m_kSelectedHMVertex.clear();
-	}*/
 }
 
 void ZeroEd::OnHud(void)

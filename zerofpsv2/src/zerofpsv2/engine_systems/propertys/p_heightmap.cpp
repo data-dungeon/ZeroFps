@@ -47,19 +47,19 @@ void P_Heightmap::Update()
  	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
 
 
-  	if(m_pkZeroFps->GetDebugGraph())
-	{
-		bool bUse = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
-		m_pkZShaderSystem->UseDefaultGLSLProgram(false);
-		
-  		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(1,1,1),true);
-		
-		m_pkRender->DrawAABB(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,4,m_iHeight/2.0),
-									m_pkEntity->GetWorldPosV()+Vector3(m_iWidth/2.0,4,m_iHeight/2.0),
-									Vector3(1,1,1),1);
-		
-		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
-	}
+//   	if(m_pkZeroFps->GetDebugGraph())
+// 	{
+// 		bool bUse = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
+// 		m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+// 		
+//   		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(1,1,1),true);
+// 		
+// 		m_pkRender->DrawAABB(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,4,m_iHeight/2.0),
+// 									m_pkEntity->GetWorldPosV()+Vector3(m_iWidth/2.0,4,m_iHeight/2.0),
+// 									Vector3(1,1,1),1);
+// 		
+// 		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
+// 	}
 
 
 	DrawHeightmap();
@@ -301,11 +301,11 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 		{					
 			
 // 			m_kHeightData.push_back(sin((x*m_fScale+y*m_fScale)/8.0) *2.0);
-//  			m_kHeightData.push_back(0);
-			if(x == 0 || x == m_iRows-1 || y == 0|| y == m_iCols-1)
-				m_kHeightData.push_back(0);
-			else	
-				m_kHeightData.push_back(Randomf(16)-8);
+ 			m_kHeightData.push_back(0);
+// 			if(x == 0 || x == m_iRows-1 || y == 0|| y == m_iCols-1)
+// 				m_kHeightData.push_back(0);
+// 			else	
+// 				m_kHeightData.push_back(Randomf(16)-8);
 		}
 
 	Smooth();
@@ -354,10 +354,6 @@ void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 {
 	for(int i = 0;i<kSelectionData->size();i++)
 	{			
-// 		if((*kSelectionData)[i].y == 0 || (*kSelectionData)[i].y == m_iCols-1 ||
-// 			(*kSelectionData)[i].x == 0 || (*kSelectionData)[i].x == m_iRows-1)
-// 			continue;
-	
 		int iIndex = (*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x;		
 		m_kHeightData[iIndex] += fMod * (*kSelectionData)[i].m_fValue;
 		

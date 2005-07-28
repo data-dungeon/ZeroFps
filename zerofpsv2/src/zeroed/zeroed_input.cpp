@@ -33,10 +33,10 @@ vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 void ZeroEd::Input_EditTerrain()
 {
 	
-	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
-	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkZeroFps->GetFrameTime();
+	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->GetFrameTime();
+	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->GetFrameTime();
+	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkZeroFps->GetFrameTime();
 	
 	if(m_fHMInRadius > m_fHMOutRadius - 0.1)
 		m_fHMInRadius = m_fHMOutRadius - 0.1;
@@ -133,7 +133,7 @@ void ZeroEd::Input_EditZone()
 	{
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
 
-	}	
+	}
 	
 	if(m_pkInputHandle->VKIsDown("createhmapzone") && !DelayCommand())
 	{
