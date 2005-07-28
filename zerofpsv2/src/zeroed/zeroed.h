@@ -7,6 +7,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "guiserverinfo.h"
 #include "../zerofpsv2/engine/entitymanager.h"
+#include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
 
 class Camera;
 class Entity;
@@ -182,7 +183,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		//heightmap stuff
 		Vector3						m_kDrawPos;
-		vector<HMSelectVertex>	m_kSelectedHMVertex;
+		vector<HMSelectionData>	m_kSelectedHMVertex;
 		float 						m_fHMInRadius;
 		float 						m_fHMOutRadius;
 		int							m_iEditLayer;
@@ -250,9 +251,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	ToogleLight();
 
 		//heightmap
-		HeightMap*	SetPointer();
-		void			DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
-		void			HMModifyCommand(float fSize);
+		void	SetPointer();
+		void	DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
+		void	HMModifyCommand(float fSize);
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);

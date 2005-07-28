@@ -37,8 +37,18 @@ void ZeroEd::Input_EditTerrain()
 	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	
 	if(m_fHMInRadius > m_fHMOutRadius)
-		m_fHMInRadius = m_fHMOutRadius;
+		m_fHMInRadius = m_fHMOutRadius- 0.1;
+
+	if(m_fHMOutRadius < m_fHMInRadius)
+		m_fHMOutRadius = m_fHMInRadius+0.1;
+
+	if(m_fHMInRadius < 0)
+		m_fHMInRadius = 0.1;
+	if(m_fHMOutRadius < 0)
+		m_fHMOutRadius = 0.2;
+
 
 	switch(m_iHMapEditMode)
 	{
@@ -52,12 +62,12 @@ void ZeroEd::Input_EditTerrain()
 		case HMAP_DRAWSMFLAT:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
 				HMModifyCommand(0.0);  
-			if(m_pkInputHandle->VKIsDown("hmlower"))	
-			{
-				m_kSelectedHMVertex = GetAllSelectedHMVertex();
-				if(m_kSelectedHMVertex.size() > 0) 
-					HeightMap::Merge(m_kSelectedHMVertex);
-			}
+// 			if(m_pkInputHandle->VKIsDown("hmlower"))	
+// 			{
+// 				m_kSelectedHMVertex = GetAllSelectedHMVertex();
+// 				if(m_kSelectedHMVertex.size() > 0) 
+// 					HeightMap::Merge(m_kSelectedHMVertex);
+// 			}
 			break;
 
 		case HMAP_DRAWMASK:

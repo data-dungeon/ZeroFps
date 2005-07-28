@@ -16,6 +16,7 @@
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
+#include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../zerofpsv2/engine_systems/propertys/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
@@ -463,15 +464,14 @@ void ZeroEd::DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRad
 	if(m_SelectedEntitys.empty())
 		return;
 
-	vector<HeightMap*>	kHMaps;
+	vector<P_Heightmap*>	kHMaps;
 
 	//get all hmaps	
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		if(P_HMRP2* hmrp = (P_HMRP2*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_HMRP2"))
+		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
-			if(hmrp->GetHeightMap())
-				kHMaps.push_back(hmrp->GetHeightMap());
+			kHMaps.push_back(hmrp);
 		}
 	}	
 	
@@ -493,13 +493,13 @@ void ZeroEd::DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRad
 		
 		for(int j = 0;j<kHMaps.size();j++)
 			if(kHMaps[j]->Inside(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z))
-				kVertex.y = float( kHMaps[j]->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
+				kVertex.y = float( kHMaps[j]->GetHeight(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
 			
 		kVertex += kCenterPos;
 		kVertexList.push_back(kVertex);
 	}
 
-	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
+	m_pkRender->DrawCircle(kVertexList, Vector3(1,.5,0) );
 
 	kVertexList.clear();
 	for(int i=0; i<360; i+=(int)12.25) 
@@ -510,13 +510,13 @@ void ZeroEd::DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRad
 
 		for(int j = 0;j<kHMaps.size();j++)
 			if(kHMaps[j]->Inside(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z))
-				kVertex.y = float( kHMaps[j]->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
+				kVertex.y = float( kHMaps[j]->GetHeight(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.05 );
 
 		kVertex += kCenterPos;
 		kVertexList.push_back(kVertex);
 	}
 
-	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
+	m_pkRender->DrawCircle(kVertexList, Vector3(1,1,0) );
 }
 
 
@@ -731,10 +731,11 @@ void ZeroEd::OnIdle()
 		m_pkAudioSys->SetListnerPosition(m_pkActiveCamera->GetPos(),m_pkActiveCamera->GetRotM());
 	
 	
-	if(m_iEditMode == EDIT_HMAP) {
-		HeightMap* pkMap = SetPointer();
+	if(m_iEditMode == EDIT_HMAP) 
+	{
+		SetPointer();
 		//DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
-		}
+	}
 
 	if(m_iEditMode == EDIT_ZONES )
 	{
@@ -858,14 +859,14 @@ void ZeroEd::RenderInterface(void)
 		m_pkEntityManager->DrawZones(&m_kNetworkZones);
 }
 
-HeightMap* ZeroEd::SetPointer()
+void ZeroEd::SetPointer()
 {
 	m_kDrawPos.Set(0,0,0);
 
 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
-	if(!pkEntity)	return NULL;
-	P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-	if(!hmrp)		return NULL;
+	if(!pkEntity)	return;
+	P_Heightmap* hmrp = static_cast<P_Heightmap*>(pkEntity->GetProperty("P_Heightmap"));
+	if(!hmrp)		return;
 
 	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
@@ -874,7 +875,7 @@ HeightMap* ZeroEd::SetPointer()
 	Vector3 dir		= Get3DMouseDir(true);*/
 	Vector3 end    = start + dir * 1000;
 
-	if(dir.y >= 0) return NULL;
+	if(dir.y >= 0) return;
 
 	// Find Level 0 for the selected zone in u.
 	//float fLevelZero = kZData->m_pkZone->GetWorldPosV().y;
@@ -889,50 +890,47 @@ HeightMap* ZeroEd::SetPointer()
 	if(kP.LineTest(start,end, &kIsect))
 	{
 		m_kDrawPos = kIsect;
-		m_kDrawPos.y = hmrp->m_pkHeightMap->Height(m_kDrawPos.x,m_kDrawPos.z);
+		m_kDrawPos.y = hmrp->GetHeight(m_kDrawPos.x,m_kDrawPos.z);
 	}
 
-	return hmrp->m_pkHeightMap;
-
-
-	//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-	//cout << "Local pos: " << kLocalOffset.x << ", " << kLocalOffset.y << ", " << kLocalOffset.z << endl;
 }
 
 
 void ZeroEd::HMModifyCommand(float fSize)
 {
-	static vector<HMSelectVertex> kSelVertex;
-	static P_HMRP2* hmrp;
+// 	static vector<HMSelectionData> kSelVertex;
 	
 	
 	float fTime = m_pkZeroFps->GetFrameTime();
+	P_Heightmap* hmrp = NULL;
+	
 	m_kSelectedHMVertex.clear();
 	
 
 	//loop all heightmaps
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		kSelVertex.clear();
+// 		kSelVertex.clear();
 	
-		if(hmrp = (P_HMRP2*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_HMRP2"))
+		if(hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
-			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+			//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
 					
 			//get selected vertexes 
-			kSelVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
+			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&m_kSelectedHMVertex);
 			
 			//add to vertex list
-			m_kSelectedHMVertex.insert(m_kSelectedHMVertex.begin(), kSelVertex.begin(), kSelVertex.end());			
+// 			m_kSelectedHMVertex.insert(m_kSelectedHMVertex.begin(), kSelVertex.begin(), kSelVertex.end());			
 		}		
 	}
 
-	if(m_kSelectedHMVertex.size() > 0) 
+
+	if(m_kSelectedHMVertex.size() > 0 && hmrp) 
 	{
 		if(fSize == 0.0)
-			hmrp->m_pkHeightMap->Smooth(m_kSelectedHMVertex);
-		else
-			hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
+			hmrp->Smooth(&m_kSelectedHMVertex);
+// 		else
+// 			hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
 		m_kSelectedHMVertex.clear();
 	}
 }

@@ -8,6 +8,19 @@
 using namespace std;
 
 
+class P_Heightmap;
+
+class ENGINE_SYSTEMS_API HMSelectionData
+{
+	public:
+		P_Heightmap*	m_pkHeightMap;	// Hmap this vertex is part of.
+		int				x;
+		int				y;
+		float				m_fValue;
+		Vector3			m_kWorld;			// World coo of this hmap vertex.
+};
+
+
 class ENGINE_SYSTEMS_API P_Heightmap : public Property 
 {
 	private:
@@ -37,7 +50,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		Vector3 GenerateNormal(int x,int y);
 		void DrawHeightmap();
 	
-		void Smoth();
+		
 	public:
 		P_Heightmap();
 		~P_Heightmap();
@@ -50,11 +63,15 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void PackFrom( NetPacket* pkNetPacket,int iConnectionID);
 
 
+		void Smooth(vector<HMSelectionData>* kSelectionData = NULL);
+	
 	
 		void SetSize(int iWidth,int iHeight);
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		float CalculateRadius();
 		float GetHeight(float x,float y);
+		bool  Inside(float x,float y);
+		void GetSelection(const Vector3& kCenter, float fInRadius, float fOutRadius,vector<HMSelectionData>* pkSelectionData);
 };
 
 Property* Create_HeightmapProperty();

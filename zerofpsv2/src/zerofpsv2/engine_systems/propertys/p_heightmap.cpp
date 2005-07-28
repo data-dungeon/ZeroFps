@@ -185,10 +185,8 @@ void P_Heightmap::RebuildArrays()
 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&m_kNormalData[0]);
 		m_pkZShaderSystem->SetNrOfVertexs(m_kVertexData.size());
 	
-		m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );
-	
-		m_pkZShaderSystem->DrawArray(TRIANGLESTRIP_MODE);
-		m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer();	
+		m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );	
+		m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLESTRIP_MODE);	
 	}
 }
 
@@ -309,23 +307,59 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 				m_kHeightData.push_back(Randomf(16)-8);
 		}
 
-	Smoth();
-	Smoth();
+	Smooth();
+	Smooth();
 
 	m_bHaveRebuilt = false;
 }
 
-void P_Heightmap::Smoth()
+void P_Heightmap::Smooth(vector<HMSelectionData>* kSelectionData)
 {
-	for(int y = 1;y<m_iCols-1;y++)
-		for(int x = 1;x<m_iRows-1;x++)
-		{					
-			m_kHeightData[y*m_iRows + x] = 	(m_kHeightData[y*m_iRows + x] + 
-														m_kHeightData[y*m_iRows + x+1]+
-														m_kHeightData[y*m_iRows + x-1]+
-														m_kHeightData[(y+1)*m_iRows + x]+
-														m_kHeightData[(y-1)*m_iRows + x]) / 5.0;
-		}
+	if(kSelectionData)
+	{
+		for(int i = 0;i<kSelectionData->size();i++)
+		{			
+			if((*kSelectionData)[i].y == 0 || (*kSelectionData)[i].y == m_iCols-1 ||
+				(*kSelectionData)[i].x == 0 || (*kSelectionData)[i].x == m_iRows-1)
+				continue;
+		
+			int iIndex = (*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x;		
+			m_kHeightData[iIndex] = (	m_kHeightData[iIndex] + 
+												m_kHeightData[iIndex+1]+
+												m_kHeightData[iIndex-1]+
+												m_kHeightData[iIndex+m_iRows]+
+												m_kHeightData[iIndex-m_iRows]) / 5.0;
+					
+		}	
+	}
+	else
+	{
+		for(int y = 1;y<m_iCols-1;y++)
+			for(int x = 1;x<m_iRows-1;x++)
+			{					
+				m_kHeightData[y*m_iRows + x] = 	(m_kHeightData[y*m_iRows + x] + 
+															m_kHeightData[y*m_iRows + x+1]+
+															m_kHeightData[y*m_iRows + x-1]+
+															m_kHeightData[(y+1)*m_iRows + x]+
+															m_kHeightData[(y-1)*m_iRows + x]) / 5.0;
+			}
+	}
+	
+	
+	m_bHaveRebuilt = false;
+}
+
+bool  P_Heightmap::Inside(float x,float y)
+{
+	if(x <  m_pkEntity->GetWorldPosV().x - m_iWidth/2.0)
+		return false;
+	if(x > m_pkEntity->GetWorldPosV().x + m_iWidth/2.0)
+		return false;
+
+	if(y <  m_pkEntity->GetWorldPosV().z - m_iHeight/2.0)
+		return false;
+	if(y > m_pkEntity->GetWorldPosV().z + m_iHeight/2.0)
+		return false;
 }
 
 float P_Heightmap::GetHeight(float x,float y)
@@ -336,23 +370,15 @@ float P_Heightmap::GetHeight(float x,float y)
   	x+=m_iWidth / 2.0;
   	y+=m_iHeight / 2.0;
 
-
-// 	cout<<"x:"<<x<<endl;
-
 	x /= m_fScale;
 	y /= m_fScale;
 	
 	int iX = int(x);
 	int iY = int(y);
-// 	cout<<"ix:"<<iX<<endl;
-
 
 	if(iX < 0 || iX >= m_iRows || iY < 0 || iY >= m_iCols)
 		return 10;
 
-
-// 	float fHeight = m_kHeightData[iY*m_iRows + iX];
-	
 	float fXD = x - float(iX);
 	float fYD = y - float(iY);
 	
@@ -364,13 +390,67 @@ float P_Heightmap::GetHeight(float x,float y)
 
 	float fIX1 = H1*(1.0-fXD) + H2*(fXD);
 	float fIX2 = H3*(1.0-fXD) + H4*(fXD);
-// 	float fIY1 = H1*(1.0-fYD) + H3*(fYD);
-// 	float fIY2 = H2*(1.0-fYD) + H4*(fYD);
 
 	float fHeight = fIX1*(1.0-fYD) + fIX2*(fYD);
 
 	return fHeight+ m_pkEntity->GetWorldPosV().y;
-// 	return m_kHeightData[iY*m_iRows + iX] + m_pkEntity->GetWorldPosV().y;
+}
+
+void P_Heightmap::GetSelection(const Vector3& kCenter, float fInRadius, float fOutRadius,vector<HMSelectionData>* pkSelectionData)
+{
+	HMSelectionData kSel;
+	kSel.m_fValue = 1.0;
+
+	float fInOutDiff = fOutRadius - fInRadius;
+
+	float fLen;
+	float fLen2;
+	Vector3 kWorld,kDiff;
+
+
+	for(int z = 0 ; z < m_iCols; z++) 
+	{
+		for(int x = 0 ; x < m_iRows ; x++) 
+		{	
+			kSel.m_pkHeightMap = this;
+			
+			// Calc World Pos of the vertex.
+			int iVertexIndex = z * m_iRows + x;			
+			kSel.x = x;
+			kSel.y = z;
+			kWorld = Vector3(x * m_fScale, m_kHeightData[iVertexIndex] ,z * m_fScale);	//*m_fTileSize
+			kWorld += m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,0,m_iHeight/2.0);
+	
+			kDiff = kWorld - kCenter;
+			kDiff.y = 0;
+
+			fLen = kDiff.Length();
+
+			kSel.m_kWorld = kWorld;
+			kSel.m_kWorld.y = 0;
+			// If inside inner circle set value to max.
+			if(fLen < fInRadius) 
+			{
+				kSel.m_fValue = 1.0;
+				pkSelectionData->push_back(kSel);			
+			}
+			else
+			if (fLen >= fInRadius && fLen <= fOutRadius) 
+			{
+				fLen2 = fLen - fInRadius;
+
+				kSel.m_fValue = 1.0 - (fLen2 / fInOutDiff);
+				//cout << kSel.m_fValue << ",";
+				
+				pkSelectionData->push_back(kSel);			
+			}
+			
+			
+		}
+	}
+
+// 	cout << "Num Of Vertices Selected: " << kSelection.size()<<endl;
+
 }
 
 void P_Heightmap::Save(ZFIoInterface* pkPackage)
