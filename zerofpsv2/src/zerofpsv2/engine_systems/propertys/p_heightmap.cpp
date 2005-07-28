@@ -18,6 +18,7 @@ P_Heightmap::P_Heightmap()
 
 	m_pkVBO = NULL;
 	m_fScale = 2.0;
+	m_fMaxValue = 100;
 	
 	m_pkMaterial = new ZFResourceHandle;		
 	m_pkMaterial->SetRes("heightmap.zlm");	
@@ -359,6 +360,12 @@ void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 	
 		int iIndex = (*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x;		
 		m_kHeightData[iIndex] += fMod * (*kSelectionData)[i].m_fValue;
+		
+		if(m_kHeightData[iIndex] > m_fMaxValue)
+			m_kHeightData[iIndex] = m_fMaxValue;
+			
+		if(m_kHeightData[iIndex] < -m_fMaxValue)
+			m_kHeightData[iIndex] = -m_fMaxValue;
 	}	
 	
 	ResetAllNetUpdateFlags();
@@ -475,6 +482,7 @@ void P_Heightmap::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_iWidth);
 	pkPackage->Write(m_iHeight);
 	pkPackage->Write(m_fScale);
+	pkPackage->Write(m_fMaxValue);
 
 	int iSize = m_kHeightData.size();
 	pkPackage->Write(iSize);
@@ -491,6 +499,7 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 	pkPackage->Read(m_iWidth);
 	pkPackage->Read(m_iHeight);
 	pkPackage->Read(m_fScale);
+	pkPackage->Read(m_fMaxValue);
 
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;

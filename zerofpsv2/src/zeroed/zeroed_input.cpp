@@ -38,16 +38,16 @@ void ZeroEd::Input_EditTerrain()
 	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	
-	if(m_fHMInRadius > m_fHMOutRadius)
-		m_fHMInRadius = m_fHMOutRadius- 0.1;
+	if(m_fHMInRadius > m_fHMOutRadius - 0.1)
+		m_fHMInRadius = m_fHMOutRadius - 0.1;
 
-	if(m_fHMOutRadius < m_fHMInRadius)
-		m_fHMOutRadius = m_fHMInRadius+0.1;
+	if(m_fHMOutRadius < m_fHMInRadius + 0.1 )
+		m_fHMOutRadius = m_fHMInRadius + 0.1;
 
-	if(m_fHMInRadius < 0)
-		m_fHMInRadius = 0.1;
-	if(m_fHMOutRadius < 0)
-		m_fHMOutRadius = 0.2;
+	if(m_fHMInRadius < 0.5)
+		m_fHMInRadius = 0.5;
+	if(m_fHMOutRadius < 1.0)
+		m_fHMOutRadius = 1.0;
 
 
 	switch(m_iHMapEditMode)
@@ -145,6 +145,7 @@ void ZeroEd::Input_EditZone()
  		{
  			P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
  			pkHM->SetSize(m_kZoneSize.x,m_kZoneSize.z);
+ 			pkHM->SetMaxValue(m_kZoneSize.y / 2.0);
  			
 			P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");
 			pp->SetTestType(E_HMAP);
@@ -525,7 +526,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		//zonemarker distance toggle
 		if(m_iAutoSnapZoneCorner == -1)
 		{
-			if(m_iEditMode == EDIT_ZONES)
+			if(m_iEditMode == EDIT_ZONES || m_iEditMode == EDIT_HMAP)
 			{
 				if(m_pkInputHandle->Pressed(MOUSEWUP))
 					m_fZoneMarkerDistance += 1.0;

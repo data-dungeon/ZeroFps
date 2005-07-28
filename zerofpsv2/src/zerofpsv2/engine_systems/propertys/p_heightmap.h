@@ -36,6 +36,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		vector<float>	m_kHeightData;
 		int				m_iWidth;
 		int				m_iHeight;
+		float				m_fMaxValue;
 		int				m_iRows;
 		int				m_iCols;
 	
@@ -67,6 +68,8 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
 	
 		void SetSize(int iWidth,int iHeight);
+		void SetMaxValue(float fMax)							{	m_fMaxValue = fMax;	};
+		
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		float CalculateRadius();
 		float GetHeight(float x,float y);
