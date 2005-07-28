@@ -345,9 +345,26 @@ void P_Heightmap::Smooth(vector<HMSelectionData>* kSelectionData)
 			}
 	}
 	
-	
+	ResetAllNetUpdateFlags();
 	m_bHaveRebuilt = false;
 }
+
+void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
+{
+	for(int i = 0;i<kSelectionData->size();i++)
+	{			
+// 		if((*kSelectionData)[i].y == 0 || (*kSelectionData)[i].y == m_iCols-1 ||
+// 			(*kSelectionData)[i].x == 0 || (*kSelectionData)[i].x == m_iRows-1)
+// 			continue;
+	
+		int iIndex = (*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x;		
+		m_kHeightData[iIndex] += fMod * (*kSelectionData)[i].m_fValue;
+	}	
+	
+	ResetAllNetUpdateFlags();
+	m_bHaveRebuilt = false;
+}
+
 
 bool  P_Heightmap::Inside(float x,float y)
 {

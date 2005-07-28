@@ -898,41 +898,45 @@ void ZeroEd::SetPointer()
 
 void ZeroEd::HMModifyCommand(float fSize)
 {
-// 	static vector<HMSelectionData> kSelVertex;
+ 	static vector<HMSelectionData> kSelVertex;
 	
 	
 	float fTime = m_pkZeroFps->GetFrameTime();
 	P_Heightmap* hmrp = NULL;
 	
-	m_kSelectedHMVertex.clear();
+// 	m_kSelectedHMVertex.clear();
 	
 
 	//loop all heightmaps
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-// 		kSelVertex.clear();
+ 		kSelVertex.clear();
 	
 		if(hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
-			//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-					
 			//get selected vertexes 
-			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&m_kSelectedHMVertex);
-			
-			//add to vertex list
-// 			m_kSelectedHMVertex.insert(m_kSelectedHMVertex.begin(), kSelVertex.begin(), kSelVertex.end());			
+			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
+		
+			if(kSelVertex.size() > 0) 
+			{
+				if(fSize == 0.0)
+					hmrp->Smooth(&kSelVertex);
+				else
+					hmrp->Modify(&kSelVertex, fSize * fTime);
+			}	
+	
 		}		
 	}
 
-
+/*
 	if(m_kSelectedHMVertex.size() > 0 && hmrp) 
 	{
 		if(fSize == 0.0)
 			hmrp->Smooth(&m_kSelectedHMVertex);
-// 		else
-// 			hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
-		m_kSelectedHMVertex.clear();
-	}
+ 		else
+ 			hmrp->Modify(&m_kSelectedHMVertex, fSize * fTime);
+// 		m_kSelectedHMVertex.clear();
+	}*/
 }
 
 void ZeroEd::OnHud(void)

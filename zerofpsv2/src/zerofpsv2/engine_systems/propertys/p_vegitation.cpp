@@ -83,7 +83,7 @@ void P_Vegitation::Random(P_Heightmap* pkHM)
  	BuildArrays();
 		
 	
-	SetNetUpdateFlag(true);	
+	ResetAllNetUpdateFlags();	
 }
 
 
