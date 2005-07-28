@@ -27,6 +27,11 @@ P_Heightmap::P_Heightmap()
 	SetSize(4,4);
 }
 
+void P_Heightmap::Init()
+{
+	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+}
+
 P_Heightmap::~P_Heightmap()
 {
 	delete m_pkMaterial;
@@ -215,6 +220,8 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 	
 	int iTileIndex;
 
+	bool bRight = false;
+
 	for(int y=0; y<m_iCols-1; y++) 
 	{
 		for(int x=0; x<m_iRows-1; x++) 
@@ -222,9 +229,19 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 			iTileIndex = y * m_iRows + x;
 
 			//top polygon
-			V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
-			V2 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);
-			V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);
+			if(bRight)
+			{
+				V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
+				V2 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);
+				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);
+			}
+			else
+			{
+				V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
+				V2 = Vector3((float)(x )*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x)], (float)(y + 1.0f)*m_fScale);
+				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);						
+			}
+			
 			pkVertex->push_back( V1 );			
 			pkVertex->push_back( V2 );		
 			pkVertex->push_back( V3 );		
@@ -242,10 +259,22 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 			kNorm.Normalize();
 			pkNormal->push_back( kNorm );
 
+
+
 			//botom polygon
-			V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale); 
-			V2 = Vector3((float)x*m_fScale , 		m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
-			V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);			
+			if(bRight)
+			{
+				V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale); 
+				V2 = Vector3((float)x*m_fScale , 		m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
+				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);			
+			}
+			else
+			{
+				V1 = Vector3((float)(x+1)*m_fScale, 	m_kHeightData[y*m_iRows+x+1], 			(float)y*m_fScale); 
+				V2 = Vector3((float)x*m_fScale , 		m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
+				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);						
+			}
+			
 			pkVertex->push_back( V1 );	
 			pkVertex->push_back( V2 );	
 			pkVertex->push_back( V3 );	
@@ -263,6 +292,11 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 			kNorm.Normalize();			
 			pkNormal->push_back( kNorm );
 		}
+		
+		if(bRight)
+			bRight = false;
+		else
+			bRight = true;
 	}
 		
 		
@@ -294,6 +328,7 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	m_iHeight = iHeight;		
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;
+	
 	
 	m_kHeightData.clear();
 	for(int y = 0;y<m_iCols;y++)
@@ -497,6 +532,8 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 	pkPackage->Read(m_fScale);
 	pkPackage->Read(m_fMaxValue);
 
+	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;
 
@@ -517,8 +554,6 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 {
 	int iStart = pkNetPacket->m_iPos;
-	cout<<"starting to pack hm "<<m_kHeightData.size()<<endl;
-
 
 	pkNetPacket->Write(m_iWidth);
 	pkNetPacket->Write(m_iHeight);
@@ -531,8 +566,6 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 	{
 		pkNetPacket->Write(m_kHeightData[i]);
 	}
-
-	cout<<"hm package size:"<<pkNetPacket->m_iPos - iStart<<endl;
 }
 
 void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
@@ -540,6 +573,8 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 	pkNetPacket->Read(m_iWidth);
 	pkNetPacket->Read(m_iHeight);
 	pkNetPacket->Read(m_fScale);
+
+	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
 
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;

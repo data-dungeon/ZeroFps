@@ -57,6 +57,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		~P_Heightmap();
 
 		void Update();
+		void Init();
 
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);		

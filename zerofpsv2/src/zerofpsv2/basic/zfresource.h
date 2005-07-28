@@ -4,6 +4,8 @@
 #include <string>
 #include "basic_x.h"
 
+class ZFResourceDB;
+
 using namespace std;
 
 /**	\brief	Base class for all resources.
