@@ -44,8 +44,8 @@ void P_Heightmap::Update()
 			 m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)))
 		return;
 
-	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(	m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,-8,m_iHeight/2.0),
-																				m_pkEntity->GetWorldPosV() + Vector3(m_iWidth/2.0,-8,m_iHeight/2.0)))
+	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(	m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0),
+																				m_pkEntity->GetWorldPosV() + Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0)))
 		return;
 
 	//update light					
