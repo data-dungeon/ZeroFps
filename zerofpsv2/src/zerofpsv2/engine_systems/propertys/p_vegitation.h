@@ -76,7 +76,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		void AddPos(const Vector3& kPos);
 		void Clear();
 				
-		void Random(P_Heightmap* pkHM = NULL);
+		void Random(vector<P_Heightmap*>* pkHMaps= NULL);
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);

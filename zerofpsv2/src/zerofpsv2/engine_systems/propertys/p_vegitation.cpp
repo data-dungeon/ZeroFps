@@ -47,13 +47,13 @@ void P_Vegitation::Init()
 	
 }
 
-void P_Vegitation::Random(P_Heightmap* pkHM)
+void P_Vegitation::Random(vector<P_Heightmap*>* pkHMaps)
 {
 	int size = m_iSize * 100;
 
 	Clear();
 	
-	if(pkHM)
+	if(pkHMaps)
 	{
 		float sx = m_pkEntity->GetWorldPosV().x;
 		float sz = m_pkEntity->GetWorldPosV().z;
@@ -63,10 +63,17 @@ void P_Vegitation::Random(P_Heightmap* pkHM)
 		{
 			float x = Randomf(m_iSize) - float(m_iSize) / 2.0;
 			float z = Randomf(m_iSize) - float(m_iSize) / 2.0;
+			float y = 0;
 			
-			float y = pkHM->GetHeight(x+sx,z+sz);
+			for(int i = 0;i<pkHMaps->size();i++)
+			{
+				if((*pkHMaps)[i]->Inside(x+sx,z+sz))
+				{
+					y = (*pkHMaps)[i]->GetHeight(x+sx,z+sz)-sy;
+				}
+			}
 			
-			AddPos(Vector3(float(x),float(y-sy -0.1),float(z)));
+			AddPos(Vector3(float(x),float(y -0.1),float(z)));
 		}
 	}
 	else
@@ -121,12 +128,29 @@ void P_Vegitation::Update()
 		Entity* hme = m_pkEntity->GetParent();
 		if(hme)
 		{
-			P_Heightmap* pkHM = (P_Heightmap*)hme->GetProperty("P_Heightmap");
-			if(pkHM)
+			if(hme->GetProperty("P_Heightmap"))
 			{
-				//cout<<"this zone has a heightmap, using it to get Y values"<<endl;				
-				Random(pkHM);
-			}
+				vector<Entity*> kZones;
+				vector<P_Heightmap*> kHMaps;
+				
+				//get zones			
+// 				if(m_pkEntityManager->IsUpdate(
+// 				hme->GetZoneNeighbours(&kZones);
+				m_pkEntityManager->GetAllEntitys(&kZones);
+	
+				
+				//get heightmaps
+				for(int i =0;i<kZones.size();i++)
+				{
+					if(P_Heightmap* pkHmap = (P_Heightmap*)kZones[i]->GetProperty("P_Heightmap"))
+						kHMaps.push_back(pkHmap);
+				}
+				
+				//send heightmaps to random function
+				Random(&kHMaps);
+			}	
+			else				
+				Random();
 		}		
 	}
 	

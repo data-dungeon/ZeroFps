@@ -100,6 +100,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			HMAP_DRAWMASK,
 			HMAP_DRAWVISIBLE,
 			HMAP_MAX,
+			HMAP_STITCH,
 		};
 
 
@@ -254,6 +255,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SetPointer();
 		void	DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
 		void	HMModifyCommand(float fSize);
+		void	Stitch();
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);

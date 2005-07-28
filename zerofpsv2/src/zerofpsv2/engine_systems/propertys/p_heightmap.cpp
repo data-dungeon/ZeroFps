@@ -403,6 +403,34 @@ void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 	m_bHaveRebuilt = false;
 }
 
+void P_Heightmap::Stitch(vector<HMSelectionData>* pkSelectionData)
+{
+	for(int i = 0;i<pkSelectionData->size();i++)
+	{
+	
+		for(int j = i;j<pkSelectionData->size();j++)
+		{
+			if(i == j)
+				continue;
+		
+			if((*pkSelectionData)[i].m_kWorld.x == (*pkSelectionData)[j].m_kWorld.x &&
+				(*pkSelectionData)[i].m_kWorld.z == (*pkSelectionData)[j].m_kWorld.z)
+			{
+				float fAvrage = (	(*pkSelectionData)[i].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[i].y * (*pkSelectionData)[i].m_pkHeightMap->m_iRows + (*pkSelectionData)[i].x] +
+										(*pkSelectionData)[j].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[j].y * (*pkSelectionData)[j].m_pkHeightMap->m_iRows + (*pkSelectionData)[j].x]) / 2.0;
+			
+				(*pkSelectionData)[i].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[i].y * (*pkSelectionData)[i].m_pkHeightMap->m_iRows + (*pkSelectionData)[i].x] = fAvrage;
+				(*pkSelectionData)[j].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[j].y * (*pkSelectionData)[j].m_pkHeightMap->m_iRows + (*pkSelectionData)[j].x] = fAvrage;					
+			
+				(*pkSelectionData)[i].m_pkHeightMap->ResetAllNetUpdateFlags();
+				(*pkSelectionData)[i].m_pkHeightMap->m_bHaveRebuilt = false;
+				(*pkSelectionData)[j].m_pkHeightMap->ResetAllNetUpdateFlags();
+				(*pkSelectionData)[j].m_pkHeightMap->m_bHaveRebuilt = false;
+			
+			}
+		}
+	}
+}
 
 bool  P_Heightmap::Inside(float x,float y)
 {
@@ -432,7 +460,7 @@ float P_Heightmap::GetHeight(float x,float y)
 	int iY = int(y);
 
 	if(iX < 0 || iX >= m_iRows || iY < 0 || iY >= m_iCols)
-		return 10;
+		return 0;
 
 	float fXD = x - float(iX);
 	float fYD = y - float(iY);

@@ -62,13 +62,13 @@ void ZeroEd::Input_EditTerrain()
 		case HMAP_DRAWSMFLAT:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
 				HMModifyCommand(0.0);  
-// 			if(m_pkInputHandle->VKIsDown("hmlower"))	
-// 			{
-// 				m_kSelectedHMVertex = GetAllSelectedHMVertex();
-// 				if(m_kSelectedHMVertex.size() > 0) 
-// 					HeightMap::Merge(m_kSelectedHMVertex);
-// 			}
 			break;
+
+		case HMAP_STITCH:
+			if(m_pkInputHandle->VKIsDown("hmraise"))		
+				Stitch();  
+			break;
+
 
 		case HMAP_DRAWMASK:
 			if(m_pkInputHandle->VKIsDown("hmraise"))	
@@ -109,8 +109,9 @@ void ZeroEd::Input_EditTerrain()
 
 	if(m_pkInputHandle->Pressed(KEY_4)) m_iHMapEditMode = HMAP_EDITVERTEX;		
 	if(m_pkInputHandle->Pressed(KEY_5)) m_iHMapEditMode = HMAP_DRAWSMFLAT;			
-	if(m_pkInputHandle->Pressed(KEY_6)) m_iHMapEditMode = HMAP_DRAWMASK;			
-	if(m_pkInputHandle->Pressed(KEY_7)) m_iHMapEditMode = HMAP_DRAWVISIBLE;			
+	if(m_pkInputHandle->Pressed(KEY_6)) m_iHMapEditMode = HMAP_STITCH;			
+	if(m_pkInputHandle->Pressed(KEY_7)) m_iHMapEditMode = HMAP_DRAWMASK;			
+	if(m_pkInputHandle->Pressed(KEY_8)) m_iHMapEditMode = HMAP_DRAWVISIBLE;			
 }
 
 

@@ -76,6 +76,10 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		float GetHeight(float x,float y);
 		bool  Inside(float x,float y);
 		void GetSelection(const Vector3& kCenter, float fInRadius, float fOutRadius,vector<HMSelectionData>* pkSelectionData);
+
+
+		static void Stitch(vector<HMSelectionData>* pkSelectionData);
+
 };
 
 Property* Create_HeightmapProperty();
