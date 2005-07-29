@@ -90,9 +90,11 @@ void P_WaterRender::Update()
 
 void P_WaterRender::DrawSurface()
 {
-	static float fY1,fY2;
+	static float fY1,fY2,fY3,fY4;
 	static Vector3 kNormal = Vector3(0,1,0);
 	static float t;										
+	
+	static Vector3 V1,V2;
 	
 	m_pkZShaderSystem->ClearGeometry();
 	m_pkZShaderSystem->MatrixPush();
@@ -100,24 +102,39 @@ void P_WaterRender::DrawSurface()
 	
 	t = m_pkZeroFps->GetEngineTime();
 	
+	
 	//first
 	float xo = m_pkEntity->GetWorldPosV().x;
+	float zo = m_pkEntity->GetWorldPosV().z;
 	for(int x = int(-m_kSize.x);x< m_kSize.x;x+=m_iStep)
-	{
-		fY1 = sin((x+xo)*0.5+t)*m_fWave  + m_kSize.y;
-		fY2 = sin((x+xo+m_iStep)*0.5+t)*m_fWave + m_kSize.y;
-	
+	{	
 		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
 		{
+// 			fY1 = sin((x+xo)+t)   			*m_fWave  + m_kSize.y;
+// 			fY2 = sin((x+xo+m_iStep)+t)	*m_fWave + m_kSize.y;
+			
+			fY1 = sin((x+xo)+t)*sin((z+zo)+t)   *m_fWave  + m_kSize.y;
+			fY2 = sin((x+xo+m_iStep)+t)*sin((z+zo)+t)	*m_fWave + m_kSize.y;
+			
+			fY3 = sin((x+xo+m_iStep)+t)*sin((z+zo+m_iStep)+t)  *m_fWave  + m_kSize.y;
+			fY4 = sin((x+xo)+t)*sin((z+zo+m_iStep)+t)	*m_fWave + m_kSize.y;
+			
+			
+			
 			m_pkZShaderSystem->AddQuadUV(	Vector2(x*0.1,z*0.1),
 													Vector2(x*0.1+0.1,z*0.1),
 													Vector2(x*0.1+0.1,z*0.1+0.1),
 													Vector2(x*0.1,z*0.1+0.1));
 													
- 			m_pkZShaderSystem->AddQuadN(kNormal,kNormal,kNormal,kNormal);
+			m_pkZShaderSystem->AddQuadN(	Vector3(0,fY4-fY1,1).Cross(Vector3(1,fY2-fY1,0)),
+													Vector3(-1,fY1-fY2,0).Cross(Vector3(0,fY3-fY2,1)),
+													Vector3(0,fY2-fY3,-1).Cross(Vector3(-1,fY4-fY3,0)),
+													Vector3(1,fY3-fY4,0).Cross(Vector3(0,fY1-fY4,-1)));													
+													
+//  			m_pkZShaderSystem->AddQuadN(kNormal,kNormal,kNormal,kNormal);
 			
 			m_pkZShaderSystem->AddQuadV(	Vector3(x,fY1,z),Vector3(x+m_iStep,fY2,z),
-													Vector3(x+m_iStep,fY2,z+m_iStep),Vector3(x,fY1,z+m_iStep));		
+													Vector3(x+m_iStep,fY3,z+m_iStep),Vector3(x,fY4,z+m_iStep));		
 		}
 	}
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
