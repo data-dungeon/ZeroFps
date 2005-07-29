@@ -884,7 +884,7 @@ void ZeroEd::SetPointer()
 	Vector3 dir		= Get3DMouseDir(true);
 
 	m_kDrawPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fZoneMarkerDistance;;	
-// 	return;
+ 	return;
 
 // 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 // 	if(!pkEntity)	return;

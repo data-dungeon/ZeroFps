@@ -416,11 +416,15 @@ void P_Heightmap::Stitch(vector<HMSelectionData>* pkSelectionData)
 			if((*pkSelectionData)[i].m_kWorld.x == (*pkSelectionData)[j].m_kWorld.x &&
 				(*pkSelectionData)[i].m_kWorld.z == (*pkSelectionData)[j].m_kWorld.z)
 			{
-				float fAvrage = (	(*pkSelectionData)[i].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[i].y * (*pkSelectionData)[i].m_pkHeightMap->m_iRows + (*pkSelectionData)[i].x] +
-										(*pkSelectionData)[j].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[j].y * (*pkSelectionData)[j].m_pkHeightMap->m_iRows + (*pkSelectionData)[j].x]) / 2.0;
+				float fAvrage = ((*pkSelectionData)[i].m_kWorld.y + (*pkSelectionData)[j].m_kWorld.y) / 2.0;
 			
-				(*pkSelectionData)[i].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[i].y * (*pkSelectionData)[i].m_pkHeightMap->m_iRows + (*pkSelectionData)[i].x] = fAvrage;
-				(*pkSelectionData)[j].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[j].y * (*pkSelectionData)[j].m_pkHeightMap->m_iRows + (*pkSelectionData)[j].x] = fAvrage;					
+				float fI = fAvrage - (*pkSelectionData)[i].m_pkHeightMap->GetEntity()->GetWorldPosV().y;
+				float fJ = fAvrage - (*pkSelectionData)[j].m_pkHeightMap->GetEntity()->GetWorldPosV().y;
+// 				float fAvrage = (	(*pkSelectionData)[i].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[i].y * (*pkSelectionData)[i].m_pkHeightMap->m_iRows + (*pkSelectionData)[i].x] +
+// 										(*pkSelectionData)[j].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[j].y * (*pkSelectionData)[j].m_pkHeightMap->m_iRows + (*pkSelectionData)[j].x]) / 2.0;
+			
+				(*pkSelectionData)[i].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[i].y * (*pkSelectionData)[i].m_pkHeightMap->m_iRows + (*pkSelectionData)[i].x] = fI;
+				(*pkSelectionData)[j].m_pkHeightMap->m_kHeightData[(*pkSelectionData)[j].y * (*pkSelectionData)[j].m_pkHeightMap->m_iRows + (*pkSelectionData)[j].x] = fJ;					
 			
 				(*pkSelectionData)[i].m_pkHeightMap->ResetAllNetUpdateFlags();
 				(*pkSelectionData)[i].m_pkHeightMap->m_bHaveRebuilt = false;
@@ -510,7 +514,7 @@ void P_Heightmap::GetSelection(const Vector3& kCenter, float fInRadius, float fO
 			fLen = kDiff.Length();
 
 			kSel.m_kWorld = kWorld;
-			kSel.m_kWorld.y = 0;
+// 			kSel.m_kWorld.y = 0;
 			// If inside inner circle set value to max.
 			if(fLen < fInRadius) 
 			{
