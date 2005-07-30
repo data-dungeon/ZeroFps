@@ -97,8 +97,9 @@ void P_Heightmap::DrawTexturedHeightmap()
 		BuildTextureArrays();
 
 	m_pkZShaderSystem->MatrixPush();	
-	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,0,m_iHeight/2.0)  );
-
+	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV()  );
+	m_pkZShaderSystem->MatrixMult(m_pkEntity->GetWorldRotM());	
+	m_pkZShaderSystem->MatrixTranslate(- Vector3(m_iWidth/2.0,0,m_iHeight/2.0));
 
 	for(int i =0;i<m_kDataArrays.size();i++)
 	{

@@ -2490,6 +2490,12 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 		cout<<"not loaded "<<szName<<endl;
 		
 			
+	if(zd->m_pkZone->GetProperty("P_Heightmap"))
+	{
+		cout<<"cant set model on a heightmap zone"<<endl;
+		return;
+	}
+			
 	if(strlen(szName) == 0)
 	{
 		zd->m_pkZone->DeleteProperty("P_Mad");
