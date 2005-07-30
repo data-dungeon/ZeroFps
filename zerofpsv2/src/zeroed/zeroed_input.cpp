@@ -55,9 +55,8 @@ void ZeroEd::Input_EditTerrain()
 		
 		case HMAP_DRAWMASK: 
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
-				HMDrawTexture(0); 	
-			if(m_pkInputHandle->VKIsDown("hmlower"))		
-				HMDrawTexture(1); 	
+				HMDrawTexture(m_cDrawTexture); 	
+	
 			break;
 			
 		case HMAP_EDITVERTEX: 
@@ -115,8 +114,22 @@ void ZeroEd::Input_EditTerrain()
 	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
 	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;		*/	
 	
-	m_iEditLayer = 0;
 	if(m_pkInputHandle->Pressed(KEY_1)) m_iHMapEditMode = HMAP_DRAWMASK;			
+	
+	if(m_pkInputHandle->Pressed(KEY_2) && !DelayCommand() && m_cDrawTexture < 250)
+	{
+		m_cDrawTexture++;			
+		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
+
+	}
+	
+	if(m_pkInputHandle->Pressed(KEY_3) && !DelayCommand() && m_cDrawTexture > 0)
+	{
+		m_cDrawTexture--;			
+		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
+
+	}
+
 
 	if(m_pkInputHandle->Pressed(KEY_4)) m_iHMapEditMode = HMAP_EDITVERTEX;		
 	if(m_pkInputHandle->Pressed(KEY_5)) m_iHMapEditMode = HMAP_DRAWSMFLAT;			

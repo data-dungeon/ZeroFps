@@ -137,7 +137,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
-	m_iEditLayer	= 1;
+	m_cDrawTexture	= 0;
 	m_fDelayTime   = 0.0;
 	m_strWorldDir  = "";
    
@@ -884,7 +884,7 @@ void ZeroEd::SetPointer()
 	Vector3 dir		= Get3DMouseDir(true);
 
 	m_kDrawPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fZoneMarkerDistance;;	
- 	return;
+//  	return;
 
 // 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 // 	if(!pkEntity)	return;

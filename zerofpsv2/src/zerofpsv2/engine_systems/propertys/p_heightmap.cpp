@@ -605,7 +605,7 @@ void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 	m_bHaveRebuilt = false;
 }
 
-void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,char cTexture)
+void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,unsigned char cTexture)
 {
 	for(int i = 0;i<kSelectionData->size();i++)
 	{			
@@ -786,9 +786,9 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;
 
-	int iSize;
-	float fVal;
-	char cTex;
+	int 				iSize;
+	float 			fVal;
+	unsigned char 	cTex;
 	m_kHeightData.clear();
 	m_kTextureIDs.clear();
 	
@@ -834,9 +834,9 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;
 
-	int iSize;
-	float fVal;
-	char cTex;
+	int 				iSize;
+	float 			fVal;
+	unsigned char 	cTex;
 	m_kHeightData.clear();
 	m_kTextureIDs.clear();
 	

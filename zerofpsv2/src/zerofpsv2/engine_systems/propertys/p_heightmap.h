@@ -57,9 +57,9 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		LightProfile		m_kLightProfile;				//used for lighting				
 	
 		
-		float				m_fScale;
-		vector<float>	m_kHeightData;
-		vector<char>	m_kTextureIDs;
+		float							m_fScale;
+		vector<float>				m_kHeightData;
+		vector<unsigned char>	m_kTextureIDs;
 		
 		int				m_iWidth;
 		int				m_iHeight;
@@ -98,7 +98,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 
 		void Smooth(vector<HMSelectionData>* kSelectionData = NULL);
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
-		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
+		void SetTexture(vector<HMSelectionData>* kSelectionData,unsigned char iTexture);
 	
 		void SetSize(int iWidth,int iHeight);
 		void SetMaxValue(float fMax)							{	m_fMaxValue = fMax;	};
