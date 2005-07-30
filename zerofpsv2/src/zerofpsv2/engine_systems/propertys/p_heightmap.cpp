@@ -9,7 +9,7 @@ P_Heightmap::P_Heightmap()
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-
+	m_iVersion = 2;
 
 	m_pkZShaderSystem =	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
@@ -776,33 +776,72 @@ void P_Heightmap::Save(ZFIoInterface* pkPackage)
 
 void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	pkPackage->Read(m_iWidth);
-	pkPackage->Read(m_iHeight);
-	pkPackage->Read(m_fScale);
-	pkPackage->Read(m_fMaxValue);
-
-	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-
-	m_iRows = (m_iWidth/m_fScale)+1;
-	m_iCols = (m_iHeight/m_fScale)+1;
-
-	int 				iSize;
-	float 			fVal;
-	unsigned char 	cTex;
-	m_kHeightData.clear();
-	m_kTextureIDs.clear();
-	
-	pkPackage->Read(iSize);	
-	for(int i = 0;i<iSize;i++)
+	switch(iVersion)
 	{
-		pkPackage->Read(fVal);
-		m_kHeightData.push_back(fVal);
-	
-		pkPackage->Read(cTex);
-		m_kTextureIDs.push_back(cTex);	
+		case 1:
+		{
+			pkPackage->Read(m_iWidth);
+			pkPackage->Read(m_iHeight);
+			pkPackage->Read(m_fScale);
+			pkPackage->Read(m_fMaxValue);
+		
+			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+		
+			m_iRows = (m_iWidth/m_fScale)+1;
+			m_iCols = (m_iHeight/m_fScale)+1;
+		
+			int 				iSize;
+			float 			fVal;
+			unsigned char 	cTex;
+			m_kHeightData.clear();
+			m_kTextureIDs.clear();
+			
+			pkPackage->Read(iSize);	
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read(fVal);
+				m_kHeightData.push_back(fVal);
+			
+				m_kTextureIDs.push_back(0);	
+			}
+		
+			m_bHaveRebuilt = false;
+			break;
+		}
+		
+		case 2:
+		{
+			pkPackage->Read(m_iWidth);
+			pkPackage->Read(m_iHeight);
+			pkPackage->Read(m_fScale);
+			pkPackage->Read(m_fMaxValue);
+		
+			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+		
+			m_iRows = (m_iWidth/m_fScale)+1;
+			m_iCols = (m_iHeight/m_fScale)+1;
+		
+			int 				iSize;
+			float 			fVal;
+			unsigned char 	cTex;
+			m_kHeightData.clear();
+			m_kTextureIDs.clear();
+			
+			pkPackage->Read(iSize);	
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read(fVal);
+				m_kHeightData.push_back(fVal);
+			
+				pkPackage->Read(cTex);
+				m_kTextureIDs.push_back(cTex);	
+			}
+		
+			m_bHaveRebuilt = false;
+			break;
+		}		
 	}
-
-	m_bHaveRebuilt = false;
+	
 }
 
 void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
