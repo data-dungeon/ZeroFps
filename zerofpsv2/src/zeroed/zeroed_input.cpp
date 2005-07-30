@@ -123,11 +123,10 @@ void ZeroEd::Input_EditTerrain()
 
 	}
 	
-	if(m_pkInputHandle->Pressed(KEY_3) && !DelayCommand() && m_cDrawTexture > 0)
+	if(m_pkInputHandle->Pressed(KEY_3) && !DelayCommand() && m_cDrawTexture > -1)
 	{
 		m_cDrawTexture--;			
 		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
-
 	}
 
 

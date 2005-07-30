@@ -63,7 +63,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 	
 		vector<ZFResourceHandle*>		m_kMaterials;		
 		vector<float>						m_kHeightData;
-		vector<unsigned char>			m_kTextureIDs;		
+		vector<char>						m_kTextureIDs;		
 		vector<HeightmapArrays*>		m_kDataArrays;				
 		
 		
@@ -87,7 +87,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 
 		void Smooth(vector<HMSelectionData>* kSelectionData = NULL);
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
-		void SetTexture(vector<HMSelectionData>* kSelectionData,unsigned char iTexture);
+		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
 	
 		void SetSize(int iWidth,int iHeight);
 		void SetMaxValue(float fMax)							{	m_fMaxValue = fMax;	};

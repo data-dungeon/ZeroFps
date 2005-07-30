@@ -150,6 +150,7 @@ void P_Heightmap::BuildTextureArrays()
 		HeightmapArrays* pkNewArrays = new HeightmapArrays;
 		m_kDataArrays.push_back(pkNewArrays);									
 		
+		
 		//draw the first material all over the place
 		if(i == 0)
 		{
@@ -157,6 +158,12 @@ void P_Heightmap::BuildTextureArrays()
 			{	
 				for(int x = 0;x<m_iRows-1;x++)
 				{	
+					if(m_kTextureIDs[y*m_iRows + x] == -1 ||
+						m_kTextureIDs[(y+1)*m_iRows + x] == -1||
+						m_kTextureIDs[y*m_iRows + x+1] == -1||
+						m_kTextureIDs[(y+1)*m_iRows + x+1] == -1)						
+						continue;				
+				
 					AddPolygon(pkNewArrays,x,y,i,true);
 					AddPolygon(pkNewArrays,x,y,i,false);			
 				}
@@ -167,7 +174,13 @@ void P_Heightmap::BuildTextureArrays()
 			for(int y = 0;y<m_iCols-1;y++)
 			{	
 				for(int x = 0;x<m_iRows-1;x++)
-				{					
+				{		
+					if(m_kTextureIDs[y*m_iRows + x] == -1 ||
+						m_kTextureIDs[(y+1)*m_iRows + x] == -1||
+						m_kTextureIDs[y*m_iRows + x+1] == -1||
+						m_kTextureIDs[(y+1)*m_iRows + x+1] == -1)						
+						continue;
+							
 					//TOP POLYGON
 					if(m_kTextureIDs[y*m_iRows + x] == i ||
 						m_kTextureIDs[(y+1)*m_iRows + x] == i||
@@ -300,29 +313,22 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 	static Vector3 V1,V2,V3;
 	static Vector3 kDir1,kDir2;
 	
-	int iTileIndex;
-
-	bool bRight = false;
-
+	
 	for(int y=0; y<m_iCols-1; y++) 
 	{
 		for(int x=0; x<m_iRows-1; x++) 
 		{
-			iTileIndex = y * m_iRows + x;
-
+			//dont add transparent polygons
+			if(m_kTextureIDs[y*m_iRows + x] == -1 ||
+				m_kTextureIDs[(y+1)*m_iRows + x] == -1||
+				m_kTextureIDs[y*m_iRows + x+1] == -1||
+				m_kTextureIDs[(y+1)*m_iRows + x+1] == -1)						
+				continue;		
+		
 			//top polygon
-// 			if(bRight)
-// 			{
-				V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
-				V2 = Vector3((float)x*m_fScale, 	m_kHeightData[(y+1)*m_iRows+x], 				(float)(y + 1.0f)*m_fScale);
-				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);
-// 			}
-// 			else
-// 			{
-// 				V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
-// 				V2 = Vector3((float)(x )*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x)], (float)(y + 1.0f)*m_fScale);
-// 				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);						
-// 			}
+			V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
+			V2 = Vector3((float)x*m_fScale, 	m_kHeightData[(y+1)*m_iRows+x], 				(float)(y + 1.0f)*m_fScale);
+			V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);
 			
 			pkVertex->push_back( V1 );			
 			pkVertex->push_back( V2 );		
@@ -343,20 +349,12 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 
 
 
+
 			//botom polygon
-// 			if(bRight)
-// 			{
-				V1 = Vector3((float)(x+1)*m_fScale, 	m_kHeightData[y*m_iRows+x+1], 		(float)y*m_fScale); 
-				V2 = Vector3((float)x*m_fScale , 		m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
-				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);			
-// 			}
-// 			else
-// 			{
-// 				V1 = Vector3((float)(x+1)*m_fScale, 	m_kHeightData[y*m_iRows+x+1], 			(float)y*m_fScale); 
-// 				V2 = Vector3((float)x*m_fScale , 		m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
-// 				V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);						
-// 			}
-// 			
+			V1 = Vector3((float)(x+1)*m_fScale, 	m_kHeightData[y*m_iRows+x+1], 		(float)y*m_fScale); 
+			V2 = Vector3((float)x*m_fScale , 		m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
+			V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale);			
+
 			pkVertex->push_back( V1 );	
 			pkVertex->push_back( V2 );	
 			pkVertex->push_back( V3 );	
@@ -374,11 +372,6 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 			kNorm.Normalize();			
 			pkNormal->push_back( kNorm );
 		}
-		
-		if(bRight)
-			bRight = false;
-		else
-			bRight = true;
 	}
 		
 		
@@ -423,17 +416,8 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	for(int y = 0;y<m_iCols;y++)
 		for(int x = 0;x<m_iRows;x++)
 		{					
-			
-// 			m_kHeightData.push_back(sin((x*m_fScale+y*m_fScale)/8.0) *2.0);
  			m_kHeightData.push_back(0);
-// 			if(x == 0 || x == m_iRows-1 || y == 0|| y == m_iCols-1)
-// 				m_kHeightData.push_back(0);
-// 			else	
-// 				m_kHeightData.push_back(Randomf(16)-8);
 		}
-
-// 	Smooth();
-// 	Smooth();
 
 	m_bHaveRebuilt = false;
 }
@@ -492,7 +476,7 @@ void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 	m_bHaveRebuilt = false;
 }
 
-void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,unsigned char cTexture)
+void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,char cTexture)
 {
 	for(int i = 0;i<kSelectionData->size();i++)
 	{			
@@ -710,7 +694,7 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 		
 			int 				iSize;
 			float 			fVal;
-			unsigned char 	cTex;
+			char 				cTex;
 			m_kHeightData.clear();
 			m_kTextureIDs.clear();
 			
@@ -769,7 +753,7 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 
 	int 				iSize;
 	float 			fVal;
-	unsigned char 	cTex;
+	char 				cTex;
 	m_kHeightData.clear();
 	m_kTextureIDs.clear();
 	

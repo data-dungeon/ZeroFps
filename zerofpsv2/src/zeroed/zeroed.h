@@ -187,7 +187,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		vector<HMSelectionData>	m_kSelectedHMVertex;
 		float 						m_fHMInRadius;
 		float 						m_fHMOutRadius;
-		unsigned char				m_cDrawTexture;
+		char							m_cDrawTexture;
 
 		//network
 		vector<ZoneData>			m_kNetworkZones;
