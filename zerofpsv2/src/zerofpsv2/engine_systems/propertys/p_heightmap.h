@@ -51,9 +51,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		Render*				m_pkRender;	
 		
 		
-		vector<ZFResourceHandle*>		m_kMaterials;
-		
-		ZFResourceHandle* m_pkMaterial;	
+		vector<ZFResourceHandle*>		m_kMaterials;		
 		LightProfile		m_kLightProfile;				//used for lighting				
 	
 		
@@ -76,9 +74,11 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 	
 		vector<HeightmapArrays*>	m_kDataArrays;
 	
-		void RebuildArrays();
+		//void RebuildArrays();
+		//void DrawHeightmap();
+				
 		Vector3 GenerateNormal(int x,int y);
-		void DrawHeightmap();
+
 	
 		void BuildTextureArrays();
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop);

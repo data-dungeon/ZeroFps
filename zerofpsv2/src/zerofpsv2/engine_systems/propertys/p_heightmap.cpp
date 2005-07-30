@@ -20,9 +20,6 @@ P_Heightmap::P_Heightmap()
 	m_fScale = 2.0;
 	m_fMaxValue = 100;
 	
-	m_pkMaterial = new ZFResourceHandle;		
-	m_pkMaterial->SetRes("heightmap.zlm");	
-	
 	
 	ZFResourceHandle* pkTempMat = new ZFResourceHandle;
 	pkTempMat->SetRes("heightmap/grass.zlm");	
@@ -36,6 +33,9 @@ P_Heightmap::P_Heightmap()
 	pkTempMat->SetRes("heightmap/dirt.zlm");	
 	m_kMaterials.push_back(pkTempMat);
 	
+	pkTempMat = new ZFResourceHandle;
+	pkTempMat->SetRes("heightmap/sand.zlm");	
+	m_kMaterials.push_back(pkTempMat);
 	
 	
 	SetSize(4,4);
@@ -48,8 +48,12 @@ void P_Heightmap::Init()
 
 P_Heightmap::~P_Heightmap()
 {
-	delete m_pkMaterial;
-
+	for(int i =0;i<m_kMaterials.size();i++)
+		delete m_kMaterials[i];	
+	
+	//clear data arrays
+	for(int i = 0;i<m_kDataArrays.size();i++)
+		delete m_kDataArrays[i];
 }
 
 void P_Heightmap::Update()
@@ -269,127 +273,7 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool
 }
 
 
-void P_Heightmap::DrawHeightmap()
-{
-	if(!m_bHaveRebuilt)
-		RebuildArrays();
 
-	m_pkZShaderSystem->MatrixPush();
-	
-	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );
-	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,0,m_iHeight/2.0)  );
-
-	if(m_pkVBO)
-	{
-		m_pkZShaderSystem->DrawVertexBuffer(m_pkVBO);	
-	}
-	else
-	{
-		m_pkZShaderSystem->ResetPointers();
-		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&m_kVertexData[0]);
-		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&m_kTextureData[0]);
-		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&m_kNormalData[0]);
-		m_pkZShaderSystem->SetNrOfVertexs(m_kVertexData.size());
-		
-		m_pkZShaderSystem->DrawArray(TRIANGLESTRIP_MODE);
-	}
-	
-	m_pkZShaderSystem->MatrixPop();
-}
-
-void P_Heightmap::RebuildArrays()
-{
-	m_bHaveRebuilt = true;
-
-	m_kVertexData.clear();
-	m_kNormalData.clear();
-	m_kTextureData.clear();
-
-	float fXMod = 0.25 ;// float(m_iRows+1);
-	float fYMod = 0.25 ;// float(m_iCols+1);
-	float fS = m_fScale;
-
-	bool bRight = true;
-
-	m_kVertexData.push_back(Vector3(0,m_kHeightData[0],0));
-	m_kTextureData.push_back(Vector2(0,0));
-	m_kNormalData.push_back(GenerateNormal(0,0));
-
-	for(int y = 0;y<m_iCols-1;y++)
-	{	
-		if(bRight)
-		{
-			bRight = false;
-					
-			for(int x = 0;x<m_iRows-1;x++)
-			{
-				m_kVertexData.push_back(Vector3(x*fS,m_kHeightData[(y+1)*m_iRows + x],(y+1)*fS));
-				m_kTextureData.push_back(Vector2( x*fS*fXMod,		(y+1)*fS*fYMod));
-				m_kNormalData.push_back(GenerateNormal(x,y+1));
-				
-				m_kVertexData.push_back(Vector3((x+1)*fS,m_kHeightData[y*m_iRows + (x+1)],y*fS));	
-				m_kTextureData.push_back(Vector2((x+1)*fS*fXMod,	y*fS*fYMod));
-				m_kNormalData.push_back(GenerateNormal(x+1,y));
-			}
-		
-		
-			//add extra polygon in the end
-			m_kVertexData.push_back( Vector3((m_iRows-1)*fS,m_kHeightData[(y+1)*m_iRows + m_iRows-1],(y+1)*fS) );
- 			m_kVertexData.push_back( Vector3((m_iRows-1)*fS,m_kHeightData[(y+1)*m_iRows + m_iRows-1],(y+1)*fS) );
- 			m_kVertexData.push_back( Vector3((m_iRows-1)*fS,m_kHeightData[(y+1)*m_iRows + m_iRows-1],(y+1)*fS) );
- 			m_kTextureData.push_back( Vector2((m_iRows-1)*fS * fXMod,(y+1)*fS*fYMod));		
-			m_kTextureData.push_back( Vector2((m_iRows-1)*fS * fXMod,(y+1)*fS*fYMod));				 			
- 			m_kTextureData.push_back( Vector2((m_iRows-1)*fS * fXMod,(y+1)*fS*fYMod));		
-			m_kNormalData.push_back(GenerateNormal(m_iRows-1,y+1));
-			m_kNormalData.push_back(GenerateNormal(m_iRows-1,y+1));
-			m_kNormalData.push_back(GenerateNormal(m_iRows-1,y+1));
-		
-		}
-		else
-		{
-			bRight = true;
-		
-			for(int x = m_iRows-1;x>0;x--)
-			{
-				m_kVertexData.push_back(Vector3(x*fS,m_kHeightData[(y+1)*m_iRows + x],(y+1)*fS));
-				m_kTextureData.push_back(Vector2(x*fS*fXMod,		(y+1)*fS*fYMod));
-				m_kNormalData.push_back(GenerateNormal(x,y+1));
-				
-				m_kVertexData.push_back(Vector3((x-1)*fS,m_kHeightData[y*m_iRows + (x-1)],y*fS));	
-				m_kTextureData.push_back(Vector2((x-1)*fS*fXMod,	y*fS*fYMod));												
-				m_kNormalData.push_back(GenerateNormal(x-1,y));			
-			}
-		
-			//add extra polygon in the end
-			m_kVertexData.push_back(Vector3(0,m_kHeightData[(y+1)*m_iRows],(y+1)*fS));
-			m_kVertexData.push_back(Vector3(0,m_kHeightData[(y+1)*m_iRows],(y+1)*fS));
-			m_kVertexData.push_back(Vector3(0,m_kHeightData[(y+1)*m_iRows],(y+1)*fS));
-			m_kTextureData.push_back(Vector2(0,(y+1)*fS*fYMod));		
-			m_kTextureData.push_back(Vector2(0,(y+1)*fS*fYMod));
-			m_kTextureData.push_back(Vector2(0,(y+1)*fS*fYMod));		
-			m_kNormalData.push_back(GenerateNormal(0,(y+1)*fS) );			
-			m_kNormalData.push_back(GenerateNormal(0,(y+1)*fS) );			
-			m_kNormalData.push_back(GenerateNormal(0,(y+1)*fS) );			
-		
-		}		
-	}
-	
-	
-	if(m_pkVBO)
-		delete m_pkVBO;
-		
-	if(m_kVertexData.size() > 500)
-	{
-		m_pkZShaderSystem->ResetPointers();
-		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&m_kVertexData[0]);
-		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&m_kTextureData[0]);
-		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&m_kNormalData[0]);
-		m_pkZShaderSystem->SetNrOfVertexs(m_kVertexData.size());
-	
-		m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );	
-		m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLESTRIP_MODE);	
-	}
-}
 
 Vector3 P_Heightmap::GenerateNormal(int x,int y)
 {
@@ -908,3 +792,146 @@ void Register_HeightmapProperty(ZeroFps* pkZeroFps)
 // 	g_pkScript->ExposeFunction("SetNextAnim",			SI_PMad::SetNextAnim);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+void P_Heightmap::DrawHeightmap()
+{
+	if(!m_bHaveRebuilt)
+		RebuildArrays();
+
+	m_pkZShaderSystem->MatrixPush();
+	
+	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );
+	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,0,m_iHeight/2.0)  );
+
+	if(m_pkVBO)
+	{
+		m_pkZShaderSystem->DrawVertexBuffer(m_pkVBO);	
+	}
+	else
+	{
+		m_pkZShaderSystem->ResetPointers();
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&m_kVertexData[0]);
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&m_kTextureData[0]);
+		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&m_kNormalData[0]);
+		m_pkZShaderSystem->SetNrOfVertexs(m_kVertexData.size());
+		
+		m_pkZShaderSystem->DrawArray(TRIANGLESTRIP_MODE);
+	}
+	
+	m_pkZShaderSystem->MatrixPop();
+}
+
+void P_Heightmap::RebuildArrays()
+{
+	m_bHaveRebuilt = true;
+
+	m_kVertexData.clear();
+	m_kNormalData.clear();
+	m_kTextureData.clear();
+
+	float fXMod = 0.25 ;// float(m_iRows+1);
+	float fYMod = 0.25 ;// float(m_iCols+1);
+	float fS = m_fScale;
+
+	bool bRight = true;
+
+	m_kVertexData.push_back(Vector3(0,m_kHeightData[0],0));
+	m_kTextureData.push_back(Vector2(0,0));
+	m_kNormalData.push_back(GenerateNormal(0,0));
+
+	for(int y = 0;y<m_iCols-1;y++)
+	{	
+		if(bRight)
+		{
+			bRight = false;
+					
+			for(int x = 0;x<m_iRows-1;x++)
+			{
+				m_kVertexData.push_back(Vector3(x*fS,m_kHeightData[(y+1)*m_iRows + x],(y+1)*fS));
+				m_kTextureData.push_back(Vector2( x*fS*fXMod,		(y+1)*fS*fYMod));
+				m_kNormalData.push_back(GenerateNormal(x,y+1));
+				
+				m_kVertexData.push_back(Vector3((x+1)*fS,m_kHeightData[y*m_iRows + (x+1)],y*fS));	
+				m_kTextureData.push_back(Vector2((x+1)*fS*fXMod,	y*fS*fYMod));
+				m_kNormalData.push_back(GenerateNormal(x+1,y));
+			}
+		
+		
+			//add extra polygon in the end
+			m_kVertexData.push_back( Vector3((m_iRows-1)*fS,m_kHeightData[(y+1)*m_iRows + m_iRows-1],(y+1)*fS) );
+ 			m_kVertexData.push_back( Vector3((m_iRows-1)*fS,m_kHeightData[(y+1)*m_iRows + m_iRows-1],(y+1)*fS) );
+ 			m_kVertexData.push_back( Vector3((m_iRows-1)*fS,m_kHeightData[(y+1)*m_iRows + m_iRows-1],(y+1)*fS) );
+ 			m_kTextureData.push_back( Vector2((m_iRows-1)*fS * fXMod,(y+1)*fS*fYMod));		
+			m_kTextureData.push_back( Vector2((m_iRows-1)*fS * fXMod,(y+1)*fS*fYMod));				 			
+ 			m_kTextureData.push_back( Vector2((m_iRows-1)*fS * fXMod,(y+1)*fS*fYMod));		
+			m_kNormalData.push_back(GenerateNormal(m_iRows-1,y+1));
+			m_kNormalData.push_back(GenerateNormal(m_iRows-1,y+1));
+			m_kNormalData.push_back(GenerateNormal(m_iRows-1,y+1));
+		
+		}
+		else
+		{
+			bRight = true;
+		
+			for(int x = m_iRows-1;x>0;x--)
+			{
+				m_kVertexData.push_back(Vector3(x*fS,m_kHeightData[(y+1)*m_iRows + x],(y+1)*fS));
+				m_kTextureData.push_back(Vector2(x*fS*fXMod,		(y+1)*fS*fYMod));
+				m_kNormalData.push_back(GenerateNormal(x,y+1));
+				
+				m_kVertexData.push_back(Vector3((x-1)*fS,m_kHeightData[y*m_iRows + (x-1)],y*fS));	
+				m_kTextureData.push_back(Vector2((x-1)*fS*fXMod,	y*fS*fYMod));												
+				m_kNormalData.push_back(GenerateNormal(x-1,y));			
+			}
+		
+			//add extra polygon in the end
+			m_kVertexData.push_back(Vector3(0,m_kHeightData[(y+1)*m_iRows],(y+1)*fS));
+			m_kVertexData.push_back(Vector3(0,m_kHeightData[(y+1)*m_iRows],(y+1)*fS));
+			m_kVertexData.push_back(Vector3(0,m_kHeightData[(y+1)*m_iRows],(y+1)*fS));
+			m_kTextureData.push_back(Vector2(0,(y+1)*fS*fYMod));		
+			m_kTextureData.push_back(Vector2(0,(y+1)*fS*fYMod));
+			m_kTextureData.push_back(Vector2(0,(y+1)*fS*fYMod));		
+			m_kNormalData.push_back(GenerateNormal(0,(y+1)*fS) );			
+			m_kNormalData.push_back(GenerateNormal(0,(y+1)*fS) );			
+			m_kNormalData.push_back(GenerateNormal(0,(y+1)*fS) );			
+		
+		}		
+	}
+	
+	
+	if(m_pkVBO)
+		delete m_pkVBO;
+		
+	if(m_kVertexData.size() > 500)
+	{
+		m_pkZShaderSystem->ResetPointers();
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&m_kVertexData[0]);
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&m_kTextureData[0]);
+		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&m_kNormalData[0]);
+		m_pkZShaderSystem->SetNrOfVertexs(m_kVertexData.size());
+	
+		m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );	
+		m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLESTRIP_MODE);	
+	}
+}
+
+*/
