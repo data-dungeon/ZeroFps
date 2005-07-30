@@ -52,6 +52,14 @@ void ZeroEd::Input_EditTerrain()
 
 	switch(m_iHMapEditMode)
 	{
+		
+		case HMAP_DRAWMASK: 
+			if(m_pkInputHandle->VKIsDown("hmraise"))		
+				HMDrawTexture(0); 	
+			if(m_pkInputHandle->VKIsDown("hmlower"))		
+				HMDrawTexture(1); 	
+			break;
+			
 		case HMAP_EDITVERTEX: 
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
 				HMModifyCommand(5); 
@@ -70,20 +78,20 @@ void ZeroEd::Input_EditTerrain()
 			break;
 
 
-		case HMAP_DRAWMASK:
-			if(m_pkInputHandle->VKIsDown("hmraise"))	
-			{
-				for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-				{
-					Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
-					if(!pkEntity)			continue;
-					P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-					if(hmrp == NULL)		continue;
-					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
-				}
-			}
-			break;
+// 		case HMAP_DRAWMASK:
+// 			if(m_pkInputHandle->VKIsDown("hmraise"))	
+// 			{
+// 				for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+// 				{
+// 					Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
+// 					if(!pkEntity)			continue;
+// 					P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+// 					if(hmrp == NULL)		continue;
+// 					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+// 					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+// 				}
+// 			}
+// 			break;
 
 		case HMAP_DRAWVISIBLE:
 			for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
@@ -103,9 +111,12 @@ void ZeroEd::Input_EditTerrain()
 			break;
 	}
 
-	if(m_pkInputHandle->Pressed(KEY_1)) m_iEditLayer = 1;		
+/*	if(m_pkInputHandle->Pressed(KEY_1)) m_iEditLayer = 1;		
 	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
-	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;			
+	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;		*/	
+	
+	m_iEditLayer = 0;
+	if(m_pkInputHandle->Pressed(KEY_1)) m_iHMapEditMode = HMAP_DRAWMASK;			
 
 	if(m_pkInputHandle->Pressed(KEY_4)) m_iHMapEditMode = HMAP_EDITVERTEX;		
 	if(m_pkInputHandle->Pressed(KEY_5)) m_iHMapEditMode = HMAP_DRAWSMFLAT;			
@@ -200,7 +211,7 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(16,32,16);	
 	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(32,32,32);		
-	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);	
+	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(64,32,64);	
 
 	if(m_iAutoSnapZoneCorner != -1)
 	{

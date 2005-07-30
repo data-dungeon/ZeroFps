@@ -919,6 +919,26 @@ void ZeroEd::SetPointer()
 }
 
 
+void ZeroEd::HMDrawTexture(char iTexID)
+{
+ 	static vector<HMSelectionData> kSelVertex;
+
+	//loop all heightmaps
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+ 		kSelVertex.clear();
+	
+		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
+		{
+			//get selected vertexes 
+			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
+		
+			if(kSelVertex.size() > 0) 
+				hmrp->SetTexture(&kSelVertex,iTexID);
+		}		
+	}
+}
+
 void ZeroEd::HMModifyCommand(float fSize)
 {
  	static vector<HMSelectionData> kSelVertex;

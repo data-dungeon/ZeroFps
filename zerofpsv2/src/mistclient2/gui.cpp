@@ -302,7 +302,7 @@ void MistClient::SetupGUI()
 			pkCam->SetDrawInterface(false);
 			pkCam->SetClearViewPort(false);  
 			pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
-			pkCam->SetForceLighting(0);
+			pkCam->SetForceLighting(LIGHT_ALWAYS_OFF);
 						
 			pkModelWnd->SetRenderTarget(pkCam);
 

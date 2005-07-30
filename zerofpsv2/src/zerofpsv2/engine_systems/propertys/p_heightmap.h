@@ -24,16 +24,43 @@ class ENGINE_SYSTEMS_API HMSelectionData
 class ENGINE_SYSTEMS_API P_Heightmap : public Property 
 {
 	private:
+		class HeightmapArrays
+		{
+			public:
+				vector<Vector3>	m_kVertexData;
+				vector<Vector2>	m_kTextureData;
+				vector<Vector3>	m_kNormalData;	
+				vector<Vector4>	m_kColorData;	
+				ZVertexBuffer*		m_pkVBO;		
+				
+				HeightmapArrays()
+				{
+					m_pkVBO = NULL;
+				};
+				
+				~HeightmapArrays()
+				{
+					if(m_pkVBO)
+						delete m_pkVBO;
+				}
+		};
+		
+		
 		ZShaderSystem*		m_pkZShaderSystem;
 		Light*				m_pkLight;
 		Render*				m_pkRender;	
 		
-		ZFResourceHandle* m_pkMaterial;	
-		LightProfile		m_kLightProfile;				//used for lighting		
 		
+		vector<ZFResourceHandle*>		m_kMaterials;
+		
+		ZFResourceHandle* m_pkMaterial;	
+		LightProfile		m_kLightProfile;				//used for lighting				
+	
 		
 		float				m_fScale;
 		vector<float>	m_kHeightData;
+		vector<char>	m_kTextureIDs;
+		
 		int				m_iWidth;
 		int				m_iHeight;
 		float				m_fMaxValue;
@@ -47,11 +74,15 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		vector<Vector3>	m_kNormalData;	
 		ZVertexBuffer*		m_pkVBO;
 	
+		vector<HeightmapArrays*>	m_kDataArrays;
+	
 		void RebuildArrays();
 		Vector3 GenerateNormal(int x,int y);
 		void DrawHeightmap();
 	
-		
+		void BuildTextureArrays();
+		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop);
+		void DrawTexturedHeightmap();
 	public:
 		P_Heightmap();
 		~P_Heightmap();
@@ -67,6 +98,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 
 		void Smooth(vector<HMSelectionData>* kSelectionData = NULL);
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
+		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
 	
 		void SetSize(int iWidth,int iHeight);
 		void SetMaxValue(float fMax)							{	m_fMaxValue = fMax;	};

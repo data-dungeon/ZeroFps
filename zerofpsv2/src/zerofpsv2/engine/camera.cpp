@@ -46,7 +46,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_fFogFar		=		100;
 	m_bFogEnabled	=		false;
 	
-	m_iForceLighing=		-1;
+	m_iForceLighing=		LIGHT_MATERIAL;
 	
 	m_bDrawInterface	=	true;
 	m_bShadowMap	=		true;
@@ -482,7 +482,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	
   	m_pkLight->SetLighting(false);
-	m_pkZShaderSystem->ForceLighting(0);
+	m_pkZShaderSystem->ForceLighting(LIGHT_ALWAYS_OFF);
  	glShadeModel(GL_FLAT);
 	
 	//disable all shaders
@@ -511,7 +511,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
   	glPolygonOffset(0,0);
 	
   	m_pkLight->SetLighting(true);
-	m_pkZShaderSystem->ForceLighting(-1);
+	m_pkZShaderSystem->ForceLighting(LIGHT_MATERIAL);
  	glShadeModel(GL_SMOOTH);
 	m_pkZShaderSystem->ForceColorMask(-1);
 	m_pkZShaderSystem->ForceCullFace(-1);
@@ -965,7 +965,7 @@ void Camera::DrawWorld()
 
 	
 	//shuld we render shadowmaps?		
-	if((m_bShadowMap && m_pkZeroFps->GetShadowMap() && (m_iForceLighing != 0) ))
+	if((m_bShadowMap && m_pkZeroFps->GetShadowMap() && (m_iForceLighing != LIGHT_ALWAYS_OFF) ))
 	{	
 		//scene center (use entity pos if any)
 		static Matrix4 kTrans;

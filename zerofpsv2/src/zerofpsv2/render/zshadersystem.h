@@ -77,6 +77,7 @@ enum RENDER_API FORCE_LIGHTING
 enum RENDER_API FORCE_BLENDING
 {
 	BLEND_FORCE_TRANSPARENT,
+	BLEND_FORCE_OPAQ,
 	BLEND_MATERIAL,
 };
 
@@ -231,6 +232,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		vector<Vector3>	m_kVerties;
 		vector<Vector3>	m_kNormals;
 		vector<Vector2>	m_kTexture[4];
+		vector<Vector4>	m_kColors;
 		
 		//pointer to geometry data
 		Vector2*			m_pk2DVertexPointer;
@@ -295,6 +297,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iForceAlphaTest;
 		int			m_iForceLighting;
 		bool			m_bDisableTU3;
+		int			m_iForceBlend;
 		
 		//basic		
 		void SetupOpenGL();
@@ -394,6 +397,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void ForceColorMask(int iMask)						{	m_iForceColorMask = iMask;				}
 		void ForceAlphaTest(int iAlphaTest)					{	m_iForceAlphaTest = iAlphaTest;		}		
 		void ForceLighting(int iLight)						{	m_iForceLighting = iLight;				}
+		void ForceBlending(int iBlend)						{	m_iForceBlend = iBlend;					}
 		void ForceTU3Disabled(bool bDisableTU3)			{	m_bDisableTU3 = bDisableTU3;			}
 		
 		//information
@@ -429,14 +433,17 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//line 2V
 		void AddLineV(const Vector3& kPos1,const Vector3& kPos2);
 		void AddLineN(const Vector3& kNormal1,const Vector3& kNormal2);
+		void AddLineC(const Vector4& kColor1,const Vector4& kColor2);
 		void AddLineUV(const Vector2& kPos1,const Vector2& kPos2,const int& iTU=0);		
 		//triangle 3V
 		void AddTriangleV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3);
 		void AddTriangleN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3);
+		void AddTriangleC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3);
 		void AddTriangleUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const int& iTU=0);			
 		//quad 4V
 		void AddQuadV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3,const Vector3& kPos4);
 		void AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3,const Vector3& kNormal4);
+		void AddQuadC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3,const Vector3& kColor4);
 		void AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const Vector2& kPos4,const int& iTU=0);	
 
 		//VERTEX 2 STUFF

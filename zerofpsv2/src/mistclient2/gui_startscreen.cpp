@@ -346,7 +346,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 					pkCam->SetDrawInterface(false);
 					pkCam->SetClearViewPort(false);  
 					pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
-					pkCam->SetForceLighting(0);
+					pkCam->SetForceLighting(LIGHT_ALWAYS_OFF);
 					
 					cout<<"blubba mera"<<endl;
 					

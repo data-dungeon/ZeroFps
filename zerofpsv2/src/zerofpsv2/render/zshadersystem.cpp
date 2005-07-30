@@ -58,8 +58,9 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iForceCullFace 	= 	-1;
 	m_iForceColorMask = 	-1;
 	m_iForceAlphaTest =	-1;
-	m_iForceLighting	=	-1;
+	m_iForceLighting	=	LIGHT_MATERIAL;
 	m_bDisableTU3 		=	false;
+	m_iForceBlend		=	BLEND_MATERIAL;
 	
 	//reset all pointers
 	ResetPointers();
@@ -498,7 +499,7 @@ void ZShaderSystem::SetupPass(int iPass)
 			
 	
 	//enable /disable blending
-	if(pkSettings->m_bBlend)
+	if( (pkSettings->m_bBlend && m_iForceBlend == BLEND_MATERIAL) || m_iForceBlend == BLEND_FORCE_TRANSPARENT)
 	{
 		//enable blending
 		glEnable(GL_BLEND);
@@ -579,16 +580,16 @@ void ZShaderSystem::SetupPass(int iPass)
 
 	
 	//lighting setting
-	if(m_iForceLighting == -1)
+	if(m_iForceLighting == LIGHT_MATERIAL)
 	{	
 		if(pkSettings->m_bLighting)
 			glEnable(GL_LIGHTING);
 		else
 			glDisable(GL_LIGHTING);	
 	}
-	else if(m_iForceLighting == 1)
+	else if(m_iForceLighting == LIGHT_ALWAYS_ON)
 		glEnable(GL_LIGHTING);
-	else if(m_iForceLighting == 0)
+	else if(m_iForceLighting == LIGHT_ALWAYS_OFF)
 		glDisable(GL_LIGHTING);	
 			
 	//cullface setting
@@ -1153,6 +1154,11 @@ void ZShaderSystem::DrawGeometry()
 		return;
 	}
 	
+	
+	//normals
+	if(!m_kColors.empty())
+		SetPointer(COLOR_POINTER,&m_kColors[0]);
+	
 	//normals
 	if(!m_kNormals.empty())
 		SetPointer(NORMAL_POINTER,&m_kNormals[0]);
@@ -1329,6 +1335,7 @@ void ZShaderSystem::ClearGeometry()
 	m_kVerties2D.clear();
 	m_kVerties.clear();
 	m_kNormals.clear();
+	m_kColors.clear();
 	m_kTexture[0].clear();
 	m_kTexture[1].clear();
 	m_kTexture[2].clear();
@@ -1353,6 +1360,12 @@ void ZShaderSystem::AddLineN(const Vector3& kNormal1,const Vector3& kNormal2)
 {
 	m_kNormals.push_back(kNormal1);
 	m_kNormals.push_back(kNormal2);
+}
+
+void ZShaderSystem::AddLineC(const Vector4& kColor1,const Vector4& kColor2)
+{
+	m_kColors.push_back(kColor1);
+	m_kColors.push_back(kColor2);
 }
 
 void ZShaderSystem::AddLineUV(const Vector2& kPos1,const Vector2& kPos2,const int& iTU)
@@ -1381,6 +1394,13 @@ void ZShaderSystem::AddTriangleN(const Vector3& kNormal1,const Vector3& kNormal2
 	m_kNormals.push_back(kNormal1);
 	m_kNormals.push_back(kNormal2);
 	m_kNormals.push_back(kNormal3);
+}
+
+void ZShaderSystem::AddTriangleC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3)
+{
+	m_kColors.push_back(kColor1);
+	m_kColors.push_back(kColor2);
+	m_kColors.push_back(kColor3);
 }
 
 void ZShaderSystem::AddTriangleUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const int& iTU)
@@ -1412,6 +1432,14 @@ void ZShaderSystem::AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,con
 	m_kNormals.push_back(kNormal2);
 	m_kNormals.push_back(kNormal3);
 	m_kNormals.push_back(kNormal4);
+}
+
+void ZShaderSystem::AddQuadC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3,const Vector3& kColor4)
+{
+	m_kColors.push_back(kColor1);
+	m_kColors.push_back(kColor2);
+	m_kColors.push_back(kColor3);
+	m_kColors.push_back(kColor4);
 }
 
 void ZShaderSystem:: AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const Vector2& kPos4,const int& iTU)
