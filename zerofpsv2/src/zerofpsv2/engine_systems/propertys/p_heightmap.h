@@ -51,38 +51,27 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		Render*				m_pkRender;	
 		
 		
-		vector<ZFResourceHandle*>		m_kMaterials;		
-		LightProfile		m_kLightProfile;				//used for lighting				
-	
-		
-		float							m_fScale;
-		vector<float>				m_kHeightData;
-		vector<unsigned char>	m_kTextureIDs;
-		
+		LightProfile						m_kLightProfile;				//used for lighting				
+			
+		float				m_fScale;		
 		int				m_iWidth;
 		int				m_iHeight;
 		float				m_fMaxValue;
 		int				m_iRows;
 		int				m_iCols;
-	
 		bool				m_bHaveRebuilt;
 	
-		vector<Vector3>	m_kVertexData;
-		vector<Vector2>	m_kTextureData;
-		vector<Vector3>	m_kNormalData;	
-		ZVertexBuffer*		m_pkVBO;
-	
-		vector<HeightmapArrays*>	m_kDataArrays;
-	
-		//void RebuildArrays();
-		//void DrawHeightmap();
-				
-		Vector3 GenerateNormal(int x,int y);
-
-	
+		vector<ZFResourceHandle*>		m_kMaterials;		
+		vector<float>						m_kHeightData;
+		vector<unsigned char>			m_kTextureIDs;		
+		vector<HeightmapArrays*>		m_kDataArrays;				
+		
+		
+		Vector3 GenerateNormal(int x,int y);	
 		void BuildTextureArrays();
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop);
 		void DrawTexturedHeightmap();
+		
 	public:
 		P_Heightmap();
 		~P_Heightmap();

@@ -16,7 +16,6 @@ P_Heightmap::P_Heightmap()
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 
 
-	m_pkVBO = NULL;
 	m_fScale = 2.0;
 	m_fMaxValue = 100;
 	
@@ -37,6 +36,9 @@ P_Heightmap::P_Heightmap()
 	pkTempMat->SetRes("heightmap/sand.zlm");	
 	m_kMaterials.push_back(pkTempMat);
 	
+	pkTempMat = new ZFResourceHandle;
+	pkTempMat->SetRes("heightmap/stone_path.zlm");	
+	m_kMaterials.push_back(pkTempMat);	
 	
 	SetSize(4,4);
 }
@@ -188,7 +190,7 @@ void P_Heightmap::BuildTextureArrays()
 
 void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop)
 {
-	static float fTexMod = 0.25;
+	static float fTexMod = 0.5;
 	static Vector4 kC1,kC2,kC3;
 
 	if(bTop)
@@ -737,12 +739,19 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 	pkNetPacket->Write(m_fScale);
 
 	int iSize = m_kHeightData.size();
-	pkNetPacket->Write(iSize);
-	
+	pkNetPacket->Write(iSize);	
 	for(int i = 0;i<iSize;i++)
 	{
 		pkNetPacket->Write(m_kHeightData[i]);
 		pkNetPacket->Write(m_kTextureIDs[i]);
+	}
+	
+	
+	iSize = m_kMaterials.size();
+	pkNetPacket->Write(iSize);
+	for(int i = 0;i<iSize;i++)
+	{		
+		pkNetPacket->Write_Str(m_kMaterials[i]->GetRes());	
 	}
 }
 
@@ -772,6 +781,26 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 		pkNetPacket->Read(cTex);
 		m_kTextureIDs.push_back(cTex);
 	}
+
+
+	//clear old materials	
+	for(int i =0;i<m_kMaterials.size();i++)
+		delete m_kMaterials[i];	
+	m_kMaterials.clear();
+		
+	
+	string strMat;
+	pkNetPacket->Read(iSize);
+	for(int i = 0;i<iSize;i++)
+	{	
+		pkNetPacket->Read_Str(strMat);	
+		
+		ZFResourceHandle* pkNewMat = new ZFResourceHandle;	
+		pkNewMat->SetRes(strMat);
+	
+		m_kMaterials.push_back(pkNewMat);		
+	}
+
 
 	m_bHaveRebuilt = false;
 }
