@@ -112,7 +112,7 @@ void ModellObj::HandleObjCommand(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 		y = atof(ucpToken);
 		ucpToken = pkScript->GetToken();
 		z = atof(ucpToken);
-		Vector3 kVert(-x,-y,-z);
+		Vector3 kVert(x,y,z);
 		m_kNormal.push_back(kVert);
 		pkScript->SkipLine();
 		return;	
