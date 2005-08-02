@@ -35,6 +35,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
+	g_ZFObjSys.SetPreLogName("madview");
 	g_ZFObjSys.Log_Create("madview");
 
 	m_bIsEditor = true;
@@ -81,7 +82,7 @@ void MadView::Init()
 		"data/script/gui/menu_madview.txt", true, AUTO_SCALE); 
 
 	SetupGuiEnviroment();
-	SetTitle("MadView3");
+	SetTitle("MadView");
 
 	m_pkInput->ShowCursor(true);
 
