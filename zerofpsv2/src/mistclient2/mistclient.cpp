@@ -1212,8 +1212,8 @@ void MistClient::Input()
 			}
 			
 			//rotate camera by keyboard
-			if(m_pkInputHandle->VKIsDown("rotate_left"))		pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*150);
-			if(m_pkInputHandle->VKIsDown("rotate_right"))	pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*150);			
+			if(m_pkInputHandle->VKIsDown("rotate_left"))		pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*150.0);
+			if(m_pkInputHandle->VKIsDown("rotate_right"))	pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*150.0);			
 			
 			
 			//rotate towards target
