@@ -49,6 +49,7 @@ enum MLNM_ServerToClient
 	MLNM_SC_POINTTEXT,
 	MLNM_SC_SKILLBAR,
 	MLNM_SC_CLOSECONTAINER,
+	MLNM_SC_SKILLTREE,
 };
 
 //mistlands chatmessages ID's
