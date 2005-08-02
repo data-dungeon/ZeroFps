@@ -425,16 +425,13 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 				m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
 		}
 		
-		//crapp
-		//m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
-		//	GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 	
 		//sort all propertys
 		if(bSort)
 		{
- 			//stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-			sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-			//sort(m_akPropertys.begin(),m_akPropertys.end());
+ 			stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+// 			sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+// 			sort(m_akPropertys.begin(),m_akPropertys.end());
 		}
 	}
 		

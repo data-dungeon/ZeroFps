@@ -54,7 +54,7 @@ void RuleSystem::Damage(int iCharacter,float fDamage)
 	{
 		pkCP->SetLastDamageFrom(-1);
 		pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
-		SendPointText(IntToString(int(fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
+		SendPointText(IntToString(int(-fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 	}
 }
 
@@ -66,7 +66,7 @@ void RuleSystem::Damage(int iAttacker,int iDefender,float fDamage)
 		{
 			pkCP->SetLastDamageFrom(iAttacker);
 			pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
-			SendPointText(IntToString(int(fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
+			SendPointText(IntToString(int(-fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 			
 			CharacterHit(pkDefender,iAttacker);
 		}
@@ -184,7 +184,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 			if(iTotal<=0)
 				SendPointText("NoDmg",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
 			else
-				SendPointText(IntToString(iTotal),pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,0);			
+				SendPointText(IntToString(-iTotal),pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,0);			
 		
 			//tell defender its been hit
 			CharacterHit(pkDefender->GetEntity(),iAttacker);

@@ -49,32 +49,19 @@ void Property::OnEvent(GameMessage& Msg)
 
 
 
-bool Property::operator<(Property& kOther)
+bool Property::operator<(const Property& kOther) const
 {
-	float d1,d2;	
+	if(m_iSortPlace < kOther.m_iSortPlace)
+		return true;		
 	
-	if(!m_bSortDistance)
-	{
-		return m_iSortPlace < kOther.m_iSortPlace;
-	}else
-	{	
-		if(m_iSortPlace < kOther.m_iSortPlace)
-		{		
-			return true;		
-		}else 
-		{
-			if(m_iSortPlace == kOther.m_iSortPlace)
-			{			
-				d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
-				d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV());
-				
-				return d1>d2;		
-			} else 
-			{
-				return false;
-			}
-		}
-	}
+	if(m_iSortPlace == kOther.m_iSortPlace && (m_bSortDistance && kOther.m_bSortDistance) )
+	{				
+		float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
+		float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV());		
+		return d1<d2;		
+	} 
+			
+	return false;
 }
 
 bool Property::HandleSetValue( const string& kValueName ,const string& kValue )

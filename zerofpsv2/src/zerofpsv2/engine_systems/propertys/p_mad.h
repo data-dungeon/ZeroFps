@@ -113,7 +113,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 
 		bool GetBBox(Vector3& kMin, Vector3& kMax, Vector3& kPos);
 
-		bool operator<(Property& kOther);
+		bool operator<(const Property& kOther) const;
 };
 
 namespace SI_PMad

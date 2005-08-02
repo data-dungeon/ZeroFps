@@ -24,6 +24,7 @@ Mad_Modell::Mad_Modell()
 	m_fScale				= 1.0;
 	
 	m_iFirstMaterialID= -1;
+	m_bBlended = false;
 
 	m_pkVBO = NULL;
 
@@ -561,11 +562,17 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				//setup material
 				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());		
 				
-				if(iNumOfSubMesh == 1)
-					m_iFirstMaterialID = pkMaterial->GetID();
-				else
-					m_iFirstMaterialID = -1;
 				
+				if(iNumOfSubMesh == 1)
+				{
+					m_iFirstMaterialID = pkMaterial->GetID();
+					m_bBlended = pkMaterial->GetPass(0)->m_bBlend;			
+				}
+				else
+				{
+					m_iFirstMaterialID = -1;
+					m_bBlended = false;
+				}
 				
 				if(iDrawFlags & MAD_DRAW_LINES)
 					m_pkShader->BindMaterial(pkLineMaterial);				

@@ -74,6 +74,7 @@ public:
 	bool		m_bLoop;
 	bool		m_bActive;			// True if animation system is active.
 	int		m_iFirstMaterialID;
+	bool		m_bBlended;
 	
 	AnimInfo	m_kLastAnim;
 	float		m_fAnimTrans;		// 0.0 - 1.0

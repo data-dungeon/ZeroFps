@@ -10,6 +10,8 @@ P_Heightmap::P_Heightmap()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	m_iVersion = 2;
+	m_iSortPlace = 0;
+	m_bSortDistance = true;
 
 	m_pkZShaderSystem =	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 

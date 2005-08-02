@@ -23,6 +23,7 @@ P_Mad::P_Mad()
 	m_iVersion = 5;
 	
 	m_iSortPlace = 0;
+	m_bSortDistance = true;
 	
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
@@ -908,19 +909,37 @@ Matrix4 P_Mad::GetJointRotation(const string& strJointName)
 }
 
 
-bool P_Mad::operator<(Property& kOther)
+bool P_Mad::operator<(const Property& kOther) const
 {
-
 	if(m_iSortPlace < kOther.m_iSortPlace)
-	{		
 		return true;		
-	}else 
-	{
-		if(m_iSortPlace == kOther.m_iSortPlace)
-		{	
-			if(kOther.IsType("P_Mad"))			
-				if(P_Mad* pkMad = static_cast<P_Mad*>(&kOther))
-					return (m_iFirstMaterialID < pkMad->m_iFirstMaterialID);			
+	
+	if(m_iSortPlace == kOther.m_iSortPlace)
+	{	
+		if(kOther.IsType("P_Mad"))
+		{			
+			if(P_Mad* pkMad = (P_Mad*)(&kOther))
+			{
+				if(m_iFirstMaterialID == pkMad->m_iFirstMaterialID)
+				{
+					float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
+					float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.GetEntity()->GetWorldPosV());
+					
+					if(m_bBlended)
+						return d1>d2;							
+					else
+						return d1<d2;							
+				}
+				
+				return (m_iFirstMaterialID < pkMad->m_iFirstMaterialID);			
+			}
+		}
+		else if(m_bSortDistance && kOther.m_bSortDistance)
+		{
+			float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
+			float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.GetEntity()->GetWorldPosV());
+		
+			return d1<d2;		
 		}
 	}
 	

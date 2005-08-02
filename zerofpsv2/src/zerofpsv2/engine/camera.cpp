@@ -157,8 +157,13 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+ 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+ 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		
+ 		Vector4 color(1,1,1,1);
+ 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color[0]);
+ 		
+ 		
 		
 		//USE FBO ?
 		if(m_pkZShaderSystem->SupportFBO())
@@ -904,9 +909,6 @@ Vector3 Camera::GetOrthoMove(Vector3 kMove)
 
 void Camera::RenderView()
 {
-	//set current camera in engine ( render propertys wants to know this)
-	m_pkZeroFps->m_pkCamera=this;			
-
 	//if this camera is attached with any camera property run an update on that 
 	//property to make sure the camera position is up to date
 	if(m_pkCameraProp)
@@ -924,6 +926,9 @@ void Camera::RenderView()
 	if( (!m_bRender) || (!m_pkZeroFps->GetRenderOn()) || m_pkZeroFps->GetMinimized() )
 		return;
 
+
+	//set current camera in engine ( render propertys wants to know this)
+	m_pkZeroFps->m_pkCamera=this;			
 
 	//draw world
 	DrawWorld();
@@ -994,7 +999,7 @@ void Camera::DrawWorld()
 		}
 		else
 		{
-			if(m_kLastShadowPos.DistanceTo(kCenter) > 5)
+			if(m_kLastShadowPos.DistanceTo(kCenter) > m_fShadowArea/8)
 			{
 				m_kLastShadowPos = kCenter;
 				m_iCurrentRenderMode = RENDER_CASTSHADOW;

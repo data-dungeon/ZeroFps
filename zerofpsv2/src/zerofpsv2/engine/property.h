@@ -231,11 +231,11 @@ class ENGINE_API Property
 		virtual void Load(ZFIoInterface* pkFile,int iVersion) {};		
 
 		// Inlines
-		inline Entity *GetEntity()									{	return m_pkEntity;							};
-		inline bool IsType(const char* czType)					{	return (strcmp(czType,m_acName) == 0);	};
+		inline Entity *GetEntity()	const							{	return m_pkEntity;							};
+		inline bool IsType(const char* czType)	const			{	return (strcmp(czType,m_acName) == 0);	};
 		
 		
-		virtual bool operator<(Property& kOther);
+		virtual bool operator<(const Property& kOther) const;
 
 		friend class Entity;
 };
