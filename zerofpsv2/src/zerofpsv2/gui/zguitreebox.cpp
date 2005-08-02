@@ -90,6 +90,9 @@ ZGuiTreeboxNode* ZGuiTreebox::AddItem(string szParent,
 				string(szIDName), pkNewBranch));
 		}
 	}
+	else
+		cout<<"WARNING: ZGuiTreebox::AddItem, parent "<<szParent<<" not found"<<endl;
+	
 	return pkNewBranch;
 }
 

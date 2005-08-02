@@ -237,7 +237,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendTextToClient(const string& strText);
 		void SendPointText(const string& strText,const Vector3& kPos,int iType);
 		void SendSkillbar(const string& strSkill = "");
-		void SendSkilltree();
 		
 		void UpdateStats();					//updates character stats
 		void UpdateSkillQueue();			//updates combat, updates and performs combat queue
@@ -282,7 +281,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 				
 		//public network stuff
 		void SendCloseContainer(int iContainerID);
-		
+		void SendSkillTree();
+
 		
 		//alive
 		void MakeAlive();

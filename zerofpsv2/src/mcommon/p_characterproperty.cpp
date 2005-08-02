@@ -2688,22 +2688,25 @@ void P_CharacterProperty::SendCloseContainer(int iContainerID)
 	m_pkApp->SendAppMessage(&kNp);	
 }
 
-void P_CharacterProperty::SendSkilltree()
+void P_CharacterProperty::SendSkillTree()
 {
 	if(m_iConID == -1)
 		return;
 
 	NetPacket kNp;
-	kNp.Write((char) MLNM_SC_SKILLBAR);	
+	kNp.Write((char) MLNM_SC_SKILLTREE);	
 	
 	int iSize = m_kSkills.size();
 	kNp.Write(iSize);
-	
+		
+	//walk a
+		
+		
 	for(int i =0;i<iSize;i++)
 	{
 		kNp.Write_Str(m_kSkills[i]->GetName());
 		kNp.Write_Str(m_kSkills[i]->GetParent());		
-		kNp.Write_Str(m_kSkills[i]->GetIcon());			
+		kNp.Write_Str(m_kSkills[i]->GetScreenName());					
 	}
 	
 	//send package

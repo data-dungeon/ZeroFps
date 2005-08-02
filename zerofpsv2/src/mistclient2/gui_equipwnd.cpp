@@ -141,6 +141,8 @@ void EquipmentDlg::OnCommand(string strController)
 			m_bStatsWndOpen = false;
 			g_kMistClient.GetWnd("SkillWnd")->Show();
 			g_kMistClient.GetWnd("StatsWnd")->Hide();
+			
+			g_kMistClient.SendRequestSkillTree();
 		}
 		else
 		{

@@ -1450,6 +1450,46 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
+		case MLNM_SC_SKILLTREE:
+		{
+			int iSize;
+			pkNetMessage->Read(iSize);
+			
+			
+			string strName;
+			string strParent;
+			string strScreenName;
+			
+			ZGuiTreebox* pkTreeBox = (ZGuiTreebox*)g_kMistClient.GetWnd("SkillTree");	
+
+			pkTreeBox->Clear();
+			
+			for(int i =0;i<iSize;i++)
+			{
+				pkNetMessage->Read_Str(strName);
+				pkNetMessage->Read_Str(strParent);
+				pkNetMessage->Read_Str(strScreenName);
+				
+// 				cout<<"SKILL "<<i<<" "<<strName<<" "<<strParent<<" "<<strIcon<<endl;
+			
+				if(strParent.empty())
+				{
+					pkTreeBox->AddItem(pkTreeBox->Root(),(char*)strScreenName.c_str(),1,1,(char*)strName.c_str());					
+				}
+				else
+				{
+					if(!pkTreeBox->AddItem(strParent,(char*)strScreenName.c_str(),1,1,(char*)strName.c_str()))
+					{
+						cout<<"Error adding treeitem "<<strName<< " parent "<<strParent<<endl;
+					}
+				}
+			}
+	
+			
+			
+			break;
+		}
+		
 		case MLNM_SC_CLOSECONTAINER:
 		{
 			int iID;
@@ -2444,6 +2484,14 @@ void MistClient::SendAction(int iEntityID,const string& strAction)
 	
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);			
+}
+
+void MistClient::SendRequestSkillTree()
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_SKILLTREE);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);				
 }
 
 void MistClient::SendRequestOpenEquipment()

@@ -30,6 +30,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_SETDEFAULTATTACK,
 	MLNM_CS_SAVEWORLD,
 	MLNM_CS_USEITEM,
+	MLNM_CS_REQ_SKILLTREE,
 };
 
 //	A network message from the server to the client.
