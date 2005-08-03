@@ -221,9 +221,9 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
 	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(16,32,16);	
-	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(32,32,32);		
-	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(64,32,64);	
+	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(16,64,16);	
+	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(32,64,32);		
+	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(64,64,64);	
 
 	if(m_iAutoSnapZoneCorner != -1)
 	{
