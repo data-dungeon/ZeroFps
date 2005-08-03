@@ -295,15 +295,15 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		bool 		SaveWorld(string strSaveDir,bool bForce=false);
 		bool 		LoadWorld(string strLoadDir);
 
-		ZoneData* 	GetZone(Vector3 kPos);
+		ZoneData* 	GetZone(const Vector3& kPos);
 		void 			SetZoneModel(const char* szName,int iId);
 		ZoneData*	GetZoneData(int iID);
 		int 			GetZoneIndex(int iEntityId);
 		int 			GetZoneIndex(const Vector3& kMyPos,int iCurrentZone,bool bClosestZone);
 		void 			DeleteZone(int iId);
-		bool 			IsInsideZone(Vector3 kPos,Vector3 kSize);
-		bool 			ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize);
-		int 			CreateZone(Vector3 kPos,Vector3 kSize);
+		bool 			IsInsideZone(const Vector3& kPos,const Vector3& kSize);
+		bool 			ZoneHaveNeighbour(const Vector3& kPos,const Vector3& kSize);
+		int 			CreateZone(const Vector3& kPos,const Vector3& kSize);
 		void 			LoadZone(int iId,string strLoadDir = "");			//load zone
 		void 			SaveZone(int iId,string strSaveDir = "");			//save zone
 		int 			GetNumOfZones();

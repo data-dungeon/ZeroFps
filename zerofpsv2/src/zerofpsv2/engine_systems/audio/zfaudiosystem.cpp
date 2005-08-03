@@ -217,6 +217,8 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_uiMaxCachSize = uiMaxCachSize;
 	m_fReferenceDistance = 1.0f;
 	
+	m_pkAudioDevice	= NULL;
+	m_pkAudioContextID= NULL;
 	
 	m_iMusicID 			= -1;
 	m_fMusicFade 		= 0;
@@ -615,7 +617,30 @@ bool ZFAudioSystem::StartUp()
 	Register_Cmd("audioplay",FID_AUDIOPLAY);
 	Register_Cmd("audiostop",FID_AUDIOSTOP);
 
-	alutInit (0, NULL); 
+	//open default device	
+	m_pkAudioDevice = alcOpenDevice(NULL);	
+	if(!m_pkAudioDevice)
+	{
+		cout<<"ERROR: ZFAudioSystem could not open audio device"<<endl;
+		return false;
+	}	
+	
+	//create contect
+	m_pkAudioContextID = alcCreateContext(m_pkAudioDevice,NULL);	     
+	if(m_pkAudioContextID == NULL)
+	{
+		cout<<"ERROR: ZFAudioSystem could not create audio context"<<endl;
+   	return false;
+	}
+
+	//set context
+	alcMakeContextCurrent(m_pkAudioContextID);
+	
+	
+	//alut init is gay
+	// 	alutInit (0, NULL); 
+	
+	
 	alGetError();
 	alListenerf(AL_GAIN, 1.0f);
 	alDopplerFactor(0.0f);
@@ -633,6 +658,12 @@ bool ZFAudioSystem::StartUp()
 	AudioLua::Init(this,pkObjectMan,pkScriptSys);
 
 	m_bIsValid = true;
+
+	if(m_pkAudioContextID)
+		alcDestroyContext(m_pkAudioContextID);
+		
+	if(m_pkAudioDevice)
+		alcCloseDevice(m_pkAudioDevice);
 
 	return true;
 }
@@ -663,7 +694,7 @@ bool ZFAudioSystem::ShutDown()
 	UnloadAll();
 
 	// Destroy OpenAL (very, very, fucking importent)
-	alutExit();
+	//alutExit();
 
 	return true;
 }

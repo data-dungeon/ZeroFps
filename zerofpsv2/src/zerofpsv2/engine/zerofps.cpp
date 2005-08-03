@@ -1512,12 +1512,11 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	
 		//cout<<"creating zone:"<<strZoneName<< " size:"<<kZoneSize.x<<" "<<kZoneSize.y<<" "<<kZoneSize.z<< "  position:"<<kZoneMarkerPos.x<<" "<<kZoneMarkerPos.y<<" "<<kZoneMarkerPos.z<<endl;
 	
-		//check if colliding with any other zone
-		if(m_pkEntityManager->IsInsideZone(kZoneMarkerPos, kZoneSize))
-			return;		
-	
 		//create zone
 		int id = m_pkEntityManager->CreateZone(kZoneMarkerPos, kZoneSize);
+		
+		if(id == -1)
+			return;
 		
 		//force loading of this zone
 		m_pkEntityManager->LoadZone(id);

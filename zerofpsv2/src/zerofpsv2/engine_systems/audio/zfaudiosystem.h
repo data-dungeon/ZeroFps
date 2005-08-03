@@ -169,6 +169,9 @@ public:
 
 private:
 
+	ALCdevice*	m_pkAudioDevice;
+	void*			m_pkAudioContextID;
+
 	float m_fMainVolume; // 0-1
 
 	unsigned int m_uiCurrentCachSize; // bytes

@@ -1604,7 +1604,7 @@ void EntityManager::ClearTrackers()
 	m_kTrackedObjects.clear();
 }
 
-ZoneData* EntityManager::GetZone(Vector3 kPos)
+ZoneData* EntityManager::GetZone(const Vector3& kPos)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
@@ -1717,8 +1717,12 @@ vector<int>	EntityManager::GetActiveZoneIDs(int iTracker)
 }
 
 
-int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
+int EntityManager::CreateZone(const Vector3& kPos,const Vector3& kSize)
 {
+	//check if for collissions
+	if(IsInsideZone(kPos, kSize))
+		return -1;			
+
 	int id = GetUnusedZoneID();
 	
 	if(ZoneData* pkZone = GetZoneData(id))
@@ -2266,7 +2270,7 @@ int EntityManager::GetUnusedZoneID()
 	m_kZones.push_back(newzone);
 	
 	
-	cout<<"creating "<<newzone.m_iZoneID<<" "<<m_kZones[newzone.m_iZoneID].m_iZoneID<<endl;
+	//cout<<"creating "<<newzone.m_iZoneID<<" "<<m_kZones[newzone.m_iZoneID].m_iZoneID<<endl;
 	
 	return newzone.m_iZoneID;
 }
@@ -2298,7 +2302,7 @@ void EntityManager::ClearZoneLinks(int iId)
 	m_kZones[iId].m_iZoneLinks.clear();
 }
 
-bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
+bool EntityManager::IsInsideZone(const Vector3& kPos,const Vector3& kSize)
 {
 	Vector3 kOddSize;
 	kOddSize.x = (kSize.x/2 - int(kSize.x/2));
@@ -2317,7 +2321,7 @@ bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 	
 }
 
-bool EntityManager::ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize)
+bool EntityManager::ZoneHaveNeighbour(const Vector3& kPos,const Vector3& kSize)
 {
 	Vector3 kOddSize, kOddSize2;
 	kOddSize.x = (kSize.x/2 - int(kSize.x/2));
