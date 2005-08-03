@@ -638,7 +638,7 @@ bool ZFAudioSystem::StartUp()
 	
 	
 	//alut init is gay
-	// 	alutInit (0, NULL); 
+// 	alutInit (0, NULL); 
 	
 	
 	alGetError();
@@ -659,11 +659,6 @@ bool ZFAudioSystem::StartUp()
 
 	m_bIsValid = true;
 
-	if(m_pkAudioContextID)
-		alcDestroyContext(m_pkAudioContextID);
-		
-	if(m_pkAudioDevice)
-		alcCloseDevice(m_pkAudioDevice);
 
 	return true;
 }
@@ -694,7 +689,13 @@ bool ZFAudioSystem::ShutDown()
 	UnloadAll();
 
 	// Destroy OpenAL (very, very, fucking importent)
-	//alutExit();
+// 	alutExit();
+
+	if(m_pkAudioContextID)
+		alcDestroyContext(m_pkAudioContextID);
+		
+	if(m_pkAudioDevice)
+		alcCloseDevice(m_pkAudioDevice);
 
 	return true;
 }
