@@ -750,9 +750,9 @@ void P_CharacterProperty::SetupCharacterStats()
 
 void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
 {
-	if(m_kSkillQueue.size() > 4)
+	if(m_kSkillQueue.size() > 0)
 		return;
-		
+
 	if(Skill* pkSkill = GetSkillPointer(strSkill))
 		if(pkSkill->IsReloaded())
 			m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
