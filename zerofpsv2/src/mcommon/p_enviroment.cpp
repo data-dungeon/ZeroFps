@@ -754,8 +754,8 @@ void P_Enviroment::DrawSun()
 	
 	//max number of samples 
 	static int iMaxSamples = int(0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight()));
-	static float fMaxAngle = 45.0;
-	static float fFlareSize = 1.0;
+	static float fMaxAngle = 30.0;
+	static float fFlareSize = 0.6;
 	
 	//positions for sun and flare
 	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kCurrentEnvSetting.m_kSunPos * 100;
@@ -770,8 +770,11 @@ void P_Enviroment::DrawSun()
 	
 	//check if  angle is lower than maxangle
 	if( fAngle < fMaxAngle)
+	{
 		fAmp = 1.0 - fAngle / fMaxAngle;
 	
+		fAmp *= fAmp;
+	}
 	
 	if(m_pkZShaderSystem->SupportOcculusion())
 	{
