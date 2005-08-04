@@ -32,11 +32,11 @@ void P_DungeonGen::Update()
 		GenerateDungeon();
 	}
 	
-	if(m_bHaveBuild && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
-	{
-		DrawDungeon();
-	
-	}
+// 	if(m_bHaveBuild && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
+// 	{
+// 		DrawDungeon();
+// 	
+// 	}
 }
 
 void P_DungeonGen::DrawDungeon()
@@ -93,7 +93,7 @@ void P_DungeonGen::GenerateDungeon()
 	//create X nr of rooms of random size	
 	vector<pair<int,int> > kRooms;
 	
-	for(int i = 0;i<iTiles/20;i++)
+	for(int i = 0;i<iTiles/50;i++)
 	{
 	 	int iX = Randomi(m_iWidth);
  		int iY = Randomi(m_iHeight);
@@ -119,8 +119,20 @@ void P_DungeonGen::GenerateDungeon()
 			for(int y = iY-iSize/2;y< iY+iSize /2;y++)
 			{
 				for(int x = iX-iSize/2;x< iX+iSize /2;x++)
-				{
-					SetType(x,y,1);
+				{				
+					int iType = 1;
+					if(x == iX-iSize/2) iType = 6;
+					if(x == (iX+iSize/2)-1) iType = 7;
+					if(y == iY-iSize/2) iType = 8;
+					if(y == (iY+iSize/2)-1) iType = 9;
+					
+					
+					if(x == iX-iSize/2 && y == iY-iSize/2) iType = 5;
+					if(x == (iX+iSize/2)-1 && y == iY-iSize/2) iType = 2;
+					if(x == (iX+iSize/2)-1 && y == (iY+iSize/2)-1) iType = 3;
+					if(x == iX-iSize/2 && y == (iY+iSize/2)-1) iType = 4;
+				
+					SetType(x,y,iType);
 				}
 			}
 		}
@@ -200,31 +212,79 @@ void P_DungeonGen::GenerateDungeon()
 									
 	 		int iNew = m_pkEntityManager->CreateZone(kTempPos,Vector3(8,8,8));
 			if(iNew == -1)
-			{
-// 				cout<<"error"<<endl;
 				continue;
-			}
 			
  			m_pkEntityManager->LoadZone(iNew);				
+
+					//room types
+					// 1 floor
+					// 2 "|
+					// 3 _|
+					// 4 |_
+					// 5 |"
+					// 6 |>
+					// 7 <|
+					// 8 "
+					// 9 _
+					// corridors
+					// 10 -
+					// 11 |
+					// 12 _|
+					// 13 |_
+					// 14 |"
+					// 15 "|
+					// 16 +
+
+			switch(m_kTiles[y*m_iWidth+x].m_iType)
+			{
+				case 1:	m_pkEntityManager->SetZoneModel("zones/cave/room/cave_floor-8x8x8.mad",iNew);break;
+				
+				// "|  _|  |_  |"				
+				case 5:	RotateZone(iNew,Vector3(0,90,0));
+				case 4:	RotateZone(iNew,Vector3(0,90,0));
+				case 3:	RotateZone(iNew,Vector3(0,90,0));				
+				case 2:	m_pkEntityManager->SetZoneModel("zones/cave/room/cave_wall_edge_floor-8x8x8.mad",iNew);
+							break;
+				
+				
+				//  "
+				case 9:	RotateZone(iNew,Vector3(0,90,0));
+							RotateZone(iNew,Vector3(0,90,0));
+				//  _
+				case 8:	m_pkEntityManager->SetZoneModel("zones/cave/room/cave_floor_wall-8x8x8.mad",iNew);
+							break;
+				
+				
+				//  |>
+				case 6:	RotateZone(iNew,Vector3(0,90,0));
+							RotateZone(iNew,Vector3(0,90,0));							
+				//  <|
+				case 7:	RotateZone(iNew,Vector3(0,90,0));
+							m_pkEntityManager->SetZoneModel("zones/cave/room/cave_floor_wall-8x8x8.mad",iNew);
+							break;
+
+				
 			
-			m_pkEntityManager->SetZoneModel("zones/cave/room/cave_floor-8x8x8.mad",iNew);
-// 			switch(m_kTiles[y*m_iWidth+x].m_iType)
-// 			{
-// 				case 1: RotateZone(iNew,Vector3(0,90,0));
-// 				case 2: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_tunnel-8x8x8.mad",iNew);break;
-// 			
-// 			
-// 				case 6: RotateZone(iNew,Vector3(0,90,0));
-// 				case 5: RotateZone(iNew,Vector3(0,90,0));
-// 				case 8: RotateZone(iNew,Vector3(0,90,0));
-// 				case 7: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_turn-8x8x8.mad",iNew);break;
-// 			
-// 			
-// 				case 11: RotateZone(iNew,Vector3(0,90,0));
-// 				case 10: RotateZone(iNew,Vector3(0,90,0));
-// 				case 9: RotateZone(iNew,Vector3(0,90,0));
-// 				case 12: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_t-8x8x8.mad",iNew);break;			
-// 			}
+				case 10: RotateZone(iNew,Vector3(0,90,0));
+				case 11: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_tunnel-8x8x8.mad",iNew);
+							break;
+			
+			
+				case 15: RotateZone(iNew,Vector3(0,90,0));
+				case 14: RotateZone(iNew,Vector3(0,90,0));
+				case 13: RotateZone(iNew,Vector3(0,90,0));
+				case 12: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_turn-8x8x8.mad",iNew);
+							break;
+			
+				case 16: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_x-8x8x8.mad",iNew);
+							break;
+			
+/*			
+				case 11: RotateZone(iNew,Vector3(0,90,0));
+				case 10: RotateZone(iNew,Vector3(0,90,0));
+				case 9: RotateZone(iNew,Vector3(0,90,0));
+				case 12: m_pkEntityManager->SetZoneModel("zones/cave/tunnel/cave_t-8x8x8.mad",iNew);break;	*/
+			}
 		}
 	}
 
@@ -232,6 +292,9 @@ void P_DungeonGen::GenerateDungeon()
 
 void P_DungeonGen::MakeCorridor(int iStartX,int iStartY,int iStopX,int iStopY)
 {
+	
+
+
 	float fXdiff = iStopX - iStartX;
 	float fYdiff = iStopY - iStartY;
 	
@@ -247,23 +310,25 @@ void P_DungeonGen::MakeCorridor(int iStartX,int iStartY,int iStopX,int iStopY)
 			int sx = iStartX + x;
 			int sy = iStartY + float(x)*p;
 			
+			SetType(sx,sy,10);
+			
 			if(abs(sy-iLast) > 0)
 			{
 				if(p > 0)
-					if(Type(sx,sy-1) == 0)
-						SetType(sx,sy-1,2);				
+				{
+					SetType(sx,sy-1,13);	//			|_
+  					SetType(sx,sy,15);
+				}
 				
 				if(p < 0)
-					if(Type(sx,sy+1) == 0)
-						SetType(sx,sy+1,2);				
-			
+				{
+ 					SetType(sx,sy+1,14);	//			|"
+  					SetType(sx,sy,12);
+				
+				}
 			}
 			
-			iLast = sy;
-					
-		
-			if(Type(sx,sy) == 0)
-				SetType(sx,sy,2);
+			iLast = sy;						
 		}
 	}
 	else
@@ -278,22 +343,25 @@ void P_DungeonGen::MakeCorridor(int iStartX,int iStartY,int iStopX,int iStopY)
 			int sx = iStartX + float(y)*p;
 			int sy = iStartY + y;
 		
+			SetType(sx,sy,11);	
+		
 			if(abs(sx-iLast) > 0)
 			{
 				if(p > 0)
-					if(Type(sx-1,sy) == 0)
-						SetType(sx-1,sy,2);				
+				{
+					SetType(sx-1,sy,15);	//  "|
+					SetType(sx,sy,13);
+				}
 				
 				if(p < 0)
-					if(Type(sx+1,sy) == 0)
-						SetType(sx+1,sy,2);				
-			
+				{			
+					SetType(sx+1,sy,14); //  |"
+					SetType(sx,sy,12);
+				}
 			}			
 		
 			iLast = sx;
 		
-			if(Type(sx,sy) == 0)
-				SetType(sx,sy,2);
 		}	
 	}
 
