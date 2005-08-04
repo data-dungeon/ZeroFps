@@ -170,7 +170,7 @@ public:
 private:
 
 	ALCdevice*	m_pkAudioDevice;
-	void*			m_pkAudioContextID;
+	ALCcontext*	m_pkAudioContextID;
 
 	float m_fMainVolume; // 0-1
 
