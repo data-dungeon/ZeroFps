@@ -424,36 +424,18 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	m_bHaveRebuilt = false;
 }
 
-void P_Heightmap::Smooth(vector<HMSelectionData>* kSelectionData)
+void P_Heightmap::Smooth()
 {
-	if(kSelectionData)
+	for(int y = 1;y<m_iCols-1;y++)
 	{
-		for(int i = 0;i<kSelectionData->size();i++)
-		{			
-			if((*kSelectionData)[i].y == 0 || (*kSelectionData)[i].y == m_iCols-1 ||
-				(*kSelectionData)[i].x == 0 || (*kSelectionData)[i].x == m_iRows-1)
-				continue;
-		
-			int iIndex = (*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x;		
-			m_kHeightData[iIndex] = (	m_kHeightData[iIndex] + 
-												m_kHeightData[iIndex+1]+
-												m_kHeightData[iIndex-1]+
-												m_kHeightData[iIndex+m_iRows]+
-												m_kHeightData[iIndex-m_iRows]) / 5.0;
-					
-		}	
-	}
-	else
-	{
-		for(int y = 1;y<m_iCols-1;y++)
-			for(int x = 1;x<m_iRows-1;x++)
-			{					
-				m_kHeightData[y*m_iRows + x] = 	(m_kHeightData[y*m_iRows + x] + 
-															m_kHeightData[y*m_iRows + x+1]+
-															m_kHeightData[y*m_iRows + x-1]+
-															m_kHeightData[(y+1)*m_iRows + x]+
-															m_kHeightData[(y-1)*m_iRows + x]) / 5.0;
-			}
+		for(int x = 1;x<m_iRows-1;x++)
+		{					
+			m_kHeightData[y*m_iRows + x] = 	(m_kHeightData[y*m_iRows + x] + 
+														m_kHeightData[y*m_iRows + x+1]+
+														m_kHeightData[y*m_iRows + x-1]+
+														m_kHeightData[(y+1)*m_iRows + x]+
+														m_kHeightData[(y-1)*m_iRows + x]) / 5.0;
+		}
 	}
 	
 	ResetAllNetUpdateFlags();
@@ -487,6 +469,45 @@ void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,char cTextu
 	
 	ResetAllNetUpdateFlags();
 	m_bHaveRebuilt = false;
+}
+
+void P_Heightmap::SmoothSelection(vector<HMSelectionData>* kSelectionData)
+{
+	//loop all selected vertises
+	for(int i = 0;i<kSelectionData->size();i++)
+	{
+		float x 			= (*kSelectionData)[i].m_kWorld.x; 
+		float z 			= (*kSelectionData)[i].m_kWorld.z;
+		float fVal 		= (*kSelectionData)[i].m_fValue;	
+		float y 			= 0;
+		int iSamples 	= 0;
+	
+		//collect all samples
+		for(int j = 0;j<	kSelectionData->size();j++)
+		{
+			if(	fabs((*kSelectionData)[j].m_kWorld.x - x) <= (*kSelectionData)[j].m_pkHeightMap->m_fScale &&
+					fabs((*kSelectionData)[j].m_kWorld.z - z) <= (*kSelectionData)[j].m_pkHeightMap->m_fScale)
+			{
+				y+= (*kSelectionData)[j].m_kWorld.y;					
+				iSamples++;
+			}
+		}
+				
+		//avrage samples
+		y/= iSamples;
+				
+		//apply value
+		y = y*fVal + (*kSelectionData)[i].m_kWorld.y * (1.0 - fVal);
+				
+		//save new height
+		(*kSelectionData)[i].m_pkHeightMap->m_kHeightData[
+			(*kSelectionData)[i].y*(*kSelectionData)[i].m_pkHeightMap->m_iRows + (*kSelectionData)[i].x]
+			= y - (*kSelectionData)[i].m_pkHeightMap->GetEntity()->GetWorldPosV().y;
+				
+		//set heightmap as updated
+		(*kSelectionData)[i].m_pkHeightMap->ResetAllNetUpdateFlags();
+		(*kSelectionData)[i].m_pkHeightMap->m_bHaveRebuilt = false;
+	}
 }
 
 void P_Heightmap::Stitch(vector<HMSelectionData>* pkSelectionData)

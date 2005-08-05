@@ -85,7 +85,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void PackFrom( NetPacket* pkNetPacket,int iConnectionID);
 
 
-		void Smooth(vector<HMSelectionData>* kSelectionData = NULL);
+		void Smooth();
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
 		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
 	
@@ -100,7 +100,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 
 
 		static void Stitch(vector<HMSelectionData>* pkSelectionData);
-
+		static void SmoothSelection(vector<HMSelectionData>* pkSelectionData);
 };
 
 Property* Create_HeightmapProperty();

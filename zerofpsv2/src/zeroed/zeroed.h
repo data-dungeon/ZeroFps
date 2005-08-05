@@ -257,6 +257,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	HMModifyCommand(float fSize);
 		void  HMDrawTexture(char iTexID);
 		void	Stitch();
+		void	HMSmooth();
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);

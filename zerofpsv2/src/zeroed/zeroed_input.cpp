@@ -68,7 +68,7 @@ void ZeroEd::Input_EditTerrain()
 		
 		case HMAP_DRAWSMFLAT:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
-				HMModifyCommand(0.0);  
+				HMSmooth();  
 			break;
 
 		case HMAP_STITCH:
