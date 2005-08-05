@@ -717,7 +717,7 @@ void Tcs::SyncEntitys()
 		pkBody = m_kBodys[i];
 			
 		pkBody->GetEntity()->SetWorldPosV(pkBody->m_kNewPos);
-		//m_kBodys[i]->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
+		//pkBody->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
 		pkBody->GetEntity()->SetLocalRotM(pkBody->m_kNewRotation);
 	}
 }

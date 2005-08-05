@@ -398,7 +398,6 @@ void Entity::DeleteAllChilds()
 	while(m_akChilds.size()) 
 	{
 		pkChildEntity = (*m_akChilds.begin());
-		pkChildEntity->DeleteAllChilds();
 		delete pkChildEntity;
 	}
 
@@ -602,11 +601,15 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 		{
 			for(int i = 0;i<m_akChilds.size();i++)
 			{
-				if(m_akChilds[i]->HaveSomethingToSend(iConnectionID))
-				{
-					//a child wants to send, thats seems like a good point					
+				//my child is on the client but i am not, better get there
+				if(m_akChilds[i]->GetExistOnClient(iConnectionID) && !GetExistOnClient(iConnectionID))
 					return true;
-				}
+				
+// 				//a child has changed something
+// 				if(m_akChilds[i]->HaveSomethingToSend(iConnectionID))
+// 				{
+// 					return true;
+// 				}
 			}	
 		}			
 	}
@@ -771,7 +774,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		
 		Entity* parent = m_pkEntityManager->GetEntityByID(iParentID);			
 		if(!parent)
+		{
 			parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
+		}
 		
 		SetParent(parent);
 	

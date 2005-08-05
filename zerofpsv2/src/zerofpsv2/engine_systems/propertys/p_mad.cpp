@@ -297,6 +297,9 @@ void P_Mad::SetBase(const char* acName)
 
 void P_Mad::SetScale(float fScale)
 {
+	if(m_fScale == fScale)
+		return;
+
 	Mad_Modell::SetScale(fScale);
 	m_pkEntity->SetRadius(GetRadius());	
 	
@@ -581,11 +584,13 @@ bool P_Mad::HandleSetValue( const string& kValueName ,const string& kValue )
 		return true;
 	}
 	
-	if(strcmp(kValueName.c_str(), "m_fScale") == 0) {
-		m_fScale = float( atof(kValue.c_str()) );
-		m_pkEntity->SetRadius(GetRadius());
-				
-		SetNetUpdateFlag(true);
+	if(strcmp(kValueName.c_str(), "m_fScale") == 0) 
+	{
+		SetScale(float( atof(kValue.c_str()) ));
+// 		m_fScale = float( atof(kValue.c_str()) );
+// 		m_pkEntity->SetRadius(GetRadius());
+// 				
+// 		SetNetUpdateFlag(true);
 		return true;
 	}
 
