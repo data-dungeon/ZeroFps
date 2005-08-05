@@ -597,13 +597,16 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 			return true;
 	
 		//does any child want to send?  
-		if(m_bSendChilds)
+		if(m_bSendChilds && !GetExistOnClient(iConnectionID))
 		{
 			for(int i = 0;i<m_akChilds.size();i++)
 			{
-				//my child is on the client but i am not, better get there
-				if(m_akChilds[i]->GetExistOnClient(iConnectionID) && !GetExistOnClient(iConnectionID))
-					return true;
+				//my child is on the client (or gona be) but i am not, i better get there
+				if(m_akChilds[i]->HaveSomethingToSend(iConnectionID) || m_akChilds[i]->GetExistOnClient(iConnectionID))
+					return true;				
+				
+// 				if(m_akChilds[i]->HaveSomethingToSend(iConnectionID) || m_akChilds[i]->GetExistOnClient(iConnectionID) && !GetExistOnClient(iConnectionID))
+// 					return true;
 				
 // 				//a child has changed something
 // 				if(m_akChilds[i]->HaveSomethingToSend(iConnectionID))
@@ -624,6 +627,7 @@ return false;
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {	
 	//cout<<"sending entity "<<GetEntityID()<<" to "<<iConnectionID<<endl;
+	
 	SetExistOnClient(iConnectionID,true);
 	
 	//apply ignore flags
