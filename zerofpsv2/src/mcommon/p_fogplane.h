@@ -15,18 +15,23 @@ class MCOMMON_API P_FogPlane: public Property
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
 		Render*				m_pkRender;
-		ZMaterial*			m_pkFogMaterial;
 
 		float					m_fSize;
 		
+		ZFResourceHandle* m_pkMaterial;
+		string				m_strMaterial;		
 		
-		void DrawFogPlane();
+		void DrawFogPlane();		
 		
 		vector<PropertyValues> GetPropertyValues();
+		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		
 	public:
 		P_FogPlane();
 		~P_FogPlane();
+		
+		
+		void SetMaterial(const string& strMaterial);
 		
 		void Update();
 

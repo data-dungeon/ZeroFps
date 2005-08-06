@@ -17,52 +17,39 @@ P_FogPlane::P_FogPlane()
 	m_fSize = 4;
 	
 		
-	m_pkFogMaterial = new ZMaterial;
-	m_pkFogMaterial->GetPass(0)->m_kTUs[0]->SetRes("fogplane.tga");
-	m_pkFogMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
-	m_pkFogMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_NONE;		
-	m_pkFogMaterial->GetPass(0)->m_bLighting = 				true;		
-	m_pkFogMaterial->GetPass(0)->m_bFog = 						true;		
-	m_pkFogMaterial->GetPass(0)->m_bBlend = 					true;	
-	m_pkFogMaterial->GetPass(0)->m_bDepthMask =				false;
-		
-	
-	m_pkFogMaterial->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
-	m_pkFogMaterial->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
-
+	m_pkMaterial = new ZFResourceHandle;
+	SetMaterial("fogplane.zlm");		
 
 }
 
 P_FogPlane::~P_FogPlane()
 {
+	if(m_pkMaterial)
+		delete m_pkMaterial;
+}
 
-	delete m_pkFogMaterial;
+void P_FogPlane::SetMaterial(const string& strMaterial)
+{
+	m_pkMaterial->SetRes(strMaterial);
+	m_strMaterial = strMaterial;
+
+	SetNetUpdateFlag(true);
 }
 
 void P_FogPlane::Update()
 {
-	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NOSHADOWLAST)
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
 		return;
 
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fSize*0.5))
 		return;
 
 
-//   	if(m_pkZeroFps->GetDebugGraph())
-// 	{
-//   		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),m_fSize*0.5,1,Vector3(1,1,1),false);
-// 	}
-
-
 	static float afVerts[] = {	-0.5,	0,	0.5,	
 							 			-0.5,	0,	-0.5,	
 							 			0.5,	0,	-0.5,	
 										0.5,	0,	0.5};
-										
-	static float afNormals[] = {	0,1,0,	
-							 				0,1,0,	
-							 				0,1,0,	
-											0,1,0,};										
+																	
 	
 	static float afUvs[] = {	0,1,
 							 			1,1,
@@ -73,7 +60,6 @@ void P_FogPlane::Update()
 	m_pkZShaderSystem->SetNormal(Vector3(0,1,0));
 	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,afVerts);
 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
-// 	m_pkZShaderSystem->SetPointer(NORMAL_POINTER,afNormals);
 	m_pkZShaderSystem->SetNrOfVertexs(4);
 	
 										
@@ -81,10 +67,9 @@ void P_FogPlane::Update()
 	m_pkZShaderSystem->MatrixPush();	
 	
 	m_pkZShaderSystem->MatrixTranslate(GetEntity()->GetWorldPosV());
-	//m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetTicks()*50,0));
 	m_pkZShaderSystem->MatrixScale(m_fSize);
 	
-	m_pkZShaderSystem->BindMaterial(m_pkFogMaterial);	
+	m_pkZShaderSystem->BindMaterial((ZMaterial*)m_pkMaterial->GetResourcePtr());	
 	m_pkZShaderSystem->DrawArray(QUADS_MODE);										
 	
 	
@@ -95,32 +80,62 @@ void P_FogPlane::Update()
 
 vector<PropertyValues> P_FogPlane::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(2);
 		
 	kReturn[0].kValueName = "size";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
 	kReturn[0].pkValue    = (void*)&m_fSize;
 
+	kReturn[1].kValueName = "material";
+	kReturn[1].iValueType = VALUETYPE_STRING;
+	kReturn[1].pkValue    = (void*)&m_strMaterial;
+
 	return kReturn;
 }
 
+bool P_FogPlane::HandleSetValue( const string& kValueName ,const string& kValue )
+{
+	if(kValueName == "material")
+	{
+		SetMaterial(kValue);
+		return true;
+	}
+	
+	if( kValueName == "size") 
+	{
+		SetNetUpdateFlag(true);
+		return false;
+	}
+
+	return false;
+}
 
 void P_FogPlane::Save(ZFIoInterface* pkPackage)
 {
 	pkPackage->Write(m_fSize);
-
+	pkPackage->Write(m_strMaterial);
 }
 
 void P_FogPlane::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	if(iVersion == 2)
+	{
+		pkPackage->Read(m_fSize);		
+	}
+	
+	if(iVersion == 3)
+	{
 		pkPackage->Read(m_fSize);
+		pkPackage->Read(m_strMaterial);
+		SetMaterial(m_strMaterial);
+	}
 }
 
 
 void P_FogPlane::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write(m_fSize);
+	pkNetPacket->Write(m_strMaterial);
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }
@@ -128,6 +143,9 @@ void P_FogPlane::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 void P_FogPlane::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Read(m_fSize);
+	pkNetPacket->Read(m_strMaterial);
+	
+	SetMaterial(m_strMaterial);
 }
 
 

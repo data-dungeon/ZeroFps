@@ -252,6 +252,7 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile)
 	if(m_pkMaterialScript->Create(strFile))
 	{
  		SI_ZMATERIAL::g_pkCurrentMaterial = this;
+ 		m_strName = strFile;
 		if(m_pkScript->Call(m_pkMaterialScript, "Main",0,0))
 		{
 			SI_ZMATERIAL::g_pkCurrentMaterial = NULL;	
@@ -923,7 +924,7 @@ void ZMaterial::SetupEnums()
 	
 }
 
-int ZMaterial::GetTranslateEnum(string strEnum)
+int ZMaterial::GetTranslateEnum(const string& strEnum)
 {
 	map<string,int> ::iterator it = m_kEnums.find(strEnum);
 	

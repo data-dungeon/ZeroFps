@@ -111,7 +111,7 @@ class RENDER_API ZMaterial : public ZFResource
 		
 		bool LoadGlobalSection();
 		bool LoadPass(int iPass);		
-		int GetTranslateEnum(string strEnum);
+		int GetTranslateEnum(const string& strEnum);
 		void SetupEnums();
 		
 		bool PassGetLuaDouble(char* czName,double& dTemp);
