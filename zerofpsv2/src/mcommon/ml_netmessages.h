@@ -31,7 +31,9 @@ enum MLNM_ClientToServer
 	MLNM_CS_SAVEWORLD,
 	MLNM_CS_USEITEM,
 	MLNM_CS_REQ_SKILLTREE,
+	MLNM_CS_REQ_SKILLINFO,
 };
+
 
 //	A network message from the server to the client.
 enum MLNM_ServerToClient
@@ -51,6 +53,7 @@ enum MLNM_ServerToClient
 	MLNM_SC_SKILLBAR,
 	MLNM_SC_CLOSECONTAINER,
 	MLNM_SC_SKILLTREE,
+	MLNM_SC_SKILLINFO,
 };
 
 //mistlands chatmessages ID's

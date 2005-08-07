@@ -272,7 +272,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					}
 					else
 					{
-						g_kMistClient.RequestItemInfo(m_vkInventoryItemList[i].iItemID);
+						g_kMistClient.SendRequestItemInfo(m_vkInventoryItemList[i].iItemID);
 						//OpenItemInfoWnd(true);
 					}
 					//if(m_vkInventoryItemList[i].iStackSize > 1)
@@ -356,7 +356,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					}
 					else
 					{
-						g_kMistClient.RequestItemInfo(m_vkContainerItemList[i].iItemID);
+						g_kMistClient.SendRequestItemInfo(m_vkContainerItemList[i].iItemID);
 					}
 				}
 				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)

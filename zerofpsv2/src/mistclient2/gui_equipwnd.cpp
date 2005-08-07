@@ -219,7 +219,7 @@ void EquipmentDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		EQUIPMENT_SLOT* pkSlot = GetSlot(mx, my);
 		if(pkSlot != NULL && pkSlot->m_iItemID != -1)
 		{			
-			g_kMistClient.RequestItemInfo(pkSlot->m_iItemID);
+			g_kMistClient.SendRequestItemInfo(pkSlot->m_iItemID);
 		}
 	}
 	else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)

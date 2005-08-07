@@ -54,6 +54,7 @@ class MCOMMON_API Skill
 		string	m_strInGameName;
 		string	m_strSchool;
 		string	m_strIcon;
+		string	m_strInfoText;
 		
 		float		m_fCastTime;
 		float		m_fReloadTime;
@@ -88,12 +89,16 @@ class MCOMMON_API Skill
 		string GetScreenName()							{	return m_strInGameName;						};
 		string GetName()									{	return m_strSkillScript;					};
 		string GetIcon()									{	return m_strIcon;								};
+		string GetInfoText()								{	return m_strInfoText;						};
 		int	 GetLevel()									{	return m_iLevel;								};
 		string GetParent()								{	return m_strParentSkill;					};		
 		int	 GetSkillType()							{	return m_iSkillType;							};
 		float	 GetTimeLeft()								{	return m_fTimeLeft;							};
 		float	 GetRange()									{	return m_fRange;								};
 		float	 GetReloadTime()							{	return m_fReloadTime;						};
+		float  GetStaminaUsage()						{	return m_fStaminaUsage;						};
+		float  GetManaUsage()							{	return m_fManaUsage;							};
+		float  GetCastTime()								{	return m_fCastTime;							};
 };
 
 
@@ -282,7 +287,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//public network stuff
 		void SendCloseContainer(int iContainerID);
 		void SendSkillTree();
-
+		void SendSkillInfo(const string& strSkill);
 		
 		//alive
 		void MakeAlive();

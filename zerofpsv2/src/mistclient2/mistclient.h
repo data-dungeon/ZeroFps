@@ -132,11 +132,12 @@ class MistClient :public Application, public ZGuiApp {
 		void Say(string strMsg);
 		void RegisterEmotes();
 		
-		//specifik network requests
+		//network help fucntions
 		void RequestOpenInventory();
-		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);
+		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);		
 		
-		//general network sends
+		//Network sends		
+		void SendRequestSkillInfo(const string& strSkil);
 		void SendRequestSkillTree();
 		void SendUseItem(int iItemID);
 		void SendSetDefaultAttack(const string& strSkill);		
@@ -157,7 +158,7 @@ class MistClient :public Application, public ZGuiApp {
 		void SendTaunt(int iID);
 		void SendTaunt(const string& strEmote);
 		void SendRespawnRequest();
-		void RequestItemInfo(int iItemID);
+		void SendRequestItemInfo(int iItemID);
 		void SendUseSkill(const string& strSkill,int iTargetID,const Vector3& kPos,const Vector3& kDir);		
 			/*SendMoveItem hj?p.
 				iItemID : alltid entity id't f? itemet i fr?a

@@ -32,7 +32,8 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_iOwnerID 			=	iOwnerID;
 		
 	m_strInGameName 	=	"UnkownSkill";
-	m_strIcon 			= 	"default.tga";	
+	m_strIcon 			= 	"default.tga";
+	m_strInfoText		=	"Nothing known about this skill.";
 	m_iLevel 			= 	0;	
 	m_fReloadTime 		=	1;
 	m_fCastTime			=	1;
@@ -126,6 +127,8 @@ void Skill::UpdateFromScript()
 		m_strSchool = ctemp;
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"icon",ctemp))
 		m_strIcon = ctemp;
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"infotext",ctemp))
+		m_strInfoText = ctemp;					
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"reloadtime",dtemp))
 		m_fReloadTime = float(dtemp);
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"targettype",dtemp))
@@ -2683,6 +2686,38 @@ void P_CharacterProperty::SendCloseContainer(int iContainerID)
 
 	kNp.Write(iContainerID);	
 	
+	//send package
+	kNp.TargetSetClient(m_iConID);				
+	m_pkApp->SendAppMessage(&kNp);	
+}
+
+void P_CharacterProperty::SendSkillInfo(const string& strSkill)
+{
+	if(m_iConID == -1)
+		return;
+
+	Skill* pkSkill = GetSkillPointer(strSkill);
+	
+	if(!pkSkill)
+		return;
+
+
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_SKILLINFO);	
+
+	kNp.Write_Str(pkSkill->GetScreenName());
+	kNp.Write_Str(pkSkill->GetIcon());
+	kNp.Write_Str(pkSkill->GetInfoText());
+	kNp.Write(pkSkill->GetLevel());
+	kNp.Write(pkSkill->GetSkillType());	
+	kNp.Write(pkSkill->GetRange());	
+	kNp.Write(pkSkill->GetStaminaUsage());
+	kNp.Write(pkSkill->GetManaUsage());
+	kNp.Write(pkSkill->GetReloadTime());
+	kNp.Write(pkSkill->GetCastTime());
+
+	
+
 	//send package
 	kNp.TargetSetClient(m_iConID);				
 	m_pkApp->SendAppMessage(&kNp);	

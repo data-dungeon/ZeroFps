@@ -1450,6 +1450,45 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
+		case MLNM_SC_SKILLINFO:
+		{
+			string	strScreenName;
+			string	strIcon;
+			string	strInfoText;
+			int		iLevel;
+			int		iSkillType;
+			float		fRange;
+			float		fStaminaUsage;
+			float		fManaUsage;
+			float		fReloadTime;
+			float		fCastTime;
+			
+			pkNetMessage->Read_Str(strScreenName);
+			pkNetMessage->Read_Str(strIcon);
+			pkNetMessage->Read_Str(strInfoText);
+			pkNetMessage->Read(iLevel);
+			pkNetMessage->Read(iSkillType);
+			pkNetMessage->Read(fRange);
+			pkNetMessage->Read(fStaminaUsage);
+			pkNetMessage->Read(fManaUsage);
+			pkNetMessage->Read(fReloadTime);
+			pkNetMessage->Read(fCastTime);
+			
+			cout<<"-= gott skillinfo =-"<<endl;
+			cout<<"screen name:"<<strScreenName<<endl;
+			cout<<"icon:"<<strIcon<<endl;
+			cout<<"info text:"<<strInfoText<<endl;
+			cout<<"level:"<<iLevel<<endl;
+			cout<<"skill type:"<<iSkillType<<endl;
+			cout<<"range:"<<fRange<<endl;
+			cout<<"stamina usage:"<<fStaminaUsage<<endl;
+			cout<<"mana usage:"<<fManaUsage<<endl;
+			cout<<"reload time:"<<fReloadTime<<endl;
+			cout<<"cast time:"<<fCastTime<<endl;
+			
+			break;
+		}
+		
 		case MLNM_SC_SKILLTREE:
 		{
 			int iSize;
@@ -1461,6 +1500,12 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			string strScreenName;
 			
 			ZGuiTreebox* pkTreeBox = (ZGuiTreebox*)g_kMistClient.GetWnd("SkillTree");	
+
+			if(!pkTreeBox)
+			{
+				cout<<"ERROR: skill tree box not found"<<endl;
+				return;
+			}
 
 			pkTreeBox->Clear();
 			
@@ -1483,9 +1528,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 						cout<<"Error adding treeitem "<<strName<< " parent "<<strParent<<endl;
 					}
 				}
-			}
-	
-			
+			}				
 			
 			break;
 		}
@@ -2486,6 +2529,16 @@ void MistClient::SendAction(int iEntityID,const string& strAction)
 	SendAppMessage(&kNp);			
 }
 
+void MistClient::SendRequestSkillInfo(const string& strSkill)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_SKILLINFO);
+	
+	kNp.Write_Str(strSkill);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
+}
+
 void MistClient::SendRequestSkillTree()
 {
 	NetPacket kNp;			
@@ -2539,7 +2592,7 @@ void MistClient::SendUseSkill(const string& strSkill,int iTargetID,const Vector3
 
 }
 
-void MistClient::RequestItemInfo(int iItemID)
+void MistClient::SendRequestItemInfo(int iItemID)
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_REQ_ITEMINFO);
