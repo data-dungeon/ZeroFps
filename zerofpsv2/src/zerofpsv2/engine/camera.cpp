@@ -999,7 +999,7 @@ void Camera::DrawWorld()
 		}
 		else
 		{
-			if(m_kLastShadowPos.DistanceTo(kCenter) > m_fShadowArea/8)
+			if(m_kLastShadowPos.DistanceTo(kCenter) > m_fShadowArea/8.0)
 			{
 				m_kLastShadowPos = kCenter;
 				m_iCurrentRenderMode = RENDER_CASTSHADOW;
@@ -1167,8 +1167,8 @@ void Camera::DrawShadowedScene()
 	//reload last material
 	m_pkZShaderSystem->ReloadMaterial();		
 	
-	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);	
+	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);	
+ 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);	
 
 	
 	
