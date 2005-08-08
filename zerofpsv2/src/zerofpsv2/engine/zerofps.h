@@ -264,8 +264,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 		int		m_iNumOfMadRender;
+		
 		int		m_iOcculedObjects;
 		int		m_iNotOcculedObjects;
+		bool		m_bOcculusionCulling;
 		
 		bool		m_bAiShowInfo;
 
@@ -349,8 +351,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int  GetShadowMapMode()				{	return m_iShadowMapMode;		}
 		int  GetShadowMapQuality()			{	return m_iShadowMapQuality;	}
 		
-		bool GetVegetation()					{	return m_bVegetation;	}
-		float GetViewDistance()				{	return m_fViewDistance;	}
+		bool GetVegetation()					{	return m_bVegetation;			}
+		float GetViewDistance()				{	return m_fViewDistance;			}
+
+		bool GetOcculusionCulling()		{	return m_bOcculusionCulling;	}
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);

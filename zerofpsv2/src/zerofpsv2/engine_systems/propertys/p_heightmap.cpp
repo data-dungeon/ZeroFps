@@ -95,7 +95,9 @@ void P_Heightmap::Update()
 // 	DrawHeightmap();
 
 
-	if(m_pkZShaderSystem->SupportOcculusion() && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
+	if(m_pkZShaderSystem->SupportOcculusion() && 
+		m_pkZeroFps->GetOcculusionCulling() && 
+		m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
 	{												
 		if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.05)
 		{	
@@ -114,7 +116,7 @@ void P_Heightmap::Update()
 				m_bOculled = (m_kOCQuery.GetResult() < 10);							
 			}
 					
-			//draw mad						
+			//draw heightmap						
 			if(!m_bOculled)
 				DrawTexturedHeightmap();
 		}

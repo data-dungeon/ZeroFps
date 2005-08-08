@@ -180,7 +180,9 @@ void P_Mad::Update()
 				m_pkZShaderSystem->MatrixScale(m_fScale);									
 				
 				
-				if(m_pkZShaderSystem->SupportOcculusion() && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
+				if(m_pkZShaderSystem->SupportOcculusion() && 
+					m_pkZeroFps->GetOcculusionCulling() &&
+					m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
 				{												
 					if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.05)
 					{			

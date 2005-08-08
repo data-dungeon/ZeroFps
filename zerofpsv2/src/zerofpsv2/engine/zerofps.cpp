@@ -121,6 +121,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iProfileTotalTime		= 0;
 	m_bVegetation				= true;
 	m_fViewDistance			= 30;
+	m_bOcculusionCulling		= true;
 	
 	m_bShadowMapRealtime		= false;
 	m_iShadowMapMode			= 1;
@@ -163,6 +164,9 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);
 	RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
 	RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
+	
+	RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL);
+	
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -398,10 +402,10 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common",  "MAD:");	
 	DevPrintf("common" , "  NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 	DevPrintf("common" , "  Zone: %d", this->m_pkEntityManager->m_kZones.size());
+	
 	DevPrintf("common",  "OCCULUSION:");	
 	DevPrintf("common" , "  Culled    : %d",m_iOcculedObjects); m_iOcculedObjects = 0;	
-	DevPrintf("common" , "  Not Culled: %d",m_iNotOcculedObjects); m_iNotOcculedObjects = 0;	
-	
+	DevPrintf("common" , "  Not Culled: %d",m_iNotOcculedObjects); m_iNotOcculedObjects = 0;		
 	
 	DevPrintf("common","TCS:");
 	DevPrintf("common","  Collissions : %d", m_pkTcs->GetNrOfCollissions());

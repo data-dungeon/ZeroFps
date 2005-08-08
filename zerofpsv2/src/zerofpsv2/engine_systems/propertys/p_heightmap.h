@@ -78,6 +78,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void BuildTextureArrays();
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop);
 		void DrawTexturedHeightmap();
+		void DrawOcculusionHeightmap();
 		
 	public:
 		P_Heightmap();
