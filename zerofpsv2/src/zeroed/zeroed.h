@@ -197,7 +197,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void EditRunCommand(FuncId_e eEditCmd);
 		
 		// zone and object edit
-		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
 		bool PlaceObjectOnGround(int iObjectID);
 		
 		//gui stuff...or something 

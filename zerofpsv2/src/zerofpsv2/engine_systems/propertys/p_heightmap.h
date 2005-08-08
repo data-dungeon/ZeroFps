@@ -94,8 +94,8 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		float CalculateRadius();
-		float GetHeight(float x,float y);
-		bool  Inside(float x,float y);
+		float GetHeight(float x,float y);	//world
+		bool  Inside(float x,float y);		//world
 		void GetSelection(const Vector3& kCenter, float fInRadius, float fOutRadius,vector<HMSelectionData>* pkSelectionData);
 
 

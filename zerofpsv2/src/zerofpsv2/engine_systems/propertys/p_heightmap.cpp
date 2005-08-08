@@ -580,6 +580,7 @@ float P_Heightmap::GetHeight(float x,float y)
 	float fYD = y - float(iY);
 	
 
+
 	float H1 = m_kHeightData[iY*m_iRows + iX];
 	float H2 = m_kHeightData[iY*m_iRows + iX+1];
 	float H3 = m_kHeightData[(iY+1)*m_iRows + iX];

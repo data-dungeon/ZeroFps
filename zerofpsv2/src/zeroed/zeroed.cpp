@@ -1846,6 +1846,14 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 		if(pkData == NULL || pkData->m_pkZone == NULL)
 			return false;
 
+		if(P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->GetProperty("P_Heightmap"))
+		{
+			Vector3 kPos = pkObj->GetWorldPosV();
+			kPos.y = pkHM->GetHeight(kPos.x,kPos.z);			
+			pkObj->SetWorldPosV(kPos);
+			return true;
+		}
+
 		if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))
 		{
 			if(pkMad->TestLine(pkObj->GetWorldPosV(),Vector3(0,-1,0)))
