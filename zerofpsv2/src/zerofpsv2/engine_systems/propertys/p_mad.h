@@ -6,6 +6,8 @@
 #include "../../engine/property.h"
 #include <string>
 #include "../engine_systems_x.h"
+#include "../../render/zocculusionquery.h"
+
 using namespace std;
 
 //#define NO_ANIMATION_ID	-1	// Index used for non existing anim.
@@ -35,6 +37,11 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		Vector3	m_kOffset;
 		
 		LightProfile	m_kLightProfile;				//used for lighting
+		
+		ZOcculusionQuery m_kOCQuery;
+		bool		m_bHaveOCTested;
+		float		m_fLastOcculusionTime;
+		bool		m_bOculled;
 		
 		//bounding box
 		bool			m_bHaveAABB;
@@ -113,7 +120,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 
 		bool GetBBox(Vector3& kMin, Vector3& kMax, Vector3& kPos);
 
-		bool operator<(const Property& kOther) const;
+		//bool operator<(const Property& kOther) const;
 };
 
 namespace SI_PMad

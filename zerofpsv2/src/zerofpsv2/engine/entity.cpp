@@ -1022,7 +1022,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	{
 		m_pScriptFileHandle->SetRes(string(acTemp));
 		if(!m_pScriptFileHandle->IsValid())
-			ZFWarning("Entity %d have a non valid entity script (%s)", GetEntityID(), acTemp);
+			ZFWarning("Entity ID:%d,NAME:%s,TYPE:%s have a non valid entity script (%s)", GetEntityID(), m_strName.c_str(),m_strType.c_str(),acTemp);
 	}
 
 	if(!m_pScriptFileHandle->IsValid() && m_strType != string("Entity"))

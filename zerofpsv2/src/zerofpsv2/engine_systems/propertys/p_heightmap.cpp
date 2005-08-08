@@ -17,6 +17,9 @@ P_Heightmap::P_Heightmap()
 	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 
+	m_fLastOcculusionTime 	= 0;
+	m_bOculled					= false;
+	m_bHaveOCTested			= false;
 
 	m_fScale = 2.0;
 	m_fMaxValue = 100;
@@ -90,7 +93,39 @@ void P_Heightmap::Update()
 
 
 // 	DrawHeightmap();
-	DrawTexturedHeightmap();
+
+
+	if(m_pkZShaderSystem->SupportOcculusion() && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
+	{												
+		if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.05)
+		{	
+			m_fLastOcculusionTime = m_pkZeroFps->GetEngineTime();
+			m_bHaveOCTested = 		true;
+								
+			m_kOCQuery.Begin();
+			DrawTexturedHeightmap();
+			m_kOCQuery.End();			
+		}
+		else
+		{
+			if(m_bHaveOCTested && m_kOCQuery.HaveResult())
+			{
+				m_bHaveOCTested = false;
+				m_bOculled = (m_kOCQuery.GetResult() < 10);							
+			}
+					
+			//draw mad						
+			if(!m_bOculled)
+				DrawTexturedHeightmap();
+		}
+		
+		if(m_bOculled)
+			m_pkZeroFps->m_iOcculedObjects++;		
+		else
+			m_pkZeroFps->m_iNotOcculedObjects++;		
+	}
+	else
+		DrawTexturedHeightmap();
 }
 
 void P_Heightmap::DrawTexturedHeightmap()

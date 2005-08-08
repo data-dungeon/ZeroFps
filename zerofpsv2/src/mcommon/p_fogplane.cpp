@@ -8,7 +8,7 @@ P_FogPlane::P_FogPlane()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = true;	
-	m_iVersion = 2;
+	m_iVersion = 3;
 	m_iSortPlace=4;
 	
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
@@ -113,7 +113,7 @@ bool P_FogPlane::HandleSetValue( const string& kValueName ,const string& kValue 
 void P_FogPlane::Save(ZFIoInterface* pkPackage)
 {
 	pkPackage->Write(m_fSize);
-	pkPackage->Write(m_strMaterial);
+	pkPackage->Write_Str(m_strMaterial);
 }
 
 void P_FogPlane::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -126,7 +126,7 @@ void P_FogPlane::Load(ZFIoInterface* pkPackage,int iVersion)
 	if(iVersion == 3)
 	{
 		pkPackage->Read(m_fSize);
-		pkPackage->Read(m_strMaterial);
+		pkPackage->Read_Str(m_strMaterial);
 		SetMaterial(m_strMaterial);
 	}
 }

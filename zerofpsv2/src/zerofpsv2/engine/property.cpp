@@ -55,11 +55,12 @@ bool Property::operator<(const Property& kOther) const
 		return true;		
 	
 	if(m_iSortPlace == kOther.m_iSortPlace && (m_bSortDistance && kOther.m_bSortDistance) )
-	{				
+// 	if(m_iSortPlace == kOther.m_iSortPlace)
+	{			
 		float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
 		float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV());		
 		return d1<d2;		
-	} 
+ 	} 
 			
 	return false;
 }

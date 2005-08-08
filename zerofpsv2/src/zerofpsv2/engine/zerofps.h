@@ -264,6 +264,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 		int		m_iNumOfMadRender;
+		int		m_iOcculedObjects;
+		int		m_iNotOcculedObjects;
 		
 		bool		m_bAiShowInfo;
 

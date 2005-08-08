@@ -38,6 +38,10 @@ P_Mad::P_Mad()
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
 	
+	m_fLastOcculusionTime 	= 0;
+	m_bOculled					= false;
+	m_bHaveOCTested			= false;
+	
   	m_fLastAnimationUpdateTime = m_pkZeroFps->GetEngineTime();
 	m_iLastAnimationUpdateFrame = -1;
 
@@ -175,8 +179,39 @@ void P_Mad::Update()
 				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 				m_pkZShaderSystem->MatrixScale(m_fScale);									
 				
-				//draw mad
-				Draw_All(m_pkZeroFps->m_iMadDraw);
+				
+				if(m_pkZShaderSystem->SupportOcculusion() && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
+				{												
+					if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.05)
+					{			
+						m_fLastOcculusionTime = m_pkZeroFps->GetEngineTime();
+						m_bHaveOCTested = 		true;
+						
+						m_kOCQuery.Begin();						
+						Draw_All(m_pkZeroFps->m_iMadDraw);												
+						m_kOCQuery.End();						
+					}
+					else						
+					{					
+						if(m_bHaveOCTested && m_kOCQuery.HaveResult())
+						{
+							m_bHaveOCTested = false;
+							m_bOculled = (m_kOCQuery.GetResult() < 10);							
+						}
+					
+						//draw mad						
+						if(!m_bOculled)
+							Draw_All(m_pkZeroFps->m_iMadDraw);
+					}
+									
+					if(m_bOculled)
+						m_pkZeroFps->m_iOcculedObjects++;		
+					else
+						m_pkZeroFps->m_iNotOcculedObjects++;	
+									
+				}
+				else
+					Draw_All(m_pkZeroFps->m_iMadDraw);
 				
 			m_pkZShaderSystem->MatrixPop();
 		}
@@ -914,42 +949,42 @@ Matrix4 P_Mad::GetJointRotation(const string& strJointName)
 }
 
 
-bool P_Mad::operator<(const Property& kOther) const
-{
-	if(m_iSortPlace < kOther.m_iSortPlace)
-		return true;		
-	
-	if(m_iSortPlace == kOther.m_iSortPlace)
-	{	
-		if(kOther.IsType("P_Mad"))
-		{			
-			if(P_Mad* pkMad = (P_Mad*)(&kOther))
-			{
-				if(m_iFirstMaterialID == pkMad->m_iFirstMaterialID)
-				{
-					float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
-					float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.GetEntity()->GetWorldPosV());
-					
-					if(m_bBlended)
-						return d1>d2;							
-					else
-						return d1<d2;							
-				}
-				
-				return (m_iFirstMaterialID < pkMad->m_iFirstMaterialID);			
-			}
-		}
-		else if(m_bSortDistance && kOther.m_bSortDistance)
-		{
-			float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
-			float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.GetEntity()->GetWorldPosV());
-		
-			return d1<d2;		
-		}
-	}
-	
-	return false;
-}
+// bool P_Mad::operator<(const Property& kOther) const
+// {
+// 	if(m_iSortPlace < kOther.m_iSortPlace)
+// 		return true;		
+// 	
+// 	if(m_iSortPlace == kOther.m_iSortPlace)
+// 	{	
+// // 		if(kOther.IsType("P_Mad"))
+// // 		{			
+// // 			if(P_Mad* pkMad = (P_Mad*)(&kOther))
+// // 			{
+// // // 				if(m_iFirstMaterialID == pkMad->m_iFirstMaterialID)
+// // // 				{
+// // 					float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
+// // 					float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.GetEntity()->GetWorldPosV());
+// // 					
+// // 					if(m_bBlended)
+// // 						return d1>d2;							
+// // 					else
+// // 						return d1<d2;							
+// // // 				}
+// // 				
+// // // 				return (m_iFirstMaterialID < pkMad->m_iFirstMaterialID);			
+// // 			}
+// // 		}
+// // 		else if(m_bSortDistance && kOther.m_bSortDistance)
+// // 		{
+// 			float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
+// 			float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.GetEntity()->GetWorldPosV());
+// 		
+// 			return d1<d2;		
+// // 		}
+// 	}
+// 	
+// 	return false;
+// }
 
 
 /* ********************************** SCRIPT INTERFACE ****************************************/

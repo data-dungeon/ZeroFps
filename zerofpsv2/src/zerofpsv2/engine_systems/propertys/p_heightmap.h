@@ -4,6 +4,7 @@
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
 #include "../mad/mad_core.h"
+#include "../../render/zocculusionquery.h"
 
 using namespace std;
 
@@ -51,7 +52,13 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		Render*				m_pkRender;	
 		
 		
-		LightProfile						m_kLightProfile;				//used for lighting				
+		LightProfile		m_kLightProfile;				//used for lighting				
+		
+		ZOcculusionQuery	m_kOCQuery;
+		bool					m_bHaveOCTested;
+		float					m_fLastOcculusionTime;
+		bool					m_bOculled;
+			
 			
 		float				m_fScale;		
 		int				m_iWidth;

@@ -398,6 +398,9 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common",  "MAD:");	
 	DevPrintf("common" , "  NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 	DevPrintf("common" , "  Zone: %d", this->m_pkEntityManager->m_kZones.size());
+	DevPrintf("common",  "OCCULUSION:");	
+	DevPrintf("common" , "  Culled    : %d",m_iOcculedObjects); m_iOcculedObjects = 0;	
+	DevPrintf("common" , "  Not Culled: %d",m_iNotOcculedObjects); m_iNotOcculedObjects = 0;	
 	
 	
 	DevPrintf("common","TCS:");
