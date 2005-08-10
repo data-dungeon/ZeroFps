@@ -61,7 +61,7 @@ ZGuiTreeboxNode* ZGuiTreebox::AddItem(ZGuiTreeboxNode* pkParent,
 									  const char* szIDName)
 {
 	ZGuiTreeboxNode* pkNewBranch = CreateNode(pkParent, szText, ucSkinIndex,
-		ucSkinIndexSelected);
+		ucSkinIndexSelected,szIDName);
 
 	if(szIDName != NULL)
 	{
@@ -82,7 +82,7 @@ ZGuiTreeboxNode* ZGuiTreebox::AddItem(string szParent,
 	if(pkParent)
 	{
 		pkNewBranch = CreateNode(pkParent, szText, ucSkinIndex,
-			ucSkinIndexSelected);
+			ucSkinIndexSelected,szIDName);
 
 		if(szIDName != NULL)
 		{
@@ -98,7 +98,7 @@ ZGuiTreeboxNode* ZGuiTreebox::AddItem(string szParent,
 
 ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText, 
 										 unsigned char ucSkinIndex,
-										 unsigned char ucSkinIndexSelected)
+										 unsigned char ucSkinIndexSelected,const char* szID)
 {
 	if(m_kNodeList.empty() == false && pkParent == NULL)
 	{
@@ -135,6 +135,11 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	pkNewItem->bChildListIsOpen = false;
 	pkNewItem->ucSkinIndex = ucSkinIndex;
 	pkNewItem->ucSkinIndexSelected = ucSkinIndexSelected;
+	
+	if(szID)
+		pkNewItem->strNodeID = szID;
+	else
+		pkNewItem->strNodeID = "";
 
 	Rect rcButton = Rect(x,y,x+m_iButtonSize,y+m_iButtonSize);
 	ZGuiCheckbox* pkButton = (pkNewItem->pkButton = 
@@ -366,13 +371,14 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 				// Send a message to the main winproc...
 
-				char** piParams = new char*[4];
+				char** piParams = new char*[5];
 
 				piParams[0] = NULL; 
 				piParams[1] = NULL;
 				piParams[2] = NULL;
 				piParams[3] = new char[2];
-	
+				piParams[4] = NULL;
+				
 				// 1:rd argument = name of the treebox
 				piParams[0] = new char[strlen(GetName())+1];
 				strcpy(piParams[0], GetName());
@@ -420,8 +426,18 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 					strcpy(piParams[3], "1");
 				}
 
+				// 5:th id
+				if(!m_pkSelectedNode->strNodeID.empty())
+				{
+					const char* szNodeID = m_pkSelectedNode->strNodeID.c_str();
+					piParams[4] = new char[strlen(szNodeID)+1];
+					strcpy(piParams[4], szNodeID);					
+
+				}
+				
+
 				GetGUI()->GetActiveCallBackFunc()(
-					GetGUI()->GetActiveMainWnd(), ZGM_SELECTTREEITEM, 4, piParams);
+					GetGUI()->GetActiveMainWnd(), ZGM_SELECTTREEITEM, 5, piParams);
 
 				if(piParams[0])
 					delete[] piParams[0];
@@ -431,6 +447,8 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 					delete[] piParams[2];
 				if(piParams[3])
 					delete[] piParams[3];
+ 				if(piParams[4])
+ 					delete[] piParams[4];
 
 				delete[] piParams;
 

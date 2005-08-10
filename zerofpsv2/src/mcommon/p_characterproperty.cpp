@@ -2152,22 +2152,6 @@ Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 	return NULL;
 }
 
-Skill* P_CharacterProperty::GetSkillPointerByScreenName(const string& strSkillName)
-{
-	if(strSkillName.empty())
-		return NULL;
-
-	static string strSkill;
-	 
-	for(int i =0;i<m_kSkills.size();i++)
-	{
-		if(m_kSkills[i]->GetScreenName() == strSkillName)
-			return m_kSkills[i];
-	};
-
-	return NULL;
-}
-
 
 bool P_CharacterProperty::ChangeSkill(const string& strSkillScript,int iValue)
 {
@@ -2713,7 +2697,7 @@ void P_CharacterProperty::SendSkillInfo(const string& strSkill)
 	if(m_iConID == -1)
 		return;
 
-	Skill* pkSkill = GetSkillPointerByScreenName(strSkill);
+	Skill* pkSkill = GetSkillPointer(strSkill);
 	
 	if(!pkSkill)
 	{

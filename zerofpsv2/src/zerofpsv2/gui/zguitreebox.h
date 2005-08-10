@@ -28,6 +28,8 @@ struct GUI_API ZGuiTreeboxNode
 	bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga
 							//  tillräckligt många "steg".
 
+	string	strNodeID;
+
 	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode* pkNode);
 };
 
@@ -107,7 +109,7 @@ private:
 	void PrintChilds(list<ZGuiTreeboxNode*> kList);
 
 	ZGuiTreeboxNode* CreateNode(ZGuiTreeboxNode* pkParent, char* szText, 
-		unsigned char ucSkinIndex,unsigned char ucSkinIndexSelected);
+		unsigned char ucSkinIndex,unsigned char ucSkinIndexSelected,const char* szID);
 
 	bool DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap);
 
