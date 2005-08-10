@@ -1242,16 +1242,22 @@ void NetWork::SendAckList(int iClient, vector<int>& kAckList)
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_ACKREL);
 	int iSize = kAckList.size();
+
+	if(iSize >= 200)
+	{
+		iSize = 200;	
+	}
+
 	kNetPRespons.Write( iSize );
 
-	for(unsigned int i=0; i<kAckList.size(); i++)
+	for(unsigned int i=0; i<iSize; i++)
 		kNetPRespons.Write( kAckList[i] ); 
 
 	kNetPRespons.m_kAddress = m_RemoteNodes[iClient]->m_kAddress;
 	
-	if(kNetPRespons.m_iLength > MAX_PACKET_SIZE)
+	if(kAckList.size() > 256)
 	{
-		cout<<"ERROR - NetWork::SendAckList: kAckList larger then MAX_PACKET_SIZE"<<endl;
+		cout << " ***** ERROR - NetWork::SendAckList: - Tell Vim NOW :)." << endl;
 	}
 
 	SendRaw(&kNetPRespons);

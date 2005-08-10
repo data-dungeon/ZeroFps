@@ -62,6 +62,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
    m_strLoginPW 			= "topsecret";
 
 	Register_Cmd("msref", FID_MSREFRESH);
+	Register_Cmd("skill", FID_SETSKILLBAR);
 
    RegisterVariable("ap_loginname", 		 	&m_strLoginName,				CSYS_STRING);
    RegisterVariable("ap_loginpw", 			 	&m_strLoginPW,					CSYS_STRING);
@@ -215,6 +216,20 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_MSREFRESH:
 		{
 			m_pkNetwork->MS_RequestServers();
+			break;
+		}	
+
+		case FID_SETSKILLBAR:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 2)
+			{
+				m_pkConsole->Printf("say [skill] [pos]");
+				break;				
+			}
+
+			int iPos = atoi(kCommand->m_kSplitCommand[2].c_str());
+
+			SendAddSkillToSkillbar(kCommand->m_kSplitCommand[1],iPos);
 			break;
 		}	
 	}
@@ -1620,6 +1635,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			SendAddSkillToSkillbar("skill-create_food.lua",11);
 			SendAddSkillToSkillbar("skill-push.lua",12);
 			SendAddSkillToSkillbar("skill-poison_cloud.lua",13);
+			SendAddSkillToSkillbar("skill-charm.lua",14);
 			//--------------------------
 		
 			break;

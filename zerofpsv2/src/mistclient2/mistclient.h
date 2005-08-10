@@ -48,6 +48,7 @@ class MistClient :public Application, public ZGuiApp {
 			FID_PLAYERLIST,
 			FID_KILLME,
 			FID_MSREFRESH,
+			FID_SETSKILLBAR,
 		};
 
 		//music
