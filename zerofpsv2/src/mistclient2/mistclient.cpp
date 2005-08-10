@@ -1486,6 +1486,14 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			cout<<"reload time:"<<fReloadTime<<endl;
 			cout<<"cast time:"<<fCastTime<<endl;
 			
+			
+			if(ZGuiTextbox* pkTextbox = (ZGuiTextbox*)g_kMistClient.GetWnd("SkillInfoText"))
+			{
+				pkTextbox->ToggleMultiLine(true);
+				pkTextbox->SetReadOnly(true);
+				pkTextbox->SetText((char*)strInfoText.c_str());
+			}
+			
 			break;
 		}
 		
