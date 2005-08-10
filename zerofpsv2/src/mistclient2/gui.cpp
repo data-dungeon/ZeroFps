@@ -70,7 +70,25 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 			
 		return true;
 	}
-	
+	else
+	if(msg == ZGM_SELECTTREEITEM)
+	{
+		char** pszParams; pszParams = (char**) params;
+		if(pszParams[0]) cout << "szTreeBox: " << pszParams[0] << endl;
+		if(pszParams[1])cout << "szParentNodeText: " << pszParams[1] << endl;
+		if(pszParams[2])cout << "szClickNodeText: " << pszParams[2] << endl;
+		bool bHaveChilds = false;
+		if(pszParams[3])
+		{
+			if(pszParams[3][0] == '1')
+				bHaveChilds = true;
+		}
+
+		g_kMistClient.SendRequestSkillInfo(string(pszParams[2]));
+
+		return true;
+	}
+
 	if(strController.empty())
 		return false;
 

@@ -191,6 +191,9 @@
 				RelativePath=".\zmaterial.cpp">
 			</File>
 			<File
+				RelativePath=".\zocculusionquery.cpp">
+			</File>
+			<File
 				RelativePath=".\zshadersystem.cpp">
 			</File>
 			<File
@@ -235,6 +238,9 @@
 			</File>
 			<File
 				RelativePath=".\zmaterial.h">
+			</File>
+			<File
+				RelativePath=".\zocculusionquery.h">
 			</File>
 			<File
 				RelativePath=".\zshadersystem.h">

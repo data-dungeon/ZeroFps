@@ -178,6 +178,9 @@
 				RelativePath=".\p_container.cpp">
 			</File>
 			<File
+				RelativePath=".\p_dungeongen.cpp">
+			</File>
+			<File
 				RelativePath=".\p_enviroment.cpp">
 			</File>
 			<File
@@ -243,6 +246,9 @@
 			</File>
 			<File
 				RelativePath=".\p_container.h">
+			</File>
+			<File
+				RelativePath=".\p_dungeongen.h">
 			</File>
 			<File
 				RelativePath=".\p_enviroment.h">

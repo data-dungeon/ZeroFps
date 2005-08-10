@@ -335,6 +335,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool	ChangeSkill(const string& strSkillScript,int iValue);
 		void	SetSkill(const string& strSkillScript,int iLevel);
 		Skill* GetSkillPointer(const string& strSkillName);
+		Skill* GetSkillPointerByScreenName(const string& strSkillName);
 		int	UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
 		void	RemoveAllSkills();		
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
