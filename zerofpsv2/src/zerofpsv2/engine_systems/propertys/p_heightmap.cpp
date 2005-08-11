@@ -151,15 +151,22 @@ void P_Heightmap::DrawTexturedHeightmap()
 		
 		m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_kMaterials[i]->GetResourcePtr()) );	
 
-
-		m_pkZShaderSystem->ResetPointers();
-		m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(m_kDataArrays[i]->m_kColorData[0]));
-		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(m_kDataArrays[i]->m_kTextureData[0]));
-		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(m_kDataArrays[i]->m_kNormalData[0]));
-		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(m_kDataArrays[i]->m_kVertexData[0]));
-		m_pkZShaderSystem->SetNrOfVertexs(m_kDataArrays[i]->m_kVertexData.size());
+// 		if(m_kDataArrays[i]->m_pkVBO)
+// 		{
+// 			m_pkZShaderSystem->DrawVertexBuffer(m_kDataArrays[i]->m_pkVBO);		
+// 		}
+// 		else
+// 		{
 		
-		m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);		
+			m_pkZShaderSystem->ResetPointers();
+			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(m_kDataArrays[i]->m_kColorData[0]));
+			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(m_kDataArrays[i]->m_kTextureData[0]));
+			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(m_kDataArrays[i]->m_kNormalData[0]));
+			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(m_kDataArrays[i]->m_kVertexData[0]));
+			m_pkZShaderSystem->SetNrOfVertexs(m_kDataArrays[i]->m_kVertexData.size());
+			
+			m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);		
+// 		}
 		
 		if(i == 0)
 			m_pkZShaderSystem->ForceBlending(BLEND_MATERIAL);
@@ -237,7 +244,20 @@ void P_Heightmap::BuildTextureArrays()
 					}
 				}
 			}				
-		}		
+		}
+				
+				
+// 		if(pkNewArrays->m_kVertexData.size() > 1000)
+// 		{	
+// 			m_pkZShaderSystem->ResetPointers();
+// 			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(pkNewArrays->m_kColorData[0]));
+// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(pkNewArrays->m_kTextureData[0]));
+// 			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(pkNewArrays->m_kNormalData[0]));
+// 			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkNewArrays->m_kVertexData[0]));
+// 			m_pkZShaderSystem->SetNrOfVertexs(pkNewArrays->m_kVertexData.size());		
+// 			
+// 			pkNewArrays->m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLES_MODE);						
+// 		}
 	}
 }
 
