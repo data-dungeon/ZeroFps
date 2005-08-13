@@ -152,10 +152,12 @@ void Tcs::Update(float fAlphaTime)
 	
 	//fStepSize = fAlphaTime;
 	
+	if(fStepSize <= 0)
+		return;
+	
 	//minimum time size
 	if(fStepSize > 0.05)
 		fStepSize = 0.05;
-	
 	
 	
 	//synd all bodys to entitys
@@ -201,6 +203,8 @@ void Tcs::Update(float fAlphaTime)
 	//apply forces on velocity
 	UpdateBodyVels(fStepSize);		
 
+	//update all character ground line tests	
+	UpdateLineTests(fStepSize);				
 	
 	//handle contacts
 	for(int i = 0;i< m_iContactIterations;i++)
@@ -227,16 +231,14 @@ void Tcs::Update(float fAlphaTime)
 	}
 	
 	//do shock test
-	Shock();
-	
+	Shock();				
+		
 	//now move all objects	
 	UpdateBodyPos(fStepSize);
 //---------------- End of maaaaaaaaaain loop	
 	
 // 	StopProfileTimer("s__tcs-main");
 	
-	//update all character ground line tests	
-	UpdateLineTests(fStepSize);
 
 	//check triggers
 	UpdateTriggers();
@@ -463,32 +465,32 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 			
 					
 		if(m_kBodys[i]->m_bCharacter)
-		{					
-			bool bTuchedGround = false;
+		{			
+			m_kBodys[i]->m_bOnGround = false;					
 			 
 			if(CharacterLineTest(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{		
 				distance = fabs(m_kBodys[i]->m_kNewPos.y - m_kLastLineTestColPos.y);
 				
-				if(distance < m_kBodys[i]->m_fLegLength)
+				if(distance <= m_kBodys[i]->m_fLegLength)
 				{
-					bTuchedGround = true;
-				
-					m_kBodys[i]->m_bOnGround = true;
-					
-					//set UP velocity depending on how far player has sunken into the ground
- 					//m_kBodys[i]->m_kLinearVelocity.y = (m_kBodys[i]->m_fLegLength - distance) * 20.0;
- 					m_kBodys[i]->m_kLinearVelocity.y = Min((m_kBodys[i]->m_fLegLength - distance) * 60.0,50.0);
+					float fNewYVel = (m_kBodys[i]->m_fLegLength - distance) / fAlphaTime;
+//  					cout<<"oldvel:"<<m_kBodys[i]->m_kLinearVelocity.y<<"   newvel:"<<fNewYVel<<endl;
+//  					cout<<"bla"<<fAlphaTime<<" "<<(m_kBodys[i]->m_fLegLength - distance)<<endl;
+ 					
+ 					if(m_kBodys[i]->m_kLinearVelocity.y < fNewYVel)
+ 					{
+ 						m_kBodys[i]->m_kLinearVelocity.y = fNewYVel;
+ 					
+						m_kBodys[i]->m_bOnGround = true; 					
+ 					}
+ 					
+ 					
+//  					m_kBodys[i]->m_kLinearVelocity.y = Min((m_kBodys[i]->m_fLegLength - distance) * 60.0,50.0);
 //  					m_kBodys[i]->m_kLinearVelocity.y = fabs(m_kBodys[i]->m_kLinearVelocity.y)*2.0;
 //  					cout<<"vel:"<<m_kBodys[i]->m_kLinearVelocity.y<<endl;
 				}
-			}
-			
-			//what do do if we didt touch the ground?			
-			if(!bTuchedGround)
-			{
-				m_kBodys[i]->m_bOnGround = false;			
-			}		
+			}			
 		}
 	}
 }
