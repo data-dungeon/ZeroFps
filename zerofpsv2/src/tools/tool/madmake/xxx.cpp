@@ -187,7 +187,7 @@ void ModellXXX::ReadBaseFrame(const char* filename)
 
 char ErrorMsg[512];
 
-void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
+void ModellXXX::ReadCoreMesh(const char* filename, const char* szName, float fLodRange)
 {
 	FILE* fp = fopen(filename, "rt");
 	if(fp == NULL) {
@@ -202,14 +202,16 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 	Mad_TextureCoo			kTextureCoo;
 
 	Mad_CoreMesh*	pkMesh = GetMesh(szName);
-	Mad_RawMesh*	pkRawMesh = pkMesh->GetLODMesh(0);
+	//Mad_RawMesh*	pkRawMesh = pkMesh->GetLODMesh(0);
+	Mad_RawMesh	kRawMesh;
+	kRawMesh.m_fMaxDistance = fLodRange;
 
 
 	bool bMakeTextureCoo = true;
 	bool bMakeTriangles = true;
-	if(pkRawMesh->SizeTexturesCoo() > 0)
+	if(kRawMesh.SizeTexturesCoo() > 0)
 		bMakeTextureCoo = false;
-	if(pkRawMesh->SizeFaces() > 0)
+	if(kRawMesh.SizeFaces() > 0)
 		bMakeTriangles = false;
 
 	char TextureName[256];
@@ -236,7 +238,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			Error(ErrorMsg);
 			}
 
-		iTexture = pkRawMesh->AddTexture(TextureName);
+		iTexture = kRawMesh.AddTexture(TextureName);
 
 		for(int v = 0; v < 3; v++)
 		{
@@ -251,11 +253,11 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 
 			
 //			pkMesh->akBoneConnections.push_back(iBoneLink);
-			pkRawMesh->PushBackBoneConnection(iBoneLink);
+			kRawMesh.PushBackBoneConnection(iBoneLink);
 			
 			if(bMakeTextureCoo)
 //				pkMesh->akTextureCoo.push_back(kTextureCoo);
-				pkRawMesh->PushBackTextureCoo(kTextureCoo);
+				kRawMesh.PushBackTextureCoo(kTextureCoo);
 			else {
 				/*diff_s = pkMesh->akTextureCoo[(i*3) + v].s - kTextureCoo.s;
 				diff_t = pkMesh->akTextureCoo[(i*3) + v].t - kTextureCoo.t;
@@ -268,7 +270,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 
 		if(bMakeTriangles) {
 			//pkMesh->akFaces.push_back(kFace);
-			pkRawMesh->PushBackFaces(kFace);
+			kRawMesh.PushBackFaces(kFace);
 			
 			// Skapa en submesh för varje polygon
 			Mad_CoreSubMesh newsub;
@@ -276,16 +278,17 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			newsub.iNumOfTriangles = 1;
 			newsub.iTextureIndex = iTexture;
 			//pkMesh->akSubMeshes.push_back(newsub);
-			pkRawMesh->PushBackSubMeshes(newsub);
+			kRawMesh.PushBackSubMeshes(newsub);
 			//int smsize = pkMesh->akSubMeshes.size();
 			}
 	}
 
 //	pkMesh->akFrames.push_back(kFrame);
-	pkRawMesh->SetTextureFlags();
-	pkRawMesh->PushBackFrames(kFrame);
+	kRawMesh.SetTextureFlags();
+	kRawMesh.PushBackFrames(kFrame);
 
 	cout << "Done Reading Mesh: " <<	pkMesh->m_acName << endl;
+	pkMesh->m_kLodMesh.push_back(kRawMesh);
 
 
 
@@ -581,6 +584,7 @@ void ModellXXX::Read( const char* filename )
 	ucpToken = kMMScipt.GetToken();
 	string strFileName;
 	string strName;
+	float fLodRange;
 
 	while(ucpToken)
 	{
@@ -627,7 +631,17 @@ void ModellXXX::Read( const char* filename )
 			strFileName = kMMScipt.GetToken();
 			strName = kMMScipt.GetToken();
 			cout << "Add Mesh '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
-			ReadCoreMesh(strFileName.c_str(),strName.c_str());
+			ReadCoreMesh(strFileName.c_str(),strName.c_str(),10);
+		}
+
+		if (!strcmp (ucpToken, "!add-mdlod"))
+		{
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			ucpToken = kMMScipt.GetToken();
+			fLodRange = atof(ucpToken);
+			cout << "Add Mesh '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
+			ReadCoreMesh(strFileName.c_str(),strName.c_str(), fLodRange);
 		}
 
 		if (!strcmp (ucpToken, "!add-fd"))
@@ -675,10 +689,41 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 
 	vector<Mad_CoreMesh>::iterator it;
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
-		it->GetLODMesh(0)->OptimizeSubMeshes();
+	{
+		vector<Mad_RawMesh>::iterator it2;
+
+		for(it2 = it->m_kLodMesh.begin(); it2 != it->m_kLodMesh.end(); it2++)
+		{
+			it2->OptimizeSubMeshes();
+		}
+	}
 
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
 	{
+		vector<Mad_RawMesh>::iterator it2;
+
+		for(it2 = it->m_kLodMesh.begin(); it2 != it->m_kLodMesh.end(); it2++)
+		{
+		//		int iTotalNumOfVertex = it->akFrames[0].akVertex.size();
+		//		int iTotalTriangles = it->akFaces.size();
+		//		int iAntalFrames = it->akFrames.size();
+			int iTotalNumOfVertex = it2->NumOfVertexPerFrame();
+			int iTotalTriangles = it2->SizeFaces();
+			int iAntalFrames = it2->SizeFrames();
+			
+			it2->kHead.iVersionNum		= 1;
+		//		it->kHead.iNumOfTextures	= it->akTextures.size();
+			it2->kHead.iNumOfTextures	= it2->SizeTextures();
+			it2->kHead.iNumOfVertex		= iTotalNumOfVertex;
+			it2->kHead.iNumOfFaces		= iTotalTriangles;
+			it2->kHead.iNumOfFrames		= iAntalFrames;
+		//		it->kHead.iNumOfSubMeshes	= it->akSubMeshes.size();
+		//		it->kHead.iNumOfAnimation	= it->akAnimation.size();
+			it2->kHead.iNumOfSubMeshes	= it2->SizeSubMesh();
+			it2->kHead.iNumOfAnimation	= it2->SizeAnimations();
+		}
+
+		/*
 //		int iTotalNumOfVertex = it->akFrames[0].akVertex.size();
 //		int iTotalTriangles = it->akFaces.size();
 //		int iAntalFrames = it->akFrames.size();
@@ -696,6 +741,7 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 //		it->kHead.iNumOfAnimation	= it->akAnimation.size();
 		it->GetLODMesh(0)->kHead.iNumOfSubMeshes	= it->GetLODMesh(0)->SizeSubMesh();
 		it->GetLODMesh(0)->kHead.iNumOfAnimation	= it->GetLODMesh(0)->SizeAnimations();
+		*/
 	}
 
 //	mad->m_kMesh = m_kMesh;		
@@ -798,9 +844,10 @@ Mad_CoreMesh* ModellXXX::GetMesh(const char* ucaName)
 	// Finns ingen mesh med det namnet så skapa den och returnera den.
 	Mad_CoreMesh kNewMesh;
 	kNewMesh.Clear();
+	kNewMesh.m_iMadVersion = MAD_VERSION;
 	strcpy(kNewMesh.m_acName, ucaName);
-	Mad_RawMesh kRaw;
-	kNewMesh.m_kLodMesh.push_back(kRaw);
+	//Mad_RawMesh kRaw;
+	//kNewMesh.m_kLodMesh.push_back(kRaw);
 	m_kMesh.push_back(kNewMesh);
 	return &m_kMesh.back();
 }

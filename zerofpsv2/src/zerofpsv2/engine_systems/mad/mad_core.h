@@ -21,7 +21,7 @@ using namespace std;
 #define MAX_JOINTNAME				32		// Max Joint Name Size.
 #define MAX_MAX_VERTEX				8192	// Max Vertex per mesh.
 
-#define MAD_VERSION					1		// Current Versions.
+#define MAD_VERSION					3		// Current Versions.
 #define MAD_SD_VERSION				1
 #define MAD_AD_VERSION				1
 #define MAD_MD_VERSION				1
@@ -179,6 +179,7 @@ public:
 	Mad_RawMesh(const Mad_RawMesh& kOther);
 
 	Mad_CoreMeshHeader				kHead;
+	float									m_fMaxDistance;	// Max distance this LOD level is used.
 
 	void Clear(void);
 	void operator=(const Mad_RawMesh& kOther);
@@ -234,8 +235,8 @@ public:
 	void CreateVertexNormals();
 	void  OptimizeSubMeshes();
 
-	void Save(ZFVFile* pkZFile);
-	void Load(ZFVFile* pkZFile);
+	void Save(int iVersion, ZFVFile* pkZFile);
+	void Load(int iVersion, ZFVFile* pkZFile);
 
 	void SetTextureFlags(void);
 	int NumOfVertexPerFrame();
@@ -263,8 +264,11 @@ private:
 */
 
 public:
+	int									m_iMadVersion;
 	vector<Mad_RawMesh>				m_kLodMesh;
 	Mad_RawMesh* GetLODMesh(int iId);
+	Mad_RawMesh* GetLODRender(float fDistance);
+	int GetLODRenderIndex(float fDistance);
 
 	bool									bNotAnimated;					///< True if this is a static mesh that we could put in a display list.
 
@@ -605,7 +609,7 @@ public:
 	Mad_TextureCoo* GetTextureCooPtr(Mad_CoreMesh* pkMesh);
 	int* GetFacesPtr(Mad_CoreMesh* pkMesh,Mad_CoreSubMesh* pkSubMesh);
 	int GetTextureID();
-	void PrepareMesh(Mad_CoreMesh* pkMesh);
+	void PrepareMesh(Mad_CoreMesh* pkMesh, Mad_RawMesh* pkRawMesh);
 
 	float GetRadius();
 	float GetSize()																						{	return m_fSize;	};
@@ -619,6 +623,9 @@ public:
 
 	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);
 	void SetControll(char* szName, float fValue);
+
+	float		fRenderDistance;
+	Mad_RawMesh*  g_pkSelectedRawMesh;
 
 	friend class Body;
 };

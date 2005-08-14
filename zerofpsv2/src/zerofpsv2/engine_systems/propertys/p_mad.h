@@ -83,6 +83,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void SetBase(const char* acName);
 		void SetScale(float fScale);
 		bool AddMesh(int iSId);
+		bool AddMeshName(char* szName);
 
 		int GetCollisionMeshID()				{	return m_iCollisionMeshID; }
 		bool IsCulled()							{	return m_bCulled;				}

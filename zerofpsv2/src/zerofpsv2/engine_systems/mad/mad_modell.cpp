@@ -281,7 +281,7 @@ int Mad_Modell::GetNumOfSubMesh(int iMeshID)
 	if(kMadHandle.IsValid() == false)
 		return 0;
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
-	return pkCore->GetMeshByID(iMeshID)->GetLODMesh(0)->kHead.iNumOfSubMeshes;
+	return m_pkRawMesh->kHead.iNumOfSubMeshes;
 }
 
 void Mad_Modell::SelectMesh(int iMeshID)
@@ -290,6 +290,7 @@ void Mad_Modell::SelectMesh(int iMeshID)
 		return;
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 	m_pkMesh = pkCore->GetMeshByID(iMeshID);
+
 }
 
 void Mad_Modell::SelectSubMesh(int iSubMeshID)
@@ -297,13 +298,13 @@ void Mad_Modell::SelectSubMesh(int iSubMeshID)
 	if(kMadHandle.IsValid() == false)
 		return;
 	m_iSubMesh =  iSubMeshID;
-	m_pkSubMesh = m_pkMesh->GetLODMesh(0)->GetSubMesh(iSubMeshID);
+	m_pkSubMesh = m_pkRawMesh->GetSubMesh(iSubMeshID);
 }
 
 
 int Mad_Modell::GetNumVertices()
 {
-	return m_pkMesh->GetLODMesh(0)->kHead.iNumOfVertex;
+	return m_pkRawMesh->kHead.iNumOfVertex;
 }
 
 int Mad_Modell::GetNumFaces()
@@ -400,9 +401,10 @@ void Mad_Modell::LoadTextures()
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
 	{
 		SelectMesh(iM);
+		m_pkRawMesh = m_pkMesh->GetLODMesh(0);
 
 		iNumOfSubMesh = GetNumOfSubMesh(iM);
-		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
+		pkCore->PrepareMesh(pkCore->GetMeshByID(iM), pkCore->GetMeshByID(iM)->GetLODMesh(0));
 
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
 		{
@@ -426,8 +428,9 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
+		m_pkRawMesh = m_pkMesh->GetLODMesh(0);
 
-		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
+		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]), pkCore->GetMeshByID(m_kActiveMesh[iM])->GetLODMesh(0));
 
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
 		
@@ -509,28 +512,44 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		pkLineMaterial->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
 		pkLineMaterial->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
 	}
-		
-		
-	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
+	static ZMaterial* pkLod = NULL;
+	if(!pkLod)
+	{
+		pkLod = new ZMaterial();
+		pkLod->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkLod->GetPass(0)->m_bLighting = false;
+		pkLod->GetPass(0)->m_bFog = true;
+		pkLod->GetPass(0)->m_bColorMaterial = true;
+		pkLod->GetPass(0)->m_kVertexColor.Set(1,1,0,1);
+	}
+
+	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 
 
-	
+	pkCore->fRenderDistance = fRenderDistance;
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
 	{
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
-		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
+		m_pkRawMesh		= m_pkMesh->GetLODRender(fRenderDistance * g_fMadLODScale);
+		int iLodIndex	= m_pkMesh->GetLODRenderIndex(fRenderDistance * g_fMadLODScale);
+		if(!m_pkRawMesh)
+			continue;
+		if(iLodIndex == -1)
+			continue;
+
+		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]), m_pkRawMesh);
 		
 		m_pkShader->ResetPointers();
 			
 		//setup all texture pointers
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
-		
+	
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
@@ -544,7 +563,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 			if(iDrawFlags & MAD_DRAW_MESH || iDrawFlags & MAD_DRAW_LINES) 
 			{
-				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
+				iNumOfFaces = GetNumFaces();
 
 				ZFResourceHandle* pkRes;
 				
@@ -576,6 +595,17 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				
 				if(iDrawFlags & MAD_DRAW_LINES)
 					m_pkShader->BindMaterial(pkLineMaterial);				
+				else if (iDrawFlags & MAD_DRAW_LODCODE)
+				{
+					if(iLodIndex == 0 )	pkLod->GetPass(0)->m_kVertexColor.Set(1,0,0,0);
+					if(iLodIndex == 1 )	pkLod->GetPass(0)->m_kVertexColor.Set(0,1,0,0);
+					if(iLodIndex == 2 )	pkLod->GetPass(0)->m_kVertexColor.Set(0,0,1,0);
+					if(iLodIndex == 3 )	pkLod->GetPass(0)->m_kVertexColor.Set(1,1,0,0);
+					if(iLodIndex > 3 )	pkLod->GetPass(0)->m_kVertexColor.Set(1,1,1,0);
+
+					m_pkShader->BindMaterial(NULL);				
+					m_pkShader->BindMaterial(pkLod);				
+				}
 				else				
 					m_pkShader->BindMaterial(pkMaterial);				
 				
@@ -616,6 +646,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	
 	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
+
+	m_pkRawMesh = NULL;
 }
 
 ZMaterial* Mad_Modell::GetMaterial(int iMesh,int iSubMesh)
@@ -624,10 +656,10 @@ ZMaterial* Mad_Modell::GetMaterial(int iMesh,int iSubMesh)
 		return NULL;
 	
 	SelectMesh(m_kActiveMesh[iMesh]);
+	m_pkRawMesh = m_pkMesh->GetLODMesh(0);
 			
 	if(iSubMesh < 0 || iSubMesh >= GetNumOfSubMesh(m_kActiveMesh[iMesh]))
 		return NULL;
-	
 	
 	SelectSubMesh(iSubMesh);
 	ZFResourceHandle* pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);

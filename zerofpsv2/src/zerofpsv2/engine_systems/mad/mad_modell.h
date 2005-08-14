@@ -14,6 +14,7 @@
 #define MAD_DRAW_SPHERE		8
 #define MAD_DRAW_LINES		16
 #define MAD_DRAW_NOLIGHT	32
+#define MAD_DRAW_LODCODE	64
 
 struct AnimInfo
 {
@@ -31,6 +32,7 @@ private:
 
 	// Render Interface
 	Mad_CoreMesh*		m_pkMesh;
+	Mad_RawMesh*		m_pkRawMesh;
 	Mad_CoreSubMesh*	m_pkSubMesh;
 	int					m_iSubMesh;
 
@@ -130,6 +132,9 @@ public:
 
 	void ClearAllMesh();
 	virtual bool AddMesh(int iSId);
+
+	float fRenderDistance;
+
 
 	friend class P_Mad;
 };

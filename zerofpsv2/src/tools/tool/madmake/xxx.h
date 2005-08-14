@@ -30,7 +30,7 @@ private:
 
 	void ReadVertexFrame(FILE* fp,int iNumTriangles);
 
-	void ReadCoreMesh(const char* filename,	const char* szName);
+	void ReadCoreMesh(const char* filename,	const char* szName, float fLodRange);
 	void ReadBaseFrame(const char* filename);						// Triangles / Textures
 	void ReadAnimation(const char* filename);	// Position Data.
 	void ReadAnimationFrame(FILE* fp, int iNumTriangles);

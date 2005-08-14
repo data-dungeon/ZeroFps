@@ -1,15 +1,22 @@
 #include "mad_core.h"
 
+bool	g_iMadLOD;
+
+
 Mad_RawMesh::Mad_RawMesh()
 {
 	Clear();
 }
 
-void Mad_RawMesh::Save(ZFVFile* pkZFile)
+void Mad_RawMesh::Save(int iVersion, ZFVFile* pkZFile)
 {
 	kHead.iNumOfAnimation = akAnimation.size();
 
 //	ShowInfo();
+
+	if(iVersion >= 3)
+		pkZFile->Write(&m_fMaxDistance,sizeof(float),1);
+	
 
 	// Write Head.
 	pkZFile->Write(&kHead,sizeof(Mad_CoreMeshHeader),1);
@@ -72,9 +79,13 @@ void Mad_RawMesh::Save(ZFVFile* pkZFile)
 	
 }
 
-void Mad_RawMesh::Load(ZFVFile* pkZFile)
+void Mad_RawMesh::Load(int iVersion,ZFVFile* pkZFile)
 {
 	int i,j;
+
+	if(iVersion >= 3)
+		pkZFile->Read(&m_fMaxDistance,sizeof(float),1);
+
 	// Read head
 	pkZFile->Read(&kHead,sizeof(Mad_CoreMeshHeader),1);
 	//fread(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
@@ -193,6 +204,8 @@ void Mad_RawMesh::Clear(void)
 	kHead.iNumOfVertex = 0;
 	kHead.iVersionNum = 0;
 
+	m_fMaxDistance = 250;
+
 //	iDisplayID = -1;
 
 	akTextureCoo.clear();
@@ -226,6 +239,8 @@ void Mad_RawMesh::operator=(const Mad_RawMesh& kOther)
 	akSubMeshes			= kOther.akSubMeshes;
 	akAnimation			= kOther.akAnimation;
 	akBoneConnections = kOther.akBoneConnections;
+
+	m_fMaxDistance		= kOther.m_fMaxDistance;
 }
 
 void Mad_RawMesh::ResizeTextures(int iNewSize)
@@ -594,8 +609,49 @@ void Mad_RawMesh::SetTextureFlags(void)
 
 Mad_RawMesh* Mad_CoreMesh::GetLODMesh(int iId)
 {
-	return &m_kLodMesh[0];
+	return &m_kLodMesh[iId];
 }
+
+Mad_RawMesh* Mad_CoreMesh::GetLODRender(float fDistance)
+{
+	if(!g_iMadLOD)
+		return &m_kLodMesh[0];
+
+	Mad_RawMesh* pkRawMesh = NULL;
+
+	for(int i=0; i<m_kLodMesh.size(); i++)
+	{
+		//cout << "Lod distance [" << i << "]" << m_kLodMesh[i].m_fMaxDistance << endl;
+		if(fDistance > m_kLodMesh[i].m_fMaxDistance)
+			continue;
+
+		return &m_kLodMesh[i];
+	}
+
+	return NULL;
+}
+
+int Mad_CoreMesh::GetLODRenderIndex(float fDistance)
+{
+	if(!g_iMadLOD)
+		return 0;
+
+	Mad_RawMesh* pkRawMesh = NULL;
+
+	for(int i=0; i<m_kLodMesh.size(); i++)
+	{
+		//cout << "Lod distance [" << i << "]" << m_kLodMesh[i].m_fMaxDistance << endl;
+		if(fDistance > m_kLodMesh[i].m_fMaxDistance)
+			continue;
+
+		return i;
+	}
+
+	return -1;
+}
+
+
+
 
 Mad_CoreMesh::Mad_CoreMesh()
 {
@@ -609,6 +665,7 @@ Mad_CoreMesh::~Mad_CoreMesh()
 
 void Mad_CoreMesh::Clear(void)
 {
+	m_iMadVersion = -1;
 	strcpy(m_acName, "");
 /*	kHead.iNumOfAnimation = 0;
 	kHead.iNumOfFaces = 0;
@@ -677,7 +734,24 @@ void Mad_CoreMesh::Save(ZFVFile* pkZFile)
 		m_kLodMesh[i].Save(pkZFile);
 		}*/
 	
-	m_kLodMesh[0].Save(pkZFile);
+	if(m_iMadVersion >= 2)
+	{
+		pkZFile->Write(m_acName,MAD_MAX_NAME,1);
+	}
+	if(m_iMadVersion >= 3)
+	{
+		int iNumRawMesh = m_kLodMesh.size();
+      pkZFile->Write(&iNumRawMesh,sizeof(int),1);
+		for(int i=0; i<m_kLodMesh.size(); i++) 
+		{
+			m_kLodMesh[i].Save(m_iMadVersion, pkZFile);
+		}
+	}
+	else
+	{
+		m_kLodMesh[0].Save(m_iMadVersion, pkZFile);
+	}
+
 
 /*	kHead.iNumOfAnimation = akAnimation.size();
 
@@ -746,9 +820,31 @@ void Mad_CoreMesh::Save(ZFVFile* pkZFile)
 
 void Mad_CoreMesh::Load(ZFVFile* pkZFile)
 {
-	Mad_RawMesh kRMesh;
-	m_kLodMesh.push_back(kRMesh);
-	m_kLodMesh[0].Load(pkZFile);
+	if(m_iMadVersion >= 2)
+	{
+		pkZFile->Read(m_acName, MAD_MAX_NAME, 1);
+	}
+	cout << "Reading MAD:Mesh: " << m_acName << endl;
+
+	if(m_iMadVersion >= 3)
+	{
+		int iNumRawMesh;
+      pkZFile->Read(&iNumRawMesh,sizeof(int),1);
+		for(int i=0; i<iNumRawMesh; i++) 
+		{
+			Mad_RawMesh kRMesh;
+			kRMesh.Clear();
+			kRMesh.Load(m_iMadVersion, pkZFile);
+			m_kLodMesh.push_back(kRMesh);
+		}
+	}
+	else
+	{
+		Mad_RawMesh kRMesh;
+		m_kLodMesh.push_back(kRMesh);
+		m_kLodMesh[0].Load(m_iMadVersion, pkZFile);
+	}
+
 
 
 /*	int i,j;

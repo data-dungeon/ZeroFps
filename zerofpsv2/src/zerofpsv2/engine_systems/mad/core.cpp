@@ -18,7 +18,6 @@ BoneTransform	g_kBoneTransform[MAX_BONES];
 float const g_fMadFrameTime = 1.0 / MAD_FPS;	// Def time between frames in Mad.
 
 Mad_CoreMesh* g_pkSelectedMesh;
-//Mad_RawMesh*  g_pkSelectedRawMesh;
 
 Mad_Core::Mad_Core()
 {
@@ -445,6 +444,7 @@ void Mad_Core::LoadAnimation(ZFVFile* pkZFile)
 void Mad_Core::LoadMesh(ZFVFile* pkZFile)
 {
 	Mad_CoreMesh	kNewMesh;
+	kNewMesh.m_iMadVersion = kMadHeader.m_iVersionNum;
 	kNewMesh.Load(pkZFile);
 	m_kMesh.push_back(kNewMesh);
 }
@@ -505,7 +505,7 @@ bool Mad_Core::Create(string MadFileName)
 		return false;
 		}
 
-	Mad_Header kMadHeader;
+//	Mad_Header kMadHeader;
 	kZFile.Read(&kMadHeader,sizeof(Mad_Header), 1);
 	
 	// Check Versions Num
@@ -567,11 +567,11 @@ Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 Vector3*  Mad_Core::GetVerticesPtr()
 {
 	if(g_pkSelectedMesh->bNotAnimated)
-		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
+		return &g_pkSelectedRawMesh->akFrames[0].akVertex[0];
 
 	//dvoid fix
 	if(iActiveAnimation == MAD_NOANIMINDEX)
-		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
+		return &g_pkSelectedRawMesh->akFrames[0].akVertex[0];
 		
 	return g_TransformedVertex;
 }
@@ -582,7 +582,7 @@ Vector3* Mad_Core::GetNormalsPtr()
 		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
 
 	if(iActiveAnimation == MAD_NOANIMINDEX)
-		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
+		return &g_pkSelectedRawMesh->akFrames[0].akNormal[0];
 	
 	
 	return g_TransformedNormal;
@@ -591,13 +591,13 @@ Vector3* Mad_Core::GetNormalsPtr()
 
 int* Mad_Core::GetFacesPtr(Mad_CoreMesh* pkMesh,Mad_CoreSubMesh* pkSubMesh)
 {
-	return (int*) &pkMesh->GetLODMesh(0)->akFaces[pkSubMesh->iFirstTriangle ].iIndex;	
+	return (int*) &g_pkSelectedRawMesh->akFaces[pkSubMesh->iFirstTriangle ].iIndex;	
 		
 }
 
 Mad_TextureCoo* Mad_Core::GetTextureCooPtr(Mad_CoreMesh* pkMesh)
 {
-	return &pkMesh->GetLODMesh(0)->akTextureCoo[0];
+	return &g_pkSelectedRawMesh->akTextureCoo[0];
 }
 
 int Mad_Core::GetTextureID()
@@ -605,11 +605,14 @@ int Mad_Core::GetTextureID()
 	return 0;
 }
 
-void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
+void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 {
-
 	g_pkSelectedMesh = pkMesh;
-	//g_pkSelectedRawMesh = pkMesh->GetLODMesh(0);
+	g_pkSelectedRawMesh = pkRawMesh;
+/*	cout << "Renderdist: "  << fRenderDistance << endl;
+	g_pkSelectedRawMesh = g_pkSelectedMesh->GetLODMesh(0);
+	if(fRenderDistance > 5)
+		g_pkSelectedRawMesh = g_pkSelectedMesh->GetLODMesh(1);	*/
 
 	if(iActiveAnimation == MAD_NOANIMINDEX)
 		return;
@@ -622,16 +625,19 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	Vector3* pkVertexDst;
 	Vector3* pkNormalDst;
 		
-		
+/*	Mad_RawMesh* pkRawMesh = g_pkSelectedMesh->GetLODMesh(0);	
+	if(fRenderDistance > 10)
+		pkRawMesh = g_pkSelectedMesh->GetLODMesh(1);	*/
+
 	int* piBoneConnection;
-	Vector3* pkVertex = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
-	Vector3* pkNormal = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
+	Vector3* pkVertex = &pkRawMesh->akFrames[0].akVertex[0];
+	Vector3* pkNormal = &pkRawMesh->akFrames[0].akNormal[0];
  
 	pkVertexDst = g_TransformedVertex;
 	pkNormalDst = g_TransformedNormal;
-	piBoneConnection = &g_pkSelectedMesh->GetLODMesh(0)->akBoneConnections[0];
+	piBoneConnection = &pkRawMesh->akBoneConnections[0];
 
-	for(int i = 0; i<g_pkSelectedMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) 
+	for(int i = 0; i<pkRawMesh->kHead.iNumOfVertex; i++) 
 	{
 		//iBoneConnection = pkMesh->akBoneConnections[i];
 		*pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );

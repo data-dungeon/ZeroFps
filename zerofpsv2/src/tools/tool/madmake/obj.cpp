@@ -396,6 +396,7 @@ void ModellObj::Read( const char* filename )
 	ucpToken = kMMScipt.GetToken();
 	
 	Mad_CoreMesh	kMesh;
+	kMesh.m_iMadVersion = MAD_VERSION;
 	Mad_RawMesh		kRaw;
 	kMesh.m_kLodMesh.push_back(kRaw);
 	pkRawMesh = kMesh.GetLODMesh(0);

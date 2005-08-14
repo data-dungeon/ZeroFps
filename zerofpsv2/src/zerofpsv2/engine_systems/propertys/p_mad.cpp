@@ -7,7 +7,6 @@
 using namespace ObjectManagerLua;
 
 
-extern int		g_iMadLODLock;
 extern float	g_fMadLODScale;
  
 P_Mad::P_Mad()
@@ -97,9 +96,9 @@ void P_Mad::Update()
 		DoAnimationUpdate();
 		
 		//distance cull
+		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos);
 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW && !m_pkEntity->IsZone())
 		{
-			float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos);		
  			if(fDistance > 10)
  			{
 				float r = GetSize();				
@@ -107,6 +106,8 @@ void P_Mad::Update()
  					return;			
  			}
 		}
+
+		fRenderDistance = fDistance;
 		
 		//Cull against sphere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(kPos,GetRadius()))
@@ -266,7 +267,8 @@ void P_Mad::CreateAABB()
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
 	{
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
-		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
+		m_pkRawMesh = pkCore->GetMeshByID(m_kActiveMesh[iM])->GetLODMesh(0);
+		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]),m_pkRawMesh);
 		
 		Vector3* kVertexPointer = GetVerticesPtr();
 		
@@ -567,6 +569,12 @@ bool P_Mad::AddMesh(int iSId)
 	return Mad_Modell::AddMesh(iSId);
 }
 
+bool P_Mad::AddMeshName(char* szName)
+{
+	SetNetUpdateFlag(true);	
+	return Mad_Modell::AddMesh(szName);
+}
+
 
 /** \var float m_fScale
 	\brief Scale of model.
@@ -705,7 +713,7 @@ bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 		return false;
 	}
 		
-	pkCore->PrepareMesh(	pkCoreMesh );	
+	pkCore->PrepareMesh(	pkCoreMesh, pkCoreMesh->GetLODMesh(0)  );	
 		
 	pkFaces =	pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
 	pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
@@ -1073,6 +1081,30 @@ int AddMesh(lua_State* pkLua)
 	return 1;
 }
 
+/**	\fn AddMeshName( Entity, Meshname)
+		\brief Adds the Mesh to be displayed on the entity.
+		\relates Mad
+*/
+int AddMeshName(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get MeshName
+	char acModel[100];
+	g_pkScript->GetArg(pkLua, 1, acModel);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	P_Mad* mp = static_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+
+	mp->AddMeshName( acModel );
+	return 1;
+}
+
+
+
 /**	\fn SetMad( EntityID, szFile)
 		\brief Change the mad used.
 		\relates Mad
@@ -1196,9 +1228,9 @@ void Register_MadProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetNextAnim",			SI_PMad::SetNextAnim);
 	g_pkScript->ExposeFunction("PlayAnim",				SI_PMad::PlayAnim);
 	g_pkScript->ExposeFunction("AddMesh",				SI_PMad::AddMesh);
+	g_pkScript->ExposeFunction("AddMeshName",			SI_PMad::AddMeshName);
 	g_pkScript->ExposeFunction("SetMad",				SI_PMad::SetMadfileLua);
 	g_pkScript->ExposeFunction("SetDrawingOrder",	SI_PMad::SetMadfileLua);
 	g_pkScript->ExposeFunction("GetMadOffset",		SI_PMad::GetMadOffsetLua);
 }
-
 

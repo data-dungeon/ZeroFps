@@ -26,10 +26,10 @@
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
 float		g_fMadLODScale;
-int		g_iMadLODLock;
 int		g_iLogRenderPropertys;
 //char 		g_szIpPort[256];
 bool		g_fMadTrans;
+extern	bool	g_iMadLOD;
 
 
 static char Devformat_text[4096];	//
@@ -102,7 +102,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iMadDraw					= 1;
 	g_fMadLODScale				= 1.0;
 	g_fMadTrans					= false;
-	g_iMadLODLock				= 0;
 	m_pkCamera					= NULL;
 	m_bRunWorldSim				= true;
 	g_iLogRenderPropertys	= 0;
@@ -130,7 +129,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bSpecMap					= true;
 	
 	m_bAiShowInfo				= false;
-	
+	g_iMadLOD					= true;
+
 	
 	// Register Variables
 	RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
@@ -150,11 +150,12 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
 	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
 	RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
+
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
-	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
+	RegisterVariable("r_madlodscale",	&g_fMadLODScale,			CSYS_FLOAT);
 	RegisterVariable("r_madtrans",		&g_fMadTrans,				CSYS_BOOL);
-	
-	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
+	RegisterVariable("r_madlod",			&g_iMadLOD,					CSYS_BOOL);
+
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
 	RegisterVariable("r_vegetation",		&m_bVegetation,			CSYS_BOOL);	
 	RegisterVariable("r_viewdistance",	&m_fViewDistance,			CSYS_FLOAT);	
