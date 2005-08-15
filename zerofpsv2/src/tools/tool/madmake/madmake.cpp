@@ -10,7 +10,7 @@
 
 #include <cstring>
 #include <iostream>
-#include <conio.h>
+// #include <conio.h>
 #include <string>
 #include <stdio.h>
 #include <stdarg.h>
@@ -255,7 +255,7 @@ int HATASDL(int argc, char* argv[])
 {
 	MadMake	mad;
 	mad.Run(argc, argv);
-	_getch();
+// 	_getch();
 
 
 	return 0;
