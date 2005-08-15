@@ -1,5 +1,6 @@
 #include <iostream>
 #include "xxx.h"
+#include "obj.h"
 #include "../../../zerofpsv2/basic/simplescript.h"
 
 float g_fExportScale;	
@@ -644,6 +645,28 @@ void ModellXXX::Read( const char* filename )
 			ReadCoreMesh(strFileName.c_str(),strName.c_str(), fLodRange);
 		}
 
+		if (!strcmp (ucpToken, "!add-objlod"))
+		{
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			ucpToken = kMMScipt.GetToken();
+			fLodRange = atof(ucpToken);
+			cout << "Add Obj Mesh '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
+
+			MadExporter madexp;
+			ModellObj kImporter;
+			kImporter.Read(strFileName.c_str());
+			kImporter.Export(&madexp,"smurf");
+
+			Mad_CoreMesh*	pkMesh = GetMesh(strName.c_str());
+			Mad_RawMesh	kRawMesh;
+			kRawMesh = *madexp.GetMeshByID(0)->GetLODMesh(0);
+			kRawMesh.m_fMaxDistance = fLodRange;
+			pkMesh->m_kLodMesh.push_back(kRawMesh);
+			//m_kMesh.insert(m_kMesh.begin(), madexp.m_kMesh.begin(), madexp.m_kMesh.end());
+		}
+
+
 		if (!strcmp (ucpToken, "!add-fd"))
 		{
 			ucpToken = kMMScipt.GetToken();
@@ -697,6 +720,7 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 			it2->OptimizeSubMeshes();
 		}
 	}
+
 
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
 	{

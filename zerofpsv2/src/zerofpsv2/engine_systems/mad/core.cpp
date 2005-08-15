@@ -533,6 +533,7 @@ bool Mad_Core::Create(string MadFileName)
 
 	CalculateRadius();
 	
+	//PrintCoreInfo();
 	
 	return true;
 }
@@ -722,7 +723,10 @@ void Mad_Core::PrintCoreInfo()
 	// Mesh
 	cout << "Num Of Mesh: " << m_kMesh.size() << endl;
 	for(i=0; i<m_kMesh.size(); i++)
+	{
 		cout << " [" << i << "]: " << m_kMesh[i].m_acName << endl;
+		m_kMesh[i].ShowInfo();
+	}
 }
 
 /*

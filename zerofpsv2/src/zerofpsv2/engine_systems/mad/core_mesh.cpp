@@ -8,6 +8,27 @@ Mad_RawMesh::Mad_RawMesh()
 	Clear();
 }
 
+void Mad_RawMesh::ShowInfo(void)
+{
+	cout << "Textures: " << kHead.iNumOfTextures << endl;
+	cout << "Vertex: " << kHead.iNumOfVertex << endl;
+	cout << "Triangles: " << kHead.iNumOfFaces << endl;
+	cout << "Frames: " << kHead.iNumOfFrames << endl;
+	cout << "SubMesh: " << kHead.iNumOfSubMeshes << endl;
+	cout << "Animations: " << kHead.iNumOfAnimation << endl;
+	cout << "m_fMaxDistance: " << m_fMaxDistance << endl;
+
+	for (unsigned int i=0; i<akSubMeshes.size(); i++) 
+	{
+		cout << " Submesh[" << i << "]: " << akSubMeshes[i].iFirstTriangle << " , " << akSubMeshes[i].iNumOfTriangles << endl; 
+	}
+
+	for (unsigned int i=0; i<akAnimation.size(); i++) 
+	{
+		cout << " " << i << " : " << akAnimation[i].Name << " : Frames = " << akAnimation[i].KeyFrame.size() << endl;
+	}
+}
+
 void Mad_RawMesh::Save(int iVersion, ZFVFile* pkZFile)
 {
 	kHead.iNumOfAnimation = akAnimation.size();
@@ -218,6 +239,7 @@ void Mad_RawMesh::Clear(void)
 
 Mad_RawMesh::Mad_RawMesh(const Mad_RawMesh& kOther)
 {
+	Clear();
 	*this = kOther;
 }
 
@@ -543,8 +565,8 @@ void Mad_RawMesh::OptimizeSubMeshes()
 	akSubMeshes.clear();
 
 	Mad_CoreSubMesh newsub;
-	newsub.iFirstTriangle	= 0;
-	newsub.iNumOfTriangles	= 1;
+	newsub.iFirstTriangle	= akOldSubMesh[0].iFirstTriangle;
+	newsub.iNumOfTriangles	= akOldSubMesh[0].iNumOfTriangles;
 	newsub.iTextureIndex	= akOldSubMesh[0].iTextureIndex;
 
 	unsigned int i;
@@ -553,8 +575,8 @@ void Mad_RawMesh::OptimizeSubMeshes()
 		if(newsub.iTextureIndex != akOldSubMesh[i].iTextureIndex) {
 			cout << "/" << endl;
 			akSubMeshes.push_back(newsub);
-			newsub.iFirstTriangle	= i;
-			newsub.iNumOfTriangles	= 1;
+			newsub.iFirstTriangle	= akOldSubMesh[i].iFirstTriangle;
+			newsub.iNumOfTriangles	= akOldSubMesh[i].iNumOfTriangles;
 			newsub.iTextureIndex	= akOldSubMesh[i].iTextureIndex;
 			}
 		else {
@@ -687,10 +709,18 @@ void Mad_CoreMesh::Clear(void)
 	akBoneConnections.clear();*/
 }
 
+Mad_CoreMesh::Mad_CoreMesh(const Mad_CoreMesh& kOther)
+{
+	Clear();
+	*this = kOther;
+}
+
 void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
 {
+	m_iMadVersion = kOther.m_iMadVersion;
 	strcpy(m_acName, kOther.m_acName);
 	m_kLodMesh = kOther.m_kLodMesh;
+   bNotAnimated = kOther.bNotAnimated;
 
 /*	kHead.iNumOfAnimation	= kOther.kHead.iNumOfAnimation;
 	kHead.iNumOfFaces		= kOther.kHead.iNumOfFaces;
@@ -713,6 +743,9 @@ void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
 void Mad_CoreMesh::ShowInfo(void)
 {
 	cout << "Mad_CoreMesh::ShowInfo" << endl;
+	cout << "Num Of RawMeshes: " << m_kLodMesh.size() << endl;
+	for(int i=0; i<m_kLodMesh.size(); i++)
+		m_kLodMesh[i].ShowInfo();
 
 /*	cout << "Textures: " << kHead.iNumOfTextures << endl;
 	cout << "Vertex: " << kHead.iNumOfVertex << endl;

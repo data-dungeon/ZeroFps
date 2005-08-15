@@ -242,6 +242,8 @@ public:
 	int NumOfVertexPerFrame();
 	int  GetSizeInBytes();
 
+	void ShowInfo(void);
+
 	friend class Body;
 	friend class Mad_Core;
 
@@ -284,6 +286,7 @@ public:
 	Mad_CoreMesh();
 	~Mad_CoreMesh();
 	void Clear(void);
+	Mad_CoreMesh(const Mad_CoreMesh& kOther);
 	void operator=(const Mad_CoreMesh& kOther);
 
 /*	void ResizeTextures(int iNewSize);
@@ -628,6 +631,7 @@ public:
 	Mad_RawMesh*  g_pkSelectedRawMesh;
 
 	friend class Body;
+	friend class ModellXXX;
 };
 
 ENGINE_SYSTEMS_API ZFResource* Create__Mad_Core();

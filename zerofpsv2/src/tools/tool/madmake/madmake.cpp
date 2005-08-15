@@ -240,6 +240,7 @@ void MadMake::Run(int argc, char* argv[])
 	pkImport->Read(ucaInFile.c_str());
 	pkImport->Export(&madexp,ucaOutFile.c_str());
 	ucaOutFile += ".mad";
+//	madexp.PrintCoreInfo();
 	madexp.Save_MAD(ucaOutFile.c_str());
 //	madexp.Save_SD("test.sd");
 //	madexp.Save_MD(0, "test.md");
