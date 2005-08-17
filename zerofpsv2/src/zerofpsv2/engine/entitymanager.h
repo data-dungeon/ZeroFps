@@ -311,6 +311,7 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		Vector3 		GetZoneCenter(int iZoneNum);
 		void 			SetTrackerLos(int iLos) 							{	m_iTrackerLOS = iLos;			};		
 		ZoneData* 	GetZone(Entity* PkEntity);
+		void			SetMaxZoneIO(int iMaxIO)							{	m_iMaxZoneIO = iMaxIO;			};
 		
 		void			RecreateEntitys(const string& strType);
 

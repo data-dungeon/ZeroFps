@@ -127,6 +127,7 @@ void StopEmUp::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void StopEmUp::OnSystem(void)
 {
+
 //	cout<<"rand 0:"<<Randomi(0)<<endl;
 //	cout<<"rand 2:"<<Randomi(2)<<endl;
 //	cout<<"rand 3:"<<Randomi(3)<<endl;
@@ -306,6 +307,8 @@ void StopEmUp::SendControlInfo()
 void StopEmUp::OnServerStart()
 {
 	cout<<"StopEmUp server started"<<endl;
+
+	m_pkEntityManager->SetMaxZoneIO(100);
 
 	m_pkEntityManager->LoadWorld(m_strMap);
 		
@@ -617,11 +620,37 @@ void StopEmUp::RemoveLife()
 
 int StopEmUp::HasGoal()
 {
-	vector<Entity*>	m_kEnts;
-	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&m_kEnts);
+// 	vector<Entity*>	m_kEnts;
+// 	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&m_kEnts);
 	
+	cout<<m_pkEntityManager->GetNumOfEntitys()<<endl;
+// 	cout<<m_kEnts.size()<<endl;
+	
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByType("goal.lua"))
+	{
+			//m_pkEntityManager->LoadZone(pkEnt->GetCurrentZone());
+	
+			Vector3 kGoalPos = pkEnt->GetWorldPosV();	
+			cout<<kGoalPos.x<<" "<<kGoalPos.y<<" "<<kGoalPos.z<<endl;
+					
+			m_pkEntityManager->Delete(pkEnt);
+		
+			Entity* pkGoal = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/goal.lua",kGoalPos,-1);
+			
+			if(!pkGoal)
+				cout<<"bad goal"<<endl;
+			
+			cout<<"FOUND GOAL"<<endl;	
+			
+			
+			return pkGoal->GetEntityID();		
+	}
+	
+	
+/*	
 	for(int i= 0;i<m_kEnts.size();i++)
 	{
+		cout<<m_kEnts[i]->GetType()<<endl;
 		if(m_kEnts[i]->GetType() == "goal.lua" )
 		{
 			Vector3 kGoalPos = m_kEnts[i]->GetWorldPosV();			
@@ -629,9 +658,13 @@ int StopEmUp::HasGoal()
 		
 			Entity* kGoal = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/goal.lua",kGoalPos,-1);
 			
+			cout<<"FOUND GOAL"<<endl;
+			
 			return kGoal->GetEntityID();
 		}
-	}
+	}*/
+	 
+	cout<<"NO GOAL FOUND"<<endl;
 	
 	return -1;
 }

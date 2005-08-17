@@ -500,13 +500,21 @@ Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 k
 	int id = GetZoneIndex(kPos,iCurrentZone,false);
 	
 	if(id == -1)
+	{
+		cout<<"WARNING CreateEntityFromScriptInZone: zone not found"<<endl;
 		return NULL;
+	}
+	
 	
 	//force loading of this zone
 	LoadZone(id);
 	
+	//if(m_kZones[id].m_iStatus == EZS_UNLOADED || m_kZones[id].m_iStatus == EZS_UNUSED)
 	if(m_kZones[id].m_iStatus != EZS_LOADED)
+	{
+		cout<<"WARNING CreateEntityFromScriptInZone: zone not loaded"<<endl;		
 		return NULL;
+	}
 	
 	Entity* newobj = CreateEntityFromScript(acName);
 	
@@ -517,7 +525,6 @@ Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 k
 		if(newobj->m_iCurrentZone == -1)
 			cout<<"Error! Tried to create a Entity outside zones."<<endl;
 	}
-
 	
 	return newobj;
 }
