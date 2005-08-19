@@ -185,7 +185,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
 	Register_Cmd("mass",FID_MASSSPAWN);	
-	Register_Cmd("sc",FID_SERVERCOMMAND);	
 	Register_Cmd("pos",FID_POS);	
 	
 }
@@ -333,7 +332,7 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	if(!g_ZFObjSys.StartUp())
 		return false;
 
-	m_iState=state_normal;									// init gamestate to normal		
+	m_iState=ENGINE_STATE_NORMAL;									// init gamestate to normal		
 	m_pkApp->OnInit();										// call the applications oninit funktion
 
 	m_pkRender->Swap();
@@ -779,7 +778,7 @@ void ZeroFps::Draw_EngineShell()
 void ZeroFps::MainLoop(void) 
 {
 
-	while(m_iState!=state_exit) 
+	while(m_iState != ENGINE_STATE_EXIT) 
 	{
 		// check if app is iconized
 		if(m_bAlwaysWork == false && !(SDL_GetAppState() & SDL_APPACTIVE))
@@ -880,7 +879,7 @@ void ZeroFps::Draw_RenderCameras()
 // 	StopProfileTimer("r__RenderCameras");	
 }
 
-Camera* ZeroFps::GetRenderCamera(string strName)
+Camera* ZeroFps::GetRenderCamera(const string& strName) const
 {
 	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 	{
@@ -1186,7 +1185,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_VERSION:
-//			m_pkConsole->Printf( ZF_VERSION_NUM );
 			m_pkConsole->Printf( "Version Num: %d.%d.%d", m_kVersion.m_iMajor, m_kVersion.m_iMinor,m_kVersion.m_iBuild );
 			break;
 
@@ -1197,10 +1195,11 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 		
 		case FID_LISTMAD:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
+			if(kCommand->m_kSplitCommand.size() <= 1) 
+			{
 				m_pkConsole->Printf("Debug: %%s");
 				return;
-				}
+			}
 			
 			pkEnt = this->m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/t_xw.lua",Vector3(0,0,0));
 			pkEnt->AddProperty("P_Event");
@@ -1233,11 +1232,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				page->m_bVisible = !page->m_bVisible;
 			break;
 
-		case FID_SCREENSHOOT:	m_pkRender->ScreenShot();	break;
-
-		case FID_SERVERCOMMAND:
-			cout << "Servercommand" << endl;
-			PrintToClient(0, "Yooo liksom");
+		case FID_SCREENSHOOT:
+			m_pkRender->ScreenShot();
 			break;
 
 		case FID_POS:
@@ -1837,20 +1833,20 @@ void ZeroFps::QuitEngine()
 	}
 
 	printf("ZeroFps::QuitEngine\n");
-	m_iState = state_exit;
+	m_iState = ENGINE_STATE_EXIT;
 }
 
 void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 {
 	kCreditsStrings.clear();
 
-	kCreditsStrings.push_back( string("		  ZeroFps Engine		") );
-	kCreditsStrings.push_back( string("		       by				") );
-	kCreditsStrings.push_back( string("								") );
-	kCreditsStrings.push_back( string("      Jimmy Magnusson		") );
+	kCreditsStrings.push_back( string("		  ZeroFps Engine			") );
+	kCreditsStrings.push_back( string("		       by					") );
+	kCreditsStrings.push_back( string("										") );
+	kCreditsStrings.push_back( string("      Jimmy Magnusson			") );
 	kCreditsStrings.push_back( string("      Richard Svensson		") );
 	kCreditsStrings.push_back( string("         Erik Glans			") );
-	kCreditsStrings.push_back( string("       Magnus Jï¿½sson 		") );
+	kCreditsStrings.push_back( string("       Magnus Jönsson 		") );
 }
 
 /**	\brief	Called before someone would like to connect.

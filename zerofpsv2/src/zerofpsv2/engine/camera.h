@@ -228,7 +228,7 @@ class ENGINE_API Camera : public I_Camera
 		bool		GetClearViewPort()				{	return m_bClearViewPort;			}
 		
 		void		SetDrawInterface(bool bDebug)	{	m_bDrawInterface = bDebug;			}
-		bool		GetDrawInterface()					{	return m_bDrawInterface;			}
+		bool		GetDrawInterface()				{	return m_bDrawInterface;			}
 		
 		Frustum*	GetFrustum()						{	return &m_kFrustum;			}
 		bool	   IsRenderOn()						{	return m_bRender;				}

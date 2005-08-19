@@ -403,13 +403,8 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			PkNetMessage->Read_Str(strSkill);
 
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-			{		
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
-				{
-					pkCP->ChangeSkill(strSkill, 1);
-					pkCP->SendSkillInfo(strSkill);
-				}
-			}
+					pkCP->AddSkillPoint(strSkill);
 
 			break;
 		}

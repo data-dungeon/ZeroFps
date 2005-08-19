@@ -36,54 +36,62 @@ class ZFAudioSystem;
 class Network;
 class AStar;
 
-enum enginestates
+
+// #define	ZFGP_OBJECTSTATE		1
+// #define	ZFGP_CLIENTSTATE		2
+// #define	ZFGP_CLIENTCMD			3
+// #define	ZFGP_PRINT				4
+// #define	ZFGP_DELETEOBJECT		5
+// #define	ZFGP_REQOWNOBJECT		6
+// #define	ZFGP_GIVEOWNOBJECT	7
+// #define	ZFGP_COMMAND			12
+// #define	ZFGP_EDIT				13
+// #define  ZPGP_SS_APP				14		
+// #define  ZPGP_ZED_ZONELIST		15
+// #define	ZPGP_DELETELIST		16
+// #define	ZFGP_ENDOFPACKET		128
+
+enum ZPGP_IDS
 {
-	state_normal,
-	state_exit,
-	state_console,
-	state_pause
+	ZFGP_OBJECTSTATE		=1,
+	ZFGP_CLIENTSTATE		=2,
+	ZFGP_CLIENTCMD			=3,
+	ZFGP_PRINT				=4,
+	ZFGP_DELETEOBJECT		=5,
+	ZFGP_REQOWNOBJECT		=6,
+	ZFGP_GIVEOWNOBJECT	=7,
+	ZFGP_COMMAND			=12,
+	ZFGP_EDIT				=13,
+	ZPGP_SS_APP				=14,	
+	ZPGP_ZED_ZONELIST		=15,
+	ZPGP_DELETELIST		=16,
+	ZFGP_ENDOFPACKET		=128,	
 };
 
-#define	ZFGP_OBJECTSTATE		1
-#define	ZFGP_CLIENTSTATE		2
-#define	ZFGP_CLIENTCMD			3
-#define	ZFGP_PRINT				4
-#define	ZFGP_DELETEOBJECT		5
-#define	ZFGP_REQOWNOBJECT		6
-#define	ZFGP_GIVEOWNOBJECT	7
-#define	ZFGP_COMMAND			12
-#define	ZFGP_EDIT				13
-#define  ZPGP_SS_APP				14		
-#define  ZPGP_ZED_ZONELIST		15
-#define	ZPGP_DELETELIST		16
-
-#define	ZFGP_ENDOFPACKET		128
-
+/// a dev page
 class DevStringPage
 {
-private:
-public:
-	bool				m_bVisible;
-	string			m_kName;
-	vector<string>	m_akDevString;
+	public:
+		bool				m_bVisible;
+		string			m_kName;
+		vector<string>	m_akDevString;
 };
 
 /// Information about a connectet client
 class ENGINE_API ZFClient
 {
-public:
-	bool		m_bLogin;					// True if client is in login state.
-	float		m_fConnectTime;
-	string	m_strLogin;					// Login Name
-	string	m_strCharacter;
-	Entity*	m_pkObject;					// Object used for client.
-
-	bool		m_bIsEditor;
-	
-	set<int>		m_kActiveZones;		// Activated Zones.
-	set<int>		m_kUnloadZones;		// Activated Zones.
-	queue<int>	m_kDeleteQueue;		// clients delete queue (contains is of entitys that shuld be deleted on the client)
+	public:	
+		bool			m_bLogin;					// True if client is in login state.
+		float			m_fConnectTime;
+		string		m_strLogin;					// Login Name
+		string		m_strCharacter;
+		Entity*		m_pkObject;					// Object used for client.	
+		bool			m_bIsEditor;		
+		set<int>		m_kActiveZones;		// Activated Zones.
+		set<int>		m_kUnloadZones;		// Activated Zones.
+		queue<int>	m_kDeleteQueue;		// clients delete queue (contains is of entitys that shuld be deleted on the client)
 };
+
 
 /** \brief	Main class for the ZeroFps engine.
 	 \ingroup Engine
@@ -91,35 +99,34 @@ public:
 class ENGINE_API ZeroFps : public I_ZeroFps 
 {
 	private:
+		enum ENGINE_STATES
+		{
+			ENGINE_STATE_NORMAL,
+			ENGINE_STATE_EXIT,
+		};
+	
 		enum FuncId_e
 		{
-			FID_SETDISPLAY,
-			FID_QUIT,
+			FID_SETDISPLAY,	// Set resulution,depth and fullscreen
+			FID_QUIT,			// Set exit state
 			FID_SLIST,			// List all servers
 			FID_CONNECT,		// Connect to server.
 			FID_SERVER,			// Start a Server.
 			FID_LISTMAD,		// List all loaded mad's.
 			FID_PRINTOBJECT,	// Print all objects to external console.
-
 			FID_VERSION,		// Print Version info.
 			FID_CREDITS,		// Print Credits to console.
-			FID_ECHO,
-
-			FID_GLDUMP,
-
-			// DevStrings
-			FID_DEV_SHOWPAGE,
-			FID_DEV_HIDEPAGE,
-			FID_DEV_TOGGLE,
-
-			FID_SCREENSHOOT,
-			FID_MASSSPAWN,
-
-			FID_SERVERCOMMAND,
-
-			FID_POS // dumps x,y,z of camera
+			FID_ECHO,			// Echo input
+			FID_GLDUMP,			// Dump gl states			
+			FID_DEV_SHOWPAGE,	// Show a devpage
+			FID_DEV_HIDEPAGE,	// Hide a devpage
+			FID_DEV_TOGGLE,	// Show/hide a devpage
+			FID_SCREENSHOOT,	// Take screenshot at end of frame
+			FID_MASSSPAWN,		// Some weird shit
+			FID_POS 				// Dumps x,y,z of camera
 		};
 
+		ZFVersion		m_kVersion;
 
 		bool							m_bDevPagesVisible;
 		vector<DevStringPage>	m_DevStringPage;					
@@ -205,9 +212,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		void RegisterPropertys();
 		void RegisterResources();
 		void GetEngineCredits(vector<string>& kCreditsStrings);
-		void DrawDevStrings();		
-		
-
+		void DrawDevStrings();				
 		DevStringPage*	DevPrint_FindPage(const string& strName);		
 		
 		//zeroed network stuff
@@ -215,9 +220,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		void RotateZoneModel(int iZoneID,Vector3 kRot);
 		vector<int>	GetSelected(NetPacket* pkNetPack);
 
-
 	public:
-		ZFVersion		m_kVersion;
 
 		/*
 			All Engine Systems in ZeroFps. Listed in the same order they are created in
@@ -301,32 +304,44 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		
 		
 		// gets
-		bool GetSyncNetwork()				{	return m_bSyncNetwork;							}
-		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
-		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
+		const ZFVersion& GetVersion()	const			{	return m_kVersion;								}
+		bool GetSyncNetwork() const					{	return m_bSyncNetwork;							}
+		float GetNetworkFps() const					{	return m_fNetworkUpdateFps;					}
+		float GetSystemFps()	const						{	return m_fSystemUpdateFps;						}				
+		float GetRealTime() const						{	return float((SDL_GetTicks()/1000.0));		}
+		float GetFrameTime()	const						{	return float((m_fFrameTime/1000.0));		}
+		float GetLastGameUpdateTime() const			{	return m_fSystemUpdateTime;					}
+		float GetEngineTime() const					{	return m_fEngineTime;							}
+		float GetSystemUpdateFpsDelta() const 		{	return m_fSystemUpdateFpsDelta;				}		
+		unsigned int	GetCurrentFrame() const		{	return m_iCurrentFrame;							}
+		const int GetConnectionSpeed() const		{  return m_iConnectionSpeed;						}
 				
-		float GetRealTime()					{	return float((SDL_GetTicks()/1000.0));		}
-		float GetFrameTime()					{	return float((m_fFrameTime/1000.0));		}
-		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
-		float GetEngineTime()				{	return m_fEngineTime;							}
-		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}		
-		unsigned int	GetCurrentFrame()	{	return m_iCurrentFrame;							}
-		const int GetConnectionSpeed()	{  return m_iConnectionSpeed;						}
-		
+		bool GetMinimized() const						{	return m_bMinimized;								}
+		bool GetRenderOn() const						{	return m_bRenderOn;								}
+		bool GetDebugGraph() const 					{	return m_bDebugGraph;							}
+		bool GetDrawAxesIcon() const 					{	return m_bDrawAxisIcon;							}		
+		bool GetShadowMap() const						{	return m_bShadowMap;								}
+		bool GetSpecMap() const							{	return m_bSpecMap;								}
+		bool GetShadowMapRealtime() const			{	return m_bShadowMapRealtime;					}
+		int  GetShadowMapMode() const					{	return m_iShadowMapMode;						}
+		int  GetShadowMapQuality() const				{	return m_iShadowMapQuality;					}		
+		bool GetVegetation() const						{	return m_bVegetation;							}
+		float GetViewDistance() const					{	return m_fViewDistance;							}
+		bool GetOcculusionCulling() const			{	return m_bOcculusionCulling;					}		
+					
 		//sets
-		void  SetSyncNetwork(bool bSync)	{	m_bSyncNetwork = bSync;							}
-		void  SetSystemFps(int iFps) 		{	m_fSystemUpdateFps = float(iFps);			}
-		void  SetNetworkFps(int iFps)		{	m_fNetworkUpdateFps = float(iFps);			}
-		
-		//camera
-		Camera *GetCam()						{	return m_pkCamera;	}		//get current render camera, can be NULL
+		void	SetDebugGraph(bool bDebug)				{	m_bDebugGraph = bDebug;							}		
+		void  SetSyncNetwork(bool bSync)				{	m_bSyncNetwork = bSync;							}
+		void  SetSystemFps(int iFps) 					{	m_fSystemUpdateFps = float(iFps);			}
+		void  SetNetworkFps(int iFps)					{	m_fNetworkUpdateFps = float(iFps);			}		
 
 		//render targets
 		void AddRenderCamera(Camera* pkCamera);
 		void RemoveRenderCamera(Camera* pkCamera);
 		void ClearRenderCameras();
 		void Draw_RenderCameras();
-		Camera* GetRenderCamera(string strName);
+		Camera* GetRenderCamera(const string& strName) const;
+		Camera* GetCam() const							{	return m_pkCamera;}		//get current render camera, can be NULL
 		
 		//toggle functions		
 		void ToggleFullScreen(void);
@@ -337,24 +352,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		bool DevPrintPageVisible(const char* szName);
 		void SetDevPageVisible(const char* szName,bool bVisible);
 		void DevPrint_Show(bool bVisible);
-
-		//graphs
-		bool GetMinimized()					{	return m_bMinimized;		}
-		bool GetRenderOn()					{	return m_bRenderOn;		}
-		bool GetDebugGraph() 				{	return m_bDebugGraph;	}
-		void SetDebugGraph(bool bDebug)	{	m_bDebugGraph = bDebug;	}
-		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}
-		
-		bool GetShadowMap()					{	return m_bShadowMap;				}
-		bool GetSpecMap()						{	return m_bSpecMap;				}
-		bool GetShadowMapRealtime()		{	return m_bShadowMapRealtime;	}
-		int  GetShadowMapMode()				{	return m_iShadowMapMode;		}
-		int  GetShadowMapQuality()			{	return m_iShadowMapQuality;	}
-		
-		bool GetVegetation()					{	return m_bVegetation;			}
-		float GetViewDistance()				{	return m_fViewDistance;			}
-
-		bool GetOcculusionCulling()		{	return m_bOcculusionCulling;	}
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);

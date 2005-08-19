@@ -612,6 +612,11 @@ vector<PropertyValues> P_AI::GetPropertyValues()
 
 bool P_AI::HandleSetValue( const string& kValueName, const string& kValue )
 {
+	if(kValueName == "state")
+	{
+		SetState(atoi(kValue.c_str()));
+		return true;
+	}
 
 	return false;
 }

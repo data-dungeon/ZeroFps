@@ -1470,6 +1470,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float		fManaUsage;
 			float		fReloadTime;
 			float		fCastTime;
+			int		iSkillPoints;
 			
 			pkNetMessage->Read_Str(strScreenName);
 			pkNetMessage->Read_Str(strIcon);
@@ -1481,6 +1482,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(fManaUsage);
 			pkNetMessage->Read(fReloadTime);
 			pkNetMessage->Read(fCastTime);
+			pkNetMessage->Read(iSkillPoints);
+			
 			
 			cout<<"-= gott skillinfo =-"<<endl;
 			cout<<"screen name:"<<strScreenName<<endl;
@@ -1493,6 +1496,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			cout<<"mana usage:"<<fManaUsage<<endl;
 			cout<<"reload time:"<<fReloadTime<<endl;
 			cout<<"cast time:"<<fCastTime<<endl;
+			cout<<"available skillpoints:"<<iSkillPoints<<endl;
 			
 			if(ZGuiButton* pkSkill = (ZGuiButton*)g_kMistClient.GetWnd("SkillIcon"))
 			{

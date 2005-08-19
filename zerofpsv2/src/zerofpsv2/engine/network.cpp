@@ -477,7 +477,7 @@ void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((char) ZF_NETCONTROL_JOIN2);
-	NetP.Write_Version(m_pkZeroFps->m_kVersion);
+	NetP.Write_Version(m_pkZeroFps->GetVersion());
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
 	NetP.Write((int) bConnectAsEditor);
@@ -512,7 +512,7 @@ void NetWork::SendServerInfo(IPaddress kIp)
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((char) ZF_NETCONTROL_SERVERINFO2);
-	NetP.Write_Version(m_pkZeroFps->m_kVersion);
+	NetP.Write_Version(m_pkZeroFps->GetVersion());
 	NetP.Write_Str(m_strServerName.c_str());
 	NetP.Write(GetNumOfClients());
 	NetP.Write(m_iMaxNumberOfNodes);
@@ -920,7 +920,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			kNetPRespons.Clear();
 
 			pkNetPacket->Read_Version( kVersion );
-			if(kVersion != m_pkZeroFps->m_kVersion)		
+			if(kVersion != m_pkZeroFps->GetVersion())		
 			{
 				m_pkConsole->Printf("Join Ignored: Client version don't match.");
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;

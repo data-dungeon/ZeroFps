@@ -346,6 +346,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//experience and level
 		void  GiveExperience(int iXP);		
 		void  AddStatPoint(int iStat);
+		bool	AddSkillPoint(const string& strSkillName);
 		
 		//mana and stamina
 		bool UseMana(float fMana);                                 

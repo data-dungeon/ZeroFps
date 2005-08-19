@@ -474,7 +474,13 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 				
 				if(distance <= m_kBodys[i]->m_fLegLength)
 				{
-					float fNewYVel = (m_kBodys[i]->m_fLegLength - distance) / fAlphaTime;
+					float fNewYVel = ((m_kBodys[i]->m_fLegLength - distance) / fAlphaTime);
+					
+// 					if(fNewYVel > 1.0)
+// 						fNewYVel = 1.0;	
+					
+// 					cout<<fNewYVel<<endl;
+					
 //  					cout<<"oldvel:"<<m_kBodys[i]->m_kLinearVelocity.y<<"   newvel:"<<fNewYVel<<endl;
 //  					cout<<"bla"<<fAlphaTime<<" "<<(m_kBodys[i]->m_fLegLength - distance)<<endl;
  					

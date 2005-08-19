@@ -1320,6 +1320,26 @@ void P_CharacterProperty::AddStatPoint(int iStat)
 	SendStats();
 }
 
+bool P_CharacterProperty::AddSkillPoint(const string& strSkillName)
+{
+	if(m_kCharacterStats.GetStat("SkillPoints") <= 0)
+		return false;
+			
+			
+	if(ChangeSkill(strSkillName,1))
+	{
+		//remove one skillpoint
+		m_kCharacterStats.ChangeStat("SkillPoints",-1);
+	
+		//send updated skillinfo to client
+		SendSkillInfo(strSkillName);	
+	
+		return true;
+	}
+		
+	return false;
+}
+
 void P_CharacterProperty::OnLevelUP()
 {
 	Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
@@ -1327,15 +1347,8 @@ void P_CharacterProperty::OnLevelUP()
  	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV()+kRandomPos,3);
 	SendTextToClient("You are now level "+IntToString((int)m_kCharacterStats.GetTotal("Level")));	
 
-	m_kCharacterStats.ChangeStat("StatPoints",4);	
-	
-	//tillf�ligt test
-// 	m_kCharacterStats.ChangeStat("Strength",3);
-// 	m_kCharacterStats.ChangeStat("Dexterity",3);
-// 	m_kCharacterStats.ChangeStat("Vitality",3);
-// 	m_kCharacterStats.ChangeStat("Wisdom",3);
-// 	m_kCharacterStats.ChangeStat("Intelligence",3);
-// 	m_kCharacterStats.ChangeStat("Charisma",3);
+	m_kCharacterStats.ChangeStat("StatPoints",4);		
+	m_kCharacterStats.ChangeStat("SkillPoints",1);	
 }
 
 void P_CharacterProperty::SendPointText(const string& strText,const Vector3& kPos,int iType)
@@ -2184,8 +2197,7 @@ void P_CharacterProperty::SetSkill(const string& strSkillScript,int iLevel)
 {	
 	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 	{
-		pkSkill->SetLevel(iLevel);
-		
+		pkSkill->SetLevel(iLevel);		
 	}
 }
 
@@ -2705,7 +2717,6 @@ void P_CharacterProperty::SendSkillInfo(const string& strSkill)
 	}
 
 
-
 	NetPacket kNp;
 	kNp.Write((char) MLNM_SC_SKILLINFO);	
 
@@ -2719,7 +2730,7 @@ void P_CharacterProperty::SendSkillInfo(const string& strSkill)
 	kNp.Write(pkSkill->GetManaUsage());
 	kNp.Write(pkSkill->GetReloadTime());
 	kNp.Write(pkSkill->GetCastTime());
-
+	kNp.Write((int)m_kCharacterStats.GetStat("SkillPoints"));
 	
 
 	//send package
