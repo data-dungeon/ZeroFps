@@ -101,6 +101,14 @@ void SkillBar::HandleCommand(int iButton,const string& strCommand)
 {
 	int iSkill = atoi(&strCommand.c_str()[11]);
 
+	// If skillwindows is up then we set the skills we wish to have on the skillbar.
+	ZGuiWnd* pkWndSkill = g_kMistClient.GetWnd("SkillWnd");
+	if(pkWndSkill && pkWndSkill->IsVisible())
+	{
+		string strSkill = g_kMistClient.GetSkillTreeSkill();
+		g_kMistClient.SendAddSkillToSkillbar(strSkill,iSkill);
+	}
+
 	if(iButton == 0)
 	{
 		if(!m_kSkills[iSkill].m_strSkillName.empty())
@@ -217,6 +225,7 @@ void SkillBar::Update(float fTimeDiff)
 	   m_pkCurrentDefaultAttack->Hide();
 }
 
+		
 
 
 

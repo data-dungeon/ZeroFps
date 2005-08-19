@@ -103,6 +103,15 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 					g_kMistClient.SendCombatMode(true);
 			}
 		}		
+		else
+		if(strMainWnd == "SkillWnd")
+		{
+			if(strController == "SkillIcon")
+			{
+				string strSkill = g_kMistClient.GetSkillTreeSkill();
+				g_kMistClient.SendSkillInc(strSkill);
+			}
+		}		
 	}
 
 	if(msg == ZGM_SELECTLISTITEM)

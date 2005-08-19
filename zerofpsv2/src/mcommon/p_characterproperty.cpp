@@ -157,8 +157,8 @@ void Skill::UpdateFromScript()
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype4",ctemp))
 		m_kBaseTypes.push_back(string(ctemp));
 
+//	this->m_strParentSkill = this->m_strSchool;
 
-		
 /*
 	//print some nice info
 	cout<<"UPDATED FROM SCRIPT"<<endl;
@@ -2226,7 +2226,6 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 		
 	//do a first update
 	pkNewSkill->SetLevel(0);
-
 	
 // 	cout<<"Added skill "<<strSkillScript<<endl;
 	return true;

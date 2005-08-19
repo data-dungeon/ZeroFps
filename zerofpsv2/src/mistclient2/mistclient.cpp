@@ -941,20 +941,13 @@ void MistClient::Input()
 	if(m_pkInputHandle->Pressed(KEY_P))
 		if(!DelayCommand() )
 		{
-			SendAddSkillToSkillbar("skill-fireball.lua",0);
-			SendAddSkillToSkillbar("skill-speed.lua",1);
-			SendAddSkillToSkillbar("skill-heal.lua",2);
-			SendAddSkillToSkillbar("skill-basic_attack.lua",3);
-			SendAddSkillToSkillbar("skill-bow.lua",4);
-			SendAddSkillToSkillbar("skill-resurrect.lua",5);
-			SendAddSkillToSkillbar("skill-bolt.lua",6);
-			SendAddSkillToSkillbar("skill-light.lua",7);
-			SendAddSkillToSkillbar("skill-stun.lua",8);
-			SendAddSkillToSkillbar("skill-freeze.lua",9);
-			SendAddSkillToSkillbar("skill-camp.lua",10);
-			SendAddSkillToSkillbar("skill-create_food.lua",11);
+			SendAddSkillToSkillbar("skill-camp.lua",0);
+			SendAddSkillToSkillbar("skill-basic_attack.lua",1);
+			SendAddSkillToSkillbar("skill-bow.lua",2);
+			SendAddSkillToSkillbar("skill-heal.lua",3);
+			SendAddSkillToSkillbar("skill-speed.lua",4);
 		}
-	
+
 // 	if(m_pkInputHandle->Pressed(KEY_O))
 // 		if(!DelayCommand() )
 // 		{
@@ -1501,7 +1494,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			cout<<"reload time:"<<fReloadTime<<endl;
 			cout<<"cast time:"<<fCastTime<<endl;
 			
-			
+			if(ZGuiButton* pkSkill = (ZGuiButton*)g_kMistClient.GetWnd("SkillIcon"))
+			{
+				char szLevel[16];
+				sprintf(szLevel, "%i", iLevel);
+				pkSkill->SetText(szLevel);
+			}
+
 			if(ZGuiTextbox* pkTextbox = (ZGuiTextbox*)g_kMistClient.GetWnd("SkillInfoText"))
 			{
 				pkTextbox->ToggleMultiLine(true);
@@ -1621,7 +1620,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			pkNetMessage->Read(m_iCharacterID);
 		
 			//temporary hack 
-			SendAddSkillToSkillbar("skill-fireball.lua",0);
+			/*SendAddSkillToSkillbar("skill-fireball.lua",0);
 			SendAddSkillToSkillbar("skill-speed.lua",1);
 			SendAddSkillToSkillbar("skill-heal.lua",2);
 			SendAddSkillToSkillbar("skill-basic_attack.lua",3);
@@ -1635,7 +1634,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			SendAddSkillToSkillbar("skill-create_food.lua",11);
 			SendAddSkillToSkillbar("skill-push.lua",12);
 			SendAddSkillToSkillbar("skill-poison_cloud.lua",13);
-			SendAddSkillToSkillbar("skill-charm.lua",14);
+			SendAddSkillToSkillbar("skill-charm.lua",14);*/
 			//--------------------------
 		
 			break;
@@ -2613,7 +2612,16 @@ void MistClient::SendUseSkill(const string& strSkill,int iTargetID,const Vector3
 	
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);	
+}
 
+void MistClient::SendSkillInc(const string& strSkill)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_SKILLINC);
+		
+	kNp.Write_Str(strSkill);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
 }
 
 void MistClient::SendRequestItemInfo(int iItemID)
@@ -2742,5 +2750,22 @@ void MistClient::SendSetDefaultAttack(const string& strSkill)
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);	
 
+}
+
+string MistClient::GetSkillTreeSkill()
+{
+	string strSkill;
+
+	ZGuiWnd* pkWndSkill = g_kMistClient.GetWnd("SkillWnd");
+	if(pkWndSkill && pkWndSkill->IsVisible())
+	{
+		ZGuiTreebox* pkBox = dynamic_cast<ZGuiTreebox*>( g_kMistClient.GetWnd("SkillTree"));
+		ZFAssert(pkBox, "No Skilltree found");
+		ZGuiTreeboxNode* pkTreeNode = pkBox->GetSelNode();
+		ZFAssert(pkTreeNode, "No selected skilltree node");
+		strSkill = pkTreeNode->strNodeID;
+	}
+
+	return strSkill;
 }
 

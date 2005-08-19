@@ -138,6 +138,7 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestPickup(int iEntityID,int iPosX = -1,int iPosY = -1);		
 		
 		//Network sends		
+		void SendSkillInc(const string& strSkill);
 		void SendRequestSkillInfo(const string& strSkil);
 		void SendRequestSkillTree();
 		void SendUseItem(int iItemID);
@@ -184,6 +185,7 @@ class MistClient :public Application, public ZGuiApp {
 		void PositionActionButtons();
 		void CloseActiveContainer();
 		void CloseActiveWindow(); // on ESC press
+		string GetSkillTreeSkill();	// Returns selected skill in skilltree.
 						
 		//register
 		void RegisterPropertys();
