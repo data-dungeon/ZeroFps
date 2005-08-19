@@ -59,6 +59,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		float					m_fLastOcculusionTime;
 		bool					m_bOculled;
 			
+		int					m_iLod;
 			
 		float				m_fScale;		
 		int				m_iWidth;
@@ -70,13 +71,16 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 	
 		vector<ZFResourceHandle*>		m_kMaterials;		
 		vector<float>						m_kHeightData;
-		vector<char>						m_kTextureIDs;		
-		vector<HeightmapArrays*>		m_kDataArrays;				
+		vector<char>						m_kTextureIDs;
+			
+			
+		vector<vector<HeightmapArrays*> >	m_kLodLevels;
+// 		vector<HeightmapArrays*>		m_kDataArrays;				
 		
 		
 		Vector3 GenerateNormal(int x,int y);	
 		void BuildTextureArrays();
-		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop);
+		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep = 1);
 		void DrawTexturedHeightmap();
 		void DrawOcculusionHeightmap();
 		

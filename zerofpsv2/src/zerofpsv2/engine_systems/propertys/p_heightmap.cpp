@@ -23,7 +23,7 @@ P_Heightmap::P_Heightmap()
 
 	m_fScale = 2.0;
 	m_fMaxValue = 100;
-	
+	m_iLod = 0;
 	
 	ZFResourceHandle* pkTempMat = new ZFResourceHandle;
 	pkTempMat->SetRes("heightmap/grass.zlm");	
@@ -59,8 +59,14 @@ P_Heightmap::~P_Heightmap()
 		delete m_kMaterials[i];	
 	
 	//clear data arrays
-	for(int i = 0;i<m_kDataArrays.size();i++)
-		delete m_kDataArrays[i];
+// 	for(int i = 0;i<m_kDataArrays.size();i++)
+// 		delete m_kDataArrays[i];
+
+	//clear data arrays
+	for(int i = 0;i<m_kLodLevels.size();i++)
+		for(int j = 0;j<m_kLodLevels[i].size();j++)			
+			delete m_kLodLevels[i][j];
+
 }
 
 void P_Heightmap::Update()
@@ -76,25 +82,7 @@ void P_Heightmap::Update()
 	//update light					
  	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
 
-
-//   	if(m_pkZeroFps->GetDebugGraph())
-// 	{
-// 		bool bUse = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
-// 		m_pkZShaderSystem->UseDefaultGLSLProgram(false);
-// 		
-//   		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(1,1,1),true);
-// 		
-// 		m_pkRender->DrawAABB(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,4,m_iHeight/2.0),
-// 									m_pkEntity->GetWorldPosV()+Vector3(m_iWidth/2.0,4,m_iHeight/2.0),
-// 									Vector3(1,1,1),1);
-// 		
-// 		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
-// 	}
-
-
-// 	DrawHeightmap();
-
-
+	
 	if(m_pkZShaderSystem->SupportOcculusion() && 
 		m_pkZeroFps->GetOcculusionCulling() && 
 		m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
@@ -135,14 +123,34 @@ void P_Heightmap::DrawTexturedHeightmap()
 	if(!m_bHaveRebuilt)
 		BuildTextureArrays();
 
+	
+// 	//calculate lod level
+// 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW)
+// 	{
+// 		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_pkEntity->GetRadius();		
+// 		//m_iLod = (fDistance/100) * 3;
+// 	
+// 		m_iLod = 2;
+// 		if(fDistance < 50)
+// 			m_iLod = 1;
+// 		if(fDistance < 30)
+// 			m_iLod = 0;		
+// 	}
+	
+	if(m_iLod < 0) m_iLod = 0;
+	if(m_iLod >= m_kLodLevels.size()) m_iLod = m_kLodLevels.size()-1;
+	m_iLod = 0;		
+
 	m_pkZShaderSystem->MatrixPush();	
 	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV()  );
 	m_pkZShaderSystem->MatrixMult(m_pkEntity->GetWorldRotM());	
 	m_pkZShaderSystem->MatrixTranslate(- Vector3(m_iWidth/2.0,0,m_iHeight/2.0));
 
-	for(int i =0;i<m_kDataArrays.size();i++)
+	vector<HeightmapArrays*>* pkDataArrays = &m_kLodLevels[m_iLod];
+	
+	for(int i =0;i<pkDataArrays->size();i++)
 	{
-		if(m_kDataArrays[i]->m_kVertexData.empty())
+		if((*pkDataArrays)[i]->m_kVertexData.empty())
 			continue;
 	
 		//always draw the first material without blending
@@ -159,11 +167,11 @@ void P_Heightmap::DrawTexturedHeightmap()
 // 		{
 		
 			m_pkZShaderSystem->ResetPointers();
-			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(m_kDataArrays[i]->m_kColorData[0]));
-			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(m_kDataArrays[i]->m_kTextureData[0]));
-			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(m_kDataArrays[i]->m_kNormalData[0]));
-			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(m_kDataArrays[i]->m_kVertexData[0]));
-			m_pkZShaderSystem->SetNrOfVertexs(m_kDataArrays[i]->m_kVertexData.size());
+			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&( (*pkDataArrays)[i]->m_kColorData[0]));
+			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&((*pkDataArrays)[i]->m_kTextureData[0]));
+			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&((*pkDataArrays)[i]->m_kNormalData[0]));
+			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&((*pkDataArrays)[i]->m_kVertexData[0]));
+			m_pkZShaderSystem->SetNrOfVertexs((*pkDataArrays)[i]->m_kVertexData.size());
 			
 			m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);		
 // 		}
@@ -183,85 +191,103 @@ void P_Heightmap::BuildTextureArrays()
 	m_bHaveRebuilt = true;
 
 	//clear data arrays
-	for(int i = 0;i<m_kDataArrays.size();i++)
+	for(int i = 0;i<m_kLodLevels.size();i++)
 	{
-		delete m_kDataArrays[i];
+		for(int j = 0;j<m_kLodLevels[i].size();j++)			
+			delete m_kLodLevels[i][j];
 	}
-	m_kDataArrays.clear(); 
+	m_kLodLevels.clear(); 
 	
-	
+	int iLevels = 3;
+	if(m_iRows < 8)
+		iLevels = 2;
 
-	for(int i =0;i<m_kMaterials.size();i++)
+	for(int l = 0;l<iLevels;l++)
 	{
-		HeightmapArrays* pkNewArrays = new HeightmapArrays;
-		m_kDataArrays.push_back(pkNewArrays);									
+		int iStep;
 		
-		
-		//draw the first material all over the place
-		if(i == 0)
+		switch(l)
 		{
-			for(int y = 0;y<m_iCols-1;y++)
-			{	
-				for(int x = 0;x<m_iRows-1;x++)
+			case 0: iStep = 1;break;
+			case 1: iStep = 2;break;
+			case 2: iStep = 4;break;
+		};
+
+		m_kLodLevels.push_back(vector<HeightmapArrays*>() );		
+		vector<HeightmapArrays*>* pkNewDataArrays = &m_kLodLevels.back();
+	
+		for(int i =0;i<m_kMaterials.size();i++)
+		{
+			HeightmapArrays* pkNewArrays = new HeightmapArrays;
+			pkNewDataArrays->push_back(pkNewArrays);									
+			
+			
+			//draw the first material all over the place
+			if(i == 0)
+			{
+				for(int y = 0;y<m_iCols-iStep;y+=iStep)
 				{	
-					if(m_kTextureIDs[y*m_iRows + x] == -1 ||
-						m_kTextureIDs[(y+1)*m_iRows + x] == -1||
-						m_kTextureIDs[y*m_iRows + x+1] == -1||
-						m_kTextureIDs[(y+1)*m_iRows + x+1] == -1)						
-						continue;				
-				
-					AddPolygon(pkNewArrays,x,y,i,true);
-					AddPolygon(pkNewArrays,x,y,i,false);			
-				}
-			}				
-		}
-		else
-		{
-			for(int y = 0;y<m_iCols-1;y++)
-			{	
-				for(int x = 0;x<m_iRows-1;x++)
-				{		
-					if(m_kTextureIDs[y*m_iRows + x] == -1 ||
-						m_kTextureIDs[(y+1)*m_iRows + x] == -1||
-						m_kTextureIDs[y*m_iRows + x+1] == -1||
-						m_kTextureIDs[(y+1)*m_iRows + x+1] == -1)						
-						continue;
-							
-					//TOP POLYGON
-					if(m_kTextureIDs[y*m_iRows + x] == i ||
-						m_kTextureIDs[(y+1)*m_iRows + x] == i||
-						m_kTextureIDs[y*m_iRows + x+1] == i)
-					{
-						AddPolygon(pkNewArrays,x,y,i,true);
-					}					
+					for(int x = 0;x<m_iRows-iStep;x+=iStep)
+					{	
+						if(m_kTextureIDs[y*m_iRows + x] == -1 ||
+							m_kTextureIDs[(y+iStep)*m_iRows + x] == -1||
+							m_kTextureIDs[y*m_iRows + x+iStep] == -1||
+							m_kTextureIDs[(y+iStep)*m_iRows + x+iStep] == -1)						
+							continue;				
 					
-					//BOTTOM POLYGON											
-					if(m_kTextureIDs[y*m_iRows + x+1] == i ||
-						m_kTextureIDs[(y+1)*m_iRows + x] == i||
-						m_kTextureIDs[(y+1)*m_iRows + x+1] == i)
-					{
-						AddPolygon(pkNewArrays,x,y,i,false);
+						AddPolygon(pkNewArrays,x,y,i,true,iStep);
+						AddPolygon(pkNewArrays,x,y,i,false,iStep);			
 					}
-				}
-			}				
+				}				
+			}
+			else
+			{
+				for(int y = 0;y<m_iCols-iStep;y+=iStep)
+				{	
+					for(int x = 0;x<m_iRows-iStep;x+=iStep)
+					{		
+						if(m_kTextureIDs[y*m_iRows + x] == -1 ||
+							m_kTextureIDs[(y+iStep)*m_iRows + x] == -1||
+							m_kTextureIDs[y*m_iRows + x+iStep] == -1||
+							m_kTextureIDs[(y+iStep)*m_iRows + x+iStep] == -1)						
+							continue;
+								
+						//TOP POLYGON
+						if(m_kTextureIDs[y*m_iRows + x] == i ||
+							m_kTextureIDs[(y+iStep)*m_iRows + x] == i||
+							m_kTextureIDs[y*m_iRows + x+iStep] == i)
+						{
+							AddPolygon(pkNewArrays,x,y,i,true,iStep);
+						}					
+						
+						//BOTTOM POLYGON											
+						if(m_kTextureIDs[y*m_iRows + x+iStep] == i ||
+							m_kTextureIDs[(y+iStep)*m_iRows + x] == i||
+							m_kTextureIDs[(y+iStep)*m_iRows + x+iStep] == i)
+						{
+							AddPolygon(pkNewArrays,x,y,i,false,iStep);
+						}
+					}
+				}				
+			}
+					
+					
+	// 		if(pkNewArrays->m_kVertexData.size() > 1000)
+	// 		{	
+	// 			m_pkZShaderSystem->ResetPointers();
+	// 			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(pkNewArrays->m_kColorData[0]));
+	// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(pkNewArrays->m_kTextureData[0]));
+	// 			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(pkNewArrays->m_kNormalData[0]));
+	// 			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkNewArrays->m_kVertexData[0]));
+	// 			m_pkZShaderSystem->SetNrOfVertexs(pkNewArrays->m_kVertexData.size());		
+	// 			
+	// 			pkNewArrays->m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLES_MODE);						
+	// 		}
 		}
-				
-				
-// 		if(pkNewArrays->m_kVertexData.size() > 1000)
-// 		{	
-// 			m_pkZShaderSystem->ResetPointers();
-// 			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(pkNewArrays->m_kColorData[0]));
-// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(pkNewArrays->m_kTextureData[0]));
-// 			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(pkNewArrays->m_kNormalData[0]));
-// 			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkNewArrays->m_kVertexData[0]));
-// 			m_pkZShaderSystem->SetNrOfVertexs(pkNewArrays->m_kVertexData.size());		
-// 			
-// 			pkNewArrays->m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLES_MODE);						
-// 		}
 	}
 }
 
-void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop)
+void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep)
 {
 	static float fTexMod = 0.5;
 	static Vector4 kC1,kC2,kC3;
@@ -279,9 +305,9 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool
 		{
 			if(m_kTextureIDs[y*m_iRows + x] == i)
 				kC1.Set(1,1,1,1);else kC1.Set(1,1,1,0);
-			if(m_kTextureIDs[(y+1)*m_iRows + x] == i)
+			if(m_kTextureIDs[(y+iStep)*m_iRows + x] == i)
 				kC2.Set(1,1,1,1);else kC2.Set(1,1,1,0);
-			if(m_kTextureIDs[y*m_iRows + x+1] == i)
+			if(m_kTextureIDs[y*m_iRows + x+iStep] == i)
 				kC3.Set(1,1,1,1);else kC3.Set(1,1,1,0);					
 		}
 					
@@ -292,18 +318,18 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool
 			
 		//UV's
 		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,y*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,(y+1)*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2((x+1)*fTexMod,y*fTexMod));				
+		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,(y+iStep)*fTexMod));
+		pkNewArrays->m_kTextureData.push_back(Vector2((x+iStep)*fTexMod,y*fTexMod));				
 		
 		//normals
 		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y+1));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+1,y));				
+		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y+iStep));
+		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+iStep,y));				
 		
 		//vertex
 		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[(y+1)*m_iRows + x],(y+1)*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3((x+1)*m_fScale,m_kHeightData[y*m_iRows + x+1],y*m_fScale));
+		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[(y+iStep)*m_iRows + x],(y+iStep)*m_fScale));
+		pkNewArrays->m_kVertexData.push_back(Vector3((x+iStep)*m_fScale,m_kHeightData[y*m_iRows + x+iStep],y*m_fScale));
 						
 	}
 	else
@@ -317,11 +343,11 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool
 		}
 		else
 		{			
-			if(m_kTextureIDs[y*m_iRows + x+1] == i)
+			if(m_kTextureIDs[y*m_iRows + x+iStep] == i)
 				kC1.Set(1,1,1,1);else kC1.Set(1,1,1,0);
-			if(m_kTextureIDs[(y+1)*m_iRows + x] == i)
+			if(m_kTextureIDs[(y+iStep)*m_iRows + x] == i)
 				kC2.Set(1,1,1,1);else kC2.Set(1,1,1,0);
-			if(m_kTextureIDs[(y+1)*m_iRows + x+1] == i)
+			if(m_kTextureIDs[(y+iStep)*m_iRows + x+iStep] == i)
 				kC3.Set(1,1,1,1);else kC3.Set(1,1,1,0);					
 		}
 			
@@ -331,19 +357,19 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool
 			
 			
 		//UV's
-		pkNewArrays->m_kTextureData.push_back(Vector2((x+1)*fTexMod,y*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,(y+1)*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2((x+1)*fTexMod,(y+1)*fTexMod));				
+		pkNewArrays->m_kTextureData.push_back(Vector2((x+iStep)*fTexMod,y*fTexMod));
+		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,(y+iStep)*fTexMod));
+		pkNewArrays->m_kTextureData.push_back(Vector2((x+iStep)*fTexMod,(y+iStep)*fTexMod));				
 		
 		//normals
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+1,y));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y+1));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+1,y+1));				
+		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+iStep,y));
+		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y+iStep));
+		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+iStep,y+iStep));				
 		
 		//vertex
-		pkNewArrays->m_kVertexData.push_back(Vector3((x+1)*m_fScale,m_kHeightData[y*m_iRows + x+1],y*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[(y+1)*m_iRows + x],(y+1)*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3((x+1)*m_fScale,m_kHeightData[(y+1)*m_iRows + x+1],(y+1)*m_fScale));	
+		pkNewArrays->m_kVertexData.push_back(Vector3((x+iStep)*m_fScale,m_kHeightData[y*m_iRows + x+iStep],y*m_fScale));
+		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[(y+iStep)*m_iRows + x],(y+iStep)*m_fScale));
+		pkNewArrays->m_kVertexData.push_back(Vector3((x+iStep)*m_fScale,m_kHeightData[(y+iStep)*m_iRows + x+iStep],(y+iStep)*m_fScale));	
 	}
 }
 
