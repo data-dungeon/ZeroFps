@@ -39,7 +39,7 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_fCastTime			=	1;
 	m_fTimeLeft 		=	1;
 	m_fLastUpdate 		= 	-1;
-	m_strSchool 		=	"UnkownSchool";
+//	m_strSchool 		=	"UnkownSchool";
 	m_iTargetType		=	0;	
 	m_iSkillType		=	0;
 	m_fRange				=	0;
@@ -123,8 +123,8 @@ void Skill::UpdateFromScript()
 		
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"ingamename",ctemp))
 		m_strInGameName = ctemp;
-	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"school",ctemp))
-		m_strSchool = ctemp;
+	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"parent",ctemp))
+		m_strParentSkill = ctemp;
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"icon",ctemp))
 		m_strIcon = ctemp;
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"infotext",ctemp))
@@ -156,8 +156,6 @@ void Skill::UpdateFromScript()
 		m_kBaseTypes.push_back(string(ctemp));
 	if(m_pkScript->GetGlobal(pkScript->m_pkLuaState,"basetype4",ctemp))
 		m_kBaseTypes.push_back(string(ctemp));
-
-//	this->m_strParentSkill = this->m_strSchool;
 
 /*
 	//print some nice info
@@ -2209,6 +2207,7 @@ void P_CharacterProperty::RemoveAllSkills()
 	m_kSkills.clear();
 }
 
+
 bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& strParentSkill)
 {
 	
@@ -2225,7 +2224,7 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 		if(!GetSkillPointer(strParentSkill))
 		{
 			cout<<"WARNING: parent skill "<<strParentSkill<<" not found when adding skill "<<strSkillScript<<endl;
-			return false;
+//			return false;
 		}
 	}
 	
@@ -2238,7 +2237,7 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 		
 	//do a first update
 	pkNewSkill->SetLevel(0);
-	
+
 // 	cout<<"Added skill "<<strSkillScript<<endl;
 	return true;
 }
@@ -2921,7 +2920,38 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 	
-	
+/**	\fn AddAllSkills( EntityID )
+		\brief Adds all skills to a entity skill.
+		\relates CharacterProperty
+*/
+	int AddAllSkillsLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 1)
+			return 0;		
+			
+		int iCharcterID;
+		string strSkill;
+		string strParent;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty");
+		if(!pkCP)
+			return 0;
+
+		ZFVFileSystem* pkFs = dynamic_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+		vector<string>	kFiles;
+		pkFs->ListDir(&kFiles, "data/script/objects/game objects/skills");
+		for(int i=0; i<kFiles.size(); i++)
+		{
+			if(strstr(kFiles[i].c_str(),".lua"))
+			{
+				pkCP->AddSkill(kFiles[i],"");
+			}
+		}
+
+		return 0;			
+	}
+
 	int LockSkillUsageLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -3507,6 +3537,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	
 	//skills
 	g_pkScript->ExposeFunction("AddSkill",			SI_P_CharacterProperty::AddSkillLua);
+	g_pkScript->ExposeFunction("AddAllSkills",	SI_P_CharacterProperty::AddAllSkillsLua);
 	g_pkScript->ExposeFunction("ChangeSkill",		SI_P_CharacterProperty::ChangeSkillLua);
 	g_pkScript->ExposeFunction("LockSkillUsage",	SI_P_CharacterProperty::LockSkillUsageLua);
 	

@@ -1552,6 +1552,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					if(!pkTreeBox->AddItem(strParent,(char*)strScreenName.c_str(),1,1,(char*)strName.c_str()))
 					{
 						cout<<"Error adding treeitem "<<strName<< " parent "<<strParent<<endl;
+						pkTreeBox->AddItem(pkTreeBox->Root(),(char*)strScreenName.c_str(),1,1,(char*)strName.c_str());					
 					}
 				}
 			}				

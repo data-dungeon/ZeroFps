@@ -52,7 +52,7 @@ class MCOMMON_API Skill
 		vector<string>	m_kBaseTypes;
 
 		string	m_strInGameName;
-		string	m_strSchool;
+		//string	m_strSchool;
 		string	m_strIcon;
 		string	m_strInfoText;
 		
@@ -339,7 +339,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void	RemoveAllSkills();		
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
 		void  LockSkillUsage(float fTime);
-		
+
 		void	AddSkillToSkillbar(const string& strSkill,int iPos);
 		void  RemoveItemFromSkillbar(int iPos);
 
