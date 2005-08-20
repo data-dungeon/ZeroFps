@@ -43,6 +43,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		float		m_fLastOcculusionTime;
 		bool		m_bOculled;
 		
+		bool		m_bDistanceCulled;
+		
 		//bounding box
 		bool			m_bHaveAABB;
 		Vector3		m_AABBMax;

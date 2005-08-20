@@ -506,7 +506,7 @@ void PSystem::TestInsideFrustum()
 
 
 	//Distance culling
-	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kPos) > m_pkFps->GetViewDistance())
+	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kPos) > m_pkFps->GetViewDistance() * 0.3)
 	{
 		m_bInsideFrustum = false;
 		return;

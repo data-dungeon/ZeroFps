@@ -33,6 +33,7 @@ P_Mad::P_Mad()
 
 	m_bCastShadow = true;
 	m_bCulled = false;
+	m_bDistanceCulled = false;
 	
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
@@ -96,16 +97,28 @@ void P_Mad::Update()
 		DoAnimationUpdate();
 		
 		//distance cull
-		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos);
+		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) - GetRadius();
 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW && !m_pkEntity->IsZone())
 		{
- 			if(fDistance > 10)
+			m_bDistanceCulled = false;		 			
+ 			
+ 			if(fDistance > m_pkZeroFps->GetViewDistance() )
+ 			{
+ 				m_bDistanceCulled = true;
+ 			}
+ 			else if(fDistance > 5)
  			{
 				float r = GetSize();				
- 				if( (fDistance - r) > m_pkZeroFps->GetViewDistance() * r)
- 					return;			
+ 				if( (fDistance - r)*5 > m_pkZeroFps->GetViewDistance() * r)
+ 				{
+ 					m_bDistanceCulled = true;
+ 				} 				
  			}
+			
 		}
+
+		if(m_bDistanceCulled)
+			return;
 
 		fRenderDistance = fDistance;
 		

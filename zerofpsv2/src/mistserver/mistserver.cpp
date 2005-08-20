@@ -160,7 +160,7 @@ void MistServer::Init()
 	//m_pkNetwork->SetNetSpeed(4000);	
 	
 	//set tracker los
-	m_pkEntityManager->SetTrackerLos(30);
+	m_pkEntityManager->SetTrackerLos(100);
 	
 	
 	//setup physics
@@ -187,6 +187,7 @@ void MistServer::Init()
 
 	//initiate our camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+	m_pkCamera->SetFog(Vector4(0.5,0.5,0.5,0.5),80,100,true);
 	m_pkCamera->SetName("persp");
 
 	//init mistland script intreface

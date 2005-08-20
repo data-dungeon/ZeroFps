@@ -124,22 +124,22 @@ void P_Heightmap::DrawTexturedHeightmap()
 		BuildTextureArrays();
 
 	
-// 	//calculate lod level
-// 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW)
-// 	{
-// 		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_pkEntity->GetRadius();		
-// 		//m_iLod = (fDistance/100) * 3;
-// 	
-// 		m_iLod = 2;
-// 		if(fDistance < 50)
-// 			m_iLod = 1;
-// 		if(fDistance < 30)
-// 			m_iLod = 0;		
-// 	}
+	//calculate lod level
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW)
+	{
+		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_pkEntity->GetRadius();		
+		//m_iLod = (fDistance/100) * 3;
+	
+		m_iLod = 2;
+		if(fDistance < m_pkZeroFps->GetViewDistance()*0.5)
+			m_iLod = 1;
+		if(fDistance < m_pkZeroFps->GetViewDistance()*0.2)
+			m_iLod = 0;		
+	}
 	
 	if(m_iLod < 0) m_iLod = 0;
 	if(m_iLod >= m_kLodLevels.size()) m_iLod = m_kLodLevels.size()-1;
-	m_iLod = 0;		
+	
 
 	m_pkZShaderSystem->MatrixPush();	
 	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV()  );

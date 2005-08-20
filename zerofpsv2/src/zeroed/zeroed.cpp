@@ -349,7 +349,7 @@ void ZeroEd::Init()
 	
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[0]->SetName("persp");
-	m_pkCamera[0]->SetFog(Vector4(1,1,1,1),300,400,true);
+	m_pkCamera[0]->SetFog(Vector4(0.5,0.5,0.5,0.5),80,100,true);
 	//m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
 	//m_pkFps->SetRenderTarget(m_pkCamera[0]);
 
@@ -357,21 +357,21 @@ void ZeroEd::Init()
 	m_pkCamera[1]->SetName("top");
 	//m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
 	m_pkCamera[1]->SetViewMode("top");
-	m_pkCamera[1]->SetFog(Vector4(1,1,1,1),300,400,true);
+	m_pkCamera[1]->SetFog(Vector4(0.5,0.5,0.5,0.5),80,100,true);
 	//m_pkFps->SetRenderTarget(m_pkCamera[1]);
 	
 	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[2]->SetName("front");
 	//m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
 	m_pkCamera[2]->SetViewMode("front");
-	m_pkCamera[2]->SetFog(Vector4(1,1,1,1),300,400,true);	
+	m_pkCamera[2]->SetFog(Vector4(0.5,0.5,0.5,0.5),80,100,true);	
 	//m_pkFps->SetRenderTarget(m_pkCamera[2]);
 
 	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[3]->SetName("right");
 	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
-	m_pkCamera[3]->SetFog(Vector4(1,1,1,1),300,400,true);
+	m_pkCamera[3]->SetFog(Vector4(10.5,0.5,0.5,0.5),80,100,true);
 	//m_pkFps->SetRenderTarget(m_pkCamera[3]);
 
 
@@ -764,7 +764,7 @@ void ZeroEd::OnIdle()
 	
 	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)
 	{	
-		UpdateObjectMakerPos();
+		//UpdateObjectMakerPos();
 		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
 
@@ -797,16 +797,13 @@ void ZeroEd::OnIdle()
 
 void ZeroEd::RenderInterface(void)
 {
+	UpdateObjectMakerPos();
+
 	DrawSelectedEntity();
 	if(m_iEditMode == EDIT_HMAP) 
 	{
 		//HeightMap* pkMap = SetPointer();
 		DrawHMEditMarker(m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
-	}
-
-	if(m_iEditMode == EDIT_ENVIROMENTS)
-	{
-		
 	}
 	
 	
@@ -1753,7 +1750,7 @@ void ZeroEd::UpdateZoneMarkerPos()
 
 void ZeroEd::UpdateObjectMakerPos()
 {
-	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fObjectMarkerDistance;
+	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetRenderPos() + Get3DMouseDir(true)*m_fObjectMarkerDistance;
 
 
 	if(m_pkActiveCameraObject && m_iEditMode == EDIT_AMBIENTSOUNDS)

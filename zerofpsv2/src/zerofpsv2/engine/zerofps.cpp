@@ -119,7 +119,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bTcsFullframe			= false;
 	m_iProfileTotalTime		= 0;
 	m_bVegetation				= true;
-	m_fViewDistance			= 30;
+	m_fViewDistance			= 100;
 	m_bOcculusionCulling		= true;
 	
 	m_bShadowMapRealtime		= false;
