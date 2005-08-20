@@ -301,6 +301,19 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool
 	static float fTexMod = 0.5;
 	static Vector4 kC1,kC2,kC3;
 
+// 	if(iStep > 1)
+// 	{
+// 		if(x == 0 && y == 0)		
+// 			cout<<"left edge"<<endl;		
+// 		else if(y == 0)
+// 			cout<<"top edge"<<endl;		
+// 		if(x == m_iCols-iStep-1)
+// 			cout<<"right edge"<<endl;		
+// 		if(y == m_iRows-iStep-1)
+// 			cout<<"botom edge"<<endl;		
+// 	}
+
+
 	if(bTop)
 	{
 		//color

@@ -857,7 +857,7 @@ void Mad_CoreMesh::Load(ZFVFile* pkZFile)
 	{
 		pkZFile->Read(m_acName, MAD_MAX_NAME, 1);
 	}
-	cout << "Reading MAD:Mesh: " << m_acName << endl;
+	//cout << "Reading MAD:Mesh: " << m_acName << endl;
 
 	if(m_iMadVersion >= 3)
 	{

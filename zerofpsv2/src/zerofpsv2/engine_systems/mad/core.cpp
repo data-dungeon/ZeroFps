@@ -509,9 +509,9 @@ bool Mad_Core::Create(string MadFileName)
 	kZFile.Read(&kMadHeader,sizeof(Mad_Header), 1);
 	
 	// Check Versions Num
-	if(kMadHeader.m_iVersionNum != MAD_VERSION) {
-		cout << "Wrong version " << kMadHeader.m_iVersionNum << " in " << MadFileName << endl;
-		}	
+// 	if(kMadHeader.m_iVersionNum != MAD_VERSION) {
+// 		cout << "Wrong version " << kMadHeader.m_iVersionNum << " in " << MadFileName << endl;
+// 		}	
 
 	LoadSkelleton(&kZFile);
 	SetUpBindPose();

@@ -95,7 +95,7 @@ void Skill::UpdateFromScript()
 {
 	if(!m_pkScriptFileHandle->IsValid())
 	{
-		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
+		cout<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
 		return;	
 	}
 
@@ -185,7 +185,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 {
 	if(!m_pkScriptFileHandle->IsValid())
 	{
-		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
+		cout<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
 		return -1;	
 	}
 	
@@ -3013,13 +3013,11 @@ namespace SI_P_CharacterProperty
 		ZFVFileSystem* pkFs = dynamic_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
 		vector<string>	kFiles;
 		pkFs->ListDir(&kFiles, "data/script/objects/game objects/skills");
+		
+		//add all lua files in the directory
 		for(int i=0; i<kFiles.size(); i++)
-		{
-			if(strstr(kFiles[i].c_str(),".lua"))
-			{
+			if(kFiles[i].find(".lua",kFiles[i].length()-4) != -1)
 				pkCP->AddSkill(kFiles[i],"");
-			}
-		}
 
 		return 0;			
 	}
