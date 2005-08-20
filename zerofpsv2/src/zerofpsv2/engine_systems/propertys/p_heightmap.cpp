@@ -71,8 +71,11 @@ P_Heightmap::~P_Heightmap()
 
 void P_Heightmap::Update()
 {
-	if(!( (m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
-			 m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)))
+// 	if(!( (m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
+// 			 m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)))
+// 		return;
+
+	if(!( m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
 		return;
 
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(	m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0),
@@ -138,7 +141,7 @@ void P_Heightmap::DrawTexturedHeightmap()
 		if(fDistance < m_pkZeroFps->GetViewDistance()*0.2)
 			m_iLod = 0;		
 	}
-	
+
 	if(m_iLod < 0) m_iLod = 0;
 	if(m_iLod >= m_kLodLevels.size()) m_iLod = m_kLodLevels.size()-1;
 	

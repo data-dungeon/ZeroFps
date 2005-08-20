@@ -148,7 +148,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 		cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
 		m_iShadowTexture = 0;
-		m_fShadowArea = 40;
+		m_fShadowArea = 50;
 		
 		glGenTextures(1, &m_iShadowTexture);
 		glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
