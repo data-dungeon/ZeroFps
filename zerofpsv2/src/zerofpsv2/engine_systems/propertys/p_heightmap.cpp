@@ -130,7 +130,9 @@ void P_Heightmap::DrawTexturedHeightmap()
 		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_pkEntity->GetRadius();		
 		//m_iLod = (fDistance/100) * 3;
 	
-		m_iLod = 2;
+		m_iLod = 3;
+		if(fDistance < m_pkZeroFps->GetViewDistance()*0.8)
+			m_iLod = 2;		
 		if(fDistance < m_pkZeroFps->GetViewDistance()*0.5)
 			m_iLod = 1;
 		if(fDistance < m_pkZeroFps->GetViewDistance()*0.2)
@@ -198,7 +200,10 @@ void P_Heightmap::BuildTextureArrays()
 	}
 	m_kLodLevels.clear(); 
 	
-	int iLevels = 3;
+	//how many lodlevels to generate
+	int iLevels = 4;
+	if(m_iRows < 16)
+		iLevels = 3;
 	if(m_iRows < 8)
 		iLevels = 2;
 
@@ -211,6 +216,7 @@ void P_Heightmap::BuildTextureArrays()
 			case 0: iStep = 1;break;
 			case 1: iStep = 2;break;
 			case 2: iStep = 4;break;
+			case 3: iStep = 8;break;
 		};
 
 		m_kLodLevels.push_back(vector<HeightmapArrays*>() );		
