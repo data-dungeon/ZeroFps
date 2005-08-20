@@ -222,13 +222,22 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 				//get character property, revive player and send him to world start pos			
 				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
+				{
 					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+					{
 						if(pkCP->IsDead())
 						{
 							pkCP->MakeAlive();
 							pkCharacter->SetWorldPosV(GetPlayerStartPos());
-							
 						}
+						/*if(pkCP->IsIncap())
+						{
+							cout << "Calling makealive" << endl;
+							pkCP->MakeAlive();
+						}
+						*/
+					}
+				}
 			}
 			
 			break;

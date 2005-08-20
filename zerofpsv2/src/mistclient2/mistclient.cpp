@@ -1161,7 +1161,7 @@ void MistClient::Input()
 		
 	
 	//respawn knapp, i brist p?gui
-	if(m_bDead && m_pkInputHandle->Pressed(KEY_BACKSPACE) && !DelayCommand())
+	if(/*m_bDead && */ m_pkInputHandle->Pressed(KEY_BACKSPACE) && !DelayCommand())
 		SendRespawnRequest();
 	
 	//check buttons

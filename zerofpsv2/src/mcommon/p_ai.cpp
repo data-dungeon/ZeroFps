@@ -409,7 +409,7 @@ bool P_AI::States(int iEvent, int iState)
 bool P_AI::ValidTarget(int iTarget)
 {
 	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTarget,"P_CharacterProperty"))	
-		if(!pkCP->IsDead() && m_pkCharacterProperty->IsEnemy(iTarget))
+		if(!pkCP->IsDead() && !pkCP->IsIncap() && m_pkCharacterProperty->IsEnemy(iTarget))
 			return true;	
 
 	return false;	
@@ -492,7 +492,7 @@ bool P_AI::CharacterCollision(Vector3* pkNormal)
 		if(!kPropertys[i]->IsType("P_CharacterProperty"))
 			continue;
 		
-		if(((P_CharacterProperty*)kPropertys[i])->IsDead())
+		if(((P_CharacterProperty*)kPropertys[i])->IsDead() || ((P_CharacterProperty*)kPropertys[i])->IsIncap())
 			continue;
 		
 		if(kPos.DistanceTo(kPropertys[i]->GetEntity()->GetWorldPosV()) < 1.0)
@@ -555,7 +555,7 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 				
 			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
 			{
-				if(pkCP->IsDead())
+				if(pkCP->IsDead() || pkCP->IsIncap())
 					continue;
 				//found character
 				

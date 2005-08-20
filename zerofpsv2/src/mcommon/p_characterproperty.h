@@ -173,6 +173,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool			m_bInCamp;
 		
 		//death
+		bool			m_bIncap;
 		bool			m_bDead;
 		float			m_fDeadTimer;
 		float			m_fDecayTime;					//how long does a non player body stay in the world before decaying
@@ -252,6 +253,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void CreateSpawner();	
 		
 		void OnDeath();
+		void OnIncap();
 		void OnLevelUP();
 		
 	public:
@@ -292,6 +294,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//alive
 		void MakeAlive();
 		bool IsDead()													{	return m_bDead;					}
+		bool IsIncap()													{	return m_bIncap;					}
 			
 		//sound
 		void SetWalkSound(const string& strFile)				{	m_strWalkSound = strFile;				ResetAllNetUpdateFlags();}

@@ -580,6 +580,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fLegLength			=	0;
 	m_fMarkerSize			=	1;
 	m_bDead					=	false;
+	m_bIncap					=  false;
 	m_fDeadTimer			=	0;
 	m_fDecayTime			=	60;
 	
@@ -871,7 +872,7 @@ void P_CharacterProperty::UpdateStats()
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 	{
 		//cout<<"Character is soooo dead"<<endl;
-		OnDeath();
+		OnIncap();	//OnDeath();
 		return;
 	}
 		
@@ -1041,7 +1042,7 @@ bool P_CharacterProperty::InCamp()
 			//a character?
 			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)kEntitys[i]->GetProperty("P_CharacterProperty"))
 			{
-				if(pkCP->IsDead())
+				if(pkCP->IsDead() || pkCP->IsIncap())
 					continue;
 				
 				//is charater evil against me?
@@ -1121,7 +1122,7 @@ bool P_CharacterProperty::CanRest()
 				
 			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
 			{
-				if(pkCP->IsDead())
+				if(pkCP->IsDead() || pkCP->IsIncap())
 					continue;
 				
 				//is charater evil against me?
@@ -1144,7 +1145,9 @@ bool P_CharacterProperty::CanRest()
 
 void P_CharacterProperty::MakeAlive()
 {		
-	m_bDead = false;ResetAllNetUpdateFlags();
+	m_bIncap = false;
+	m_bDead = false;
+	ResetAllNetUpdateFlags();
 
 	//make sure character has some life
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
@@ -1194,10 +1197,63 @@ void P_CharacterProperty::MakeAlive()
 	}	
 }
 
+void P_CharacterProperty::OnIncap()
+{
+	// NPC's always die
+	if(m_iConID == -1)
+	{
+		OnDeath();
+		return;
+	}
+
+	m_bIncap	= true;
+	m_bDead	= false;
+	ResetAllNetUpdateFlags();
+
+	SendTextToClient(string("You are incapacitated. Lay down and rest for a while."));
+
+	m_fDeadTimer = m_pkEntityManager->GetSimTime();
+	m_fDecayTime = m_kCharacterStats.GetTotal("Vitality");
+
+	//set death animation
+	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+	{
+		pkMad->SetAnimation("die", 0);
+		pkMad->m_bLoop = false;
+		pkMad->SetNextAnimation(MAD_NOLOOP);
+	}
+		
+	//disable character movement
+	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
+	{
+		pkCC->SetEnabled(false);	
+	}
+	
+	//disable TCS collissions
+	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
+	{
+		pkTcs->SetTestType(E_NONE);
+		pkTcs->SetAirFriction(15);		//make sure character wont bounce around
+	}
+
+	if(m_iConID == -1)
+	{
+		m_fDeadTimer = m_pkEntityManager->GetSimTime();
+	
+		//disable AI
+		if(P_AI* pkAI = (P_AI*)m_pkEntity->GetProperty("P_AI"))
+		{
+			pkAI->SetState(eAI_STATE_DEAD);
+		}
+	}
+	else
+		SendStats();
+}
 
 void P_CharacterProperty::OnDeath()
 {
-	m_bDead = true;ResetAllNetUpdateFlags();
+	m_bDead = true;
+	ResetAllNetUpdateFlags();
 	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Death");
 	
@@ -1221,13 +1277,14 @@ void P_CharacterProperty::OnDeath()
 		}		
 	}				
 	
-	
 	//set death animation
-	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+	P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
+	if(pkMad && !m_bIncap)
 	{
 		pkMad->SetAnimation("die", 0);
 		pkMad->m_bLoop = false;
 		pkMad->SetNextAnimation(MAD_NOLOOP);
+		m_bIncap = true;
 	}
 		
 	//disable character movement
@@ -1242,7 +1299,6 @@ void P_CharacterProperty::OnDeath()
 		pkTcs->SetTestType(E_NONE);
 		pkTcs->SetAirFriction(15);		//make sure character wont bounce around
 	}
-	
 	
 	//not a player character
 	if(m_iConID == -1)
@@ -1742,7 +1798,7 @@ void P_CharacterProperty::Update()
 			}
 		
 			//if not dead
-			if(!m_bDead)
+			if(!m_bDead && !m_bIncap)
 			{
 				//update stats
 				UpdateStats();
@@ -1755,15 +1811,31 @@ void P_CharacterProperty::Update()
 			}
 			else
 			{
-				//not a player character
-				if(m_iConID == -1)
+				if(!m_bDead && m_bIncap)
 				{
-					//been dead for a while
-					if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > m_fDecayTime)
+					if(m_kCharacterStats.GetTotal("Health") >= 1)
+					{
+						MakeAlive();
+					}
+					else if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > m_fDecayTime)
 					{
 						//send character to the world beyound
-						m_pkEntityManager->Delete(m_pkEntity);						
+						OnDeath();						
 					}			
+				}
+
+				if(m_bDead)
+				{
+					//not a player character
+					if(m_iConID == -1)
+					{
+						//been dead for a while
+						if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > m_fDecayTime)
+						{
+							//send character to the world beyound
+							m_pkEntityManager->Delete(m_pkEntity);						
+						}			
+					}
 				}
 			}
 		}
