@@ -46,7 +46,7 @@ bool EnvList::Load(const string& strFile)
 			
 			}
 			
-			cout<<"loaded enviroment list, size:"<<m_kEnvSettings.size()<<endl;			
+			//cout<<"loaded enviroment list, size:"<<m_kEnvSettings.size()<<endl;			
 		}
 		
 		//no list section, check for enviroment section
@@ -57,7 +57,7 @@ bool EnvList::Load(const string& strFile)
 			m_kEnvSettings.push_back(pkTemp);
 		
 						
-			cout<<"loaded enviroment"<<endl;
+			//cout<<"loaded enviroment"<<endl;
 			return true;				
 		}		
 	
@@ -304,7 +304,7 @@ void ZSSEnviroment::UpdateEnvLists()
    {
 		if(fCurrentTime - (*kIte)->m_fLastUsed > m_fEnviromentTimeout)
 		{
-			cout<<"ZSSEnviroment Timeout: "<<(*kIte)->m_strName<<endl;
+			//cout<<"ZSSEnviroment Timeout: "<<(*kIte)->m_strName<<endl;
 			
 			delete (*kIte);
 			m_kEnvLists.erase ( kIte );
@@ -378,7 +378,7 @@ EnvList* ZSSEnviroment::GetEnvList(const string& strEnviroment)
 	}
 	
 	//if list was not found, create it	
-	cout<<"ZSSEnviroment Created: "<<strEnviroment<<endl;
+	//cout<<"ZSSEnviroment Created: "<<strEnviroment<<endl;
 	
 	EnvList* pkNewEnvList = new EnvList;
 	

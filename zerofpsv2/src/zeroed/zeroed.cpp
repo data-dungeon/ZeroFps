@@ -347,8 +347,8 @@ void ZeroEd::Init()
 	//initiate our camera
 	int iFov = 70;
 	
-	float fNearFog = 90;
-	float fFarFog = 100; 
+	float fNearFog = 1000;
+	float fFarFog = 1000; 
 	
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[0]->SetName("persp");
@@ -1815,9 +1815,9 @@ void ZeroEd::ToogleLight()
 	{
 		m_bEditSun = false;	
 		LightSource* pkLight = m_pkLight->GetSunPointer();
- 		pkLight->kDiffuse=Vector4(0.8,0.8,0.8,0);
- 		pkLight->kAmbient=Vector4(0.5,0.5,0.5,0);
- 		pkLight->kSpecular=Vector4(0.8,0.8,0.8,0);
+ 		pkLight->kDiffuse=Vector4(0.7,0.7,0.7,0);
+ 		pkLight->kAmbient=Vector4(0.6,0.6,0.6,0);
+ 		pkLight->kSpecular=Vector4(0.7,0.7,0.7,0);
 	}
 }
 

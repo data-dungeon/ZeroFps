@@ -193,7 +193,7 @@ void P_Mad::Update()
 				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 				m_pkZShaderSystem->MatrixScale(m_fScale);									
 				
-				
+				//occulusion culling
 				if(m_pkZShaderSystem->SupportOcculusion() && 
 					m_pkZeroFps->GetOcculusionCulling() &&
 					m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
