@@ -75,12 +75,11 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 			
 			
 		vector<vector<HeightmapArrays*> >	m_kLodLevels;
-// 		vector<HeightmapArrays*>		m_kDataArrays;				
-		
 		
 		Vector3 GenerateNormal(int x,int y);	
 		void BuildTextureArrays();
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep = 1);
+		void AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID);
 		void DrawTexturedHeightmap();
 		void DrawOcculusionHeightmap();
 		

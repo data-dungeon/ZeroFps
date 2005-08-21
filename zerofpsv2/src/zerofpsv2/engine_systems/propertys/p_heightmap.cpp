@@ -55,12 +55,9 @@ void P_Heightmap::Init()
 
 P_Heightmap::~P_Heightmap()
 {
+	//clear all materials
 	for(int i =0;i<m_kMaterials.size();i++)
 		delete m_kMaterials[i];	
-	
-	//clear data arrays
-// 	for(int i = 0;i<m_kDataArrays.size();i++)
-// 		delete m_kDataArrays[i];
 
 	//clear data arrays
 	for(int i = 0;i<m_kLodLevels.size();i++)
@@ -212,6 +209,7 @@ void P_Heightmap::BuildTextureArrays()
 
 	for(int l = 0;l<iLevels;l++)
 	{
+	
 		int iStep;
 		
 		switch(l)
@@ -221,6 +219,7 @@ void P_Heightmap::BuildTextureArrays()
 			case 2: iStep = 4;break;
 			case 3: iStep = 8;break;
 		};
+
 
 		m_kLodLevels.push_back(vector<HeightmapArrays*>() );		
 		vector<HeightmapArrays*>* pkNewDataArrays = &m_kLodLevels.back();
@@ -296,106 +295,135 @@ void P_Heightmap::BuildTextureArrays()
 	}
 }
 
-void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep)
+void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int iID,bool bTop,int iStep)
 {
-	static float fTexMod = 0.5;
-	static Vector4 kC1,kC2,kC3;
-
-// 	if(iStep > 1)
-// 	{
-// 		if(x == 0 && y == 0)		
-// 			cout<<"left edge"<<endl;		
-// 		else if(y == 0)
-// 			cout<<"top edge"<<endl;		
-// 		if(x == m_iCols-iStep-1)
-// 			cout<<"right edge"<<endl;		
-// 		if(y == m_iRows-iStep-1)
-// 			cout<<"botom edge"<<endl;		
-// 	}
-
-
 	if(bTop)
 	{
-		//color
-		if(i == 0)
+		//top left corner
+		if(iStep > 1 && x == 0 && y == 0)
 		{
-			kC1.Set(1,1,1,1);
-			kC2.Set(1,1,1,1);
-			kC3.Set(1,1,1,1);
+			for(int i = x;i<x+iStep;i++)
+			{		
+				AddVertex(pkNewArrays,x,i,iID);												
+				AddVertex(pkNewArrays,x,i+1,iID);		
+				AddVertex(pkNewArrays,i+1,y,iID);		
+												
+				if(i != x+iStep-1)
+				{
+					AddVertex(pkNewArrays,i+1,y,iID);												
+					AddVertex(pkNewArrays,x,i+1,iID);		
+					AddVertex(pkNewArrays,i+2,y,iID);				
+				}												
+			}						
 		}
+		//top edge
+		else if(iStep > 1 && y == 0)
+		{
+			for(int i = x;i<x+iStep;i++)
+			{
+				AddVertex(pkNewArrays,i,y,iID);												
+				AddVertex(pkNewArrays,x,y+iStep,iID);		
+				AddVertex(pkNewArrays,i+1,y,iID);																
+			}
+		}
+		//left edge
+		else if(iStep > 1 && x == 0)
+		{
+			for(int i = y;i<y+iStep;i++)
+			{
+				AddVertex(pkNewArrays,x,i,iID);												
+				AddVertex(pkNewArrays,x,i+1,iID);		
+				AddVertex(pkNewArrays,x+iStep,y,iID);				
+											
+			}		
+		}		
+		//center tiles
 		else
-		{
-			if(m_kTextureIDs[y*m_iRows + x] == i)
-				kC1.Set(1,1,1,1);else kC1.Set(1,1,1,0);
-			if(m_kTextureIDs[(y+iStep)*m_iRows + x] == i)
-				kC2.Set(1,1,1,1);else kC2.Set(1,1,1,0);
-			if(m_kTextureIDs[y*m_iRows + x+iStep] == i)
-				kC3.Set(1,1,1,1);else kC3.Set(1,1,1,0);					
-		}
-					
-		pkNewArrays->m_kColorData.push_back(kC1);
-		pkNewArrays->m_kColorData.push_back(kC2);
-		pkNewArrays->m_kColorData.push_back(kC3);
-			
-			
-		//UV's
-		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,y*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,(y+iStep)*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2((x+iStep)*fTexMod,y*fTexMod));				
-		
-		//normals
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y+iStep));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+iStep,y));				
-		
-		//vertex
-		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[(y+iStep)*m_iRows + x],(y+iStep)*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3((x+iStep)*m_fScale,m_kHeightData[y*m_iRows + x+iStep],y*m_fScale));
-						
+		{		
+			AddVertex(pkNewArrays,x,y,iID);
+			AddVertex(pkNewArrays,x,y+iStep,iID);
+			AddVertex(pkNewArrays,x+iStep,y,iID);
+
+		}						
 	}
 	else
-	{
-		//color
-		if(i == 0)
+ 	{
+		//botom right corner
+		if(iStep > 1 && x == m_iCols-iStep-1 && y == m_iRows-iStep-1)
 		{
-			kC1.Set(1,1,1,1);
-			kC2.Set(1,1,1,1);
-			kC3.Set(1,1,1,1);
+			for(int i = x;i<x+iStep;i++)
+			{		
+				AddVertex(pkNewArrays,x+iStep,i,iID);												
+				AddVertex(pkNewArrays,i,y+iStep,iID);		
+				AddVertex(pkNewArrays,x+iStep,i+1,iID);		
+												
+				AddVertex(pkNewArrays,i+1,y+iStep,iID);												
+				AddVertex(pkNewArrays,x+iStep,i+1,iID);		
+				AddVertex(pkNewArrays,i,y+iStep,iID);											
+			}						
 		}
+		//botom edge
+		else if(iStep > 1 && y == m_iRows-iStep-1)
+		{
+			for(int i = x;i<x+iStep;i++)
+			{
+				AddVertex(pkNewArrays,x+iStep,y,iID);												
+				AddVertex(pkNewArrays,i,y+iStep,iID);		
+				AddVertex(pkNewArrays,i+1,y+iStep,iID);				
+
+												
+			}
+		}
+		//right edge
+		else if(iStep > 1 && x == m_iCols-iStep-1)
+		{
+			for(int i = y;i<y+iStep;i++)
+			{
+				AddVertex(pkNewArrays,x+iStep,i,iID);												
+				AddVertex(pkNewArrays,x,y+iStep,iID);		
+				AddVertex(pkNewArrays,x+iStep,i+1,iID);				
+											
+			}		
+		}		
+		//center tiles
 		else
-		{			
-			if(m_kTextureIDs[y*m_iRows + x+iStep] == i)
-				kC1.Set(1,1,1,1);else kC1.Set(1,1,1,0);
-			if(m_kTextureIDs[(y+iStep)*m_iRows + x] == i)
-				kC2.Set(1,1,1,1);else kC2.Set(1,1,1,0);
-			if(m_kTextureIDs[(y+iStep)*m_iRows + x+iStep] == i)
-				kC3.Set(1,1,1,1);else kC3.Set(1,1,1,0);					
-		}
-			
-		pkNewArrays->m_kColorData.push_back(kC1);
-		pkNewArrays->m_kColorData.push_back(kC2);
-		pkNewArrays->m_kColorData.push_back(kC3);
-			
-			
-		//UV's
-		pkNewArrays->m_kTextureData.push_back(Vector2((x+iStep)*fTexMod,y*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,(y+iStep)*fTexMod));
-		pkNewArrays->m_kTextureData.push_back(Vector2((x+iStep)*fTexMod,(y+iStep)*fTexMod));				
-		
-		//normals
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+iStep,y));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y+iStep));
-		pkNewArrays->m_kNormalData.push_back(GenerateNormal(x+iStep,y+iStep));				
-		
-		//vertex
-		pkNewArrays->m_kVertexData.push_back(Vector3((x+iStep)*m_fScale,m_kHeightData[y*m_iRows + x+iStep],y*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[(y+iStep)*m_iRows + x],(y+iStep)*m_fScale));
-		pkNewArrays->m_kVertexData.push_back(Vector3((x+iStep)*m_fScale,m_kHeightData[(y+iStep)*m_iRows + x+iStep],(y+iStep)*m_fScale));	
+		{
+			AddVertex(pkNewArrays,x+iStep,y,iID);
+			AddVertex(pkNewArrays,x,y+iStep,iID);
+			AddVertex(pkNewArrays,x+iStep,y+iStep,iID);
+		}	
 	}
 }
 
+void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
+{
+	static float fTexMod = 0.5;
+	static Vector4 kColor;	
+	
+	if(iID == 0)
+	{
+		kColor.Set(1,1,1,1);
+	}
+	else
+	{
+		if(m_kTextureIDs[y*m_iRows + x] == iID)
+			kColor.Set(1,1,1,1);
+		else
+			kColor.Set(1,1,1,0);
+	}		
 
+	//color
+	pkNewArrays->m_kColorData.push_back(kColor);		
+		
+	//UV's
+	pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,y*fTexMod));
+	
+	//normals
+	pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y));
+
+	//vertex
+	pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale));
+}
 
 
 Vector3 P_Heightmap::GenerateNormal(int x,int y)
