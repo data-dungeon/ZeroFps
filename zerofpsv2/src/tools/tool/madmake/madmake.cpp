@@ -257,7 +257,8 @@ int HATASDL(int argc, char* argv[])
 	MadMake	mad;
 	mad.Run(argc, argv);
 // 	_getch();
-
+	int iOst;
+	cin >> iOst;
 
 	return 0;
 }

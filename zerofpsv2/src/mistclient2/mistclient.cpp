@@ -109,7 +109,7 @@ void MistClient::OnInit()
 	
 	//grab input
 	m_pkInput->ToggleGrab(true);
-	
+
 	//setup referense sound distance
 	//m_pkAudioSys->SetReferensDistance(0.25);
 	
@@ -906,6 +906,9 @@ void MistClient::Input()
 		else
 			RequestOpenInventory();
 	}
+
+	m_pkInput->PrintInputHandlers();
+	m_pkZeroFps->DevPrintf("in", "m_bGuiCapture: %d", m_bGuiCapture);
 
 	//toggle eqipment
 	if(m_pkInputHandle->VKIsDown("eqipment") && !DelayCommand())

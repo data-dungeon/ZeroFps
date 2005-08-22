@@ -203,16 +203,24 @@ InputHandle* Input::GetInputHandle(string strName)
 
 void Input::PrintInputHandlers()
 {
-	cout<<"Registered input handles"<<endl;
+	//cout<<"Registered input handles"<<endl;
 
 	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
+		string strMode;
+
+		if(m_kInputHandles[i]->m_bActive)	strMode = string("Active");
+		if(m_kInputHandles[i]->m_bTempDisable)	strMode = strMode + string("m_bTempDisable");
+
+		m_pkZeroFps->DevPrintf("in", "Handle: %s - %s", m_kInputHandles[i]->m_strHandleName.c_str(),strMode.c_str());
+
+	/*
 		cout<<m_kInputHandles[i]->m_strHandleName;
 	
 		if(m_kInputHandles[i]->m_bActive)
 			cout<<"  Active";
 			
-		cout<<endl;
+		cout<<endl;*/
 	}
 }
 
