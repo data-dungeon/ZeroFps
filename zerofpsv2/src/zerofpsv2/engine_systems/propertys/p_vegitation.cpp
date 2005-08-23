@@ -518,9 +518,32 @@ void P_Vegitation::BuildArrays()
 	int iPositions = m_akPositions.size();
 	for(int i =0;i<iPositions;i++ )
 	{
-		Vector3 off(Randomf(kScale.x*1.5)+0.25,0,Randomf(kScale.z*1.5)+0.25);
+		//Vector3 off(Randomf(kScale.x*1.5)+0.25,0,Randomf(kScale.z*1.5)+0.25);
+		float r = DegToRad(Randomf(360));
+		float cosr = cos(r);
+		float sinr = sin(r);
+		float cosrd2 = cos(r+PId2);
+		float sinrd2 = sin(r+PId2);
+		
+		float s = Randomf(0.4);
+		float h = kScale.y*s + kScale.y*0.6;
+		float w = kScale.x*s + kScale.x*0.6;
+		
 	
 		//cross vertises
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(-sinr*w,h,-cosr*w));
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(sinr*w,h,cosr*w));
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(sinr*w,0,cosr*w));		
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(-sinr*w,0,-cosr*w));		
+		
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(-sinrd2*w,h,-cosrd2*w));
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(sinrd2*w,h,cosrd2*w));
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(sinrd2*w,0,cosrd2*w));		
+		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(-sinrd2*w,0,-cosrd2*w));		
+		
+	
+	
+/*		//cross vertises
 		m_kVertexArray.push_back(m_akPositions[i].kPos +topleft+off);
 		m_kVertexArray.push_back(m_akPositions[i].kPos +topright-off);
 		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomright-off);
@@ -529,7 +552,7 @@ void P_Vegitation::BuildArrays()
 		m_kVertexArray.push_back(m_akPositions[i].kPos +topback+off);
 		m_kVertexArray.push_back(m_akPositions[i].kPos +topfront-off);
 		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomfront-off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomback+off);
+		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomback+off);*/
 	
 
 		//uv's

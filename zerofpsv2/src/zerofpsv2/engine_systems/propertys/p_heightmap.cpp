@@ -127,7 +127,7 @@ void P_Heightmap::DrawTexturedHeightmap()
 	//calculate lod level
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW)
 	{
-		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_pkEntity->GetRadius();		
+		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_iWidth/2.0;		
 		//m_iLod = (fDistance/100) * 3;
 	
 		m_iLod = 3;
