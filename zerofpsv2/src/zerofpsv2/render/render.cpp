@@ -1520,7 +1520,7 @@ void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 	time(&kTime);
 	struct tm *pkLocalTime;
 	pkLocalTime = localtime( &kTime );
-	strftime(szName, 250, "%y%m%d_%H%M%S ", pkLocalTime);
+	strftime(szName, 250, "%y%m%d_%H%M%S", pkLocalTime);
 	sprintf(szImageName, "screenshots/%s_%s.tga", strAppName.c_str(), szName);
 	
 	kScreen.Save(szImageName ,false);
