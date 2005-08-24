@@ -58,6 +58,7 @@ Entity::Entity()
 	m_fInterPolateFactor = 20;						//lower factor = slower moving objects/smoother movements
 	m_iLastInterPolateFrame = 0;
 	m_ucIcon					= 0;
+	m_bHide					= 0;
 	
 	m_fPriority				= -1;
 
@@ -246,7 +247,23 @@ void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
-	
+bool Entity::IsAnyParentHidden()
+{
+	Entity* pkParent = m_pkParent;	
+
+	while(pkParent)
+	{
+		if(pkParent->m_bHide)
+		{
+			cout << "I have a hidden parent" << endl;
+			return true;
+		}
+
+		pkParent = pkParent->m_pkParent;
+	}
+
+	return false;
+}
 
 /**	\brief	Returns a vector with propertys for the Entity and child Entitys.
 	
@@ -257,6 +274,9 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	//return if no updates shuld be done
 	if(m_iUpdateStatus & UPDATE_NONE)
+		return;
+
+	if((iType & PROPERTY_TYPE_RENDER) && m_pkEntityManager->m_bAllowHide && m_bHide)
 		return;
 
 	//add this Entitys propertys to the vector

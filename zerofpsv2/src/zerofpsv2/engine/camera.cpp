@@ -1245,5 +1245,41 @@ Vector3 Camera::Get3DCursorDir(float fMouseX,float fMouseY,bool bMouse)
 
 	
 	return dir;	
+}
 
+Vector3 Camera::Get3DCursorPos(float fMouseX,float fMouseY,bool bMouse)
+{
+	Vector3 dir;
+	float x,y;		
+
+	Vector3 kViewSize, kViewCorner;
+	kViewSize = GetViewPortSize();
+	kViewCorner = GetViewPortCorner();
+
+	if(bMouse)
+	{
+  		x = -0.5f + (float) (fMouseX - kViewCorner.x) / (float) kViewSize.x;
+  		y = -0.5f + (float) ((m_pkRender->GetHeight() - fMouseY) - kViewCorner.y) / (float) kViewSize.y;
+
+		if(GetViewMode() == Camera::CAMMODE_PERSP) 
+		{
+			x*=2;
+			y*=2;
+			dir.Set(x,y,0);
+		}
+		else 
+		{			
+			dir.Set(x,y,0);
+		}
+	}
+	else
+	{
+		dir.Set(0,0,0);
+	}
+	
+	dir.x = m_kOrthoSize.x * x * 2;
+	dir.y = m_kOrthoSize.y * y * 2;
+
+
+	return dir;
 }

@@ -77,6 +77,7 @@ EntityManager::EntityManager()
 	m_iObjectDistance			= 50;
 	m_fZoneUnloadTime			= 30;	
 	m_iMaxZoneIO 				= 4;	
+	m_bAllowHide				= true;
 
 	m_pkWorldEntity			= NULL;
 	m_pkZoneEntity				= NULL;

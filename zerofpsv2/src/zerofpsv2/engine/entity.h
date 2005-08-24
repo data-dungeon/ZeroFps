@@ -242,6 +242,10 @@ class ENGINE_API Entity
 		NetWorkRole					m_eRole;								///< This node power on Entity.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on Entity.
 	
+		bool							m_bHide;
+		bool							IsAnyParentHidden();
+
+
 		~Entity();
 		
 		// Property Mangment

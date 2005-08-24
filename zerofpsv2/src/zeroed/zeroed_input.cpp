@@ -270,14 +270,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	}
 
 	
-	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
-	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
-	
-	if(m_pkInputHandle->VKIsDown("clone"))	
-	{
-		if(!DelayCommand())
-			EditRunCommand(FID_CLONE);	
-	}
+	if(m_pkInputHandle->VKIsDown("copy"))								EditRunCommand(FID_COPY);
+	if(m_pkInputHandle->VKIsDown("paste"))								EditRunCommand(FID_PASTE);
+	if(m_pkInputHandle->VKIsDown("clone") && !DelayCommand())	EditRunCommand(FID_CLONE);	
 	
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
@@ -379,6 +374,18 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(!pkObj)
 		return;		
 
+	if(m_pkInputHandle->VKIsDown("togglehide"))	
+	{
+		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
+		if(pkEnt && !DelayCommand())
+			pkEnt->m_bHide = !pkEnt->m_bHide;
+	}
+
+	if(m_pkInputHandle->VKIsDown("toggleshowall"))	
+	{
+		if(!DelayCommand())
+			m_pkEntityManager->m_bAllowHide = !m_pkEntityManager->m_bAllowHide;
+	}
 
 	// Move Selected Entity
 	Vector3 kMove(0,0,0);
@@ -502,17 +509,17 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 	if(!m_pkActiveCamera)
 		return;
 
-	if(m_pkInputHandle->Pressed(KEY_Z))		SetViewPort("vp1");
-	if(m_pkInputHandle->Pressed(KEY_X))		SetViewPort("vp2");
-	if(m_pkInputHandle->Pressed(KEY_C))		SetViewPort("vp3");
-	if(m_pkInputHandle->Pressed(KEY_V))		SetViewPort("vp4");
+	if(m_pkInputHandle->VKIsDown("vp1"))		SetViewPort("vp1");
+	if(m_pkInputHandle->VKIsDown("vp2"))		SetViewPort("vp2");
+	if(m_pkInputHandle->VKIsDown("vp3"))		SetViewPort("vp3");
+	if(m_pkInputHandle->VKIsDown("vp4"))		SetViewPort("vp4");
 
+	if(m_pkInputHandle->VKIsDown("speedup"))		m_CamSpeedScale += 0.1;
+	if(m_pkInputHandle->VKIsDown("speeddown"))	m_CamSpeedScale -= 0.1;
+	if(m_CamSpeedScale <= 0)							m_CamSpeedScale = 0.1;
+	if(m_pkInputHandle->VKIsDown("fast"))			m_CamMoveSpeed = 20;
 
-	if(m_pkInputHandle->VKIsDown("fast")){
-		m_CamMoveSpeed = 20;
-	}
-
-	float fSpeedScale = m_pkZeroFps->GetFrameTime()*m_CamMoveSpeed;
+	float fSpeedScale = m_pkZeroFps->GetFrameTime() * (m_CamMoveSpeed * m_CamSpeedScale);
 
 	Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
 
@@ -523,9 +530,6 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		
 		Matrix4 kRm;
 		kRm = m_pkActiveCameraObject->GetLocalRotM();
-
-		//kRm.Transponse();
-
 		
 		Vector3 xv = kRm.GetAxis(0);
 		Vector3 zv = kRm.GetAxis(2);
@@ -591,32 +595,32 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 			//SDL_ShowCursor(true);
 	}
 
-	else 
+	else	// ORTHO MODE
 	{
 		Vector3 kMove = Vector3::ZERO;
-
-		if(m_pkInputHandle->VKIsDown("forward"))	kMove.y += fSpeedScale;
-		if(m_pkInputHandle->VKIsDown("back"))		kMove.y -= fSpeedScale;
-		if(m_pkInputHandle->VKIsDown("right"))		kMove.x += fSpeedScale;
-		if(m_pkInputHandle->VKIsDown("left"))		kMove.x -= fSpeedScale;	
 		
 		if(m_pkInputHandle->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
 		if(m_pkInputHandle->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
-
-		
 		
 		if(m_pkInputHandle->VKIsDown("pancam"))
 		{
+			if(m_pkInputHandle->VKIsDown("forward"))	m_pkActiveCamera->OrthoZoom(0.9);
+			if(m_pkInputHandle->VKIsDown("back"))		m_pkActiveCamera->OrthoZoom(1.1);
+		
 			kMove += Vector3(-fMouseX * fSpeedScale,fMouseY * fSpeedScale,0);
 		}
-
+		else
+		{
+			if(m_pkInputHandle->VKIsDown("forward"))	kMove.y += fSpeedScale;
+			if(m_pkInputHandle->VKIsDown("back"))		kMove.y -= fSpeedScale;
+			if(m_pkInputHandle->VKIsDown("right"))		kMove.x += fSpeedScale;
+			if(m_pkInputHandle->VKIsDown("left"))		kMove.x -= fSpeedScale;	
+		}
 
 		if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0])
 		{
 			// If Cameras are linked.
 			kMove = m_pkActiveCamera->GetOrthoMove(kMove);
-			//kMove.Print();
-			//cout << endl;
 			m_pkCameraObject[0]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV() + kMove);
 		}
 		else 
@@ -645,7 +649,7 @@ void ZeroEd::Input()
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 	// First see if we clicked to change view port.
-	if(m_pkInputHandle->Pressed(MOUSELEFT) || m_pkInputHandle->Pressed(KEY_0))
+	if(!m_bSoloMode && m_pkInputHandle->Pressed(MOUSELEFT))
 	{
 		int mx,my;
 		m_pkInputHandle->SDLMouseXY(mx,my);
@@ -688,8 +692,14 @@ void ZeroEd::Input()
 	Vector3 kMove(0,0,0);
 //	Vector3 kRotate(0,0,0);
 
-	if(m_pkInputHandle->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
-
+	/*
+	if(m_pkInputHandle->Pressed(KEY_H))	
+	{
+		th
+		m_bHide	
+	}
+	m_pkRender->DumpGLState("zzz.txt");			
+*/
 
 	if(m_pkCameraObject)	
 	{	

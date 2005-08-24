@@ -196,7 +196,7 @@ class ENGINE_API Camera : public I_Camera
 		void 		OrthoMove(Vector3 kMove);
 		Vector3 	GetOrthoMove(Vector3 kMove);
 		Vector3 	SnapToGrid(Vector3 kPos);
-
+		
 		
 		void		SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		void		SetClearColor(const Vector4& kColor)	{	m_kClearColor = kColor;	}
@@ -249,6 +249,7 @@ class ENGINE_API Camera : public I_Camera
 		Vector3	GetViewPortSize();
 		Vector3	GetViewPortCorner();
 		Vector3	Get3DCursorDir(float x,float y,bool bMouse=true);
+		Vector3  Get3DCursorPos(float x,float y,bool bMouse=true);
 
 		//fullscreen shader stuff		
 		void SetBloomEnabled(bool bEn)			{	m_bBloomEnabled = bEn;			}

@@ -180,6 +180,7 @@ class ENGINE_API EntityManager : public ZFSubSystem
 	public:
 		ZFScriptSystem* 		m_pkScript;
 		
+		bool						m_bAllowHide;
 
 		EntityManager();
 		~EntityManager();

@@ -23,6 +23,7 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/mainmcommon.h"
+#include "../zerofpsv2/engine/inputhandle.h"
 #include <time.h>
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
@@ -84,6 +85,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZoneMarkerEntity 	=	NULL;
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
 	m_bPlaneMovement			=	false;	
+	m_CamSpeedScale			=  1.0;
 		
 	strcpy(szCoolName , "Guldfisk");	
 
@@ -198,6 +200,7 @@ bool ZeroEd::SetCamera(int iNum)
 
 bool ZeroEd::SetViewPort(const char* szVpName)
 {
+	cout << "Setting viewport to " << szVpName << endl;
 	ZGuiWnd* pkWnd = GetWnd(szVpName);	
 	if(!pkWnd)
 		return false;
@@ -207,18 +210,16 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 	ZGuiWnd* akViewports[4] = {GetWnd("vp1"),GetWnd("vp2"),GetWnd("vp3"),GetWnd("vp4")};	
 	for(int i=0; i<4; i++)
 	{
-		if(akViewports[i] != pkWnd)
-		{
-			akViewports[i]->GetSkin()->m_afBorderColor[0] = 0;
-			akViewports[i]->GetSkin()->m_afBorderColor[1] = 0;
-			akViewports[i]->GetSkin()->m_afBorderColor[2] = 0;
-		}
+		Vector3 kBorderColor;
+
+		if(akViewports[i] != pkWnd)	
+			kBorderColor = m_pkRender->GetEditColor( string("3dview/border") );
 		else
-		{
-			akViewports[i]->GetSkin()->m_afBorderColor[0] = 1;
-			akViewports[i]->GetSkin()->m_afBorderColor[1] = 0;
-			akViewports[i]->GetSkin()->m_afBorderColor[2] = 0;
-		}
+			kBorderColor = m_pkRender->GetEditColor( string("3dview/selborder") );
+
+		akViewports[i]->GetSkin()->m_afBorderColor[0] = kBorderColor.x;
+		akViewports[i]->GetSkin()->m_afBorderColor[1] = kBorderColor.y;
+		akViewports[i]->GetSkin()->m_afBorderColor[2] = kBorderColor.z;
 	}
 
 	Camera* pkCam = static_cast<Camera*>(pkWnd->GetRenderTarget());
@@ -1488,8 +1489,28 @@ int	ZeroEd::GetTargetTCS(Vector3* pkPos)
 
 Entity*	ZeroEd::GetTargetObject2()
 {
-	Vector3 start	= m_pkActiveCamera->GetPos();	// + Get3DMousePos(true)*2;
-	Vector3 dir		= Get3DMouseDir(true);
+	Vector3 start;
+	Vector3 dir;
+
+	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)
+	{
+		start	= m_pkActiveCamera->GetPos();	// + Get3DMousePos(true)*2;
+		dir		= Get3DMouseDir(true);
+	}
+	else
+	{
+		int x,y;
+		m_pkInputHandle->SDLMouseXY(x,y);	
+		Vector3 kOrthoOffset = m_pkActiveCamera->Get3DCursorPos(x,y,true);
+		start	= m_pkActiveCamera->GetPos() + m_pkActiveCamera->GetOrthoMove(kOrthoOffset);	
+		start -= m_pkActiveCamera->GetOrthoAxisZ() * 500;
+		dir	= m_pkActiveCamera->GetOrthoAxisZ();
+	}
+
+	cout << "Start:";	start.Print();	cout << endl;
+	cout << "dir:";	dir.Print();	cout << endl;
+
+
 
 	vector<Entity*> kObjects;
 	kObjects.clear();
@@ -1514,6 +1535,7 @@ Entity*	ZeroEd::GetTargetObject2()
 		if(kObjects[i]->GetEntityID() <100000)						continue;
 		if(kObjects[i]->GetName() == "StaticEntity")				continue;
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")		continue;
+		if(m_pkEntityManager->m_bAllowHide && kObjects[i]->IsAnyParentHidden())		continue;
 		
 
 		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");

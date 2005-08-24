@@ -147,7 +147,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		Entity*	m_pkActiveCameraObject;
 		Camera*	m_pkActiveCamera;
 		bool		m_bSoloMode;
-		float 	m_CamMoveSpeed;		
+		float 	m_CamMoveSpeed;					
+		float 	m_CamSpeedScale;					// How fast the editor cam moves.
 		string	m_strActiveViewPort;		//active view port
 		bool		m_bPlaneMovement;
 
