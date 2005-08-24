@@ -585,7 +585,7 @@ void P_Vegitation::DrawArray()
 	
 	m_pkZShaderSystem->MatrixPush();
 	
-		m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV()+Vector3(0,-0.05,0));		
+		m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV()+Vector3(0,-0.01,0));		
 	
 		m_pkZShaderSystem->ResetPointers();
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,	&(m_kTextureArray[0]));

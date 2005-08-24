@@ -60,6 +60,7 @@ bool TextureManager::ShutDown()
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)
 {
+	pkTex->m_bClampToBorder	= false;
 	pkTex->m_bClamp			= false;
 	pkTex->m_bCompression	= true;
 	pkTex->m_bMipMapping		= true;
@@ -82,6 +83,9 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 		}	
 		if((iOption & T_NOFILTER)) {
 			pkTex->m_bNoFilter		=	true;
+		}			
+		if((iOption & T_CLAMPTOBORDER)) {
+			pkTex->m_bClampToBorder	=	true;
 		}			
 	}
 }
@@ -125,6 +129,9 @@ int TextureManager::GetOptionsFromFileName(string strName)
 			case 'c':
 				iOptions = iOptions | T_CLAMP;
 				break;
+			case 'b':
+				iOptions = iOptions | T_CLAMPTOBORDER;
+				break;			
 			case 'n':
 				iOptions = iOptions | T_NOMIPMAPPING;			//undrar om detta funkar?
 				break;				
@@ -264,7 +271,12 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 
 				
 	//setup clamping
-	if(pkTex->m_bClamp)
+	if(pkTex->m_bClampToBorder)
+	{					
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_BORDER);	
+	} 	
+	else if(pkTex->m_bClamp)
 	{				
 		//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);		

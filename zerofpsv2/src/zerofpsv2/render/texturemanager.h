@@ -24,8 +24,9 @@ enum OPTIONS
 	T_NOMIPMAPPING	=	1,		// No mipmapping on this texture.
 	T_COMPRESSION	=	8,		// Use texture compression on this texture.
 	T_CLAMP			=	16,	// Use clamp on this texture (s and t).
-	T_ALPHA			=	32,		// This is a alpha only texture.
-	T_NOFILTER		=	64,		// use nearest mfilter .
+	T_ALPHA			=	32,	// This is a alpha only texture.
+	T_NOFILTER		=	64,	// use nearest mfilter .
+	T_CLAMPTOBORDER=	128,	// Clamp to border color
 };
 
 #define ERROR_TEXTURE	"notex.bmp"
@@ -45,6 +46,7 @@ struct texture
 	bool				m_bClamp;			// Texture Clamping.
 	bool				m_bAlphaOnly;
 	bool				m_bNoFilter;
+	bool				m_bClampToBorder;
 	
 	bitset<20>		m_abLevels;			//	level x is true if mipmap level is loaded	
 	Image*			m_pkImage2;			//	for realtime editing of surface
