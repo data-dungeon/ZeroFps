@@ -585,7 +585,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				if(iNumOfSubMesh == 1)
 				{
 					m_iFirstMaterialID = pkMaterial->GetID();
-					m_bBlended = pkMaterial->GetPass(0)->m_bBlend;			
+					m_bBlended = pkMaterial->GetPass(0)->m_bBlend;					
 				}
 				else
 				{

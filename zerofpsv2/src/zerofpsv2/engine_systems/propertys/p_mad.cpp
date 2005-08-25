@@ -88,6 +88,7 @@ void P_Mad::Update()
 			  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
 			return;
 			
+		m_bReverseSort = m_bBlended;
 			
 		m_bCulled = true;
 			
@@ -193,6 +194,7 @@ void P_Mad::Update()
 				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 				m_pkZShaderSystem->MatrixScale(m_fScale);									
 				
+				
 				//occulusion culling
 				if(m_pkZShaderSystem->SupportOcculusion() && 
 					m_pkZeroFps->GetOcculusionCulling() &&
@@ -230,6 +232,7 @@ void P_Mad::Update()
 					Draw_All(m_pkZeroFps->m_iMadDraw);
 				
 			m_pkZShaderSystem->MatrixPop();
+			
 		}
 
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 

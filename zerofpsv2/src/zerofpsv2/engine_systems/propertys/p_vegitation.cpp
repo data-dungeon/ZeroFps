@@ -173,10 +173,7 @@ void P_Vegitation::Update()
 		m_pkZShaderSystem->UseDefaultGLSLProgram(bUse);
 	}
 	
-	//out of sight
-// 	if(fDistance > 10)
-// 		return;
-							
+					
 	
 	//frustum culling aabb
 	if(!m_pkFps->GetCam()->GetFrustum()->CubeInFrustum(kObjectPos + m_kAABBMin,kObjectPos+m_kAABBMax))
@@ -187,7 +184,41 @@ void P_Vegitation::Update()
 	//update light					
  	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
 							
-	DrawArray();
+							
+if(m_pkZShaderSystem->SupportOcculusion() && 
+		m_pkZeroFps->GetOcculusionCulling() && 
+		m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
+	{												
+		if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.1)
+		{	
+			m_fLastOcculusionTime = m_pkZeroFps->GetEngineTime();
+			m_bHaveOCTested = 		true;
+								
+			m_kOCQuery.Begin();
+			DrawArray();
+			m_kOCQuery.End();			
+		}
+		else
+		{
+			if(m_bHaveOCTested && m_kOCQuery.HaveResult())
+			{
+				m_bHaveOCTested = false;
+				m_bOculled = (m_kOCQuery.GetResult() < 10);							
+			}
+					
+			//draw heightmap						
+			if(!m_bOculled)
+				DrawArray();
+		}
+		
+		if(m_bOculled)
+			m_pkZeroFps->m_iOcculedObjects++;		
+		else
+			m_pkZeroFps->m_iNotOcculedObjects++;		
+	}
+	else
+		DrawArray();								
+							
 					
 					
 /* 	int iStep = int(fDistance / 3.0);

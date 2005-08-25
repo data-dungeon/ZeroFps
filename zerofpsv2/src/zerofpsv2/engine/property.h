@@ -182,6 +182,7 @@ class ENGINE_API Property
 	public:
 		int		m_iSortPlace;			//	place in update queue (for rendering)
 		bool		m_bSortDistance;		// do we want to sort propertys by dystance from camera (for rendering)		
+		bool		m_bReverseSort;		// do we want to sort propertys by dystance from camera (for rendering)		
 		int		m_iVersion;				//used for multiple versionsof load ,shuld be incresed if save data changes		
 		int		m_iType;					// property type
 		int		m_iSide;					// server or client property		

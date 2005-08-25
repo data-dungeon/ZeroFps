@@ -24,6 +24,11 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 			float fWindStart;
 		};
 
+		ZOcculusionQuery	m_kOCQuery;
+		bool					m_bHaveOCTested;
+		float					m_fLastOcculusionTime;
+		bool					m_bOculled;
+
 		vector<Vector3>	m_kVertexArray;
 		vector<Vector2>	m_kTextureArray;
 		vector<Vector4>	m_kColorArray;

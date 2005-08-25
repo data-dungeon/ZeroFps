@@ -17,6 +17,7 @@ Property::Property()
 	m_pkEntity=			NULL;	
 	m_iSortPlace=		0;
 	m_bSortDistance=	false;
+	m_bReverseSort=	false;
 	m_iVersion =		1;
 	
 	strcpy(m_acName,"NoName");		 
@@ -58,8 +59,12 @@ bool Property::operator<(const Property& kOther) const
 	if(m_iSortPlace == kOther.m_iSortPlace)
 	{			
 		float d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
-		float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV());		
-		return d1<d2;		
+		float d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV());
+		
+		if(m_bReverseSort || kOther.m_bReverseSort)
+			return d1>d2;		
+		else
+			return d1<d2;		
  	} 
 			
 	return false;

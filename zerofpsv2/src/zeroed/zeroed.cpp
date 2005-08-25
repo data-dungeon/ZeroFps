@@ -84,7 +84,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
-	m_bPlaneMovement			=	false;	
+	m_bPlaneMovement			=	true;	
 	m_CamSpeedScale			=  1.0;
 		
 	strcpy(szCoolName , "Guldfisk");	
