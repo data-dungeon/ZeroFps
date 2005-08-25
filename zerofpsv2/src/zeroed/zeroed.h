@@ -147,9 +147,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		Entity*	m_pkActiveCameraObject;
 		Camera*	m_pkActiveCamera;
 		bool		m_bSoloMode;
-		float 	m_CamMoveSpeed;					
-		float 	m_CamSpeedScale;					// How fast the editor cam moves.
-		string	m_strActiveViewPort;		//active view port
+		float 	m_CamMoveSpeed;					// Std speed for edit cam, depends on edit mode.				
+		float 	m_CamSpeedScale;					// Scales the speed of the edit cam cnd can be changed by the user.
+		string	m_strActiveViewPort;				// Name of active view port
 		bool		m_bPlaneMovement;
 
 		//zone data
@@ -265,6 +265,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void 	Input_EditZone();
 		void 	Input_EditObject(float fMouseX, float fMouseY);		
 		void	Input_EditAmbientSounds();
+		void  Input_SandBox(float fMouseX, float fMouseY);
 		bool	DelayCommand();			//make a delay
 		
 		//network

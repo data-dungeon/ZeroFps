@@ -411,11 +411,6 @@ void ZeroEd::Init()
 	m_pkEntityManager->Clear();
 	m_pkZeroFps->StartServer(true,false);
 	m_strWorldDir = "";
-
-	m_pkInput->VKBind(string("mus"), string("z"), 0);
-
-
-
 }
 
 void ZeroEd::OnServerStart(void)

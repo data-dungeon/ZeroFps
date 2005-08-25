@@ -503,27 +503,34 @@ bool Input::VKBind(string strName, Buttons kKey, int iIndex)
 	// Make sure name is not to long and that the key is not outside the valid range.
 	if( (strName.length() + 1) >= MAX_KEYNAME)
 		return false;
-	if(iIndex < 0 || iIndex >= VKMAPS) 
+	if(iIndex < -1 || iIndex >= VKMAPS) 
 		return false;
 
 	VKData* pkVk = GetVKByName(strName);
 	if(pkVk) 
 	{
-		pkVk->m_iInputKey[iIndex] = kKey;
+		if(iIndex == -1)
+		{
+			if(pkVk->m_iInputKey[0] == 0)					pkVk->m_iInputKey[0] = kKey;
+			else if(pkVk->m_iInputKey[1] == 0)			pkVk->m_iInputKey[1] = kKey;
+			else if(pkVk->m_iInputKey[2] == 0)			pkVk->m_iInputKey[2] = kKey;
+			else
+				pkVk->m_iInputKey[0] = kKey;
+		}
+		else
+			pkVk->m_iInputKey[iIndex] = kKey;
 	}
 	else
 	{
+		iIndex = 0;
 	   VKData	kVk;
 		kVk.m_strName = strName;
 		kVk.m_iInputKey[0] = kVk.m_iInputKey[1] = kVk.m_iInputKey[2] = 0;
 		kVk.m_iInputKey[iIndex] = kKey;
-		//kVk.m_iInputKey[1] = 0;
-		//kVk.m_iInputKey[2] = 0;
 		m_VirtualKeys.push_back(kVk);
 	}
-	
 
-	return true;	//how could this possible hapen
+	return true;	// Q - how could this possible hapen?, A - Ask not what your compiler can do for you. Ask what you can do for your compiler.
 }
 
 bool Input::VKBind(string strName, string strKeyName,int iIndex)
@@ -717,16 +724,16 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				bool nice = true;
 				
-				if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2],0))
+				if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2],-1))
 					nice = false;
 			
-				if(kCommand->m_kSplitCommand.size() >= 4)
+				/*if(kCommand->m_kSplitCommand.size() >= 4)
 					if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[3],1))
 						nice = false;
 								
 				if(kCommand->m_kSplitCommand.size() >= 5)
 					if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[4],2))
-						nice = false;
+						nice = false;*/
 			
 				if(nice)
 					m_pkConsole->Printf("bind succes %s", kCommand->m_kSplitCommand[1].c_str() );

@@ -32,23 +32,17 @@ vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 // Handles input for EditMode Terrain.
 void ZeroEd::Input_EditTerrain()
 {
-	
+	// Mofify radius of hmap marker.	
 	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkZeroFps->GetFrameTime();
 	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->GetFrameTime();
 	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->GetFrameTime();
 	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkZeroFps->GetFrameTime();
 	
-	if(m_fHMInRadius > m_fHMOutRadius - 0.1)
-		m_fHMInRadius = m_fHMOutRadius - 0.1;
-
-	if(m_fHMOutRadius < m_fHMInRadius + 0.1 )
-		m_fHMOutRadius = m_fHMInRadius + 0.1;
-
-	if(m_fHMInRadius < 0.5)
-		m_fHMInRadius = 0.5;
-	if(m_fHMOutRadius < 1.0)
-		m_fHMOutRadius = 1.0;
-
+	// Validate size of hmap marker
+	if(m_fHMInRadius > m_fHMOutRadius - 0.1)		m_fHMInRadius = m_fHMOutRadius - 0.1;
+	if(m_fHMOutRadius < m_fHMInRadius + 0.1)		m_fHMOutRadius = m_fHMInRadius + 0.1;
+	if(m_fHMInRadius < 0.5)								m_fHMInRadius = 0.5;
+	if(m_fHMOutRadius < 1.0)							m_fHMOutRadius = 1.0;
 
 	switch(m_iHMapEditMode)
 	{
@@ -110,17 +104,12 @@ void ZeroEd::Input_EditTerrain()
 			break;
 	}
 
-/*	if(m_pkInputHandle->Pressed(KEY_1)) m_iEditLayer = 1;		
-	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
-	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;		*/	
-	
 	if(m_pkInputHandle->Pressed(KEY_1)) m_iHMapEditMode = HMAP_DRAWMASK;			
 	
 	if(m_pkInputHandle->Pressed(KEY_2) && !DelayCommand() && m_cDrawTexture < 250)
 	{
 		m_cDrawTexture++;			
 		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
-
 	}
 	
 	if(m_pkInputHandle->Pressed(KEY_3) && !DelayCommand() && m_cDrawTexture > -1)
@@ -128,7 +117,6 @@ void ZeroEd::Input_EditTerrain()
 		m_cDrawTexture--;			
 		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
 	}
-
 
 	if(m_pkInputHandle->Pressed(KEY_4)) m_iHMapEditMode = HMAP_EDITVERTEX;		
 	if(m_pkInputHandle->Pressed(KEY_5)) m_iHMapEditMode = HMAP_DRAWSMFLAT;			
@@ -176,29 +164,14 @@ void ZeroEd::Input_EditZone()
 			pp->SetStatic(true);			
 		}
 	} 			
- 			
- 			//m_pkZeroFps->AddHMProperty(pkData->m_pkZone, m_kZoneSize);
- 		
-
-// 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
-// 		{
-// 			m_pkZeroFps->AddHMProperty(pkData->m_pkZone, m_kZoneSize);
-// 		}
-			
 	
-	if(m_pkInputHandle->VKIsDown("remove"))	
-	{	
-		//delete selected entity ( the server cheks if its a zone or an normal entity)
-		SendDeleteSelected();
-	}
-		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
 	{
 		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
 		SendRotateZoneModel(m_iCurrentMarkedZone);		
 	}
 	
-	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("select") && !DelayCommand())
 	{	
 		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
 
@@ -244,44 +217,12 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 {
 	NetPacket kNp;
 
-   if(m_pkInputHandle->VKIsDown("eventuse")  && !DelayCommand())	
-	{
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("use");
-		kNp.Write( m_iCurrentObject );
-		m_pkZeroFps->RouteEditCommand(&kNp);
-
-		//Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
-		//bool bSuccess = m_pkEntityManager->CallFunction(pkObject, "Useit",NULL);
-
-
-/*		Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
-		if(pkObject)
-		{
-			P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	
-			
-			if(pe)
-			{
-				pe->SendEvent("Useit");
-				return;
-			}
-		}*/
-	}
-
-	
-	if(m_pkInputHandle->VKIsDown("copy"))								EditRunCommand(FID_COPY);
-	if(m_pkInputHandle->VKIsDown("paste"))								EditRunCommand(FID_PASTE);
+	if(m_pkInputHandle->VKIsDown("copy") && !DelayCommand())		EditRunCommand(FID_COPY);
+	if(m_pkInputHandle->VKIsDown("paste") && !DelayCommand())	EditRunCommand(FID_PASTE);
 	if(m_pkInputHandle->VKIsDown("clone") && !DelayCommand())	EditRunCommand(FID_CLONE);	
 	
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
-		/*
-		Entity* pkObj = m_pkEntityManager->CreateObjectFromScript(m_strActiveObjectName.c_str());
-		pkObj->SetWorldPosV(m_kObjectMarkerPos);
-		pkObj->SetParent(m_pkEntityManager->GetObjectByNetWorkID(
-			m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
-		*/
 		kNp.Clear();
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("spawn");
@@ -298,10 +239,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
       }		
 	}
 	
-	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("select") && !DelayCommand())
 	{	
-		Vector3 kPos;
-		//Entity* pkObj = m_pkEntityManager->GetEntityByID( GetTargetTCS(&kPos) );
 		Entity* pkObj = GetTargetObject2();
 		if(pkObj)
       {
@@ -316,64 +255,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			}
       }
 	}
-
-	if(m_pkInputHandle->VKIsDown("applyforce") )
-	{	
-		if(!m_bGrabing)
-		{
-			m_iGrabEntity = GetTargetTCS(&m_kGrabPos);
-			if(m_iGrabEntity != -1)
-			{
-				cout<<"grabbing entity:"<<m_iGrabEntity<<endl;
-				
-				m_kLocalGrabPos = m_kGrabPos - m_pkEntityManager->GetEntityByID(m_iGrabEntity)->GetWorldPosV();			
-				m_bGrabing = true;
-				m_fArmLength = m_pkActiveCamera->GetPos().DistanceTo(m_kGrabPos);
-				m_kGrabCurrentPos = m_kGrabPos;				
 			
-			}
-		}
-	}
-	else
-		m_bGrabing = false;	
-	
-	if(m_pkInputHandle->Pressed(KEY_LALT) )
-	{
-		if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Tcs"))
-		{
-// 			float fForce = m_pkZeroFps->GetFrameTime();
-			Vector3 kForce = Vector3::ZERO;
-			
-			if(m_pkInputHandle->VKIsDown("moveleft")) kForce.x -= 1;
-			if(m_pkInputHandle->VKIsDown("moveright"))kForce.x += 1;
-			if(m_pkInputHandle->VKIsDown("movefrw")) 	kForce.z -= 1;
-			if(m_pkInputHandle->VKIsDown("moveback")) kForce.z += 1;
-			
-			Matrix4 kRot = m_pkActiveCamera->GetRotM();			
-			kRot.Transponse();
-			
-			kForce = kRot.VectorTransform(kForce);
-			kForce.y = 0;
-			kForce.Normalize();
-			
-			if(m_pkInputHandle->VKIsDown("moveup"))	kForce.y += 1;
-			if(m_pkInputHandle->VKIsDown("movedown")) kForce.y -= 1;
-			
-			kForce *= m_pkZeroFps->GetFrameTime() * 20;
-			
-			pkTcs->ApplyImpulsForce(kForce);			
-		}
-	}
-	
-			
-	//remove			
-	if(m_pkInputHandle->VKIsDown("remove"))	
-		SendDeleteSelected();
-
-	Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
-	if(!pkObj)
-		return;		
-
 	if(m_pkInputHandle->VKIsDown("togglehide"))	
 	{
 		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
@@ -387,14 +269,16 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			m_pkEntityManager->m_bAllowHide = !m_pkEntityManager->m_bAllowHide;
 	}
 
-	// Move Selected Entity
+	// The followin handles to move or/and rotate a entity. If we have no entity we drop.
+	Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
+	if(!pkObj)
+		return;		
+
 	Vector3 kMove(0,0,0);
 	Vector3 kClick(0,0,0);
 
-
 	if(m_pkInputHandle->VKIsDown("reposent")) 
 	{
-		//kMove = pkObj->GetLocalPosV();
 		kMove = m_kObjectMarkerPos;
 		
 		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) 
@@ -429,27 +313,29 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		{
 			if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkZeroFps->GetFrameTime(),0,0);			
 			if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkZeroFps->GetFrameTime(),0,0);			
-			if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkZeroFps->GetFrameTime());			
-			if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkZeroFps->GetFrameTime());			
-			if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkZeroFps->GetFrameTime(),0);			
-			if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkZeroFps->GetFrameTime(),0);
-		}
+			if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,0,-1 * m_pkZeroFps->GetFrameTime());			
+			if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,0,1 * m_pkZeroFps->GetFrameTime());			
+			if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,1 * m_pkZeroFps->GetFrameTime(),0);			
+			if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,-1 * m_pkZeroFps->GetFrameTime(),0);
 
-		if(m_pkInputHandle->VKIsDown("moveent")) 
-		{
-			kMove += m_pkActiveCamera->GetOrthoMove( Vector3(fMouseX, fMouseY,0) );
+			Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
+			if(eCamMode == Camera::CAMMODE_PERSP)
+			{
+				;
+			}
+			else
+			{
+				kMove = m_pkActiveCamera->GetOrthoMove(kMove);
+			}
 		}
 
 		kNp.Clear();
 		kNp.Write((char) ZFGP_EDIT);
 		kNp.Write_Str("move");
 		AddSelected(&kNp);
-		//kNp.Write(m_iCurrentObject);
 		kNp.Write(kMove);
 		m_pkZeroFps->RouteEditCommand(&kNp);
-		
 	}
-
 
 	//handle rotation
 	Vector3 kRot(0,0,0);
@@ -464,8 +350,6 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	{
 		SendRotateEntity(m_iCurrentObject,kRot);	
 	}
-
-
 }
 
 // Handles input for Edit Ambient Areas
@@ -523,9 +407,8 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 
 	Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
 
-	if(eCamMode == Camera::CAMMODE_PERSP)//m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) // zeb - krashar för mig här
+	if(eCamMode == Camera::CAMMODE_PERSP)
 	{
-
 		Vector3 newpos = m_pkActiveCameraObject->GetLocalPosV();
 		
 		Matrix4 kRm;
@@ -632,19 +515,76 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 	}
 }
 
-void ZeroEd::Input()
+void ZeroEd::Input_SandBox(float fMouseX, float fMouseY)
 {
-	if(m_pkInputHandle->VKIsDown("mus"))
+	NetPacket kNp;
+
+   if(m_pkInputHandle->VKIsDown("eventuse")  && !DelayCommand())	
 	{
-		m_pkInput->StartBindMode("forward", 1);
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("use");
+		kNp.Write( m_iCurrentObject );
+		m_pkZeroFps->RouteEditCommand(&kNp);
 	}
 
+	if(m_pkInputHandle->VKIsDown("applyforce") )
+	{	
+		if(!m_bGrabing)
+		{
+			m_iGrabEntity = GetTargetTCS(&m_kGrabPos);
+			if(m_iGrabEntity != -1)
+			{
+				cout<<"grabbing entity:"<<m_iGrabEntity<<endl;
+				
+				m_kLocalGrabPos = m_kGrabPos - m_pkEntityManager->GetEntityByID(m_iGrabEntity)->GetWorldPosV();			
+				m_bGrabing = true;
+				m_fArmLength = m_pkActiveCamera->GetPos().DistanceTo(m_kGrabPos);
+				m_kGrabCurrentPos = m_kGrabPos;				
+			
+			}
+		}
+	}
+	else
+		m_bGrabing = false;	
+	
+	if(m_pkInputHandle->Pressed(KEY_LALT) )
+	{
+		if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Tcs"))
+		{
+// 			float fForce = m_pkZeroFps->GetFrameTime();
+			Vector3 kForce = Vector3::ZERO;
+			
+			if(m_pkInputHandle->VKIsDown("moveleft")) kForce.x -= 1;
+			if(m_pkInputHandle->VKIsDown("moveright"))kForce.x += 1;
+			if(m_pkInputHandle->VKIsDown("movefrw")) 	kForce.z -= 1;
+			if(m_pkInputHandle->VKIsDown("moveback")) kForce.z += 1;
+			
+			Matrix4 kRot = m_pkActiveCamera->GetRotM();			
+			kRot.Transponse();
+			
+			kForce = kRot.VectorTransform(kForce);
+			kForce.y = 0;
+			kForce.Normalize();
+			
+			if(m_pkInputHandle->VKIsDown("moveup"))	kForce.y += 1;
+			if(m_pkInputHandle->VKIsDown("movedown")) kForce.y -= 1;
+			
+			kForce *= m_pkZeroFps->GetFrameTime() * 20;
+			
+			pkTcs->ApplyImpulsForce(kForce);			
+		}
+	}
+}
 
+void ZeroEd::Input()
+{
 	//set speed depending on edit mode
 	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
 	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 4 * m_kSnapSize.Length();
 	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
+	// Read Relative Coo from mouse.
 	float x = 0, z = 0;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
@@ -659,68 +599,32 @@ void ZeroEd::Input()
 			m_fDelayTime = m_pkZeroFps->GetEngineTime() + float(0.5);
 	}
 
-	if(m_pkInputHandle->VKIsDown("makeland")) 
-	{
-		
-		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject))
-		{
-			m_pkZeroFps->AddHMProperty(pkObj,m_kZoneSize);
-		}
-		//int id = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		//ZoneData* z = m_pkEntityManager->GetZoneData(id);
-		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
-		
-	}  
-	/*
-	if(m_pkInputHandle->Pressed(KEY_F6)) 
-	{
-		Entity* pkEnt = m_pkEntityManager->GetObjectByNetWorkID(m_iCurrentObject);
+	//Vector3 kMove(0,0,0);
 
-		//m_iCurrentMarkedZone =  m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		//ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
-		//if(pkData && pkData->m_pkZone) 
-		//{
-			pkEnt->AddProperty("P_PfMesh");
-			P_PfMesh* pkMesh = (P_PfMesh*)pkEnt->GetProperty("P_PfMesh");
-			pkMesh->AutoMakeNaviMesh();
-			//P_HMRP2* pkHmap = (P_HMRP2*)pkEnt->GetProperty("P_HMRP2");
-			//if(pkHmap)
-			//	pkMesh->SetHmap(pkHmap);
-		//}
-	}
-	*/
-	Vector3 kMove(0,0,0);
-//	Vector3 kRotate(0,0,0);
+	// For everything else we need a active camera so we bail until we get one.
+	if(!m_pkCameraObject)	
+		return;
 
-	/*
-	if(m_pkInputHandle->Pressed(KEY_H))	
-	{
-		th
-		m_bHide	
-	}
-	m_pkRender->DumpGLState("zzz.txt");			
-*/
+	Input_Camera(float(x),float(z));
 
-	if(m_pkCameraObject)	
-	{	
-		Input_Camera(float(x),float(z));
-	
-		if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
-		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
-		if(m_pkInputHandle->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
+	if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
+	if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
+	if(m_pkInputHandle->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
 
-/*		if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
-		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-		if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
-*/	
-		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain() ;
-		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
-		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(float(x),float(z));
-		if(m_iEditMode == EDIT_AMBIENTSOUNDS)  Input_EditAmbientSounds();
+	if(m_iEditMode == EDIT_HMAP)							Input_EditTerrain();
+	if(m_iEditMode == EDIT_ZONES)							Input_EditZone();
+	if(m_iEditMode == EDIT_OBJECTS)						Input_EditObject(float(x),float(z));
+	if(m_iEditMode == EDIT_AMBIENTSOUNDS)				Input_EditAmbientSounds();
 
-		if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
-	}
-};
+	if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
+
+	// Delete selected entity ( the server cheks if its a zone or an normal entity)
+	if(m_pkInputHandle->VKIsDown("remove"))	
+		SendDeleteSelected();
+
+	Input_SandBox(float(x),float(z));
+}
+
 
 /*	Return 3D postion of mouse in world. */
 Vector3 ZeroEd::Get3DMouseDir(bool bMouse)
