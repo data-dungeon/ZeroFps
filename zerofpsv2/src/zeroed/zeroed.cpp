@@ -282,6 +282,44 @@ void ZeroEd::CreateEditCameras()
  	m_pkCameraObject[3]->SetParent( m_pkCameraObject[0] );
 }
 
+void ZeroEd::CamCenterOnSelection()
+{
+	Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
+	if(!pkObj)
+		return;		
+	Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
+	Vector3 kPos = pkObj->GetWorldPosV();
+
+	if(eCamMode == Camera::CAMMODE_PERSP)
+	{
+		Vector3 kForward;
+		kForward = kPos - m_pkActiveCameraObject->GetWorldPosV();
+		
+		P_Camera* pkCamProp;
+		ZFAssert(pkCamProp, "Camera has no p_cam in editor.");
+		pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+
+		Vector3 newpos = m_pkActiveCameraObject->GetLocalPosV();
+		pkCamProp->LookAt( newpos, kPos, Vector3(0,1,0));
+		Matrix4 kOst = m_pkActiveCamera->GetRotM();
+		kOst.Transponse();
+		kOst.Rotate(0,180,0);
+		m_pkActiveCameraObject->SetLocalRotM(kOst);
+	}
+	else	// Ortho mode
+	{
+		if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0]) 
+		{
+			// Cameras are linked. We simply move the base camera and the rest will follow.
+			m_pkCameraObject[0]->SetLocalPosV(kPos);		
+		}
+		else
+		{
+			m_pkActiveCameraObject->SetLocalPosV(kPos);		
+		}
+	}
+}
+
 
 void ZeroEd::OnInit() 
 {

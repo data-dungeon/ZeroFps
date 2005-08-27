@@ -217,6 +217,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool 	SetCamera(int iNum);
 		int	GetView(float x, float y);
 		void 	CamFollow(bool bFollowMode);
+		void  CamCenterOnSelection();
 
 
 		// Selection of Entitys.

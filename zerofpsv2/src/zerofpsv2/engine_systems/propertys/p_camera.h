@@ -46,7 +46,6 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		bool		m_bAttachToMadBone;		//shuld we attatch to a mad bone
 		string	m_strBone;					//bone name
 		
-		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
 		void Look(Vector3 kCamPosision,Vector3 kLookDir,Vector3 kCamUp);
 		
 
@@ -57,6 +56,7 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		~P_Camera();
 	
 		void Update();
+		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
 
 		void SetCamera(Camera *pkCamera);
 		

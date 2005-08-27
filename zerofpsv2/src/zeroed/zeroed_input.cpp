@@ -575,6 +575,11 @@ void ZeroEd::Input_SandBox(float fMouseX, float fMouseY)
 			pkTcs->ApplyImpulsForce(kForce);			
 		}
 	}
+
+	if(m_pkInputHandle->Pressed(KEY_K))
+	{
+		CamCenterOnSelection();
+	}
 }
 
 void ZeroEd::Input()
