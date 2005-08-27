@@ -350,33 +350,30 @@ void ZeroEd::Init()
 	
 	float fNearFog = 1000;
 	float fFarFog = 1000; 
+	Vector4 kFogColor(0.5,0.5,0.5,0.5);
 	
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[0]->SetName("persp");
-	m_pkCamera[0]->SetFog(Vector4(0.5,0.5,0.5,0.5),fNearFog,fFarFog,true);
-	//m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
-	//m_pkFps->SetRenderTarget(m_pkCamera[0]);
+	m_pkCamera[0]->SetFog(kFogColor,fNearFog,fFarFog,true);
+	m_pkCamera[0]->SetClearColor(kFogColor);
 
 	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[1]->SetName("top");
-	//m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
 	m_pkCamera[1]->SetViewMode("top");
-	m_pkCamera[1]->SetFog(Vector4(0.5,0.5,0.5,0.5),fNearFog,fFarFog,true);
-	//m_pkFps->SetRenderTarget(m_pkCamera[1]);
+	m_pkCamera[1]->SetFog(kFogColor,fNearFog,fFarFog,true);
+	m_pkCamera[1]->SetClearColor(kFogColor);
 	
 	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[2]->SetName("front");
-	//m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
 	m_pkCamera[2]->SetViewMode("front");
-	m_pkCamera[2]->SetFog(Vector4(0.5,0.5,0.5,0.5),fNearFog,fFarFog,true);	
-	//m_pkFps->SetRenderTarget(m_pkCamera[2]);
+	m_pkCamera[2]->SetFog(kFogColor,fNearFog,fFarFog,true);	
+	m_pkCamera[2]->SetClearColor(kFogColor);
 
 	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[3]->SetName("right");
-	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
-	m_pkCamera[3]->SetFog(Vector4(10.5,0.5,0.5,0.5),fNearFog,fFarFog,true);
-	//m_pkFps->SetRenderTarget(m_pkCamera[3]);
+	m_pkCamera[3]->SetFog(kFogColor,fNearFog,fFarFog,true);
+	m_pkCamera[3]->SetClearColor(kFogColor);
 
 
 	//init mistland script intreface
