@@ -848,7 +848,7 @@ void ZeroEd::RenderInterface(void)
 
 		
 	if(m_iEditMode == EDIT_ZONES) DrawZoneMarker(m_kZoneMarkerPos);
-	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)	DrawCrossMarker(m_kObjectMarkerPos);		
+	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS || m_iEditMode == EDIT_CREATEOBJECT)	DrawCrossMarker(m_kObjectMarkerPos);		
 	
 	if(m_iEditMode == EDIT_OBJECTS && m_bGrabing)
 	{							
@@ -1713,11 +1713,16 @@ void ZeroEd::DrawZoneMarker(Vector3 kPos)
 
 void ZeroEd::DrawCrossMarker(Vector3 kPos)
 {
-
 	// Set Color here.
-	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
-	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
-	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));	
+	Vector3 kColor(1,1,1);
+
+	if(m_iEditMode == EDIT_CREATEOBJECT)	kColor.Set(1,0,0);	
+	if(m_iEditMode == EDIT_OBJECTS)			kColor.Set(0,1,0);	
+	if(m_iEditMode == EDIT_AMBIENTSOUNDS)	kColor.Set(0,0,1);	
+
+	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0),kColor);
+	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0),kColor);	
+	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1),kColor);	
 }
 
 void ZeroEd::UpdateModelMarker(Vector3 kPos,bool bEnabled)

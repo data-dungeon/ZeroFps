@@ -211,6 +211,34 @@ void ZeroEd::Input_EditZone()
 	}
 }
 
+void ZeroEd::Input_CreateObject(float fMouseX, float fMouseY)
+{
+	NetPacket kNp;
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
+	{
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("spawn");
+		kNp.Write_Str(m_strActiveObjectName.c_str());
+		kNp.Write(m_kObjectMarkerPos);
+		m_pkZeroFps->RouteEditCommand(&kNp);
+
+	   Entity* pkObj; 
+		pkObj = GetTargetObject();
+
+      if(m_bPlaceObjectsOnGround)
+      {
+		   if(pkObj)
+		      if(pkObj->GetCurrentZone() != -1)
+				   PlaceObjectOnGround(pkObj->GetEntityID());
+      }		
+
+		m_iEditMode = EDIT_OBJECTS;
+		Select_None();
+		if(pkObj->GetCurrentZone() != -1)
+			Select_Toggle(pkObj->GetEntityID(), false);  
+	}
+}
 
 // Handles input for EditMode Object.
 void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
@@ -221,7 +249,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("paste") && !DelayCommand())	EditRunCommand(FID_PASTE);
 	if(m_pkInputHandle->VKIsDown("clone") && !DelayCommand())	EditRunCommand(FID_CLONE);	
 	
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
+	/*if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
 		kNp.Clear();
 		kNp.Write((char) ZFGP_EDIT);
@@ -237,7 +265,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		      if(pkObj->GetCurrentZone() != -1)
 				   PlaceObjectOnGround(pkObj->GetEntityID());
       }		
-	}
+	}*/
 	
 	if(m_pkInputHandle->VKIsDown("select") && !DelayCommand())
 	{	
@@ -638,17 +666,26 @@ void ZeroEd::Input()
 	if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
 	if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
 	if(m_pkInputHandle->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
+	if(m_pkInputHandle->VKIsDown("modecreate"))		m_iEditMode = EDIT_CREATEOBJECT;		
+
+
 
 	if(m_iEditMode == EDIT_HMAP)							Input_EditTerrain();
 	if(m_iEditMode == EDIT_ZONES)							Input_EditZone();
 	if(m_iEditMode == EDIT_OBJECTS)						Input_EditObject(float(x),float(z));
 	if(m_iEditMode == EDIT_AMBIENTSOUNDS)				Input_EditAmbientSounds();
+	if(m_iEditMode == EDIT_CREATEOBJECT)				Input_CreateObject(float(x),float(z));
+
+
 
 	if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
 
 	// Delete selected entity ( the server cheks if its a zone or an normal entity)
 	if(m_pkInputHandle->VKIsDown("remove"))	
 		SendDeleteSelected();
+
+	if(m_pkInputHandle->VKIsDown("selectnone"))	
+		Select_None();
 
 	Input_SandBox(float(x),float(z));
 }

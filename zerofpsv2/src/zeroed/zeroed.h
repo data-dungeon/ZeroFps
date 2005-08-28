@@ -71,6 +71,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			EDIT_MAX,
 			EDIT_AMBIENTSOUNDS,
 			EDIT_ENVIROMENTS,		
+			EDIT_CREATEOBJECT,
 		};
 
 		enum GUISelectFileWndState_e
@@ -265,6 +266,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void 	Input_EditTerrain();
 		void 	Input_EditZone();
 		void 	Input_EditObject(float fMouseX, float fMouseY);		
+		void 	Input_CreateObject(float fMouseX, float fMouseY);		
 		void	Input_EditAmbientSounds();
 		void  Input_SandBox(float fMouseX, float fMouseY);
 		bool	DelayCommand();			//make a delay

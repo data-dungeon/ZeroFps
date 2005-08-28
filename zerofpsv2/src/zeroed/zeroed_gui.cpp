@@ -709,6 +709,8 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	else
 	if(strcmp(szTreeBox, "ObjectTree") == 0)
 	{
+		m_iEditMode = EDIT_CREATEOBJECT;	
+
 		if(szClickNodeText && bHaveChilds == false)
 		{
 			string strFullpath = string("data/script/objects/");
@@ -805,7 +807,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			ShowWnd("PreviewWnd", false);
 			break;
 		case 1:
-			m_iEditMode = EDIT_OBJECTS;
+			m_iEditMode = EDIT_CREATEOBJECT;	
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			ShowWnd("SelectFileWnd", false);
@@ -813,6 +815,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			BuildFileTree("ObjectTree", "data/script/objects", ".lua");
 			break;
 		case 2:
+			m_iEditMode = EDIT_OBJECTS;
 			ShowWnd("SelectFileWnd", false);
 			ShowWnd("PreviewWnd", false);
 			break;
