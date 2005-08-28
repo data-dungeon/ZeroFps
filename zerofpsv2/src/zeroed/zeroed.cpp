@@ -1565,7 +1565,7 @@ Entity*	ZeroEd::GetTargetObject2()
 		if(kObjects[i]->GetEntityID() <100000)						continue;
 		if(kObjects[i]->GetName() == "StaticEntity")				continue;
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")		continue;
-		if(m_pkEntityManager->m_bAllowHide && kObjects[i]->IsAnyParentHidden())		continue;
+		if(kObjects[i]->IsHidden(true))		continue;
 		
 
 		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");

@@ -810,7 +810,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			ShowWnd("SelectFileWnd", false);
          ShowWnd("PreviewWnd", false);
-			BuildFileTree("ObjectTree", "data/script/objects/", ".lua");
+			BuildFileTree("ObjectTree", "data/script/objects", ".lua");
 			break;
 		case 2:
 			ShowWnd("SelectFileWnd", false);

@@ -244,6 +244,7 @@ class ENGINE_API Entity
 	
 		bool							m_bHide;
 		bool							IsAnyParentHidden();
+		bool							IsHidden(bool bCheckParents = false);
 
 
 		~Entity();

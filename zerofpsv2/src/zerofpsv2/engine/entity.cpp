@@ -247,13 +247,42 @@ void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
+bool Entity::IsHidden(bool bCheckParents)
+{
+	if(m_pkEntityManager->m_bAllowHide && m_bHide)
+		return true;
+
+	if(m_pScriptFileHandle->IsValid())
+	{
+		string strFullType = m_pScriptFileHandle->GetRes().c_str();
+		set<string>::iterator it = m_pkEntityManager->m_kEditorHide.find(strFullType);
+
+		if(it != m_pkEntityManager->m_kEditorHide.end())
+			return true;
+	
+		// Check if this is a hidden entity.
+		for(set<string>::iterator it = m_pkEntityManager->m_kEditorHide.begin(); it != m_pkEntityManager->m_kEditorHide.end(); it++)
+		{
+			if(strstr(strFullType.c_str() , (*it).c_str()) )
+			{
+				return true;
+			}
+		}
+	}
+	
+	if(bCheckParents)
+		return IsAnyParentHidden();
+
+	return false;
+}
+
 bool Entity::IsAnyParentHidden()
 {
 	Entity* pkParent = m_pkParent;	
 
 	while(pkParent)
 	{
-		if(pkParent->m_bHide)
+		if(pkParent->IsHidden(false))
 		{
 			cout << "I have a hidden parent" << endl;
 			return true;
@@ -276,8 +305,14 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
 
-	if((iType & PROPERTY_TYPE_RENDER) && m_pkEntityManager->m_bAllowHide && m_bHide)
-		return;
+	if(iType & PROPERTY_TYPE_RENDER)
+	{
+		if(m_pkEntityManager->m_bAllowHide && m_bHide)
+			return;
+
+		if(IsHidden())
+			return;
+	}
 
 	//add this Entitys propertys to the vector
 	static Property* pkProp;

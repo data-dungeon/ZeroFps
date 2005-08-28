@@ -6,6 +6,7 @@
 #include <vector>
 #include <queue>
 #include <list>
+#include <set>
 #include "../script/zfscript.h"
 #include "propertyfactory.h"
 
@@ -120,7 +121,7 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		//other strange variables =D
 		int						m_iUpdateFlags;												///< Flags of active update.
 		int						m_iRole;															///< I'm i a server or a client or both.
-				
+
 		// Zones
 		vector<ZoneData>		m_kZones;
 		
@@ -178,6 +179,8 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		int	m_iSendType;												// Packet used to send entitymanger data.
 
 	public:
+		set<string>				m_kEditorHide;													///< List of entity types hidden when in editor mode.		
+
 		ZFScriptSystem* 		m_pkScript;
 		
 		bool						m_bAllowHide;

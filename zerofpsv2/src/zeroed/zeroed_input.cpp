@@ -576,9 +576,32 @@ void ZeroEd::Input_SandBox(float fMouseX, float fMouseY)
 		}
 	}
 
-	if(m_pkInputHandle->Pressed(KEY_K))
+	if(m_pkInputHandle->VKIsDown("selcenter")  && !DelayCommand())
 	{
 		CamCenterOnSelection();
+	}
+
+	if(m_pkInputHandle->VKIsDown("hidetype")  && !DelayCommand())
+	{
+		string strSkill;
+
+		ZGuiTreebox* pkBox = dynamic_cast<ZGuiTreebox*>( GetWnd("ObjectTree"));
+		if(pkBox)
+		{
+			ZGuiTreeboxNode* PkNode = pkBox->GetSelNode();
+			strSkill = PkNode->strNodeID;
+			cout << "Hide: " << strSkill << endl;
+
+			set<string>::iterator it = m_pkEntityManager->m_kEditorHide.find(strSkill);
+			if(it != m_pkEntityManager->m_kEditorHide.end())
+			{
+				m_pkEntityManager->m_kEditorHide.erase(it);
+			}
+         else 
+			{
+				m_pkEntityManager->m_kEditorHide.insert(strSkill);
+			}
+		}
 	}
 }
 
