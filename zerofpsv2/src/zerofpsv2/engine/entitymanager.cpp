@@ -329,6 +329,14 @@ void EntityManager::Delete(Entity* pkEntity)
 	if(pkEntity == NULL)
 		return;
 
+	if(m_pkZeroFps->m_bServerMode && !m_pkZeroFps->m_bClientMode)
+	{
+		if(pkEntity->m_iEntityID < 0 || pkEntity->m_iEntityID > m_iNextEntityID)
+		{
+			ZFAssert(0,"Entity ID out of range in delete");
+		}
+	}
+
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
 		if(pkEntity->m_iEntityID == (*it)) {
@@ -379,10 +387,10 @@ void EntityManager::UpdateDelete()
 
 	if(!m_aiDeleteList.empty())
 	{
-	
-		for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+		for(int i=0; i<m_aiDeleteList.size(); i++)
 		{
-			Entity* pkEntity = GetEntityByID((*it));
+			int iEntityID = m_aiDeleteList[i];
+			Entity* pkEntity = GetEntityByID(iEntityID);
 	
 			if(pkEntity) { // If i own object mark so we remove it on clients.
 				/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
