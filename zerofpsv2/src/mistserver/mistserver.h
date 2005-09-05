@@ -123,7 +123,8 @@ class MistServer :public Application , public ZGuiApp
 		void OnClientStart(void);
 		
 		void OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams);
-		
+		void OnDmc(int iClientID, string strDmc);
+
 		//init client
 		void ClientInit();
 		

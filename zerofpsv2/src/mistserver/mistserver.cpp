@@ -1310,6 +1310,42 @@ void MistServer::OnSystemMessage(const string& strType,int iNrOfParam,const void
 	}	
 }
 
+void MistServer::OnDmc(int iClientID, string strDmc)
+{
+	// Check for DMC status
+	cout << "DMC: " << strDmc << endl;
+
+	CmdArgument kDmc;
+	kDmc.Set(strDmc.c_str());
+
+	PlayerData* pkData = m_pkPlayerDB->GetPlayerData(iClientID);
+	if(!pkData)
+		return;
+	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty");
+	if(!pkCP)
+		return;
+
+	if(kDmc.m_kSplitCommand[0] == "givexp" && kDmc.m_kSplitCommand.size() >= 2)
+	{
+		int iXP = atoi(kDmc.m_kSplitCommand[1].c_str());
+		pkCP->GiveExperience(iXP);
+	}
+
+	if(kDmc.m_kSplitCommand[0] == "res")
+	{
+		pkCP->m_kCharacterStats.SetStat("Health",		pkCP->m_kCharacterStats.GetStat("HealthMax") );
+		pkCP->m_kCharacterStats.SetStat("Mana",		pkCP->m_kCharacterStats.GetStat("ManaMax") );
+		pkCP->m_kCharacterStats.SetStat("Stamina",	pkCP->m_kCharacterStats.GetStat("StaminaMax") );
+	}
+
+	if(kDmc.m_kSplitCommand[0] == "rez")
+	{
+		if(pkCP->IsDead())
+		{
+			pkCP->MakeAlive();
+		}
+	}
+}
 
 //--------- script interface for mistserver
 namespace SI_MistServer

@@ -90,6 +90,7 @@ void MistClient::OnInit()
 	Register_Cmd("say",			FID_SAY);
 	Register_Cmd("playerlist",	FID_PLAYERLIST);
 	Register_Cmd("killme",		FID_KILLME);
+	Register_Cmd("dm",			FID_DMC);
 
 	//create pointtext manager
 	m_pkPointText = new PointText();
@@ -213,6 +214,24 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 		}	
 
+		case FID_DMC:
+		{
+			string strMsg;
+			for(int i = 3;i<kCommand->m_strFullCommand.size();i++)
+				strMsg.push_back(kCommand->m_strFullCommand[i]);
+
+			cout << "Dungeon Master Command: " << strMsg  << endl;
+
+			NetPacket kNp;			
+			kNp.Write((char) MLNM_CS_DMC);
+			kNp.Write_Str(strMsg);
+			kNp.TargetSetClient(0);
+			SendAppMessage(&kNp);	
+
+			break;
+		}	
+
+		
 		case FID_MSREFRESH:
 		{
 			m_pkNetwork->MS_RequestServers();
