@@ -374,6 +374,15 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("rotz+"))			kRot.z =  100*m_pkZeroFps->GetFrameTime();			
 	if(m_pkInputHandle->VKIsDown("rotz-"))			kRot.z = -100*m_pkZeroFps->GetFrameTime();			
 
+	if(m_pkInputHandle->VKIsDown("rotate"))
+	{
+		float fRot = float(-fMouseX / 5.0);
+		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)
+			kRot.y = fRot;
+		else
+			kRot = m_pkActiveCamera->GetOrthoAxisZ() * fRot;
+	}
+
 	if(kRot != Vector3::ZERO)
 	{
 		SendRotateEntity(m_iCurrentObject,kRot);	
