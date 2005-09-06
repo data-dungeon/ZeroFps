@@ -418,6 +418,11 @@ void Mad_Modell::LoadTextures()
 	}
 }
 
+void Mad_Modell::SetRawMesh(Mad_CoreMesh* pkMesh)
+{
+	m_pkMesh = pkMesh;
+	m_pkRawMesh = m_pkMesh->GetLODMesh(0);
+}
 
 void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 {

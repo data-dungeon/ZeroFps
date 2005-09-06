@@ -131,6 +131,8 @@ public:
 	bool IsMeshActive(char* szName);
 
 	void ClearAllMesh();
+	void SetRawMesh(Mad_CoreMesh* pkMesh);
+
 	virtual bool AddMesh(int iSId);
 
 	float fRenderDistance;

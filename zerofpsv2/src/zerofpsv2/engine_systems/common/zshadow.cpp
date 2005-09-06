@@ -283,6 +283,7 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 			//pkCore->SetupBonePose();
 			pkMad->UpdateBones();			
 			pkCore->PrepareMesh(pkCore->GetMeshByID(iShadowMesh),pkCore->GetMeshByID(iShadowMesh)->GetLODMesh(0));
+			pkMad->SetRawMesh(pkCore->GetMeshByID(iShadowMesh));
 
 			//setup mesh pointers			
 			m_pkFaces =		pkMad->GetFacesPtr();
