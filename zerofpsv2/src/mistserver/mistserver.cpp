@@ -1345,6 +1345,20 @@ void MistServer::OnDmc(int iClientID, string strDmc)
 			pkCP->MakeAlive();
 		}
 	}
+
+	if(kDmc.m_kSplitCommand[0] == "notarget")
+	{
+		if( pkCP->m_iDMNoTarget )
+		{
+			pkCP->m_iDMNoTarget = false;
+			SayToClients("NoTarget = Off","Server",-1,iClientID);						 
+		}
+		else
+		{
+			pkCP->m_iDMNoTarget = true;
+			SayToClients("NoTarget = On","Server",-1,iClientID);						 
+		}
+	}
 }
 
 //--------- script interface for mistserver

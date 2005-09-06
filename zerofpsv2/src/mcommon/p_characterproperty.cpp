@@ -583,6 +583,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bIncap					=  false;
 	m_fDeadTimer			=	0;
 	m_fDecayTime			=	60;
+	m_iDMNoTarget        =  false;
 	
 	m_bInCamp				=	false;
 	
@@ -2890,7 +2891,14 @@ bool P_CharacterProperty::IsEnemy(int iCharacterID)
 	if(m_iFaction == 0)
 		return false;
 
-	if(P_CharacterProperty* pkOtherCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
+	P_CharacterProperty* pkOtherCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty");
+	if(!pkOtherCP)
+		return false;
+
+	if(pkOtherCP->m_iDMNoTarget)
+		return false;
+
+	if(pkOtherCP)
 	{
 		//im evil , i dont like any other factions
 		if(m_iFaction < 0)
@@ -2913,7 +2921,9 @@ bool P_CharacterProperty::IsFriend(int iCharacterID)
 	if(m_iFaction == 0)
 		return false;
 
-	if(P_CharacterProperty* pkOtherCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
+	P_CharacterProperty* pkOtherCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty");
+
+	if(pkOtherCP)
 	{
 		//im evil , im friend with my faction only
 		if(m_iFaction < 0)

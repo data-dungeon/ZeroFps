@@ -257,7 +257,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void OnLevelUP();
 		
 	public:
-		Stats	m_kCharacterStats;
+		Stats		m_kCharacterStats;
+		bool		m_iDMNoTarget;				
 
 	
 		//containers
