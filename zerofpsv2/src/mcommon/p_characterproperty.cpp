@@ -710,7 +710,9 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("Stamina"			,999,0);		//börjar med full stamina
 	m_kCharacterStats.AddStat("StaminaMax"		,0,0);
 	m_kCharacterStats.AddStat("StaminaRegen"	,0,0);	
-		
+
+	m_kCharacterStats.AddStat("Oxygen"			,100,0);		//börjar med full stamina
+
 	m_kCharacterStats.AddStat("Strength"		,0,0);
 	m_kCharacterStats.AddStat("Dexterity"		,0,0);
 	m_kCharacterStats.AddStat("Vitality"		,0,0);
@@ -869,6 +871,12 @@ void P_CharacterProperty::UpdateStats()
 		m_kCharacterStats.ChangeStat("Health",-fFallDmg);
 	}	
 	
+	// Check if character has run out of air.
+	if(m_kCharacterStats.GetTotal("Oxygen") <= 0)
+	{
+		m_kCharacterStats.SetStat("Health", 0);
+	}
+
 	//check if character is dead
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 	{
@@ -953,6 +961,18 @@ void P_CharacterProperty::UpdateStats()
 		if(m_kCharacterStats.GetTotal(strHealth) < 0)
 			m_kCharacterStats.SetStat(strHealth,0);
 
+		// Oxygen
+		string strOxygen("Oxygen");
+		if(pkCC->GetWaterLevel() == WATER_HEAD)
+			m_kCharacterStats.ChangeStat(strOxygen, -10);	// Drains 10 pts/sec.
+		else
+			m_kCharacterStats.ChangeStat(strOxygen, 25);		// Regen 25 pts/sec.
+		
+		if(m_kCharacterStats.GetTotal(strOxygen) > 100)
+			m_kCharacterStats.SetStat(strOxygen,100);
+		if(m_kCharacterStats.GetTotal(strOxygen) < 0)
+			m_kCharacterStats.SetStat(strOxygen,0);
+	
 		//mana
 		string strMana("Mana");
  		if(m_bInCamp)		
@@ -969,11 +989,6 @@ void P_CharacterProperty::UpdateStats()
 		
 		SendStats();
 	}
-
-
-
-
-
 
 	//setup charactercontrol
 	int iSpeed = int(m_kCharacterStats.GetTotal("Speed"));
@@ -1150,9 +1165,10 @@ void P_CharacterProperty::MakeAlive()
 	m_bDead = false;
 	ResetAllNetUpdateFlags();
 
-	//make sure character has some life
+	//make sure character has some life and oxygen.
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 		m_kCharacterStats.SetStat("Health",1);
+	m_kCharacterStats.SetStat("Oxygen",100);
 	
 	//set characters XP value to 0
 	m_kCharacterStats.SetStat("ExperienceValue",0); 
@@ -2074,12 +2090,31 @@ void P_CharacterProperty::SendStats()
 	NetPacket kNp;
 	kNp.Write((char) MLNM_SC_CHARACTERSTATS);	
 
-	kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
-	kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
 	
+	// Temp, for swimming lessons - when in water we use stamina bar to display oxygen points.
+		/*
+		kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
+		kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
+		*/
+
+		P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl");
+		if(pkCC)
+		{
+			if(pkCC->GetWaterLevel() != WATER_NONE)
+			{
+				kNp.Write(m_kCharacterStats.GetTotal("Oxygen"));
+				kNp.Write(float(100));
+			}
+			else
+			{
+				kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
+				kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
+			}
+		}
+
 	kNp.Write(m_kCharacterStats.GetTotal("Health"));
 	kNp.Write(m_kCharacterStats.GetTotal("HealthMax"));
-	
+
 	kNp.Write(m_kCharacterStats.GetTotal("Mana"));
 	kNp.Write(m_kCharacterStats.GetTotal("ManaMax"));
 	

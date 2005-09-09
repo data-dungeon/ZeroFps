@@ -512,6 +512,12 @@ void MistClient::OnIdle()
 
  	//SetMouse pointer
 	UpdateCursorImage();
+
+	float fModFov = 0;
+	if(m_bInWater)
+		fModFov = sin(m_pkZeroFps->GetEngineTime()) * 10.0;
+	m_pkCamera->SetFov(75 + fModFov);
+
 }
 
 void MistClient::UpdateCursorImage()
@@ -1902,6 +1908,11 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkPB->SetRange(0,int(fStaminaMax));
 				pkPB->SetPos(int(fStamina));				
 			}			
+
+			if(fStaminaMax == 100)
+				m_bInWater = true;
+			else
+				m_bInWater = false;
 			
 			break;		
 		}

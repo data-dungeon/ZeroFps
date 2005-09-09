@@ -71,7 +71,8 @@ class MistClient :public Application, public ZGuiApp {
 		bitset<6>	m_kCharacterControls;
 		bool			m_bDead;
 		bool			m_bCombatMode;
-		
+		bool			m_bInWater;
+
 		//game
 		vector<string>	m_kEmotes;					//emote list
 		int				m_iTargetID;

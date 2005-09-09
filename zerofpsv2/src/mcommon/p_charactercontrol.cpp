@@ -435,6 +435,17 @@ void P_CharacterControl::Update()
 
 }
 
+WaterLevel P_CharacterControl::GetWaterLevel()
+{
+	if(m_bInWater == false)
+		return WATER_NONE;
+
+	if(m_bOnWaterSurface)
+		return WATER_FEET;
+
+	return WATER_HEAD;
+}
+
 float P_CharacterControl::GetFallDamage()
 {
 	float fRetVal = m_fFallDamage;

@@ -40,6 +40,13 @@ enum CharacterMoveDirection
 	eMOVE_RIGHT		=4,
 };
 
+enum WaterLevel
+{
+	WATER_NONE,		// Not in water at all.
+	WATER_FEET,		// Only lower part of body in water.
+	WATER_HEAD,		// Submerged with head below water.
+};
+
 class MCOMMON_API AnimationSet
 {
 	public:
@@ -99,8 +106,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fFallDamage;
 
 		bool			m_bHaveJumped;
-		bool			m_bInWater;
 		float			m_fSurfacePos;
+		bool			m_bInWater;
 		bool			m_bOnWaterSurface;
 		Entity*		m_pkWaterEnt;
 		
@@ -121,7 +128,6 @@ class MCOMMON_API P_CharacterControl: public Property
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
-	
 		P_CharacterControl();
 		~P_CharacterControl();	
 		void Update();
@@ -174,6 +180,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		bool GetEnabled()											{	return m_bEnabled;			}
 		bool GetNoClientRotation()								{	return m_bNoClientRotate;	}
 		void SetNoClientRotation(bool bRot);
+
+		WaterLevel GetWaterLevel();
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();
