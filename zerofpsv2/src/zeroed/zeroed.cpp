@@ -86,7 +86,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
 	m_bPlaneMovement			=	true;	
 	m_CamSpeedScale			=  1.0;
-		
+	m_bLockCreate			= false;	
+
 	strcpy(szCoolName , "Guldfisk");	
 
 	int olle = 2;

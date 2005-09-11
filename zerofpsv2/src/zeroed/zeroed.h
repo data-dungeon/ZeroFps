@@ -140,6 +140,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		//edit stuff
 		int		m_iEditMode;
+		bool	m_bLockCreate;		// Stay in create until user picks another mode.
 		int		m_iHMapEditMode;
 
 		//camera

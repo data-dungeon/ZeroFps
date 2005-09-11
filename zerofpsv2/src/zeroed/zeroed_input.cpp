@@ -233,10 +233,13 @@ void ZeroEd::Input_CreateObject(float fMouseX, float fMouseY)
 				   PlaceObjectOnGround(pkObj->GetEntityID());
       }		
 
-		m_iEditMode = EDIT_OBJECTS;
-		Select_None();
-		if(pkObj->GetCurrentZone() != -1)
-			Select_Toggle(pkObj->GetEntityID(), false);  
+		if(!m_bLockCreate)
+		{
+			m_iEditMode = EDIT_OBJECTS;
+			Select_None();
+			if(pkObj->GetCurrentZone() != -1)
+				Select_Toggle(pkObj->GetEntityID(), false);  
+		}
 	}
 }
 
@@ -673,9 +676,17 @@ void ZeroEd::Input()
 	Input_Camera(float(x),float(z));
 
 	if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
-	if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
+	if(m_pkInputHandle->VKIsDown("modeobj"))
+	{
+		m_iEditMode = EDIT_OBJECTS;		
+		m_bLockCreate = false;
+	}
 	if(m_pkInputHandle->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
-	if(m_pkInputHandle->VKIsDown("modecreate"))		m_iEditMode = EDIT_CREATEOBJECT;		
+	if(m_pkInputHandle->VKIsDown("modecreate"))		
+	{
+		m_iEditMode = EDIT_CREATEOBJECT;		
+		m_bLockCreate = true;
+	}
 
 
 
