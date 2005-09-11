@@ -367,19 +367,20 @@ string ZGuiResEd::GetTexNameFromID(int id, bool bFullName)
 		return m_pkTexMan->GetTextureNameFromOpenGlIndex(m_pkTexMan->GetTextureID(id)); 
 	else
 	{
+		string strRemoveString = "gui/"; // "data/textures/gui"
 		string strFullName = m_pkTexMan->GetTextureNameFromOpenGlIndex(m_pkTexMan->GetTextureID(id));
-		int pos = strFullName.find("/data/textures/gui/");
+		int pos = strFullName.find(strRemoveString);
 		if(pos != string::npos)
-			strFullName.erase(pos, strlen("/data/textures/gui/"));
+			strFullName.erase(pos, strlen(strRemoveString.c_str()));
 		else
-		if((pos = strFullName.find("/data/textures/gui")) != string::npos)
-			strFullName.erase(pos, strlen("/data/textures/gui"));
+		if((pos = strFullName.find(strRemoveString)) != string::npos)
+			strFullName.erase(pos, strlen(strRemoveString.c_str()));
 		else
-		if((pos = strFullName.find("data/textures/gui/")) != string::npos)
-			strFullName.erase(pos, strlen("data/textures/gui/"));
+		if((pos = strFullName.find(strRemoveString)) != string::npos)
+			strFullName.erase(pos, strlen(strRemoveString.c_str()));
 		else
-		if((pos = strFullName.find("data/textures/gui")) != string::npos)
-			strFullName.erase(pos, strlen("data/textures/gui"));
+		if((pos = strFullName.find(strRemoveString)) != string::npos)
+			strFullName.erase(pos, strlen(strRemoveString.c_str()));
 
 		return strFullName;
 	}

@@ -339,23 +339,27 @@ void MistClient::LoadInGameGui()
 	m_pkSkillBar->Init();		//initiate the skillbar
 	InitBuffWnd();
 
-	((ZGuiTextbox*) GetWnd("ChatTextbox"))->ToggleMultiLine(true);
-	((ZGuiTextbox*) GetWnd("ChatTextbox"))->GetScrollbar()->Resize((int)(16.0f*GetScaleX()), -1);  
-	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetReadOnly(true); 
+	if(GetWnd("ChatTextbox"))
+	{
+		((ZGuiTextbox*) GetWnd("ChatTextbox"))->ToggleMultiLine(true);
+		((ZGuiTextbox*) GetWnd("ChatTextbox"))->GetScrollbar()->Resize((int)(16.0f*GetScaleX()), -1);  
+		((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetReadOnly(true); 
 
-	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetScrollbarSkin(
-		GetSkin("DefSBrBkSkin"),
-		GetSkin("DefSBrNSkin"),
-		GetSkin("DefSBrFSkin"),
-		GetSkin("DefSBrScrollUpSkin_u"),
-		GetSkin("DefSBrScrollUpSkin_d"),
-		GetSkin("DefSBrScrollDownSkin_u"),
-		GetSkin("DefSBrScrollDownSkin_d"));
+		((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetScrollbarSkin(
+			GetSkin("DefSBrBkSkin"),
+			GetSkin("DefSBrNSkin"),
+			GetSkin("DefSBrFSkin"),
+			GetSkin("DefSBrScrollUpSkin_u"),
+			GetSkin("DefSBrScrollUpSkin_d"),
+			GetSkin("DefSBrScrollDownSkin_u"),
+			GetSkin("DefSBrScrollDownSkin_d"));
 
-	((ZGuiTextbox*) GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
-	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetLeftAlignedScrollbar(true);
+		((ZGuiTextbox*) GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
+		((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetLeftAlignedScrollbar(true);
 
-	GetWnd("ChatTextbox")->SetTextColor(255,255,255); 
+		GetWnd("ChatTextbox")->SetTextColor(255,255,255);
+	}
+
 	GetWnd("SayTextbox")->SetTextColor(255,255,255); 
 
 	GetWnd("LagLabel")->SetTextColor(0,255,0); 
@@ -387,6 +391,9 @@ void MistClient::InitBuffWnd()
 	char szName[25];
 	int w=32, h=32, pbh = 8, mrg = 2, x = mrg, y = 0;
 	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
+
+	if(pkBuffWnd == NULL)
+		return;
 
 	for(int i=0; i<MAX_NUM_BUFF_ICONS; i++)
 	{

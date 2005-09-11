@@ -118,6 +118,8 @@ void MistClient::InitGUIFonts()
 	if(w >= 1280 && h >= 1024) eResMode = very_big;
 	if(w >= 1600 && h >= 1200) eResMode = extra_big;
 
+	eResMode = normal; // ALWAYS USE NORMAL!!!!!!!!!!!!!!!!!!!!?!!!!!!?!
+
 	if(m_iScaleMode == MANUALLY_SCALE)
 		eResMode = normal;
 
