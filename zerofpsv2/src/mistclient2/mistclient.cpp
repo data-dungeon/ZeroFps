@@ -1552,6 +1552,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			string strName;
 			string strParent;
 			string strScreenName;
+			string strIcon;
 			
 			ZGuiTreebox* pkTreeBox = (ZGuiTreebox*)g_kMistClient.GetWnd("SkillTree");	
 
@@ -1568,7 +1569,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read_Str(strName);
 				pkNetMessage->Read_Str(strParent);
 				pkNetMessage->Read_Str(strScreenName);
-				
+				pkNetMessage->Read_Str(strIcon);
 // 				cout<<"SKILL "<<i<<" "<<strName<<" "<<strParent<<" "<<strIcon<<endl;
 			
 				if(strParent.empty())
