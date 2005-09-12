@@ -50,6 +50,7 @@ class MistClient :public Application, public ZGuiApp {
 			FID_MSREFRESH,
 			FID_SETSKILLBAR,
 			FID_DMC,
+			FID_PCMD,
 		};
 
 		//music

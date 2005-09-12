@@ -94,6 +94,7 @@ class MistServer :public Application , public ZGuiApp
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
 		bool SpawnPlayer(int iConID);	
 		void DeletePlayerCharacter(int iConID);		
+		int	m_iNextGroupId;
 
 		//register stuff
 		void RegisterScriptFunctions();
@@ -124,6 +125,7 @@ class MistServer :public Application , public ZGuiApp
 		
 		void OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams);
 		void OnDmc(int iClientID, string strDmc);
+		void OnPCmd(int iClientID, string strDmc);
 
 		//init client
 		void ClientInit();
@@ -141,7 +143,7 @@ class MistServer :public Application , public ZGuiApp
 		void SayToClients(const string& strMsg,const string& strSource = "Server", int iCharacterID = -1,int iClientID = -2);				
 		void SendPointText(const string& strText,const Vector3& kPos,const Vector3& kVel,float fTTL,int iType);
 		void OpenContainer(int iContainerID,int iClientID);
-
+		void GiveGroupXP(const iEntityID, int iXP);
 };
 
 

@@ -576,6 +576,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fSkillTimer			=	0;
 	m_fSkillLockTime		=	0;
 	m_iFaction				=	0;
+	m_iGroup					=  -1;
 	m_bWalkSound			=	true;
 	m_fLegLength			=	0;
 	m_fMarkerSize			=	1;
@@ -1346,6 +1347,19 @@ void P_CharacterProperty::OnDeath()
 		SendStats();
 		SendDeathInfo();
 	}
+}
+
+void P_CharacterProperty::GiveGroupExperience(int iXP)
+{
+	const void* apParam[2];
+	
+	int iEntityId = GetEntity()->GetEntityID();
+	int iAddXP = iXP;
+	apParam[0] = &iEntityId;
+	apParam[1] = &iAddXP;
+
+	Application* m_pkApplication = static_cast<Application*>(g_ZFObjSys.GetObjectPtr("Application"));			
+	m_pkApplication->OnSystemMessage("givexp",2,apParam);
 }
 
 void P_CharacterProperty::GiveExperience(int iXP)
@@ -3255,6 +3269,32 @@ namespace SI_P_CharacterProperty
 		return 0;				
 	}	
 
+/**	\fn GiveXp( EntityID, iXp )
+		\brief Sets the faction that the character will be a member of.
+		\relates CharacterProperty
+*/
+	int GiveXpLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		{
+			cout<<"WARNING: GiveXp - wrong number of arguments"<<endl;
+			return 0;		
+		}
+					
+		int iCharcterID;
+		int iFaction;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 1, &iFaction);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->GiveGroupExperience(iFaction);
+		}
+	
+		return 0;				
+	}
+
 /**	\fn SetFaction( EntityID, iFaction )
 		\brief Sets the faction that the character will be a member of.
 		\relates CharacterProperty
@@ -3672,6 +3712,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	//combat
 	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
 	g_pkScript->ExposeFunction("SetCombatMode",				SI_P_CharacterProperty::SetCombatModeLua);
+	g_pkScript->ExposeFunction("GiveXp",						SI_P_CharacterProperty::GiveXpLua);
 }
 
 

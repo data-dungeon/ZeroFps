@@ -21,6 +21,14 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	switch(ucType)
 	{
+		case MLNM_CS_PCMD:
+		{
+			string strDmc;
+			PkNetMessage->Read_Str(strDmc);
+			OnPCmd(PkNetMessage->m_iClientID, strDmc);
+			break;
+		}
+
 		case MLNM_CS_DMC:
 		{
 			string strDmc;

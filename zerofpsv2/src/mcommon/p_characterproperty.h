@@ -206,6 +206,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string		m_strName;					//character name		
 		bool			m_bIsPlayerCharacter;	//is this and NPC or PC ?
 		int			m_iFaction;
+		int			m_iGroup;					
 		string		m_strOwnedByPlayer;		//who owns me ? if anyone
 		string		m_strChatMsg;				//last chat msg
 		float			m_fChatTime;				//lst chat msg time
@@ -323,6 +324,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//faction  stuff
 		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
 		int  GetFaction()												{	return m_iFaction;			}
+		void SetGroup(int iGroup)									{	m_iGroup = iGroup;			}
+		int  GetGroup()												{	return m_iGroup;				}
 				
 		bool IsEnemy(int iCharacterID);						//is specified character an enemy to this character
 		bool IsFriend(int iCharacterID);						//is specified character a friend to this character
@@ -349,6 +352,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 
 		//experience and level
 		void  GiveExperience(int iXP);		
+		void  GiveGroupExperience(int iXP);		
 		void  AddStatPoint(int iStat);
 		bool	AddSkillPoint(const string& strSkillName);
 		

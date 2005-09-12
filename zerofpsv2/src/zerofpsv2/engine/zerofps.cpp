@@ -1947,6 +1947,19 @@ int ZeroFps::GetClientObjectID()
 	return m_iClientEntityID;
 }
 
+vector<Entity*> ZeroFps::GetClientEntitys()
+{
+	vector<Entity*>	kEntitys;
+
+	for(int i=0; i<m_kClient.size(); i++) 
+	{
+		if(m_kClient[i].m_pkObject) 
+			kEntitys.push_back(m_kClient[i].m_pkObject);
+	}
+
+	return kEntitys;
+}
+
 
 //vad g� denna h� igentligen?
 void ZeroFps::AddHMProperty(Entity* pkEntity, Vector3 kZoneSize)

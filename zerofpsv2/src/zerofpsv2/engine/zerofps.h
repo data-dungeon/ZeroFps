@@ -361,6 +361,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		int	GetConnectionID() 			{	return m_iServerConnection;	}		///< Return our Connection Num on the Server.
 		int	GetMaxPlayers() 				{	return m_iMaxPlayers;			}
 		
+		vector<Entity*>	GetClientEntitys();
+
 		void HandleEditCommand(NetPacket* pkNetPacket);						
 		void RouteEditCommand(NetPacket* pkNetPacket);						
 		void SetEnableLogin(bool bLogin) { m_bClientLoginState = bLogin; }

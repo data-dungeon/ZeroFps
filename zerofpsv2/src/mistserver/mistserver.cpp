@@ -87,6 +87,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkActiveCamera			= NULL;
 	
 	m_pkServerInfoP			= NULL;
+
+	m_iNextGroupId				= 1;
 } 
 
 
@@ -1307,14 +1309,46 @@ void MistServer::OnSystemMessage(const string& strType,int iNrOfParam,const void
 		}	
 	
 		SayToClients(*(string*)pkParams[0],"Server",-1,*(int*)pkParams[1]);
-	}	
+	}
+	else if(strType == "givexp")
+	{
+		cout << "5 Add XP to character" << endl;
+		GiveGroupXP(*(int*)pkParams[0] ,*(int*)pkParams[1]);
+	}
+}
+
+void MistServer::GiveGroupXP(const iEntityID, int iXP)
+{
+	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iEntityID, "P_CharacterProperty");
+	if(!pkCP)
+		return;
+
+	int iGroup = pkCP->GetGroup();
+	if(iGroup == -1)
+	{
+		pkCP->GiveExperience(iXP);
+		return;
+	}
+
+	// Get list of all entitys
+	vector<pair<Entity*,int> >	kEntitys;	
+	m_pkPlayerDB->GetPlayerEntitys(&kEntitys);
+
+	//send to all players that is close enough
+	for(int i =0;i<kEntitys.size();i++)
+	{
+		Entity* pkOst = kEntitys[i].first;
+		P_CharacterProperty* pkCP2 = (P_CharacterProperty*)kEntitys[i].first->GetProperty("P_CharacterProperty");
+		if(pkCP2 && pkCP2->GetGroup() == iGroup)
+		{
+			pkCP2->GiveExperience(iXP);
+		}
+	}
 }
 
 void MistServer::OnDmc(int iClientID, string strDmc)
 {
 	// Check for DMC status
-	cout << "DMC: " << strDmc << endl;
-
 	CmdArgument kDmc;
 	kDmc.Set(strDmc.c_str());
 
@@ -1359,6 +1393,51 @@ void MistServer::OnDmc(int iClientID, string strDmc)
 			SayToClients("NoTarget = On","Server",-1,iClientID);						 
 		}
 	}
+}
+
+void MistServer::OnPCmd(int iClientID, string strDmc)
+{
+	CmdArgument kDmc;
+	kDmc.Set(strDmc.c_str());
+
+	PlayerData* pkData = m_pkPlayerDB->GetPlayerData(iClientID);
+	if(!pkData)
+		return;
+	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty");
+	if(!pkCP)
+		return;
+
+	if(kDmc.m_kSplitCommand[0] == "join" && kDmc.m_kSplitCommand.size() >= 2)
+	{
+		string strLeader = kDmc.m_kSplitCommand[1].c_str();
+	
+		if(strLeader == pkData->m_strPlayerName)
+		{
+			cout << "Not possible to team with self" << endl;
+			return;
+		}
+
+		// Get Ptrs to our new leader.
+		PlayerData* pkData2 = m_pkPlayerDB->GetPlayerData( strLeader );
+		if(!pkData2)
+			return;
+		P_CharacterProperty* pkCP2 = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData2->m_iCharacterID,"P_CharacterProperty");
+		if(!pkCP2)
+			return;
+
+		if(pkCP2->GetGroup() == -1)
+		{
+			pkCP2->SetGroup(m_iNextGroupId);
+			m_iNextGroupId++;
+		}
+
+		pkCP->SetGroup( pkCP2->GetGroup() );
+	} 
+
+	if(kDmc.m_kSplitCommand[0] == "leave")
+	{
+		pkCP->SetGroup(-1);
+	} 
 }
 
 //--------- script interface for mistserver

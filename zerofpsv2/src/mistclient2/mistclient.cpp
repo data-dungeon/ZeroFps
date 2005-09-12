@@ -91,6 +91,7 @@ void MistClient::OnInit()
 	Register_Cmd("playerlist",	FID_PLAYERLIST);
 	Register_Cmd("killme",		FID_KILLME);
 	Register_Cmd("dm",			FID_DMC);
+	Register_Cmd("pc",			FID_PCMD);
 
 	//create pointtext manager
 	m_pkPointText = new PointText();
@@ -211,6 +212,23 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_KILLME:
 		{
 			SendRequestKillMe();
+			break;
+		}	
+
+		case FID_PCMD:
+		{
+			string strMsg;
+			for(int i = 3;i<kCommand->m_strFullCommand.size();i++)
+				strMsg.push_back(kCommand->m_strFullCommand[i]);
+
+			cout << "Player Command: " << strMsg  << endl;
+
+			NetPacket kNp;			
+			kNp.Write((char) MLNM_CS_PCMD);
+			kNp.Write_Str(strMsg);
+			kNp.TargetSetClient(0);
+			SendAppMessage(&kNp);	
+
 			break;
 		}	
 
