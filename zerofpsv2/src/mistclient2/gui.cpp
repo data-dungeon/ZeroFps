@@ -505,6 +505,98 @@ void MistClient::FindGUIScriptsByResSuffix()
 
 }
 
+bool MistClient::AlreadyInTreeList(vector<SKILL_TREE_INFO>& kList, SKILL_TREE_INFO kTest)
+{
+	for(int i=0; i<kList.size(); i++)
+		if(kList[i].strIcon == kTest.strIcon &&
+			kList[i].strName == kTest.strName &&
+			kList[i].strParent == kTest.strParent &&
+			kList[i].strScreenName == kTest.strScreenName)
+			return true;
 
+	return false;
+}
 
+void MistClient::SortSkillTreeData(vector<SKILL_TREE_INFO>& rvSkills)
+{
+	vector<SKILL_TREE_INFO> out;
+	SKILL_TREE_INFO test;
+	bool lagg_till;
+	int oka = 0;
 
+	while(1)
+	{
+		test = rvSkills[oka];
+
+		lagg_till = false;
+
+		if(test.strParent.empty())
+		{
+			lagg_till = true;
+		}
+		else
+		{
+			// sök igenom lista och kolla så att föräldren har lagts till
+			for(int i=0; i<out.size(); i++)
+			{
+				if(test.strParent == out[i].strName)
+				{				
+					lagg_till = true;
+					break;
+				}
+			}
+		}
+
+		if(lagg_till)
+		{
+			if(!AlreadyInTreeList(out, test))
+				out.push_back(test); 
+		}
+
+		if(rvSkills.size() == out.size())
+			break;
+
+		oka++;
+		if(oka == rvSkills.size())
+			oka = 0;
+	}
+
+	rvSkills.clear();
+
+	for(int i=0; i<out.size(); i++)
+	{
+		rvSkills.push_back( out[i] );
+	}
+}
+
+void MistClient::AddIconsToSkillTree(ZGuiTreebox* pkTreebox,
+												 vector<SKILL_TREE_INFO> vSkills, 
+												 map<string,int>& rmIconMap)
+{
+		map<string, int> kNameIndexMap;
+		set<int> kTexIds;
+		int oka = 0;
+
+		for(int i=0; i<vSkills.size(); i++)
+		{		
+			int iID = LoadGuiTextureByRes(string("skills/") + vSkills[i].strIcon);
+		
+			if(kTexIds.find(iID) == kTexIds.end()) // vi har laddat en ny textur, skapa nytt skin för den
+			{
+				kTexIds.insert(set<int>::value_type(iID));
+
+				ZGuiSkin* pkSkin = new ZGuiSkin();
+				pkSkin->m_iBkTexID = iID;
+				pkTreebox->InsertBranchSkin(oka, pkSkin, true); 
+
+				kNameIndexMap[vSkills[i].strName] = oka;
+
+				oka++;
+			}
+		}
+
+		for(map<string, int>::iterator it=kNameIndexMap.begin(); it!=kNameIndexMap.end(); it++)
+		{
+			rmIconMap[it->first] = it->second;
+		}
+}

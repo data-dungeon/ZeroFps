@@ -1155,7 +1155,8 @@ void ZGuiTreebox::SelNone()
 void ZGuiTreebox::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
-	m_iButtonSize = m_pkFont->m_iRowHeight;
+	
+	//m_iButtonSize = m_pkFont->m_iRowHeight; DONT CHANGE
 
 	if(!m_kNodeList.empty())
 	{
@@ -1167,6 +1168,32 @@ void ZGuiTreebox::SetFont(ZGuiFont* pkFont)
 		{	
 			ZGuiCheckbox* pkButton = (*it)->pkButton;
 			pkButton->SetFont(m_pkFont);
+			pkButton->Resize(m_iButtonSize, m_iButtonSize);
+			rc = pkButton->GetScreenRect();
+			pkButton->SetPos(rc.Left, y, 1, 1);
+			y += (rc.Height() + 1);
+		}
+	}
+
+	m_pkSelLabel->Resize(m_iButtonSize, m_iButtonSize);
+
+	ScrollCols();
+
+}
+
+void ZGuiTreebox::ChangeIconSize(int iSize)
+{	
+	m_iButtonSize = iSize;
+
+	if(!m_kNodeList.empty())
+	{
+		Rect rc = (*m_kNodeList.begin())->pkButton->GetScreenRect();
+
+		int y = GetScreenRect().Top - m_iButtonSize;
+
+		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
+		{	
+			ZGuiCheckbox* pkButton = (*it)->pkButton;
 			pkButton->Resize(m_iButtonSize, m_iButtonSize);
 			rc = pkButton->GetScreenRect();
 			pkButton->SetPos(rc.Left, y, 1, 1);

@@ -15,6 +15,14 @@ class Entity;
 
 typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
 
+struct SKILL_TREE_INFO
+{
+	string strName;
+	string strParent;
+	string strScreenName;
+	string strIcon;
+};
+
 enum GUI_SCRIPT
 {
 	GSF_GAMEGUI,
@@ -174,6 +182,9 @@ class MistClient :public Application, public ZGuiApp {
 		
 			
 		// gui stuff
+		void AddIconsToSkillTree(ZGuiTreebox* pkTreebox,vector<SKILL_TREE_INFO> vSkills, map<string,int>& rmIconMap);
+		bool AlreadyInTreeList(vector<SKILL_TREE_INFO>& kList, SKILL_TREE_INFO kTest);
+		void SortSkillTreeData(vector<SKILL_TREE_INFO>& rvSkills);
 		void ShowLag();
 		void SetupGUI();
 		void InitGUIFonts();

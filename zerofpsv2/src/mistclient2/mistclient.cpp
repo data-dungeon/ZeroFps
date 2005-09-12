@@ -1495,6 +1495,7 @@ void MistClient::UpdateCharacter()
 }
 
 
+
 void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 {
 	unsigned char ucType;
@@ -1581,27 +1582,48 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			}
 
 			pkTreeBox->Clear();
+			pkTreeBox->ChangeIconSize(32);			
+
+			vector<SKILL_TREE_INFO> vkSkillInfo;
 			
 			for(int i =0;i<iSize;i++)
 			{
-				pkNetMessage->Read_Str(strName);
-				pkNetMessage->Read_Str(strParent);
-				pkNetMessage->Read_Str(strScreenName);
-				pkNetMessage->Read_Str(strIcon);
+				SKILL_TREE_INFO info;
+				pkNetMessage->Read_Str(info.strName);
+				pkNetMessage->Read_Str(info.strParent);
+				pkNetMessage->Read_Str(info.strScreenName);
+				pkNetMessage->Read_Str(info.strIcon);
+
+				vkSkillInfo.push_back(info);
+			}
+
+			map<string,int> icon_map;
+
+			SortSkillTreeData(vkSkillInfo);
+			AddIconsToSkillTree(pkTreeBox, vkSkillInfo, icon_map);
+
+			for(unsigned int i =0;i<vkSkillInfo.size();i++)
+			{
 // 				cout<<"SKILL "<<i<<" "<<strName<<" "<<strParent<<" "<<strIcon<<endl;
+
+				SKILL_TREE_INFO info = vkSkillInfo[i];
+
+				int idex = icon_map[info.strName];
 			
-				if(strParent.empty())
+				if(info.strParent.empty())
 				{
-					pkTreeBox->AddItem(pkTreeBox->Root(),(char*)strScreenName.c_str(),1,1,(char*)strName.c_str());					
+					pkTreeBox->AddItem(pkTreeBox->Root(),(char*)info.strScreenName.c_str(),idex,idex,(char*)info.strName.c_str());					
 				}
 				else
 				{
-					if(!pkTreeBox->AddItem(strParent,(char*)strScreenName.c_str(),1,1,(char*)strName.c_str()))
+					if(!pkTreeBox->AddItem(info.strParent,(char*)info.strScreenName.c_str(),idex,idex,(char*)info.strName.c_str()))
 					{
-						cout<<"Error adding treeitem "<<strName<< " parent "<<strParent<<endl;
-						pkTreeBox->AddItem(pkTreeBox->Root(),(char*)strScreenName.c_str(),1,1,(char*)strName.c_str());					
+						cout<<"Error adding treeitem "<<info.strName<< " parent "<<info.strParent<<endl;
+						pkTreeBox->AddItem(pkTreeBox->Root(),(char*)info.strScreenName.c_str(),idex,idex,(char*)info.strName.c_str());					
 					}
 				}
+
+				cout<<"Have added: "<<info.strName<<endl;
 			}				
 			
 			break;

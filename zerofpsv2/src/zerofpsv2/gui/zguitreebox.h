@@ -84,6 +84,8 @@ public:
 
 	void SetFont(ZGuiFont* pkFont); // overloaded
 
+	void ChangeIconSize(int iSize);
+
 	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB); // overloaded
 
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
