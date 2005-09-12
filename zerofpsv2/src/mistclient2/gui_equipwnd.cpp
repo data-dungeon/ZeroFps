@@ -115,6 +115,15 @@ void EquipmentDlg::Open()
 
 	if(m_bStatsWndOpen)
 		g_kMistClient.GetWnd("StatsWnd")->Show();
+
+	// Place inventory dlg next to equipwnd
+	ZGuiWnd* pkInventoryDlg = g_kMistClient.GetWnd("InventoryWnd");
+	if(pkInventoryDlg)
+	{
+		if(pkInventoryDlg->IsVisible())
+			pkInventoryDlg->SetPos(256,25,true,true);
+	}
+	
 }
 
 void EquipmentDlg::Close()
@@ -129,14 +138,29 @@ void EquipmentDlg::Close()
 	g_kMistClient.GetWnd("SkillWnd")->Hide();
 	g_kMistClient.GetWnd("StatsWnd")->Hide();
 
+	// Place inventory dlg next to equipwnd
+	ZGuiWnd* pkInventoryDlg = g_kMistClient.GetWnd("InventoryWnd");
+	if(pkInventoryDlg)
+	{
+		if(pkInventoryDlg->IsVisible())
+			pkInventoryDlg->SetPos(0,25,true,true);
+	}
+
 }
 
 void EquipmentDlg::OnCommand(string strController)
 {
+	static bool s_bInventoryIsOpen = g_kMistClient.m_pkInventoryDlg->IsVisible();
+	
 	if(strController == "OpenSkillsBn")
-	{
+	{			
 		if(g_kMistClient.GetWnd("SkillWnd")->IsVisible()==false)
 		{
+			s_bInventoryIsOpen = g_kMistClient.m_pkInventoryDlg->IsVisible();
+
+			// Close inventory first
+			g_kMistClient.m_pkInventoryDlg->Close();	
+
 			m_bSkillWndOpen = true;
 			m_bStatsWndOpen = false;
 			g_kMistClient.GetWnd("SkillWnd")->Show();
@@ -149,6 +173,9 @@ void EquipmentDlg::OnCommand(string strController)
 			m_bSkillWndOpen = false;
 			g_kMistClient.GetWnd("SkillWnd")->Hide();
 			g_kMistClient.GetWnd("StatsWnd")->Hide();
+
+			if(s_bInventoryIsOpen)
+				g_kMistClient.m_pkInventoryDlg->Open();
 		}
 	}
 
@@ -156,6 +183,11 @@ void EquipmentDlg::OnCommand(string strController)
 	{
 		if(g_kMistClient.GetWnd("StatsWnd")->IsVisible()==false)
 		{
+			s_bInventoryIsOpen = g_kMistClient.m_pkInventoryDlg->IsVisible();
+
+			// Close inventory first
+			g_kMistClient.m_pkInventoryDlg->Close();		
+
 			m_bStatsWndOpen = true;
 			m_bSkillWndOpen = false;
 			g_kMistClient.GetWnd("StatsWnd")->Show();
@@ -166,6 +198,9 @@ void EquipmentDlg::OnCommand(string strController)
 			m_bStatsWndOpen = false;
 			g_kMistClient.GetWnd("SkillWnd")->Hide();
 			g_kMistClient.GetWnd("StatsWnd")->Hide();
+
+			if(s_bInventoryIsOpen)
+				g_kMistClient.m_pkInventoryDlg->Open(); 
 		}
 	}
 

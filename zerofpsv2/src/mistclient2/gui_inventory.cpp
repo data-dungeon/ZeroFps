@@ -103,7 +103,7 @@ InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6),
 										 BD_R(1), BD_G(1), BD_B(1),
 										 ICON_WIDTH(32), // in pixels
 										 ICON_HEIGHT(32), // in pixels
-										 UPPERLEFT_INVENTORY(39,193), // in pixels
+										 UPPERLEFT_INVENTORY(20,23), // in pixels
 										 UPPERLEFT_CONTAINER( 0,  0) // in pixels
 {
 	m_bDoubleClicked = false;
@@ -156,6 +156,11 @@ void InventoryDlg::Open()
 	// visa inventory fönstret
 	m_pkInventoryWnd->Show();
 	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
+	
+	if(g_kMistClient.m_pkEquipmentDlg && g_kMistClient.m_pkEquipmentDlg->IsVisible())
+		m_pkInventoryWnd->SetPos(256,25,true,true);
+	else
+		m_pkInventoryWnd->SetPos(0,25,true,true);
 
 
 }
@@ -666,7 +671,7 @@ void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 	int top = m_pkInventoryWnd->GetScreenRect().Top + 
 		(int) ((float) UPPERLEFT_INVENTORY.y * g_kMistClient.GetScaleY()); 
 	
-	m_pkContainerWnd->SetPos(rcInventory.Left - max_width, top, true, true);
+	m_pkContainerWnd->SetPos(rcInventory.Right, top, true, true);
 
 //	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(max_width, -16, false, true);
 }
