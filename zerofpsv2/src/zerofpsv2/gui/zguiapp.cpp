@@ -743,8 +743,10 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 
 	FindGuiTextureByResolution();
 
-	//m_iScaleMode = iScaleMode;
-	m_iScaleMode = m_pkGuiSys->m_iScaleMode; // Sätt till scale mode i ZGui eftersom den får sin data från INI fil.
+	if(iScaleMode == -1)
+		m_iScaleMode = m_pkGuiSys->m_iScaleMode; // Sätt till scale mode i ZGui eftersom den får sin data från INI fil.
+	else
+		m_iScaleMode = iScaleMode;
 
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
