@@ -16,8 +16,10 @@ ZVProgram::~ZVProgram()
 }
 
 
-bool ZVProgram::Create(string  strName)
+bool ZVProgram::Create(const string&  strFile)
 {
+	string strName = strFile;
+
 	//setup data path
 	if(strName.find("data/vertexprograms/") == -1)
 		strName = "data/vertexprograms/"+strName;

@@ -143,7 +143,7 @@ class MistServer :public Application , public ZGuiApp
 		void SayToClients(const string& strMsg,const string& strSource = "Server", int iCharacterID = -1,int iClientID = -2);				
 		void SendPointText(const string& strText,const Vector3& kPos,const Vector3& kVel,float fTTL,int iType);
 		void OpenContainer(int iContainerID,int iClientID);
-		void GiveGroupXP(const iEntityID, int iXP);
+		void GiveGroupXP(const int iEntityID, int iXP);
 };
 
 

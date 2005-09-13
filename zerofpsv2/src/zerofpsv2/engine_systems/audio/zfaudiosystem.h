@@ -35,7 +35,7 @@ class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
 		ALuint GetBufferIndexName();
 		ZFSoundRes();
 		~ZFSoundRes();
-		bool Create(string strName);	// overloaded
+		bool Create(const string& strName);	// overloaded
 		int CalculateSize();
 		
 	private:

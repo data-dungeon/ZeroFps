@@ -772,8 +772,10 @@ bool ZMaterial::LoadPass(int iPass)
 }
 
 
-bool ZMaterial::Create(string strName)
+bool ZMaterial::Create(const string& strFile)
 {
+	string strName = strFile;
+
 	if(strName.find("data/material/") == -1)
 		strName ="data/material/" + strName;
 	else

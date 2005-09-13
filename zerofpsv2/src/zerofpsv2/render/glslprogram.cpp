@@ -16,7 +16,7 @@ GLSLProgram::~GLSLProgram()
 	UnLoad();
 }
 
-bool GLSLProgram::Create(string  strName)
+bool GLSLProgram::Create(const string&  strName)
 {
 
 	return Load(strName);

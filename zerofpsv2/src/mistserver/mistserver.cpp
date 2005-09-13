@@ -1317,7 +1317,7 @@ void MistServer::OnSystemMessage(const string& strType,int iNrOfParam,const void
 	}
 }
 
-void MistServer::GiveGroupXP(const iEntityID, int iXP)
+void MistServer::GiveGroupXP(const int iEntityID, int iXP)
 {
 	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iEntityID, "P_CharacterProperty");
 	if(!pkCP)

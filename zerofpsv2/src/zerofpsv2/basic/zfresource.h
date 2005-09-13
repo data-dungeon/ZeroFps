@@ -19,9 +19,9 @@ class BASIC_API ZFResource
 {
 private:
 	int		m_iSizeInBytes;						// The size in bytes that this res takes. Does not include sub res.
+	int	m_iTypeIndex;								// Index of this resouce type in the resDB
 
 public:
-	int	m_iTypeIndex;								// Index of this resouce type in the resDB
 
 	ZFResource();
 	virtual ~ZFResource();
@@ -29,7 +29,7 @@ public:
 	/**
 		Loads the Res. Returns false if loads fails.
 		*/
-	virtual bool Create(string strName) = 0;	
+	virtual bool Create(const string& strName) = 0;	
 
 	/**
 		Calc the num of bytes this res takes. This should not include the size of other Res that are used.

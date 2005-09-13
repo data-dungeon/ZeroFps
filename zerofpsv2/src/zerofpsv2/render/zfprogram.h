@@ -35,7 +35,7 @@ class RENDER_API ZFProgram : public ZFResource
 		ZFProgram();
 		~ZFProgram();
 		
-		bool Create(string  strName);
+		bool Create(const string&  strName);
 		int CalculateSize();
 
 

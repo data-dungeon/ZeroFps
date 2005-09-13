@@ -559,7 +559,7 @@ public:
 	void LoadAnimation(const char* MadFileName); 
 	void LoadMesh(const char* MDFileName);
 	//bool LoadMad(const char* MadFileName);
-	bool Create(string strName);
+	bool Create(const string& strName);
 	int CalculateSize();
 
 //	void SetAnimationTime(int iAnim, float fTime );

@@ -146,6 +146,8 @@ class ENGINE_API Camera : public I_Camera
 		ZMaterial*		m_pkBloomMaterial1;
 		ZMaterial*		m_pkBloomMaterial2;
 		
+		float				m_fIlluminationAvrage;
+		
 		//shadow hack
 		unsigned int	m_iShadowTexture;
 		int				m_iShadowTexWidth;
@@ -226,6 +228,7 @@ class ENGINE_API Camera : public I_Camera
 		bool		GetRootOnly()						{	return m_bRootOnly;					}
 		void		SetClearViewPort(bool bClear)	{	m_bClearViewPort = bClear;			}
 		bool		GetClearViewPort()				{	return m_bClearViewPort;			}
+		float		GetIlluminationAvrage()			{	return m_fIlluminationAvrage;		}
 		
 		void		SetDrawInterface(bool bDebug)	{	m_bDrawInterface = bDebug;			}
 		bool		GetDrawInterface()				{	return m_bDrawInterface;			}

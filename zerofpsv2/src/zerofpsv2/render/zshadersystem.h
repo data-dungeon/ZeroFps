@@ -267,6 +267,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int*	m_pkBakupIndexPointer;
 		Vector4*			m_pkBakupColorPointer;		
 		
+		float			m_fExposure;
+		
 		//current fog default setting
 		bool			m_bFogSetting;
 		
@@ -379,6 +381,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		unsigned int GetDepth(int iX,int iY);
 		
+		void SetExposure(float f)										{	m_fExposure = f;					}
 		bool SetGamma(float fGamma);
 		bool SetGamma(float fRed,float fGreen,float fBlue);
 		void GetGamma(float& fRed,float& fGreen,float& fBlue)	{	fRed =   m_fRedGamma;

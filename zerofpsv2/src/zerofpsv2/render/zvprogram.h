@@ -34,7 +34,7 @@ class RENDER_API ZVProgram : public ZFResource
 		ZVProgram();
 		~ZVProgram();
 		
-		bool Create(string  strName);
+		bool Create(const string&  strName);
 		int CalculateSize();
 
 

@@ -37,6 +37,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	
 	m_kEyePosition						=	Vector3(0,0,0);
 		
+	m_fExposure							= 1.0;
+		
 	m_bSupportVertexBuffers =		false;
 	
 	m_pkDefaultGLSLProgram	=		NULL;
@@ -46,6 +48,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
 	RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
 	RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
+	
+	RegisterVariable("r_exposure",	&m_fExposure,		CSYS_FLOAT);	
 	
 	RegisterVariable("r_useglsl",	&m_bUseGLSL,		CSYS_BOOL);	
 	
@@ -1542,6 +1546,30 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
  	//nr of active lights
  	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iActiveLights") , m_pkLight->GetNrOfActiveLights());
  
+
+ 	//nr of active lights
+ 	static float fLastTime = (float(SDL_GetTicks()) /1000.0);
+ 	static float fCexp = 0.5;
+ 	
+ 	
+//  	if(fCexp < m_fExposure) fCexp += 0.1 * ((float(SDL_GetTicks()) /1000.0)-fLastTime);
+//  	if(fCexp > m_fExposure) fCexp -= 0.1 * ((float(SDL_GetTicks()) /1000.0)-fLastTime);
+//  	
+//  	if(fCexp < 0.1)
+//  		fCexp = 0.1;
+//  	
+//  	if(fCexp > 2.0)
+//  		fCexp = 2.0;
+//  	
+//  	fLastTime = (float(SDL_GetTicks()) /1000.0);
+//  	if(m_fExposure < 0.5)	fCexp += 0.01 ;
+//  	if(m_fExposure > 0.5)	fCexp -= 0.01 ;
+// 	
+// 	if(fCexp < 0.1) fCexp = 0.1; 	
+//  	if(fCexp > 2.0) fCexp = 2.0;
+ 	
+ 	//cout<<"exp"<<fCexp<<endl;
+ 	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fExposure") , m_fExposure);
 
 }
 

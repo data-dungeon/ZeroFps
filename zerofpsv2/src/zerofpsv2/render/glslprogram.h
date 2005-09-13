@@ -43,7 +43,7 @@ class RENDER_API GLSLProgram : public ZFResource
 		GLSLProgram();
 		~GLSLProgram();
 		
-		bool Create(string  strName);
+		bool Create(const string&  strName);
 		int CalculateSize();
 
 		bool Load(string  strFile);

@@ -476,7 +476,7 @@ ZFScript::~ZFScript()
 	}
 }
 
-bool ZFScript::Create(string strName)
+bool ZFScript::Create(const string& strName)
 {		
 	if(strName.empty())
 	{

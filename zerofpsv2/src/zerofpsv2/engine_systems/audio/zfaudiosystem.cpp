@@ -62,13 +62,13 @@ ZFSoundRes::~ZFSoundRes()
 // Överlagrad funktion som anropas från resursystemet via SetRes när ett nytt
 // ljud skall laddas in från disk.
 ///////////////////////////////////////////////////////////////////////////////
-bool ZFSoundRes::Create(string strName)
+bool ZFSoundRes::Create(const string& strFile)
 {
-	if(strName.empty())
+	if(strFile.empty())
 		return false;
 
 	//setup data path
-	strName = "data/audio/"+strName;
+	string strName = "data/audio/"+strFile;
 
 
 	// Använd det virituella filsytemet för att kolla om filen finns och

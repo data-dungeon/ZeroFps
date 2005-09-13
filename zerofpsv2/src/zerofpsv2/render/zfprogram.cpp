@@ -17,8 +17,10 @@ ZFProgram::~ZFProgram()
 }
 
 
-bool ZFProgram::Create(string  strName)
+bool ZFProgram::Create(const string&  strFileName)
 {
+	string strName = strFileName;
+
 	//setup data path
 	if(strName.find("data/vertexprograms/") == -1)
 		strName = "data/vertexprograms/"+strName;

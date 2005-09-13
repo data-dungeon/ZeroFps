@@ -375,6 +375,55 @@ void Camera::MakeBloom()
 	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
 	
+		
+// 	//blub
+// 	int		iHeight;
+// 	int		iWidth;
+// 	int		iInternalFormat;
+// 
+// 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_WIDTH,				&iWidth);
+// 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_HEIGHT,				&iHeight);	
+// 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_INTERNAL_FORMAT,	&iInternalFormat);		
+// 
+// 	Image* pkImage = new Image;
+// 	pkImage->CreateEmpty(iWidth,iHeight);
+// 	glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);	
+// 
+// 	color_rgba	kColor;	
+// 	float fTotal = 0;
+// 	int iSamples = 0;
+// 	
+// 	for(int y = 0;y<m_pkRender->GetWidth();y+=32)
+// 	{			
+// 		for(int x = 0;x<m_pkRender->GetHeight();x+=32)
+// 		{
+// 			pkImage->get_pixel(x,y,kColor);					
+// 			fTotal += (kColor.r*0.3+kColor.g*0.59+kColor.b*0.11);
+// 			iSamples++;
+// 		}			
+// 	}
+// 	
+// 	delete pkImage;
+// 	m_fIlluminationAvrage = fTotal/ iSamples;
+// 	//luminance = 0.3*R + 0.59 * G + 0.11*B
+// 	float fExp = m_fIlluminationAvrage/(255*0.3 + 255*0.59 + 255*0.11);
+// 	
+//  	static float fCexp = 0.5;
+//  	
+//  	fCexp += 0.25 - fExp;
+//  	
+// /* 	if(fExp < 0.3)	fCexp += 0.01 ;
+//  	if(fExp > 0.3)	fCexp -= 0.01 ;*/	
+// 	if(fCexp < 0.1) fCexp = 0.1; 	
+//  	if(fCexp > 1.0) fCexp = 1.0;	
+//  	
+// 	
+// 	m_pkZShaderSystem->SetExposure(fCexp);
+// 	
+// 	cout<<"total "<<fExp<<endl;
+// 
+// 	//end of blub
+
 	
 	//setup fss orthogonal projection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);

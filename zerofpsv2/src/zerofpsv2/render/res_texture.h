@@ -9,17 +9,19 @@
 /// A Texture in the Resource SubSystem.
 class RENDER_API ResTexture : public ZFResource
 {
-private:
-
-public:
-	int		m_iTextureID;
-	string	strTextureName;
-
-	ResTexture();
-	~ResTexture();
-
-	bool Create(string strName);
-	int  CalculateSize();		
+	private:
+		int		m_iTextureID;				
+		string	strTextureName;
+	
+	public:
+	
+		ResTexture();
+		~ResTexture();
+	
+		bool Create(const string& strName);
+		int  CalculateSize();
+				
+		friend class ZShaderSystem;
 };
 
 RENDER_API ZFResource* Create__ResTexture();

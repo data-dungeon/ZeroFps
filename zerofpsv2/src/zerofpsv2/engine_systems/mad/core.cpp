@@ -487,8 +487,10 @@ void Mad_Core::LoadMesh(const char* MDFileName)
 }
 
 
-bool Mad_Core::Create(string MadFileName)
+bool Mad_Core::Create(const string& strName)
 {
+	string MadFileName = strName;
+
 	//setup data path
 	if(MadFileName.find("data/mad/") == -1)
 		MadFileName = "data/mad/"+MadFileName;
