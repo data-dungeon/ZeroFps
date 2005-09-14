@@ -4,6 +4,7 @@
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/basic/zfbasicfs.h"
 #include "../zerofpsv2/engine/entitymanager.h"
+#include "../zerofpsv2/engine/inputhandle.h"
 
 void ZeroEd::SetupGuiEnviroment()
 {
@@ -85,6 +86,9 @@ void ZeroEd::SetupGuiEnviroment()
 	GUIFillServerList();
 
 	AddLoadFoldersToMenu();
+	
+	((ZGuiButton*)GetWnd("OpenWorkTabButton"))->m_bAcceptRightClicks = true;
+
 }
 
 void ZeroEd::OnKeyPress(int iID, ZGuiWnd* win)
@@ -176,7 +180,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				static bool state[2] = {0,0};
 				if( IsWndVisible("worktab") )
-				{
+				{					
 					GetWnd("worktab")->Hide(); 
 
 					state[0] = GetWnd("AddNewProperyWnd")->IsVisible();
@@ -188,7 +192,10 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					ShowWnd("PreviewWnd", false);
 				}
 				else 
-				{
+				{					
+					int iSize = (bRMouseBnClick == true) ? (GetHeight()-100) : 257;
+					ResizeWorkTab(iSize);
+
 					GetWnd("worktab")->Show(); 
 					m_pkGui->PlaceWndFrontBack(GetWnd("worktab"), true);
 
@@ -628,6 +635,8 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 
 	if(strListBox == "PropertyList")
 	{
+		ResizeWorkTab(257); // change to small to fit addpropery
+
 		ShowWnd("AddNewProperyWnd",false);
 
 		ShowWnd("EditPropertyWnd",true);
@@ -822,7 +831,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
          ShowWnd("PreviewWnd", false);
 			BuildFileTree("ObjectTree", "data/script/objects", ".lua");
 			break;
-		case 2:
+		case 2:			
 			m_iEditMode = EDIT_OBJECTS;
 			ShowWnd("SelectFileWnd", false);
 			ShowWnd("PreviewWnd", false);
@@ -970,7 +979,18 @@ void ZeroEd::AddLoadFoldersToMenu()
 	pkMenu->ResizeMenu();
 }
 
+void ZeroEd::ResizeWorkTab(int iSize)
+{
+	int x=GetWidth()-273;
+	int y=GetHeight()-iSize-50;
 
-
-
+	GetWnd("worktab")->SetPos(x, y, true, true); 
+	GetWnd("worktab")->Resize(256, iSize, true); 
+	GetWnd("WorkTabWnd")->Resize(256, iSize, true); 
+	GetWnd("ZoneModelTree")->Resize(200, iSize-57, true);
+	GetWnd("ObjectTree")->Resize(200, iSize-57, true);
+	GetWnd("EnviromentPresetList")->Resize(200, iSize-57, true);
+	GetWnd("PropertyList")->Resize(200, iSize-57, true);
+	
+}
 

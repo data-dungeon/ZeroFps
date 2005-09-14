@@ -202,7 +202,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		// zone and object edit
 		bool PlaceObjectOnGround(int iObjectID);
 		
-		//gui stuff...or something 
+		//gui stuff 
 		void FillPropertyValList();
 		bool FillPropertyList();
 		bool UpdatePropertyList(int iID);		
@@ -213,6 +213,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void GUIFillServerList();
 		void OnGUIAddServer(bool bAdd);
 		void AddLoadFoldersToMenu();
+		void ResizeWorkTab(int iSize);
 
 		//camera stuff
 		void  CreateEditCameras();
