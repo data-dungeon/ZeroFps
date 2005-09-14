@@ -32,6 +32,14 @@ void ZeroEd::SetupGuiEnviroment()
 	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");
 	BuildFileTree("ObjectTree", "data/script/objects", ".lua");
 
+	SetFont("ZoneModelTree", "small7");
+	static_cast<ZGuiTreebox*>(GetWnd("ZoneModelTree"))->ChangeIconSize(8); 
+
+	SetFont("ObjectTree", "small7");
+	static_cast<ZGuiTreebox*>(GetWnd("ObjectTree"))->ChangeIconSize(8); 
+
+
+
 	
 	//disable shortkey thingy for enviroment listbox
 	if(ZGuiListbox* pkLB = (ZGuiListbox*)GetWnd("EnviromentPresetList"))

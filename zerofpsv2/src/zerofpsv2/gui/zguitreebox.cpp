@@ -980,7 +980,7 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 }
 
 bool ZGuiTreebox::ProcessKBInput(int iKey)
-{
+{return false;
 	if(m_kNodeList.empty())
 		return true;
 

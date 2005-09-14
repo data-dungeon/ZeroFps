@@ -573,30 +573,30 @@ void MistClient::AddIconsToSkillTree(ZGuiTreebox* pkTreebox,
 												 vector<SKILL_TREE_INFO> vSkills, 
 												 map<string,int>& rmIconMap)
 {
-		map<string, int> kNameIndexMap;
-		set<int> kTexIds;
-		int oka = 0;
+	map<string, int> kNameIndexMap;
+	set<int> kTexIds;
+	int oka = 0;
 
-		for(int i=0; i<vSkills.size(); i++)
-		{		
-			int iID = LoadGuiTextureByRes(string("skills/") + vSkills[i].strIcon);
-		
-			if(kTexIds.find(iID) == kTexIds.end()) // vi har laddat en ny textur, skapa nytt skin för den
-			{
-				kTexIds.insert(set<int>::value_type(iID));
-
-				ZGuiSkin* pkSkin = new ZGuiSkin();
-				pkSkin->m_iBkTexID = iID;
-				pkTreebox->InsertBranchSkin(oka, pkSkin, true); 
-
-				kNameIndexMap[vSkills[i].strName] = oka;
-
-				oka++;
-			}
-		}
-
-		for(map<string, int>::iterator it=kNameIndexMap.begin(); it!=kNameIndexMap.end(); it++)
+	for(int i=0; i<vSkills.size(); i++)
+	{		
+		int iID = LoadGuiTextureByRes(string("skills/") + vSkills[i].strIcon);
+	
+		if(kTexIds.find(iID) == kTexIds.end()) // vi har laddat en ny textur, skapa nytt skin för den
 		{
-			rmIconMap[it->first] = it->second;
+			kTexIds.insert(set<int>::value_type(iID));
+
+			ZGuiSkin* pkSkin = new ZGuiSkin();
+			pkSkin->m_iBkTexID = iID;
+			pkTreebox->InsertBranchSkin(oka, pkSkin, true); 
+
+			kNameIndexMap[vSkills[i].strName] = oka;
+
+			oka++;
 		}
+	}
+
+	for(map<string, int>::iterator it=kNameIndexMap.begin(); it!=kNameIndexMap.end(); it++)
+	{
+		rmIconMap[it->first] = it->second;
+	}
 }
