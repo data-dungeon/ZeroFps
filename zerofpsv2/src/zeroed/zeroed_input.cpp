@@ -484,7 +484,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 				if(m_pkInputHandle->Pressed(MOUSEWDOWN) && m_fZoneMarkerDistance > 0)
 					m_fZoneMarkerDistance -= 1.0;
 			}
-			else if(m_iEditMode == EDIT_OBJECTS)
+			else if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_CREATEOBJECT)
 			{
 				if(m_pkInputHandle->Pressed(MOUSEWUP))
 					m_fObjectMarkerDistance += 0.2;
