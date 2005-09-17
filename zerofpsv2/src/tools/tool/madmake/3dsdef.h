@@ -1,4 +1,4 @@
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+/// \cond MadMake3DS
 
 #ifndef FILE__3DSDEF_H
 #define FILE__3DSDEF_H
@@ -205,4 +205,4 @@
 
 #endif
 
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+/// \endcond 

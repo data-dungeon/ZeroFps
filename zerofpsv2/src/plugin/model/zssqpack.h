@@ -1,4 +1,4 @@
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+/// \cond Model
 
 #ifndef FILE__QPACK_H
 #define FILE__QPACK_H
@@ -108,4 +108,4 @@ public:
 
 #endif
 
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+/// \endcond 

@@ -1,3 +1,5 @@
+/// \cond Model
+
 #ifndef _P_MD2_H
 #define _P_MD2_H
 
@@ -126,3 +128,4 @@ void Register_P_Md2(ZeroFps* pkZeroFps);
 
 #endif
 
+/// \endcond 

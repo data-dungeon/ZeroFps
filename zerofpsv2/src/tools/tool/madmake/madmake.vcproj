@@ -178,9 +178,6 @@
 				RelativePath=".\obj.cpp">
 			</File>
 			<File
-				RelativePath=".\qpack.cpp">
-			</File>
-			<File
 				RelativePath=".\xxx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -210,9 +207,6 @@
 			</File>
 			<File
 				RelativePath=".\obj.h">
-			</File>
-			<File
-				RelativePath=".\qpack.h">
 			</File>
 			<File
 				RelativePath=".\xxx.h">

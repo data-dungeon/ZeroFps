@@ -32,6 +32,9 @@ enum IMG_FORMAT {
 
 
 // Structures	************************************
+// We ignore all this image structs for the doxygen doc.
+/// \cond Image
+
 #pragma pack( 1 )
 
 /// File Header in TGA Files.
@@ -121,7 +124,7 @@ struct bmp_t
 };
 
 #pragma pack(  )
-
+/// \endcond 
 
 
 

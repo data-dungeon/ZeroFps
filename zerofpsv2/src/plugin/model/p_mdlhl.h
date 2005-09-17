@@ -1,3 +1,5 @@
+/// \cond Model
+
 #ifndef _P_MDLHL_H
 #define _P_MDLHL_H
 
@@ -242,3 +244,4 @@ void Register_P_MdlHL(ZeroFps* pkZeroFps);
 
 #endif
 
+/// \endcond

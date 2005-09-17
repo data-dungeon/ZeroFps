@@ -123,6 +123,23 @@ void ZeroEd::Input_EditTerrain()
 	if(m_pkInputHandle->Pressed(KEY_6)) m_iHMapEditMode = HMAP_STITCH;			
 	if(m_pkInputHandle->Pressed(KEY_7)) m_iHMapEditMode = HMAP_DRAWMASK;			
 	if(m_pkInputHandle->Pressed(KEY_8)) m_iHMapEditMode = HMAP_DRAWVISIBLE;			
+
+	// Print Mode as devpage - temporary fix.
+	m_pkZeroFps->DevPrintf("hmap","  m_cDrawTexture: %d", m_cDrawTexture);
+	char* szMode = "Unknown";
+	switch(m_iHMapEditMode)
+	{
+		case HMAP_EDITVERTEX:		szMode = "HMAP_EDITVERTEX";	break;
+		case HMAP_DRAWSMFLAT:		szMode = "HMAP_DRAWSMFLAT";	break;
+		case HMAP_STITCH:				szMode = "HMAP_STITCH";			break;
+		case HMAP_DRAWMASK:			szMode = "HMAP_DRAWMASK";		break;
+		case HMAP_DRAWVISIBLE:		szMode = "HMAP_DRAWVISIBLE";	break;
+	}
+
+
+	m_pkZeroFps->DevPrintf("hmap","  m_iHMapEditMode: %s", szMode);
+
+
 }
 
 

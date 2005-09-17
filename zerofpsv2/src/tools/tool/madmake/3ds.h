@@ -1,5 +1,3 @@
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
 #ifndef FILE__3DS_H
 #define FILE__3DS_H
 
@@ -12,6 +10,8 @@
 
 #include <vector>
 using namespace std;
+
+/// \cond MadMake3DS
 
 /// 3DS Rgb color
 class rgb_c
@@ -107,6 +107,8 @@ struct Chunk3DS
 	long				len;
 };
 
+/// \endcond 
+
 /// Importer for 3DS Files.
 class Modell3DS : public IMadImport
 {
@@ -141,4 +143,3 @@ public:
 
 #endif
 
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -1,3 +1,5 @@
+/// \cond Model
+
 #ifndef _P_MDL_H
 #define _P_MDL_H
 
@@ -139,4 +141,6 @@ Property* Create_P_Mdl();
 void Register_P_Mdl(ZeroFps* pkZeroFps);
 
 #endif
+
+/// \endcond 
 
