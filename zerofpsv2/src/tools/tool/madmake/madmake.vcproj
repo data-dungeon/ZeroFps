@@ -166,21 +166,6 @@
 				RelativePath="..\..\..\zerofpsv2\engine_systems\mad\core_meshanim.cpp">
 			</File>
 			<File
-				RelativePath=".\halflife.cpp">
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\mad.cpp">
 			</File>
 			<File
@@ -213,9 +198,6 @@
 			</File>
 			<File
 				RelativePath=".\3dsdef.h">
-			</File>
-			<File
-				RelativePath=".\halflife.h">
 			</File>
 			<File
 				RelativePath="..\..\..\zerofpsv2\engine_systems\mad\mad_core.h">
