@@ -190,36 +190,6 @@
 				RelativePath=".\main.cpp">
 			</File>
 			<File
-				RelativePath=".\md1.cpp">
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\md2.cpp">
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\obj.cpp">
 			</File>
 			<File
@@ -255,9 +225,6 @@
 			</File>
 			<File
 				RelativePath=".\madmake.h">
-			</File>
-			<File
-				RelativePath=".\mdl.h">
 			</File>
 			<File
 				RelativePath=".\obj.h">
