@@ -3,8 +3,8 @@
 #include "zerofps.h"
 #include "inputhandle.h"
 
-Input::Input() 
- : ZFSubSystem("Input") {
+ZSSInput::ZSSInput() 
+ : ZFSubSystem("ZSSInput") {
 	
 	m_bBindMode = 				0;
 
@@ -24,7 +24,7 @@ Input::Input()
 	Register_Cmd("i_load",				FID_LOAD);
 };
 
-bool Input::StartUp()	
+bool ZSSInput::StartUp()	
 { 
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	m_pkRender = 	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
@@ -81,7 +81,7 @@ bool Input::StartUp()
 }
 
 
-void Input::UpdateInputHandles()
+void ZSSInput::UpdateInputHandles()
 {
 	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
@@ -89,7 +89,7 @@ void Input::UpdateInputHandles()
 	}
 }
 
-void Input::ClearActiveInputHandles()
+void ZSSInput::ClearActiveInputHandles()
 {
 	//reset input
 	Reset();
@@ -101,7 +101,7 @@ void Input::ClearActiveInputHandles()
 	}
 }
 
-bool Input::AddActiveInputHandle(string strName)
+bool ZSSInput::AddActiveInputHandle(string strName)
 {
 	InputHandle* pkHandle = GetInputHandle(strName);
 	
@@ -120,7 +120,7 @@ bool Input::AddActiveInputHandle(string strName)
 	return false;
 }
 
-bool Input::RemoveActiveInputHandle(string strName)
+bool ZSSInput::RemoveActiveInputHandle(string strName)
 {
 	InputHandle* pkHandle = GetInputHandle(strName);
 	
@@ -136,7 +136,7 @@ bool Input::RemoveActiveInputHandle(string strName)
 	return false;
 }
 
-bool Input::SetActiveInputHandle(string strName)
+bool ZSSInput::SetActiveInputHandle(string strName)
 {
 	
 	InputHandle* pkHandle = GetInputHandle(strName);
@@ -158,7 +158,7 @@ bool Input::SetActiveInputHandle(string strName)
 	return false;
 }
 
-bool Input::RegisterInputHandle(InputHandle* pkInputHandle)
+bool ZSSInput::RegisterInputHandle(InputHandle* pkInputHandle)
 {
 	if(GetInputHandle(pkInputHandle->m_strHandleName))
 	{
@@ -174,7 +174,7 @@ bool Input::RegisterInputHandle(InputHandle* pkInputHandle)
 	return false;
 }
 
-bool Input::UnregisterInputHandle(InputHandle* pkInputHandle)
+bool ZSSInput::UnregisterInputHandle(InputHandle* pkInputHandle)
 {
    for ( vector<InputHandle*>::iterator kIte = m_kInputHandles.begin(); kIte != m_kInputHandles.end(); kIte++ )	
 	{	
@@ -190,7 +190,7 @@ bool Input::UnregisterInputHandle(InputHandle* pkInputHandle)
 	return false;	
 }
 
-InputHandle* Input::GetInputHandle(string strName)
+InputHandle* ZSSInput::GetInputHandle(string strName)
 {
 	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
@@ -201,7 +201,7 @@ InputHandle* Input::GetInputHandle(string strName)
 	return NULL;
 }
 
-void Input::PrintInputHandlers()
+void ZSSInput::PrintInputHandlers()
 {
 	//cout<<"Registered input handles"<<endl;
 
@@ -224,20 +224,20 @@ void Input::PrintInputHandlers()
 	}
 }
 
-void Input::StartBindMode(string strBindKey, int iBindIndex)
+void ZSSInput::StartBindMode(string strBindKey, int iBindIndex)
 {
 	m_bBindMode		= true;
 	m_strBindKey	= strBindKey;
 	m_iBindKeyIndex = iBindIndex;
 }
 
-void Input::BindBindMode(int iKey)
+void ZSSInput::BindBindMode(int iKey)
 {
 	m_bBindMode = false;
 	VKBind(m_strBindKey, (Buttons)iKey, m_iBindKeyIndex);
 }
 
-BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
+BasicKey ZSSInput::TranslateKey(SDL_keysym* pkSdlKey)
 {
 	BasicKey kTemp;
 	kTemp.m_iKey = pkSdlKey->sym;
@@ -300,7 +300,7 @@ BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
 	return kTemp;
 }
 
-void Input::Update(void) 
+void ZSSInput::Update(void) 
 {
 
 	UpdateInputHandles();
@@ -460,7 +460,7 @@ void Input::Update(void)
 	}
 }
 
-void Input::KeyDown(int iKey)
+void ZSSInput::KeyDown(int iKey)
 {
 	//set pressed state
 	m_akKeyState[iKey].m_bDown = true;
@@ -470,14 +470,14 @@ void Input::KeyDown(int iKey)
 		BindBindMode(iKey);
 }
 
-void Input::KeyUp(int iKey)
+void ZSSInput::KeyUp(int iKey)
 {
 	//set pressed state
 	m_akKeyState[iKey].m_bDown = false;
 }
 
 
-void Input::AddQueuedKey(BasicKey* pkKey,bool bPressed)
+void ZSSInput::AddQueuedKey(BasicKey* pkKey,bool bPressed)
 {
 	//put key in list
 	m_aPressedKeys.push(  QueuedKeyInfo(pkKey->m_iKey,pkKey->m_iModifiers,bPressed)  );	
@@ -487,7 +487,7 @@ void Input::AddQueuedKey(BasicKey* pkKey,bool bPressed)
 		m_aPressedKeys.pop();	
 }
 
-VKData* Input::GetVKByName(string strName)
+VKData* ZSSInput::GetVKByName(string strName)
 {
 	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
 	{
@@ -498,7 +498,7 @@ VKData* Input::GetVKByName(string strName)
 	return NULL;
 }
 
-bool Input::VKBind(string strName, Buttons kKey, int iIndex)
+bool ZSSInput::VKBind(string strName, Buttons kKey, int iIndex)
 {
 	// Make sure name is not to long and that the key is not outside the valid range.
 	if( (strName.length() + 1) >= MAX_KEYNAME)
@@ -533,14 +533,14 @@ bool Input::VKBind(string strName, Buttons kKey, int iIndex)
 	return true;	// Q - how could this possible hapen?, A - Ask not what your compiler can do for you. Ask what you can do for your compiler.
 }
 
-bool Input::VKBind(string strName, string strKeyName,int iIndex)
+bool ZSSInput::VKBind(string strName, string strKeyName,int iIndex)
 {
 	Buttons eKey = GetNameByKey( strKeyName );
 	return VKBind(strName, eKey, iIndex);
 }
 
 
-bool Input::VKIsDown(string strName)
+bool ZSSInput::VKIsDown(string strName)
 {
 	VKData* pkVk = GetVKByName(strName);
 	
@@ -559,7 +559,7 @@ bool Input::VKIsDown(string strName)
 	return bKeyDown;
 }
 
-void Input::VKList()
+void ZSSInput::VKList()
 {
 
 	m_pkConsole->Printf("VK List");	
@@ -578,7 +578,7 @@ void Input::VKList()
 
 
 
-Buttons Input::GetNameByKey(string strName)
+Buttons ZSSInput::GetNameByKey(string strName)
 {
 	for(int i=0; i<MAX_KEYS; i++) 
 	{
@@ -589,26 +589,26 @@ Buttons Input::GetNameByKey(string strName)
 	return (Buttons) 0;
 }
 
-string  Input::GetKeyName(Buttons eKey)
+string  ZSSInput::GetKeyName(Buttons eKey)
 {
 	return m_akKeyState[eKey].m_strName;
 }
 
 
-void Input::MouseXY(float &fX,float &fY) 
+void ZSSInput::MouseXY(float &fX,float &fY) 
 {		
 	fX=m_fAbsMouseX;
 	fY=m_fAbsMouseY;
 }
 
-void Input::UnitMouseXY(float &fX,float &fY) 
+void ZSSInput::UnitMouseXY(float &fX,float &fY) 
 {	
 	fX = float( (m_fAbsMouseX/(float)m_pkRender->GetWidth())-0.5 );
 	fY = float( (m_fAbsMouseY/(float)m_pkRender->GetHeight())-0.5 );
 }
 
 
-void Input::UpdateMousePos()
+void ZSSInput::UpdateMousePos()
 {
 	//update sdlmouse absolute position		
 	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
@@ -643,14 +643,14 @@ void Input::UpdateMousePos()
 		
 }
 
-void Input::SDLMouseXY(int &iX,int &iY)
+void ZSSInput::SDLMouseXY(int &iX,int &iY)
 {
 
 		iX = m_iSDLMouseX;
 		iY = m_iSDLMouseY;
 }
 
-void Input::RelMouseXY(float &fX,float &fY) 
+void ZSSInput::RelMouseXY(float &fX,float &fY) 
 {		
 /*
 		if(m_iMouseX==-1)
@@ -663,7 +663,7 @@ void Input::RelMouseXY(float &fX,float &fY)
 	fY = m_fRelMouseY;
 }
 
-void Input::ToggleGrab(void) 
+void ZSSInput::ToggleGrab(void) 
 {	
 	if(m_pkZeroFps->GetEngineTime()-m_fGrabtime > 0.200) 
 	{
@@ -678,7 +678,7 @@ void Input::ToggleGrab(void)
 	} 	
 }
 
-void Input::ToggleGrab(bool bGrab,bool bLog) 
+void ZSSInput::ToggleGrab(bool bGrab,bool bLog) 
 {
 	if(bLog)
 		m_bGrabInput = bGrab;
@@ -690,7 +690,7 @@ void Input::ToggleGrab(bool bGrab,bool bLog)
 }
 	
 
-void Input::Reset(void) {
+void ZSSInput::Reset(void) {
 	SDL_Event kTemp;
 
 	while(SDL_PollEvent(&kTemp))
@@ -711,7 +711,7 @@ void Input::Reset(void) {
 
 
 
-void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSInput::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) 
 	{
@@ -761,7 +761,7 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
-void Input::Save(string strCfgName)
+void ZSSInput::Save(string strCfgName)
 {
 	char szVkName[MAX_KEYNAME];
 
@@ -797,7 +797,7 @@ void Input::Save(string strCfgName)
 	kFile.Close();
 }
 
-void Input::Load(string strCfgName)
+void ZSSInput::Load(string strCfgName)
 {
 	ZFVFile kFile;
 	kFile.Open(strCfgName,0,false);
@@ -828,7 +828,7 @@ void Input::Load(string strCfgName)
 }
 
 
-QueuedKeyInfo Input::GetQueuedKey()
+QueuedKeyInfo ZSSInput::GetQueuedKey()
 {
 	QueuedKeyInfo kKey(-1,0,true);	
 
@@ -843,25 +843,25 @@ QueuedKeyInfo Input::GetQueuedKey()
 	return kKey;
 }
 
-int Input::SizeOfQueue()
+int ZSSInput::SizeOfQueue()
 {
 	return m_aPressedKeys.size();
 }
 
-bool Input::Pressed(Buttons eButton)
+bool ZSSInput::Pressed(Buttons eButton)
 {
 	return m_akKeyState[eButton].m_bDown;
 }
 
 
 
-void Input::SetCursorInputPos(float x, float y)
+void ZSSInput::SetCursorInputPos(float x, float y)
 {
 	m_fAbsMouseX=x;
 	m_fAbsMouseY=y;
 }
 
-void Input::ShowCursor(bool bShow)
+void ZSSInput::ShowCursor(bool bShow)
 {
 	if(bShow == m_bVisibleHWCursor)
 		return;
@@ -874,7 +874,7 @@ void Input::ShowCursor(bool bShow)
 		SDL_ShowCursor(SDL_DISABLE);		
 }
 
-int  Input::SDLToZeroFpsKey(int iSdlSym)
+int  ZSSInput::SDLToZeroFpsKey(int iSdlSym)
 {
 	if(iSdlSym < 0)				assert(0);
 	if(iSdlSym >=MAX_SDLKEYS)	assert(0);
@@ -882,7 +882,7 @@ int  Input::SDLToZeroFpsKey(int iSdlSym)
 	return m_akMapToKeyState[ iSdlSym ];
 }
 
-void Input::SetupMapToKeyState()
+void ZSSInput::SetupMapToKeyState()
 {
 	memset(m_akMapToKeyState, 0, sizeof(int) * MAX_SDLKEYS);
 

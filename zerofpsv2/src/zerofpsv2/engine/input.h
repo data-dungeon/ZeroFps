@@ -76,7 +76,7 @@ class QueuedKeyInfo
 /** \brief	Engine Systems that handles input (keyb, mouse, joystick).
 	 \ingroup Engine
 */
-class ENGINE_API Input : public ZFSubSystem {
+class ENGINE_API ZSSInput : public ZFSubSystem {
 	private:
 		enum FuncId_e
 		{
@@ -155,7 +155,7 @@ class ENGINE_API Input : public ZFSubSystem {
 		
 public:
 
-		Input();
+		ZSSInput();
 		bool StartUp();
 		bool ShutDown()		{return true;};
 		bool IsValid()			{return true;};

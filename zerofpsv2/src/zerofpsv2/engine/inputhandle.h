@@ -4,15 +4,15 @@
 #include "input.h"
 #include "engine_x.h"
 
-class Input;
+class ZSSInput;
 
 class ENGINE_API InputHandle
 {
 	private:
-		string	m_strHandleName;
-		Input*	m_pkInput;		
-		bool		m_bActive;
-		bool		m_bTempDisable;
+		string		m_strHandleName;
+		ZSSInput*	m_pkInput;		
+		bool			m_bActive;
+		bool			m_bTempDisable;
 
 	public:
 		InputHandle(string strHandleName);
@@ -38,7 +38,7 @@ class ENGINE_API InputHandle
 		
 		void Reset();
 		
-		friend class Input;
+		friend class ZSSInput;
 };
 
 

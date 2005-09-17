@@ -38,7 +38,7 @@ private:
 	ZShadow* m_pkZShadow;
 	ZFAudioSystem* m_pkAudioSys;
 	Render* m_pkRender;
-	Input* m_pkInput;
+	ZSSInput* m_pkInput;
 	ZeroFps* m_pkZeroFps;
 };
 

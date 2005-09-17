@@ -18,8 +18,8 @@ bool ZeroEd::UpdatePropertyList(int iID)
    SetText("PropertyValEb", "");
 
 	vector<string> vkProperties;
-	PropertyFactory* pkPropFuck = 
-		static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
+	ZSSPropertyFactory* pkPropFuck = 
+		static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
 
 	list<string> temp;
 	pkPropFuck->GetAllProperties(vkProperties);
@@ -62,8 +62,8 @@ bool ZeroEd::FillPropertyList()
 	pkProperyList->RemoveAllItems();
 
 	vector<string> vkProperties;
-	PropertyFactory* pkPropFuck = 
-		static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
+	ZSSPropertyFactory* pkPropFuck = 
+		static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
 
 	list<string> temp;
 	pkPropFuck->GetAllProperties(vkProperties);
@@ -209,7 +209,7 @@ bool ZeroEd::SaveCurrentToScript()
    Entity* pkEnt;
    Property* pkProp;
    ZFBasicFS* pkBFPS;	
-   PropertyFactory* pkPropFuck;
+   ZSSPropertyFactory* pkPropFuck;
    string strFileName = GetText("SaveScriptFileNameEb");
 
    bool bUpdate = false;
@@ -217,7 +217,7 @@ bool ZeroEd::SaveCurrentToScript()
    string CREATED_SCRIPTS_DIR = "data/script/objects/";
    
 	if((pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"))) &&
-      (pkPropFuck = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"))) &&
+      (pkPropFuck = static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"))) &&
       (pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)) && !strFileName.empty())
    {
       if( strFileName.find(".lua") == string::npos )

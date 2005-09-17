@@ -19,7 +19,7 @@ Console::Console()
 bool Console::StartUp()	
 { 
 	m_pkEngine	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-	m_pkInput	= static_cast<Input*>(GetSystem().GetObjectPtr("Input"));	
+	m_pkInput	= static_cast<ZSSInput*>(GetSystem().GetObjectPtr("ZSSInput"));	
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
 

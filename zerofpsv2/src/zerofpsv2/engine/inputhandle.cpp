@@ -6,7 +6,7 @@
  
 InputHandle::InputHandle(string strHandleName) 
 {
-	m_pkInput			= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));		
+	m_pkInput			= static_cast<ZSSInput*>(g_ZFObjSys.GetObjectPtr("ZSSInput"));		
 	m_strHandleName	= strHandleName;
 	m_bActive			= false;
 	m_bTempDisable		= false;

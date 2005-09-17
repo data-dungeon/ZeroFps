@@ -10,6 +10,7 @@
 #include "basicconsole.h"
 #include "globals.h"
 #include "../basic/zfini.h"
+#include "zfassert.h"
 
 using namespace std;
 
@@ -253,7 +254,9 @@ ZFSubSystem* ZFSystem::GetObjectPtr(const char* acName,bool bWarning)
 		{
 			//cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
 		}
-				
+		
+		cout << "System Not Found: " << acName << endl;
+		//ZFAssert(0, "Requested system pointer not found");
 		return NULL;
 	}
 

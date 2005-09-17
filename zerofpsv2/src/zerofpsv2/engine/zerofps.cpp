@@ -72,8 +72,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkRender					= new Render;
 	m_pkLight					= new Light;	
 	m_pkFrustum					= new Frustum;	
-	m_pkPropertyFactory		= new PropertyFactory;
-	m_pkInput					= new Input;		
+	m_pkPropertyFactory		= new ZSSPropertyFactory;
+	m_pkInput					= new ZSSInput;		
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkPSystemManager		= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;

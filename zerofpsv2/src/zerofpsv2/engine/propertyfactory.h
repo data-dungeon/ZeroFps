@@ -37,7 +37,7 @@ public:
 This class keeps a list of all type of propertys that exist in the game and creates
 them when requested by the ObjectManger.
 */
-class ENGINE_API PropertyFactory : public ZFSubSystem
+class ENGINE_API ZSSPropertyFactory : public ZFSubSystem
 {
 private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
@@ -46,8 +46,8 @@ private:
 	NetWork*			m_pkNetWork;
 
 public:
-	PropertyFactory();
-	~PropertyFactory() { }
+	ZSSPropertyFactory();
+	~ZSSPropertyFactory() { }
 
 	ProperyCreateLink*	GetPropertyLink(const char* szName);
 	Property*	CreateProperty(const char* szName);

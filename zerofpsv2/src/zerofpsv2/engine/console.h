@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Input;
+class ZSSInput;
 class ZeroFps;
 
 //max lenght of an entered command
@@ -40,7 +40,7 @@ class ENGINE_API Console : public BasicConsole
 
 		ZeroFps*					m_pkEngine;		
 		Render*					m_pkRender;
-		Input*					m_pkInput;
+		ZSSInput*				m_pkInput;
 		TextureManager*		m_pkTexMan;
 		
 		//SDL_Event				m_kEvent;

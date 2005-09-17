@@ -21,7 +21,7 @@ Entity::Entity()
 {
 	// Get Ptrs to some usefull Subsystems.
 	m_pkEntityManager		= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	m_pkPropertyFactory	= static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("ZSSPropertyFactory"));	
 	m_pkZeroFps			   = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
 	ZFAssert(m_pkEntityManager,	"Entity::Entity(): Failed to find EntityManager");

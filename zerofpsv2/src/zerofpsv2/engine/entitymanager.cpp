@@ -118,7 +118,7 @@ bool EntityManager::StartUp()
 	m_pkScript		=	static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
 	m_pkBasicFS		=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
 	m_pkRender		=	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
-	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	m_pkPropertyFactory	= static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("ZSSPropertyFactory"));	
 	m_pkZShaderSystem		= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();

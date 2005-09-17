@@ -4,28 +4,28 @@
 #include "network.h"
 #include "../basic/zfsystem.h"
  
-PropertyFactory::PropertyFactory() :
- ZFSubSystem("PropertyFactory") 
+ZSSPropertyFactory::ZSSPropertyFactory() :
+ ZFSubSystem("ZSSPropertyFactory") 
 {
 	
 }
 
-bool PropertyFactory::StartUp()	
+bool ZSSPropertyFactory::StartUp()	
 { 
 	m_pkNetWork = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));		
 
 	return true;
 }
 
-bool PropertyFactory::ShutDown()	
+bool ZSSPropertyFactory::ShutDown()	
 { 
 	
 	return true;	
 }
 
-bool PropertyFactory::IsValid()	{ return true;	}
+bool ZSSPropertyFactory::IsValid()	{ return true;	}
 
-ProperyCreateLink* PropertyFactory::GetPropertyLink(const char* szName)
+ProperyCreateLink* ZSSPropertyFactory::GetPropertyLink(const char* szName)
 {
 	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
 	{
@@ -37,7 +37,7 @@ ProperyCreateLink* PropertyFactory::GetPropertyLink(const char* szName)
 }
 
 
-Property* PropertyFactory::CreateProperty(const char* szName)
+Property* ZSSPropertyFactory::CreateProperty(const char* szName)
 {
 	ProperyCreateLink* pkPl = GetPropertyLink(szName);
 	if(! pkPl)
@@ -66,7 +66,7 @@ Property* PropertyFactory::CreateProperty(const char* szName)
 	return pkProp;
 }
 
-void PropertyFactory::Register(char* szName, Property*	(*Create)())
+void ZSSPropertyFactory::Register(char* szName, Property*	(*Create)())
 {
 	ProperyCreateLink NewLink;
 	strcpy(NewLink.m_szName, szName);
@@ -82,7 +82,7 @@ void PropertyFactory::Register(char* szName, Property*	(*Create)())
 	
 }
 
-void PropertyFactory::Display()
+void ZSSPropertyFactory::Display()
 {
 	cout << "Listing properys : 'name' : 'active' : 'total created'" << endl;
 
@@ -98,7 +98,7 @@ void PropertyFactory::Display()
 	cout << "Total Property Name Size: " <<  iSize << endl;
 }
 
-void PropertyFactory::GetAllProperties(vector<string>& vkList)
+void ZSSPropertyFactory::GetAllProperties(vector<string>& vkList)
 {
 	vkList.reserve( m_kProperyLinks.size() + 1 );
 

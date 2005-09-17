@@ -11,7 +11,7 @@ using namespace std;
 
 struct Collision;
 //class Entity;
-class PropertyFactory;
+class ZSSPropertyFactory;
 class EntityManager;
 class GameMessage;
 

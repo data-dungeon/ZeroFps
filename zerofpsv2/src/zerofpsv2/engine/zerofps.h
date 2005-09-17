@@ -230,8 +230,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		ZFBasicFS*				m_pkBasicFS;				///< Low level platform depended File Functions.
 		ZFVFileSystem*			m_pkZFVFileSystem;		///< ZeroFps own File System.
 		TextureManager*		m_pkTexMan;					///< Manges Textures
-		Input*					m_pkInput;					///< Handles all Local Input.
-		PropertyFactory*		m_pkPropertyFactory;		///< Property Creation for Objects.
+		ZSSInput*				m_pkInput;					///< Handles all Local Input.
+		ZSSPropertyFactory*	m_pkPropertyFactory;		///< Property Creation for Objects.
 		Frustum*					m_pkFrustum;				///< Global Frustum object for culling.
 		Light*					m_pkLight;					///< Light Engine.
 		Render*					m_pkRender;					///< Renders Graphic primitives

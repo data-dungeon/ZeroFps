@@ -14,7 +14,7 @@ using namespace std;
 
 class		EntityManager;
 class		Property;
-class		PropertyFactory;
+class		ZSSPropertyFactory;
 
 enum UpdateStatus 
 {
@@ -146,7 +146,7 @@ class ENGINE_API Entity
 			WORLD_POS_V,		
 		};
 	
-		PropertyFactory*			m_pkPropertyFactory;				///< Ptr to property factory.			
+		ZSSPropertyFactory*		m_pkPropertyFactory;				///< Ptr to property factory.			
 		ZFResourceHandle*			m_pScriptFileHandle;				///< Handle to script used to create this entity if any.
 		
 		/**	\brief	Entity type name.

@@ -6,7 +6,7 @@
 
 void MCOMMON_API MCommon_RegisterSystems();
 void MCOMMON_API MCommon_RegisterResources();
-void MCOMMON_API MCommon_RegisterPropertys(ZeroFps* pkZeroFps, PropertyFactory*	pkPropertyFactory);
+void MCOMMON_API MCommon_RegisterPropertys(ZeroFps* pkZeroFps, ZSSPropertyFactory*	pkPropertyFactory);
 
 
 #endif
