@@ -62,7 +62,7 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 {
 	pkTex->m_bClampToBorder	= false;
 	pkTex->m_bClamp			= false;
-	pkTex->m_bCompression	= true;
+	pkTex->m_bNoCompression	= true;
 	pkTex->m_bMipMapping		= true;
 	pkTex->m_bNoFilter		= false;
 	pkTex->m_bAlphaOnly		= false;
@@ -72,8 +72,8 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 		if((iOption & T_NOMIPMAPPING)){			
 			pkTex->m_bMipMapping		=	false;
 		}
-		if((iOption & T_COMPRESSION)) {
-			pkTex->m_bCompression	=	false;
+		if((iOption & T_NOCOMPRESSION)) {
+			pkTex->m_bNoCompression	=	false;
 		}
 		if((iOption & T_CLAMP)) {
 			pkTex->m_bClamp			=	true;
@@ -124,7 +124,7 @@ int TextureManager::GetOptionsFromFileName(string strName)
 		switch(StrFlags[i]) 
 		{
 			case 'p':
-				iOptions = iOptions | T_COMPRESSION;
+				iOptions = iOptions | T_NOCOMPRESSION;
 				break;			
 			case 'c':
 				iOptions = iOptions | T_CLAMP;
@@ -259,7 +259,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 //  		}
 //  	}	
 //  	else 	
-	if(m_bSupportARBTC && pkTex->m_bCompression)
+	if(m_bSupportARBTC && !pkTex->m_bNoCompression)
 	{		
 		switch(iInternalFormat)
 		{

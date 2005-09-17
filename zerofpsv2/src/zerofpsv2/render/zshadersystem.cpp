@@ -1,5 +1,6 @@
 #include "zshadersystem.h"
 #include "glslprogram.h"
+#include "res_texture.h"
 
 ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 {
@@ -38,6 +39,12 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_kEyePosition						=	Vector3(0,0,0);
 		
 	m_fExposure							= 1.0;
+		
+	m_aiCurrentTextures[0]			= 0;
+	m_aiCurrentTextures[1]			= 0;
+	m_aiCurrentTextures[2]			= 0;
+	m_aiCurrentTextures[3]			= 0;
+	
 		
 	m_bSupportVertexBuffers =		false;
 	
@@ -113,6 +120,11 @@ bool ZShaderSystem::StartUp()
 		cout<<"ZSHADER: No Occlusion support"<<endl;
 	else
 		SetupOcculusion();
+	
+	m_bSupportARBTC = HaveExtension("ARB_texture_compression");
+	if(!m_bSupportARBTC)
+		cout<<"ZSHADER: No arb texturecompression support"<<endl;
+			
 			
 	//set gamma after its been loaded
 	SetGamma(m_fRedGamma,m_fGreenGamma,m_fBlueGamma);				
@@ -666,6 +678,83 @@ void ZShaderSystem::SetupPass(int iPass)
 	
 }
 
+void ZShaderSystem::PushTexture()
+{
+	//get current texture unit
+	GLint iTU = GL_TEXTURE0_ARB;
+	int iTUID = 0;	
+	glGetIntegerv(GL_ACTIVE_TEXTURE_ARB,&iTU);
+	switch(iTU)
+	{
+		case GL_TEXTURE0_ARB:	iTUID = 0;	break;
+		case GL_TEXTURE1_ARB:	iTUID = 1;	break;	
+		case GL_TEXTURE2_ARB:	iTUID = 2;	break;
+		case GL_TEXTURE3_ARB:	iTUID = 3;	break;
+	}
+
+	//push current texture
+	m_kTextureStacks[iTUID].push(m_aiCurrentTextures[iTUID]);
+}
+
+void ZShaderSystem::PopTexture()
+{
+	//get current texture unit
+	GLint iTU = GL_TEXTURE0_ARB;
+	int iTUID = 0;	
+	glGetIntegerv(GL_ACTIVE_TEXTURE_ARB,&iTU);
+	switch(iTU)
+	{
+		case GL_TEXTURE0_ARB:	iTUID = 0;	break;
+		case GL_TEXTURE1_ARB:	iTUID = 1;	break;	
+		case GL_TEXTURE2_ARB:	iTUID = 2;	break;
+		case GL_TEXTURE3_ARB:	iTUID = 3;	break;
+	}
+
+	if(m_kTextureStacks[iTUID].empty())
+		return;
+
+	//get top texture
+	GLuint iTexture = m_kTextureStacks[iTUID].top();
+	m_kTextureStacks[iTUID].pop();
+
+	//bind texture if not bound already
+	if(m_aiCurrentTextures[iTUID] != iTexture)
+	{
+		glBindTexture(GL_TEXTURE_2D,iTexture);
+		m_aiCurrentTextures[iTUID] = iTexture;
+	}
+}
+
+void ZShaderSystem::BindTexture(ResTexture* pkTexture)
+{
+		
+	//get texture id
+	GLuint iGLTexID;	
+	if(pkTexture)
+		iGLTexID = pkTexture->m_iOpenGLID;
+	else
+		iGLTexID = 0;	
+
+	//get current texture unit
+	GLint iTU = GL_TEXTURE0_ARB;
+	int iTUID = 0;	
+	glGetIntegerv(GL_ACTIVE_TEXTURE_ARB,&iTU);
+	switch(iTU)
+	{
+		case GL_TEXTURE0_ARB:	iTUID = 0;	break;
+		case GL_TEXTURE1_ARB:	iTUID = 1;	break;	
+		case GL_TEXTURE2_ARB:	iTUID = 2;	break;
+		case GL_TEXTURE3_ARB:	iTUID = 3;	break;
+	}
+
+	if(m_aiCurrentTextures[iTUID] != iGLTexID)
+	{
+		glBindTexture(GL_TEXTURE_2D,iGLTexID);
+		m_aiCurrentTextures[iTUID] = iGLTexID;
+	}
+
+}
+
 void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 {
 	//reserved for shadow's 
@@ -697,7 +786,8 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 	if(pkSettings->m_kTUs[iTU]->IsValid())
 	{		
 		glEnable(GL_TEXTURE_2D);
-		m_pkTexMan->BindTexture(((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr())->m_iTextureID);
+		//m_pkTexMan->BindTexture(((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr())->m_iTextureID);
+		BindTexture((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr());
 		
 		switch(pkSettings->m_iTUTexEnvMode[iTU])
 		{

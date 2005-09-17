@@ -56,7 +56,7 @@ public:
 	void CreateEmpty(int setwidth, int setheight);
 	void Free(void);												///< Remove image.
 
-	void Save(const char* szFileName, bool bAlpha = false);		///< Save image as a 24 / 32 bit .tga file.
+	bool Save(const char* szFileName, bool bAlpha = false);		///< Save image as a 24 / 32 bit .tga file.
 	void Save(FILE* fp, bool bAlpha = false);							///< Save image as a 24 / 32 bit .tga file.
 
 	// Tools

@@ -53,7 +53,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iCurrentRenderMode=RENDER_NONE;
 	
 	m_bFSSEnabled		=	false;
-	m_bBloomEnabled	=	false;
+	m_bBloomEnabled	=	true;
 	
 	m_iShadowFBO = 		0;
 	m_iShadowRBOcolor =	0;	
@@ -63,13 +63,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
  	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
   	//cout<<"size:"<<m_iFSSTextureWidth<<" "<<m_iFSSTextureHeight<<endl;
 	
-	glGenTextures(1, &m_iFSSTexture);
-	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_iFSSTextureWidth, m_iFSSTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	
+	m_kFSSTexture.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
+
 
 	//create fssprojection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
@@ -99,14 +95,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_pkBloomMaterial2->GetPass(0)->m_bDepthTest = false;
 	
 		
-	glGenTextures(1, &m_iBloomTexture);
-	glBindTexture(GL_TEXTURE_2D, m_iBloomTexture);
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_iFSSTextureWidth, m_iFSSTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
- 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
- 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	
+	m_kBloomTexture.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
 	
 	//create shadowmap texture	
 	if(	(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || 
@@ -147,22 +136,10 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 			
 		cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
-		m_iShadowTexture = 0;
 		m_fShadowArea = 50;
 		
-		glGenTextures(1, &m_iShadowTexture);
-		glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_iShadowTexWidth, m_iShadowTexHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-	/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	
- 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
- 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		
- 		Vector4 color(1,1,1,1);
- 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color[0]);
- 		
+		m_kShadowTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_DEPTH|T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
+		m_kShadowTexture.SetBorderColor(Vector4(1,1,1,1));
  		
 		
 		//USE FBO ?
@@ -192,7 +169,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 			// attach depth buffer texture                                 		
 			glFramebufferTexture2DEXT(	GL_FRAMEBUFFER_EXT,
 												GL_DEPTH_ATTACHMENT_EXT,
-												GL_TEXTURE_2D, m_iShadowTexture, 0);			
+												GL_TEXTURE_2D, m_kShadowTexture.GetOpenGLTextureID(), 0);			
+												
 			if(glGetError() != GL_NO_ERROR) cout<<"ERROR binding depth "<<endl;
 				
 			//check framebuffer status
@@ -224,15 +202,6 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 Camera::~Camera()
 {
-	if(m_iShadowTexture != 0)
-		glDeleteTextures(1,&m_iShadowTexture);
-
-	if(m_iFSSTexture != -1)
-		glDeleteTextures(1,&m_iFSSTexture);
-
-	if(m_iBloomTexture != -1)
-		glDeleteTextures(1,&m_iBloomTexture);
-
 				
 	if(m_pkFSSMaterial)
 		delete m_pkFSSMaterial;
@@ -304,7 +273,7 @@ void Camera::FullScreenShader()
  	uvdata[7] = ys;
 	
 	//save screen surface to fss texture									
-	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
 	
 	
@@ -332,7 +301,7 @@ void Camera::FullScreenShader()
   	m_pkZShaderSystem->SetDepthMask(false);
   	
   	//ugly haxk to force another texture then the one specified in the material
-	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
   	
   	
 	//draw scree surface
@@ -372,7 +341,7 @@ void Camera::MakeBloom()
  	uvdata[7] = ys;
 	
 	//save screen surface to fss texture									
-	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
 	
 		
@@ -449,7 +418,7 @@ void Camera::MakeBloom()
   	m_pkZShaderSystem->SetDepthMask(false);
   	
   	//ugly haxk to force another texture then the one specified in the material
-	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);
+	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
   	
   	
 	//draw scree surface
@@ -458,11 +427,11 @@ void Camera::MakeBloom()
   	
 	//save image, and do another draw	
 	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);
-	glBindTexture(GL_TEXTURE_2D, m_iBloomTexture);	
+	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());	
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_2D, m_iFSSTexture);	
+	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	m_pkZShaderSystem->DrawArray(QUADS_MODE); 
 	
@@ -481,7 +450,7 @@ void Camera::MakeBloom()
 }
 
 
-void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,unsigned int iTexture)
+void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, ResTexture* pkTexture)
 {
 	//modelview matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
@@ -552,7 +521,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	else
 	{
-	 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);	
+// 	 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);	
+	 	m_pkZShaderSystem->BindTexture(pkTexture);
  		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
 	}
 	
@@ -1014,9 +984,6 @@ void Camera::DrawWorld()
 {
 	//get root entity		
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-		
-	
-
 	
 	//shuld we render shadowmaps?		
 	if((m_bShadowMap && m_pkZeroFps->GetShadowMap() && (m_iForceLighing != LIGHT_ALWAYS_OFF) ))
@@ -1044,7 +1011,7 @@ void Camera::DrawWorld()
 		if(m_pkZeroFps->GetShadowMapRealtime())
 		{
 			m_iCurrentRenderMode = RENDER_CASTSHADOW;
-			MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);		
+ 			MakeShadowTexture(kLightPos,kCenter,&m_kShadowTexture);		
 		}
 		else
 		{
@@ -1052,7 +1019,7 @@ void Camera::DrawWorld()
 			{
 				m_kLastShadowPos = kCenter;
 				m_iCurrentRenderMode = RENDER_CASTSHADOW;
-				MakeShadowTexture(kLightPos,kCenter,m_iShadowTexture);
+				MakeShadowTexture(kLightPos,kCenter,&m_kShadowTexture);		
 			}
 		}
 				
@@ -1174,7 +1141,8 @@ void Camera::DrawShadowedScene()
 	textureMatrix=Bias*(Proj*View);									
 	
 	//Bind & enable shadow map texture
-	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
+	m_pkZShaderSystem->BindTexture(&m_kShadowTexture);
+	
 	glEnable(GL_TEXTURE_2D);
 	
 	

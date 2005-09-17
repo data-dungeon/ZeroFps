@@ -19,15 +19,15 @@ using namespace std;
 
 class ZShaderSystem;
 
-enum OPTIONS 
-{
-	T_NOMIPMAPPING	=	1,		// No mipmapping on this texture.
-	T_COMPRESSION	=	8,		// Use texture compression on this texture.
-	T_CLAMP			=	16,	// Use clamp on this texture (s and t).
-	T_ALPHA			=	32,	// This is a alpha only texture.
-	T_NOFILTER		=	64,	// use nearest mfilter .
-	T_CLAMPTOBORDER=	128,	// Clamp to border color
-};
+// enum OPTIONS 
+// {
+// 	T_NOMIPMAPPING	=	1,		// No mipmapping on this texture.
+// 	T_COMPRESSION	=	8,		// Use texture compression on this texture.
+// 	T_CLAMP			=	16,	// Use clamp on this texture (s and t).
+// 	T_ALPHA			=	32,	// This is a alpha only texture.
+// 	T_NOFILTER		=	64,	// use nearest mfilter .
+// 	T_CLAMPTOBORDER=	128,	// Clamp to border color
+// };
 
 #define ERROR_TEXTURE	"notex.bmp"
 #define	NO_TEXTURE	-1		// Texuremanger index for a non existing texture.
@@ -42,7 +42,7 @@ struct texture
 	int				TexID;				// Texture ID.
 
 	bool				m_bMipMapping;		// True if we would like to have mipmapping.
-	bool				m_bCompression;
+	bool				m_bNoCompression;
 	bool				m_bClamp;			// Texture Clamping.
 	bool				m_bAlphaOnly;
 	bool				m_bNoFilter;

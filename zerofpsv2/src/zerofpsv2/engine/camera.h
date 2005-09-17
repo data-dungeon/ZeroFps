@@ -133,7 +133,7 @@ class ENGINE_API Camera : public I_Camera
 		P_Camera*	m_pkCameraProp;				
 		
 		//fullscreen shader
-		unsigned int	m_iFSSTexture;
+		ResTexture		m_kFSSTexture;
 		Matrix4			m_kFSSProjMatrix;
 		ZMaterial*		m_pkFSSMaterial;
 		bool				m_bFSSEnabled;		
@@ -141,7 +141,7 @@ class ENGINE_API Camera : public I_Camera
 		int				m_iFSSTextureHeight;
 		
 		//bloom
-		unsigned int	m_iBloomTexture;
+		ResTexture		m_kBloomTexture;
 		bool				m_bBloomEnabled;
 		ZMaterial*		m_pkBloomMaterial1;
 		ZMaterial*		m_pkBloomMaterial2;
@@ -149,7 +149,7 @@ class ENGINE_API Camera : public I_Camera
 		float				m_fIlluminationAvrage;
 		
 		//shadow hack
-		unsigned int	m_iShadowTexture;
+		ResTexture		m_kShadowTexture;
 		int				m_iShadowTexWidth;
 		int				m_iShadowTexHeight;
 		float				m_fShadowArea;
@@ -161,7 +161,7 @@ class ENGINE_API Camera : public I_Camera
 		GLuint			m_iShadowFBO;
 		GLuint			m_iShadowRBOcolor;
 		
-		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, unsigned int iTexture);
+ 		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, ResTexture* pkTexture);
 		int		GetMaxSize(int iRes);
 		int		GetMinSize(int iRes);
 

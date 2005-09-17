@@ -279,7 +279,7 @@ void Image::ReadRgb(color_rgba* pkDst, FILE* fp, int iPixsize)
 	pkDst->a = alp;
 }
 
-void Image::Save(const char* szFileName, bool bAlpha)
+bool Image::Save(const char* szFileName, bool bAlpha)
 {
 	tgahead_t head;
 	memset(&head,0,sizeof(tgahead_t));
@@ -295,7 +295,7 @@ void Image::Save(const char* szFileName, bool bAlpha)
 		else	head.pixel_depth = 24;
 
 	FILE *fp = fopen(szFileName,"wb");
-	if(!fp)	return;
+	if(!fp)	return false;
 
 	fwrite(&head, sizeof(tgahead_t),1,fp);
 
@@ -308,6 +308,8 @@ void Image::Save(const char* szFileName, bool bAlpha)
 		}
 
 	fclose(fp);
+	
+	return true;
 }
 
 void Image::Save(FILE* fp, bool bAlpha)

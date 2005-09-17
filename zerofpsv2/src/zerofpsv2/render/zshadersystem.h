@@ -16,6 +16,8 @@
 #include "zvprogram.h"
 #include "zfprogram.h"
 #include "zvertexbuffer.h"
+#include "stack"
+
 
 using namespace std;
 
@@ -175,6 +177,7 @@ enum RENDER_API DRAW_MODE
 
 
 class ZVertexBuffer;
+class ResTexture;
 
 class RENDER_API ZShaderSystem : public ZFSubSystem
 {
@@ -214,6 +217,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		ZFResourceHandle* m_pkDefaultGLSLProgram;
 		bool					m_bUseDefaultGLSLProgram;
+		
+		//support texturecompression
+		bool				m_bSupportARBTC;
 		
 		//have occulusion support
 		bool				m_bOcclusion;
@@ -301,6 +307,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool			m_bDisableTU3;
 		int			m_iForceBlend;
 		
+		//texture settings
+		stack<GLuint>	m_kTextureStacks[4];
+		GLuint			m_aiCurrentTextures[4];
+		
 		//basic		
 		void SetupOpenGL();
 		void SetupGlobalSettings();
@@ -365,6 +375,11 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		ZFResourceHandle* GetDefaultGLSLProgramResource()	{	return m_pkDefaultGLSLProgram;	}
 		void SetForceDisableGLSL(bool bDisable)				{	m_bForceDisableGLSL = bDisable;	}
 										
+										
+		//texture management
+		void BindTexture(ResTexture* pkTexture);
+		void PushTexture();
+		void PopTexture();
 																										
 		//basic
 		void Push(const char* czNote);
@@ -412,6 +427,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool SupportOcculusion()								{	return m_bOcclusion;						}
 		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}		
 		bool SupportFBO()											{	return m_bSupportFBO;					}
+		bool SupportARBTC()										{	return m_bSupportARBTC;					}
 		
 		//arrays
 		void ResetPointers();
