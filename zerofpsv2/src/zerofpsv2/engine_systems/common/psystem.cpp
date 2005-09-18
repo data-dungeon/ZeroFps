@@ -163,7 +163,7 @@ PSystem::~PSystem()
 
 PSystem::PSystem(PSystemType* pkPSystemType)
 {
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkFps = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkLight= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight")); 
 	m_pkShader	= static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
 

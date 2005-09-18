@@ -96,7 +96,8 @@ class ENGINE_API ZFClient
 /** \brief	Main class for the ZeroFps engine.
 	 \ingroup Engine
 */
-class ENGINE_API ZeroFps : public I_ZeroFps 
+
+class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps 
 {
 	private:
 		enum ENGINE_STATES
@@ -283,8 +284,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 
 		
 		//basic engine funktions
-		ZeroFps(void);
-		~ZeroFps();
+		ZSSZeroFps(void);
+		~ZSSZeroFps();
 		bool Init(int iNrOfArgs, char** paArgs);
 		void MainLoop(void);
 		void QuitEngine();

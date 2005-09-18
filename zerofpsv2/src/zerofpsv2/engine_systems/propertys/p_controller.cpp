@@ -245,7 +245,7 @@ int RotWithCamYAxisLua(lua_State* pkLua)
 
 }
 
-void Register_PController(ZeroFps* pkZeroFps)
+void Register_PController(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);

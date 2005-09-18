@@ -12,7 +12,7 @@ extern float	g_fMadLODScale;
 P_Mad::P_Mad()
 {
 
-	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps =		static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkRender	=		static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender")); 
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
 	m_pkLight=		static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight")); 
@@ -1235,7 +1235,7 @@ Property* Create_MadProperty()
 	return new P_Mad;
 }
 
-void Register_MadProperty(ZeroFps* pkZeroFps)
+void Register_MadProperty(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Mad", Create_MadProperty);				

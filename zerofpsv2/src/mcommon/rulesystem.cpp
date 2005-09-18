@@ -13,7 +13,7 @@ RuleSystem::RuleSystem() : ZFSubSystem("RuleSystem")
 
 bool RuleSystem::StartUp()
 {
-	m_pkZeroFps= 			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps= 			static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkEntityManager=	static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
 	m_pkApplication=		static_cast<Application*>(g_ZFObjSys.GetObjectPtr("Application"));			
 

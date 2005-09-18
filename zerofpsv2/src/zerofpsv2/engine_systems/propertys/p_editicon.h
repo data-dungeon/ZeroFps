@@ -14,7 +14,7 @@ class ENGINE_SYSTEMS_API P_EditIcon : public Property
 {
 		TextureManager*	m_pkTexMan;
 		ZSSRender*			m_pkRender;	
-		ZeroFps*				m_pkFps;
+		ZSSZeroFps*			m_pkFps;
 			
 		string				m_kTexture; 
 		

@@ -92,7 +92,7 @@ class MCOMMON_API P_AI: public Property
 };
 
 MCOMMON_API Property* Create_P_CharacterProperty();
-MCOMMON_API void Register_P_AI(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_AI(ZSSZeroFps* pkZeroFps);
 
 #endif
 

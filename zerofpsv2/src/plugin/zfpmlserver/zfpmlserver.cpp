@@ -66,7 +66,7 @@ extern "C"
 	void ZPGPLUGIN_API Plugin_Load()
 	{
 		cout << "Loading plugin" << endl;
-		Register_P_Ost( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
+		Register_P_Ost( dynamic_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")));
 	}
 
 	void ZPGPLUGIN_API Plugin_Unload()

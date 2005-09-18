@@ -113,7 +113,7 @@ ZSSEntityManager::ZSSEntityManager()
 bool ZSSEntityManager::StartUp()	
 {
 	// Get Subsystems.
-	m_pkZeroFps		=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
+	m_pkZeroFps		=	static_cast<ZSSZeroFps*>(GetSystem().GetObjectPtr("ZSSZeroFps"));		
 	m_pkNetWork		=	static_cast<ZSSNetWork*>(GetSystem().GetObjectPtr("ZSSNetWork"));
 	m_pkScript		=	static_cast<ZSSScriptSystem*>(GetSystem().GetObjectPtr("ZSSScriptSystem"));
 	m_pkBasicFS		=	static_cast<ZSSBasicFS*>(GetSystem().GetObjectPtr("ZSSBasicFS"));		

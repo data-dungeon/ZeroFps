@@ -148,7 +148,7 @@ Property* Create_P_Buff()
 	return new P_Buff;
 }
 
-void Register_P_Buff(ZeroFps* pkZeroFps)
+void Register_P_Buff(ZSSZeroFps* pkZeroFps)
 {
 	pkZeroFps->m_pkPropertyFactory->Register("P_Buff", Create_P_Buff);					
 }

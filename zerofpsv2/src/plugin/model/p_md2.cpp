@@ -462,7 +462,7 @@ Property* Create_P_Md2()
 	return new P_Md2;
 }
 
-void Register_P_Md2(ZeroFps* pkZeroFps)
+void Register_P_Md2(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Md2", Create_P_Md2);					

@@ -5,7 +5,7 @@
 P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 {
 	m_pkRender	=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
-	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
+	m_pkFps		=	static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));	
 
 	strcpy(m_acName,"P_Primitives3D");
 	m_bNetwork = true;

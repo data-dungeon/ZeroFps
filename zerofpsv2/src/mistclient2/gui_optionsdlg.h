@@ -39,7 +39,7 @@ private:
 	ZSSAudioSystem* m_pkAudioSys;
 	ZSSRender* m_pkRender;
 	ZSSInput* m_pkInput;
-	ZeroFps* m_pkZeroFps;
+	ZSSZeroFps* m_pkZeroFps;
 };
 
 #endif

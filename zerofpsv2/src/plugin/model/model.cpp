@@ -47,11 +47,11 @@ extern "C"
 {
 	bool ZPGPLUGIN_API Plugin_Load()
 	{
-		Register_P_Mdl( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
-		Register_P_Md2( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
-		Register_P_Md5( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
-		Register_P_MdlHL( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
-		Register_P_Obj( dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")));
+		Register_P_Mdl( dynamic_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")));
+		Register_P_Md2( dynamic_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")));
+		Register_P_Md5( dynamic_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")));
+		Register_P_MdlHL( dynamic_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")));
+		Register_P_Obj( dynamic_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")));
 		return true;
 	}
 

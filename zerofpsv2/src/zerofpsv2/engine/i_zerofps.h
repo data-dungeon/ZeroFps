@@ -13,11 +13,11 @@ class DevStringPage;
 class NetPacket;
 
 /// Interface to ZeroFPS.
-class ENGINE_API I_ZeroFps : public ZFSubSystem
+class ENGINE_API I_ZeroFps 
 {
 	public:
-		I_ZeroFps(char* szName);
-		virtual	~I_ZeroFps();
+		//I_ZeroFps(char* szName);
+		//virtual	~I_ZeroFps();
 	
 		virtual	float GetRealTime() const = 0;
 		virtual	float GetFrameTime() const = 0;

@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class ZeroFps;
+class ZSSZeroFps;
 class InputHandle;
 class ZSSConsole;
 
@@ -89,14 +89,14 @@ class ENGINE_API ZSSInput : public ZFSubSystem {
 		};		
 
 		BasicConsole*			m_pkConsole;
-		ZeroFps*					m_pkZeroFps;
+		ZSSZeroFps*					m_pkZeroFps;
 		ZSSRender*				m_pkRender;	
 		
 		vector<VKData>			m_VirtualKeys;								// Virtual keys.
 		vector<InputHandle*>	m_kInputHandles;
 		
 		InputKey					m_akKeyState[MAX_KEYS];					// State of all keys.	
-		int						m_akMapToKeyState[MAX_SDLKEYS];		// Table that maps from SDL's keys to the ones used by ZeroFps.
+		int						m_akMapToKeyState[MAX_SDLKEYS];		// Table that maps from SDL's keys to the ones used by ZSSZeroFps.
 
 		queue<QueuedKeyInfo>	m_aPressedKeys;
 			

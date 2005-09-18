@@ -5,7 +5,7 @@ P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop)
 	strcpy(m_acName,"P_SkyBoxRender");		
 	
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkZeroFps=static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		
 	m_pkRender=static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 
 	m_iType=PROPERTY_TYPE_RENDER;

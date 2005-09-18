@@ -122,7 +122,7 @@ Property* Create_P_MdlHL()
 	return new P_MdlHL;
 }
 
-void Register_P_MdlHL(ZeroFps* pkZeroFps)
+void Register_P_MdlHL(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_MdlHL", Create_P_MdlHL);					

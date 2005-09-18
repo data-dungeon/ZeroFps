@@ -77,7 +77,7 @@ class MCOMMON_API P_DungeonGen: public Property
 
 
 MCOMMON_API Property* Create_P_CharacterProperty();
-MCOMMON_API void Register_P_DungeonGen(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_DungeonGen(ZSSZeroFps* pkZeroFps);
 
 #endif
 

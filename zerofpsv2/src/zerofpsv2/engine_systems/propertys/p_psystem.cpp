@@ -384,7 +384,7 @@ Property* Create_PSystemProperty()
 	return new P_PSystem;
 }
 
-void ENGINE_SYSTEMS_API Register_PPSystem(ZeroFps* pkZeroFps)
+void ENGINE_SYSTEMS_API Register_PPSystem(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_PSystem", Create_PSystemProperty);					

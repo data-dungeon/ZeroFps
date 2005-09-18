@@ -182,7 +182,7 @@ private:
 	string					m_strServerName;	
 	bool						m_bAcceptClientConnections;		// If false all connect attemts are ignored.
 	ZSSConsole*				m_pkConsole;							// Ptr to console.
-	ZeroFps*					m_pkZeroFps;							// Ptr to zerofps engine.
+	ZSSZeroFps*				m_pkZeroFps;							// Ptr to zerofps engine.
 
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
 	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
@@ -315,7 +315,7 @@ public:
 
 	friend class NetPacket;
 	friend class ZSSEntityManager;	
-	friend class ZeroFps;					//dvoids was here =)
+	friend class ZSSZeroFps;					//dvoids was here =)
 };
 
 

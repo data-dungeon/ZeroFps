@@ -16,7 +16,7 @@
 Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 {
 	m_pkScript = static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
-	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	
 	//create and setup script
@@ -3665,7 +3665,7 @@ Property* Create_P_CharacterProperty()
 }
 
 
-void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
+void Register_P_CharacterProperty(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);					

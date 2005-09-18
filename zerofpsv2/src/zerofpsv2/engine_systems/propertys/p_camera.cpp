@@ -16,7 +16,7 @@ P_Camera::P_Camera()
 	m_iType=0;
 	m_iSide=0;
 
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkFps = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 
 	m_pkCamera = NULL;
 	m_eCameraType = CAM_TYPEFIRSTPERSON;

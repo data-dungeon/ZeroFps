@@ -11,7 +11,7 @@ P_AmbientSound::P_AmbientSound()
 	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	m_pkRender = static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
-	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")); // för att kunna kolla om debugutprintning skall göras...
+	m_pkZeroFps = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps")); // för att kunna kolla om debugutprintning skall göras...
 
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;

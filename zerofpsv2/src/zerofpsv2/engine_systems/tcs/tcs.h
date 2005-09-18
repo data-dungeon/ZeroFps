@@ -33,7 +33,7 @@ class ENGINE_SYSTEMS_API Tcs_collission
 class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 {
 	private:
-		ZeroFps*				m_pkZeroFps;
+		ZSSZeroFps*			m_pkZeroFps;
 		ZSSEntityManager*	m_pkEntityMan;
 		ZSSRender*			m_pkRender;
 	

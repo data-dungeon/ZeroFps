@@ -58,7 +58,7 @@ ZSSLight::ZSSLight()
 
 bool ZSSLight::StartUp()	
 { 
-	m_pkZeroFps = static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
+	m_pkZeroFps = static_cast<ZSSZeroFps*>(GetSystem().GetObjectPtr("ZSSZeroFps"));		
 
 	SetStartUpValues();
 	return true;	

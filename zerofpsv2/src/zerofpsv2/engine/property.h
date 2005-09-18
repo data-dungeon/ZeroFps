@@ -141,7 +141,7 @@ class ENGINE_API Property
 		void PropertyLost(Property* pkProperty); 
 		///////////////////////////////////////////
 	protected:
-		ZeroFps*				m_pkZeroFps;			
+		ZSSZeroFps*			m_pkZeroFps;			
 		Entity*				m_pkEntity;
 		ZSSEntityManager* m_pkEntityManager;
 	

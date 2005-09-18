@@ -9,7 +9,7 @@
 
 
 ENGINE_SYSTEMS_API Property* Create_SoundProperty();
-ENGINE_SYSTEMS_API void Register_P_Sound(ZeroFps* pkZeroFps);
+ENGINE_SYSTEMS_API void Register_P_Sound(ZSSZeroFps* pkZeroFps);
 
 
 class ENGINE_SYSTEMS_API P_Sound : public Property

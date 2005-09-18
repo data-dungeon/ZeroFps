@@ -314,7 +314,7 @@ namespace SI_P_Sound
 	}	
 }
 
-void Register_P_Sound(ZeroFps* pkZeroFps)
+void Register_P_Sound(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Sound", Create_SoundProperty);					

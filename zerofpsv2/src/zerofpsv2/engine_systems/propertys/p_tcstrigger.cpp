@@ -112,7 +112,7 @@ Property* Create_P_TcsTrigger()
 	return new P_TcsTrigger;
 }
 
-void ENGINE_SYSTEMS_API Register_PTcsTrigger(ZeroFps* pkZeroFps)
+void ENGINE_SYSTEMS_API Register_PTcsTrigger(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_TcsTrigger", Create_P_TcsTrigger);	

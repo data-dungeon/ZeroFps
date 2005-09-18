@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class ZeroFps;
+class ZSSZeroFps;
 
 /// Links a resource type with a creation function
 class ResourceCreateLink

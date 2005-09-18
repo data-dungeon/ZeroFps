@@ -117,7 +117,7 @@ class MCOMMON_API P_Item: public Property
 };
 
 MCOMMON_API Property* Create_P_Item();
-MCOMMON_API void Register_P_Item(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_Item(ZSSZeroFps* pkZeroFps);
 
 #endif
 

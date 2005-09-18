@@ -239,7 +239,7 @@ ZSSAudioSystem::ZSSAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZSSAudioSystem"
 	RegisterVariable("a_musicvolume",&m_fMusicGain,CSYS_FLOAT);
 
 	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
-	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps  = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 }
 
 ZSSAudioSystem::~ZSSAudioSystem()

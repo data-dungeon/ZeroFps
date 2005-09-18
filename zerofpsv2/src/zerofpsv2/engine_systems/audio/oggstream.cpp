@@ -32,10 +32,10 @@ OggStream::~OggStream()
 
 bool OggStream::Create()	
 { 
-   m_pkZeroFpsObject	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+   m_pkZeroFpsObject	= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	if(m_pkZeroFpsObject==NULL) 
 	{
-		cout<<"OggStream - could not retrive ZeroFps object" <<endl;
+		cout<<"OggStream - could not retrive ZSSZeroFps object" <<endl;
 		return false;
 	}
 

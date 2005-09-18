@@ -8,6 +8,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+/*
 I_ZeroFps::I_ZeroFps(char* szName) : ZFSubSystem(szName)
 {
 
@@ -17,3 +18,4 @@ I_ZeroFps::~I_ZeroFps()
 {
 
 }
+*/

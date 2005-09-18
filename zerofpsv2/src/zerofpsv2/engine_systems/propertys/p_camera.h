@@ -9,7 +9,7 @@
 using namespace std;
 
 class Camera;
-class ZeroFps;
+class ZSSZeroFps;
 
 enum ENGINE_SYSTEMS_API CamType_e
 {
@@ -32,7 +32,7 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 	private:
 		Camera*		m_pkCamera;			// Camera to refresh.
 		CamType_e	m_eCameraType;		// How the camera will behave.
-		ZeroFps*		m_pkFps;
+		ZSSZeroFps*	m_pkFps;
 
 		float		m_fFov;
 		Vector3	m_kDynamicIso;		

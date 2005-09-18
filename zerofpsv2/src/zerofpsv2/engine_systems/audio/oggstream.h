@@ -6,7 +6,7 @@
 #include "../../basic/vector3.h"
 #include <SDL/SDL_thread.h>
 
-class ZeroFps;
+class ZSSZeroFps;
 class Vector3;
 class ZSSAudioSystem;
 
@@ -66,8 +66,8 @@ private:
 	char*					m_pcTempBuffer;
 	ALuint				m_uiSource;
 	ALuint*				m_pALuiBuffers;
-	ZeroFps*				m_pkZeroFpsObject;
-	ZSSAudioSystem*		m_pkAudioSys;
+	ZSSZeroFps*			m_pkZeroFpsObject;
+	ZSSAudioSystem*	m_pkAudioSys;
 };
 
 #endif // __oggstream_h__

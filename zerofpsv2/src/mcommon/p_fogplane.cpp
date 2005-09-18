@@ -154,7 +154,7 @@ Property* Create_P_FogPlane()
 	return new P_FogPlane;
 }
 
-void Register_P_FogPlane(ZeroFps* pkZeroFps)
+void Register_P_FogPlane(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_FogPlane", Create_P_FogPlane);					

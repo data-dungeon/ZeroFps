@@ -949,8 +949,8 @@ void ZeroEd::InitMainMenu()
 	{
 		pkMenu->SetCheckMark("Menu_DebugShowZones", m_pkIni->GetIntValue("ZSSEntityManager", "l_showzones"));
 		pkMenu->SetCheckMark("Menu_DebugShowZoneConn", m_pkIni->GetIntValue("ZSSEntityManager", "l_showconn"));
-		pkMenu->SetCheckMark("Menu_SysRender", m_pkIni->GetIntValue("ZeroFps", "r_render"));
-		pkMenu->SetCheckMark("Menu_SysLockFps", m_pkIni->GetIntValue("ZeroFps", "e_lockfps"));
+		pkMenu->SetCheckMark("Menu_SysRender", m_pkIni->GetIntValue("ZSSZeroFps", "r_render"));
+		pkMenu->SetCheckMark("Menu_SysLockFps", m_pkIni->GetIntValue("ZSSZeroFps", "e_lockfps"));
 
 		pkMenu->SetCheckMark("Menu_AiNavMesh", m_pkIni->GetIntValue("ZSSAStar", "ai_shownavmesh"));
 		pkMenu->SetCheckMark("Menu_AiShowPath", m_pkIni->GetIntValue("ZSSAStar", "ai_showpath"));

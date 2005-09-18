@@ -1014,7 +1014,7 @@ Property* Create_P_CharacterControl()
 	return new P_CharacterControl;
 }
 
-void Register_P_CharacterControl(ZeroFps* pkZeroFps)
+void Register_P_CharacterControl(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);					

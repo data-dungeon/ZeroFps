@@ -14,7 +14,7 @@ using namespace std;
 class MCOMMON_API RuleSystem : public ZFSubSystem
 {
 	private:
-		ZeroFps*				m_pkZeroFps;
+		ZSSZeroFps*			m_pkZeroFps;
 		ZSSEntityManager*	m_pkEntityManager;		
 		Application*		m_pkApplication;
 		

@@ -15,7 +15,7 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		ZSSAudioSystem* m_pkAudioSystem;
 		ZSSEntityManager* m_pEntityMan;
 		ZSSRender* m_pkRender;
-		ZeroFps*		m_pkZeroFps;
+		ZSSZeroFps*		m_pkZeroFps;
 
 		float m_fWidth;
 		float m_fHeight;	

@@ -11,16 +11,16 @@ class ZSSScriptSystem;
 using namespace std;
 
 class ZSSVFileSystem;
-class ZeroFps;
+class ZSSZeroFps;
 
 namespace StdLua
 {
 
 	extern ZSSScriptSystem* 		g_pkScript;
 	extern ZSSVFileSystem*		g_pkVFS;
-	extern ZeroFps*				g_pkZeroFps;
+	extern ZSSZeroFps*				g_pkZeroFps;
 	
-	void ENGINE_SYSTEMS_API Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkBasicFS,ZeroFps* pkZeroFps);
+	void ENGINE_SYSTEMS_API Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkBasicFS,ZSSZeroFps* pkZeroFps);
 	
 	//GENERAL
 	int ENGINE_SYSTEMS_API PrintLua(lua_State* pkLua);		

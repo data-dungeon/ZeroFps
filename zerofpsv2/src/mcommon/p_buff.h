@@ -50,7 +50,7 @@ class MCOMMON_API P_Buff: public Property
 };
 
 MCOMMON_API Property* Create_P_Buff();
-MCOMMON_API void Register_P_Buff(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_Buff(ZSSZeroFps* pkZeroFps);
 #endif
 
 

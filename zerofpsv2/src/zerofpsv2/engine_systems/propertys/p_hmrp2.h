@@ -15,7 +15,7 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 {
 	private:
 		TextureManager*	m_pkTexMan;
-		ZeroFps*				m_pkZeroFps;
+		ZSSZeroFps*			m_pkZeroFps;
 		ZSSRender*			m_pkRender;	
 		ZSSLight*			m_pkLight;	
 		
@@ -45,7 +45,7 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 };
 
 Property* Create_HMRP2();
-void ENGINE_SYSTEMS_API Register_PHmrp(ZeroFps* pkZeroFps);
+void ENGINE_SYSTEMS_API Register_PHmrp(ZSSZeroFps* pkZeroFps);
 
 
 #endif

@@ -205,7 +205,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 
 
 Property* Create_P_Tcs();
-void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps);
+void ENGINE_SYSTEMS_API Register_PTcs(ZSSZeroFps* pkZeroFps);
 
 
 #endif

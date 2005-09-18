@@ -717,7 +717,7 @@ Property* Create_P_AI()
 	return new P_AI;
 }
 
-void Register_P_AI(ZeroFps* pkZeroFps)
+void Register_P_AI(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_AI", Create_P_AI);					

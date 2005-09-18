@@ -223,7 +223,7 @@ Property* Create_P_Ml()
 	return new P_Ml;
 }
 
-void Register_P_Ml(ZeroFps* pkZeroFps)
+void Register_P_Ml(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);					

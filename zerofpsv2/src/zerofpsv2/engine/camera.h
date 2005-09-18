@@ -67,7 +67,7 @@ class ENGINE_API Camera : public I_Camera
 		ZSSEntityManager*	m_pkEntityMan;
 		ZSSRender*		m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
-		ZeroFps*			m_pkZeroFps;
+		ZSSZeroFps*			m_pkZeroFps;
 		ZShadow*			m_pkZShadow;
 		ZSSLight*		m_pkLight;
 		TextureManager* m_pkTexMan;

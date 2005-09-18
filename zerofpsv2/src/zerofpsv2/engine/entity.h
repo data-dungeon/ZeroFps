@@ -237,7 +237,7 @@ class ENGINE_API Entity
 	public:
 
 		ZSSEntityManager*			m_pkEntityManager;				///< Ptr to Entity manger.
-  		ZeroFps*						m_pkZeroFps;						///< Ptr to zerofps. 
+  		ZSSZeroFps*						m_pkZeroFps;						///< Ptr to zerofps. 
 
 		NetWorkRole					m_eRole;								///< This node power on Entity.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on Entity.
@@ -399,7 +399,7 @@ class ENGINE_API Entity
 		virtual void DoNothing() {}
 };
 
-void ENGINE_API Register_SIEntityProperty(ZeroFps* pkZeroFps);
+void ENGINE_API Register_SIEntityProperty(ZSSZeroFps* pkZeroFps);
 
 #endif
 

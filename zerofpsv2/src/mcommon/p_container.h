@@ -146,7 +146,7 @@ class MCOMMON_API P_Container: public Property
 };
 
 MCOMMON_API Property* Create_P_Container();
-MCOMMON_API void Register_P_Container(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_Container(ZSSZeroFps* pkZeroFps);
 
 #endif
 

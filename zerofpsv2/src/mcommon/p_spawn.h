@@ -18,7 +18,7 @@ using namespace std;
 class MCOMMON_API P_Spawn: public Property 
 {
 	private:			
-// 		ZeroFps* 		m_pkFps;
+// 		ZSSZeroFps* 		m_pkFps;
 // 		ZSSEntityManager* m_pkEntityManager;
 // 		Render*			m_pkRender;
 		

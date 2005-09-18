@@ -47,7 +47,7 @@ private:
 	vector<ParticleProperty*> m_kPSProperties;
 
 	ZShaderSystem *m_pkShader;
-	ZeroFps* m_pkFps;
+	ZSSZeroFps* m_pkFps;
 
 	P_PSystem* m_pkParent;
 

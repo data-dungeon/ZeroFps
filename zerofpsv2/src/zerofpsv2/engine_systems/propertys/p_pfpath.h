@@ -14,7 +14,7 @@ using namespace std;
 class ENGINE_API P_PfPath : public Property 
 {
 	private:
-		ZeroFps*				m_pkFps;				
+		ZSSZeroFps*			m_pkFps;				
 		ZSSAStar*			m_pkAStar;
 		ZSSRender*			m_pkRender;
 		

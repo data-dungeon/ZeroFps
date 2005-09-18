@@ -124,7 +124,7 @@ class P_Md2 : public Property
 };
 
 Property* Create_P_Md2();
-void Register_P_Md2(ZeroFps* pkZeroFps);
+void Register_P_Md2(ZSSZeroFps* pkZeroFps);
 
 #endif
 

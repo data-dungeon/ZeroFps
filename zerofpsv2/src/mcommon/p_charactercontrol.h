@@ -185,7 +185,7 @@ class MCOMMON_API P_CharacterControl: public Property
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();
-MCOMMON_API void Register_P_CharacterControl(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_CharacterControl(ZSSZeroFps* pkZeroFps);
 
 #endif
 

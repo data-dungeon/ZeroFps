@@ -20,7 +20,7 @@
 
 int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[])
 {
-	kEngine = new ZeroFps();
+	kEngine = new ZSSZeroFps();
 	
 	if( kEngine->Init(iNrOfArgs,paArgs) ) 
 	{

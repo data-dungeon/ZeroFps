@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class ZeroFps;
+class ZSSZeroFps;
 class GameMessage;
 class ZSSNetWork;
 class P_Track;
@@ -84,7 +84,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 	
 		
 		//some system pointers
-		ZeroFps*					m_pkZeroFps;
+		ZSSZeroFps*					m_pkZeroFps;
 		ZSSNetWork*				m_pkNetWork;
 		ZSSBasicFS*				m_pkBasicFS;
 		ZShaderSystem*			m_pkZShaderSystem;
@@ -331,7 +331,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		bool CallFunction(Entity* pkEntity, const char* acFunction,vector<ScriptFuncArg>* pkParams = NULL);
 
 		friend class Entity;
-		friend class ZeroFps;		
+		friend class ZSSZeroFps;		
 };
 
 #endif

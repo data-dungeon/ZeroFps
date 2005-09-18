@@ -17,7 +17,7 @@ class ResourceCreateLink;
 class ZFResourceInfo;
 
 /// Interface to Resource manger.
-class ENGINE_API I_ZFResourceDB : public ZFSubSystem 
+/*class ENGINE_API I_ZFResourceDB 
 {
 public:
 	I_ZFResourceDB(char* szName);
@@ -39,6 +39,6 @@ public:
 
 	virtual ZFResource* GetResourcePtr(ZFResourceHandle& kResHandle) = 0;
 
-};
+};*/
 
 #endif // !defined(AFX_IZFRESOURCEDB_H__B1096AB8_8750_4BC2_8F7B_B2CA5E718C1D__INCLUDED_)

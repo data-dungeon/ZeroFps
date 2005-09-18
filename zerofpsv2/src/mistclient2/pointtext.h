@@ -10,7 +10,7 @@ using namespace std;
 class PointText
 {
 	private:
-		ZeroFps*		m_pkZeroFps;
+		ZSSZeroFps*		m_pkZeroFps;
 		ZSSRender*	m_pkRender;
 	
 		class PText

@@ -55,7 +55,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		};
 	
 		ZSSLight*		m_pkLight;
-		ZeroFps*			m_pkZeroFps;
+		ZSSZeroFps*			m_pkZeroFps;
 		ZSSRender*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZSSEntityManager*	m_pkEntityMan;

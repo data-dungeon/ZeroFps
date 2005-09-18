@@ -138,7 +138,7 @@ class P_Mdl : public Property
 };
 
 Property* Create_P_Mdl();
-void Register_P_Mdl(ZeroFps* pkZeroFps);
+void Register_P_Mdl(ZSSZeroFps* pkZeroFps);
 
 #endif
 

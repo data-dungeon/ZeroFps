@@ -153,7 +153,7 @@ class RENDER_API ZMaterial : public ZFResource
 
 };
 
-class ZeroFps;
+class ZSSZeroFps;
 
 namespace SI_ZMATERIAL
 {
@@ -161,7 +161,7 @@ namespace SI_ZMATERIAL
 	extern RENDER_API int					g_iCurrentMaterialPass;	
 	
 	extern RENDER_API ZSSScriptSystem*	g_pkScript;
-	extern RENDER_API ZeroFps*				g_pkZeroFps;
+	extern RENDER_API ZSSZeroFps*			g_pkZeroFps;
 	extern RENDER_API ZShaderSystem*		g_pkZShaderSystem;
 	
 // 	int RENDER_API PassBeginLua(lua_State* pkLua);

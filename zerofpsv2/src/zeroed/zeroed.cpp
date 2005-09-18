@@ -1421,7 +1421,7 @@ void ZeroEd::SoloToggleView()
 		GetWnd("vp3")->Hide();
 		GetWnd("vp4")->Hide();
 
-		// Add Active as ZeroFps Fullscreen Render Target.
+		// Add Active as ZSSZeroFps Fullscreen Render Target.
 		if(pkCam) 
 		{
 			m_pkZeroFps->AddRenderCamera(pkCam);

@@ -36,7 +36,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		TextureManager*	m_pkTexMan;
 		ZSSLight*			m_pkLight;
 		ZSSRender*			m_pkRender;	
-		ZeroFps*				m_pkFps;
+		ZSSZeroFps*			m_pkFps;
 		ZShaderSystem*		m_pkZShaderSystem;
 		
 		vector<vegitation>	m_akPositions;

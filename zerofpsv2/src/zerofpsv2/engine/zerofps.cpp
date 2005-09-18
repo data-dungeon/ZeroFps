@@ -39,7 +39,7 @@ Property* Create_P_PfMesh();
 Property* Create_LinkToJoint();
 
 
-ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
+ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps") 
 {
 	m_kVersion.Set(0,4,3);
 
@@ -189,7 +189,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	
 }
 
-ZeroFps::~ZeroFps()
+ZSSZeroFps::~ZSSZeroFps()
 {
 	delete m_pkDevPageMaterial;
 
@@ -222,7 +222,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkZShaderSystem;
 }
 
-bool ZeroFps::StartUp()	
+bool ZSSZeroFps::StartUp()	
 {	
 // 	// dvoids test kåd =D
 // 	Vector3 x(123.23,12.23,2.213);
@@ -297,28 +297,28 @@ bool ZeroFps::StartUp()
 	return true;
 }
 
-bool ZeroFps::ShutDown()	{	return true;	}
-bool ZeroFps::IsValid()		{	return true;	}
+bool ZSSZeroFps::ShutDown()	{	return true;	}
+bool ZSSZeroFps::IsValid()		{	return true;	}
 	
-void ZeroFps::SetApp() 
+void ZSSZeroFps::SetApp() 
 {
 	m_pkApp=Application::m_pkApp;
 	m_pkApp->SetEnginePointer(this);
 }
 
-void ZeroFps::ConfigFileRun()
+void ZSSZeroFps::ConfigFileRun()
 {
 	string CfgName = string("/") + string(m_pkApp->m_pTitle) + ".ini";
 	g_ZFObjSys.Config_Load(CfgName);
 }
 
-void ZeroFps::ConfigFileSave()
+void ZSSZeroFps::ConfigFileSave()
 {
 	string CfgName = string(m_pkApp->m_pTitle) + ".ini";
 	g_ZFObjSys.Config_Save(CfgName);
 }
 
-bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
+bool ZSSZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
 	SetApp();									//	setup class pointers	
 
@@ -347,7 +347,7 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	return true;
 }
 
-void ZeroFps::CreateMaterials()
+void ZSSZeroFps::CreateMaterials()
 {
 	//devpage material
 	m_pkDevPageMaterial = new ZMaterial;
@@ -361,7 +361,7 @@ void ZeroFps::CreateMaterials()
 
 }
 
-void ZeroFps::UpdateDevPages()
+void ZSSZeroFps::UpdateDevPages()
 {
 	m_pkNetWork->DevShow_ClientConnections();
 
@@ -467,7 +467,7 @@ void ZeroFps::UpdateDevPages()
 	
 }
 
-void ZeroFps::UpdateMouse()
+void ZSSZeroFps::UpdateMouse()
 {
 	//update mouse position 
 	m_pkInput->UpdateMousePos();
@@ -494,7 +494,7 @@ void ZeroFps::UpdateMouse()
 	}
 }
 
-void ZeroFps::UpdateGuiInput()
+void ZSSZeroFps::UpdateGuiInput()
 {
 	if(!m_pkGui->IsActive())
 		return;
@@ -543,7 +543,7 @@ void ZeroFps::UpdateGuiInput()
 }
 
 /* Code that need to run on both client/server. */
-void ZeroFps::Run_EngineShell()
+void ZSSZeroFps::Run_EngineShell()
 {
 	//update devpages
 	UpdateDevPages();
@@ -581,7 +581,7 @@ void ZeroFps::Run_EngineShell()
 
 }
 
-void ZeroFps::Run_Server()
+void ZSSZeroFps::Run_Server()
 {
 	//update system
 	//Update_System();
@@ -592,7 +592,7 @@ void ZeroFps::Run_Server()
 	
 }
 
-void ZeroFps::Run_Client()
+void ZSSZeroFps::Run_Client()
 {
 	//if(!m_bServerMode)
 	//	Update_System();	
@@ -607,7 +607,7 @@ void ZeroFps::Run_Client()
 // 	StopProfileTimer("s__Sound");
 }
 
-void ZeroFps::Update_Network()
+void ZSSZeroFps::Update_Network()
 {	
 	//calculate new system delta time
 	m_fNetworkUpdateFpsDelta = float(1.0) / m_fNetworkUpdateFps;	
@@ -626,7 +626,7 @@ void ZeroFps::Update_Network()
 
 }
 
-void ZeroFps::Update_System()
+void ZSSZeroFps::Update_System()
 {
 	int iLoops			= 0;
 	float fRestTime	= 0;
@@ -738,7 +738,7 @@ void ZeroFps::Update_System()
 
 }
 
-void ZeroFps::Draw_EngineShell()
+void ZSSZeroFps::Draw_EngineShell()
 {
 // 	StartProfileTimer("r_Render");					
 
@@ -775,7 +775,7 @@ void ZeroFps::Draw_EngineShell()
 // 	StopProfileTimer("r_Render");				
 }
 
-void ZeroFps::MainLoop(void) 
+void ZSSZeroFps::MainLoop(void) 
 {
 
 	while(m_iState != ENGINE_STATE_EXIT) 
@@ -821,7 +821,7 @@ void ZeroFps::MainLoop(void)
 	}
 }
 
-void ZeroFps::MakeDelay()
+void ZSSZeroFps::MakeDelay()
 {
 	//make a delay if locked fps or minimized
 	if(m_bLockFps || m_bMinimized  )
@@ -842,7 +842,7 @@ void ZeroFps::MakeDelay()
 	}
 }
 
-void ZeroFps::AddRenderCamera(Camera* pkCamera)
+void ZSSZeroFps::AddRenderCamera(Camera* pkCamera)
 {
 	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 		if(m_kRenderCamera[i] == pkCamera)
@@ -853,12 +853,12 @@ void ZeroFps::AddRenderCamera(Camera* pkCamera)
 	//cout << " to active rendertargets\n";
 }
 
-void ZeroFps::ClearRenderCameras()
+void ZSSZeroFps::ClearRenderCameras()
 {
 	m_kRenderCamera.clear();
 }
 
-void ZeroFps::RemoveRenderCamera(Camera* pkCamera)
+void ZSSZeroFps::RemoveRenderCamera(Camera* pkCamera)
 {
 	for(vector<Camera*>::iterator it=m_kRenderCamera.begin();it!=m_kRenderCamera.end();it++) 
 	{
@@ -867,7 +867,7 @@ void ZeroFps::RemoveRenderCamera(Camera* pkCamera)
 	}	
 }
 
-void ZeroFps::Draw_RenderCameras()
+void ZSSZeroFps::Draw_RenderCameras()
 {
 // 	StartProfileTimer("r__RenderCameras");	
 
@@ -879,7 +879,7 @@ void ZeroFps::Draw_RenderCameras()
 // 	StopProfileTimer("r__RenderCameras");	
 }
 
-Camera* ZeroFps::GetRenderCamera(const string& strName) const
+Camera* ZSSZeroFps::GetRenderCamera(const string& strName) const
 {
 	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
 	{
@@ -893,7 +893,7 @@ Camera* ZeroFps::GetRenderCamera(const string& strName) const
 
 
 
-void ZeroFps::Swap(void) 
+void ZSSZeroFps::Swap(void) 
 {
 
 	if(!m_bMinimized)
@@ -939,12 +939,12 @@ void ZeroFps::Swap(void)
 }
 
 
-void ZeroFps::ToggleFullScreen(void)
+void ZSSZeroFps::ToggleFullScreen(void)
 {
 	m_pkRender->ToggleFullScreen();
 }
 
-void ZeroFps::ToggleGui(void)
+void ZSSZeroFps::ToggleGui(void)
 {
 	m_bGuiMode = !m_bGuiMode;
 	
@@ -958,7 +958,7 @@ void ZeroFps::ToggleGui(void)
 	}
 }
 
-void ZeroFps::SetDevPageVisible(const char* szName,bool bVisible)
+void ZSSZeroFps::SetDevPageVisible(const char* szName,bool bVisible)
 {
 	if(DevStringPage* page = DevPrint_FindPage(szName))
 		page->m_bVisible = bVisible;
@@ -971,7 +971,7 @@ void ZeroFps::SetDevPageVisible(const char* szName,bool bVisible)
 }
 
 
-bool ZeroFps::DevPrintPageVisible(const char* szName)
+bool ZSSZeroFps::DevPrintPageVisible(const char* szName)
 {
 	for(unsigned int i=0; i<m_DevStringPage.size(); i++) 
 	{
@@ -984,7 +984,7 @@ bool ZeroFps::DevPrintPageVisible(const char* szName)
 	return false;
 }
 
-DevStringPage*	ZeroFps::DevPrint_FindPage(const string& strName)
+DevStringPage*	ZSSZeroFps::DevPrint_FindPage(const string& strName)
 {
 	for(unsigned int i=0; i<m_DevStringPage.size(); i++) 
 	{
@@ -997,7 +997,7 @@ DevStringPage*	ZeroFps::DevPrint_FindPage(const string& strName)
 	return NULL;
 }
 
-void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
+void ZSSZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 {
 	// Find the page to print to.
 	DevStringPage* page = DevPrint_FindPage(szName);
@@ -1037,7 +1037,7 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 	page->m_akDevString.push_back(string(Devformat_text));
 }
 
-void ZeroFps::DrawDevStrings()
+void ZSSZeroFps::DrawDevStrings()
 {
 	static int iGraphTexture = m_pkTexMan->Load("graph.bmp");
 	static int iMaxTexture = m_pkTexMan->Load("notex.bmp");
@@ -1097,12 +1097,12 @@ void ZeroFps::DrawDevStrings()
 	}
 }
 
-void ZeroFps::DevPrint_Show(bool bVisible)
+void ZSSZeroFps::DevPrint_Show(bool bVisible)
 {
 	m_bDevPagesVisible = bVisible;
 }
 
-void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	unsigned int i;
 
@@ -1247,7 +1247,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 }
 
 
-void ZeroFps::StartServer(bool bClient,bool bNetwork,int iPort,string strServerName)
+void ZSSZeroFps::StartServer(bool bClient,bool bNetwork,int iPort,string strServerName)
 {
 	//reset all first
 	StopAll();
@@ -1262,7 +1262,7 @@ void ZeroFps::StartServer(bool bClient,bool bNetwork,int iPort,string strServerN
 	m_pkApp->OnServerStart();
 }
 
-void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP)
+void ZSSZeroFps::StartClient(string strLogin,string strPassword,string strServerIP)
 {
 	//reset all first
 	StopAll();
@@ -1291,7 +1291,7 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP)
 	m_pkApp->OnClientStart();
 }
 
-void ZeroFps::StopAll()
+void ZSSZeroFps::StopAll()
 {
 	m_pkNetWork->DisconnectAll();
 	m_pkNetWork->CloseSocket();
@@ -1301,7 +1301,7 @@ void ZeroFps::StopAll()
 }
 
 
-void ZeroFps::PrintToClient(int iConnectionID, const char* szMsg)
+void ZSSZeroFps::PrintToClient(int iConnectionID, const char* szMsg)
 {
 	NetPacket kNp;
 	kNp.Clear();
@@ -1313,7 +1313,7 @@ void ZeroFps::PrintToClient(int iConnectionID, const char* szMsg)
 	m_pkNetWork->Send2(&kNp);
 }
 
-void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
+void ZSSZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 {
 	unsigned char ucGamePacketType;
 	int	m_iObjectID;
@@ -1379,7 +1379,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 	}
 }
 
-vector<int>	ZeroFps::GetSelected(NetPacket* pkNetPack)
+vector<int>	ZSSZeroFps::GetSelected(NetPacket* pkNetPack)
 {
 	int iNumOfId, iEntId;
 	vector<int>	kSelected;
@@ -1395,7 +1395,7 @@ vector<int>	ZeroFps::GetSelected(NetPacket* pkNetPack)
 }
 
 
-void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
+void ZSSZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 {
 	char 		szCmd[512];
 	Vector3 	kPos;
@@ -1650,7 +1650,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 }
 
 
-void ZeroFps::RotateZoneModel(int iZoneID,Vector3 kRot)
+void ZSSZeroFps::RotateZoneModel(int iZoneID,Vector3 kRot)
 {
 	if(ZoneData* pkData = m_pkEntityManager->GetZoneData(iZoneID)) 
 	{
@@ -1665,7 +1665,7 @@ void ZeroFps::RotateZoneModel(int iZoneID,Vector3 kRot)
 	}		
 }
 
-void ZeroFps::SendZoneList(bool bRemove,int iClientID,int iZoneID)
+void ZSSZeroFps::SendZoneList(bool bRemove,int iClientID,int iZoneID)
 {
 	NetPacket kNp;		
 	kNp.Clear();
@@ -1740,7 +1740,7 @@ void ZeroFps::SendZoneList(bool bRemove,int iClientID,int iZoneID)
 	This function checks if the command for the editor should run localy (we are the server) or be sent over the
 	network (we are connected to a server).
 */
-void ZeroFps::RouteEditCommand(NetPacket* pkNetPacket)
+void ZSSZeroFps::RouteEditCommand(NetPacket* pkNetPacket)
 {
 	pkNetPacket->m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	pkNetPacket->Write((char)ZFGP_ENDOFPACKET);
@@ -1760,7 +1760,7 @@ void ZeroFps::RouteEditCommand(NetPacket* pkNetPacket)
 	}
 }
 
-void ZeroFps::RegisterResources()
+void ZSSZeroFps::RegisterResources()
 {
 	m_pkResourceDB->RegisterResource( string(".mad"), Create__Mad_Core	);
 	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
@@ -1777,7 +1777,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".glsl"),Create__GLSLProgram);
 }
 
-void ZeroFps::RegisterPropertys()
+void ZSSZeroFps::RegisterPropertys()
 {
 	//render propertys
 	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);			
@@ -1817,7 +1817,7 @@ void ZeroFps::RegisterPropertys()
 }
 
 
-void ZeroFps::QuitEngine()
+void ZSSZeroFps::QuitEngine()
 {
 	vector<string> kPropertyNames;
 	
@@ -1832,11 +1832,11 @@ void ZeroFps::QuitEngine()
 		}
 	}
 
-	printf("ZeroFps::QuitEngine\n");
+	printf("ZSSZeroFps::QuitEngine\n");
 	m_iState = ENGINE_STATE_EXIT;
 }
 
-void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
+void ZSSZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 {
 	kCreditsStrings.clear();
 
@@ -1855,9 +1855,9 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	for a server Node that accepts connections. Never called on a client node. Return false
 	to deny connection. Put reason if any into szWhy256.
 */
-bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy)
+bool	ZSSZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy)
 {
-	//m_pkConsole->Printf("ZeroFps::PreConnect()");
+	//m_pkConsole->Printf("ZSSZeroFps::PreConnect()");
 	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass,bIsEditor, strWhy);
 }
 
@@ -1867,12 +1867,12 @@ bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool 
 	PreConnect returns true. It is called on Clients when they recive connect_yes from server.
 	Return value is the NetID off the client object on the server. It don't matter on the client.
 */
-int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEditor)
+int ZSSZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEditor)
 {
 	if(m_bServerMode)
 	{			
 	
-		//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
+		//m_pkConsole->Printf("ZSSZeroFps::Connect(%d)", iConnectionID);
 		m_kClient[iConnectionID].m_bLogin = m_bClientLoginState; 
 		m_kClient[iConnectionID].m_pkObject = m_pkEntityManager->CreateEntity();//m_pkEntityManager->CreateObjectByArchType("ZeroRTSPlayer");
 		m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
@@ -1900,12 +1900,12 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 
 /**	\brief	Called when a connection is closed down.
 */
-void ZeroFps::Disconnect(int iConnectionID)
+void ZSSZeroFps::Disconnect(int iConnectionID)
 {
 	/*
 	if(!m_kClient[iConnectionID].m_pkObject)
 	{
-		cout << "ZeroFps::Disconnect - Client is already disconnected." <<endl;
+		cout << "ZSSZeroFps::Disconnect - Client is already disconnected." <<endl;
 		return;
 	}
 	*/
@@ -1921,7 +1921,7 @@ void ZeroFps::Disconnect(int iConnectionID)
 	if(!m_bServerMode)
 		return;
 		
-	m_pkConsole->Printf("ZeroFps::Disconnect(%d)", iConnectionID);
+	m_pkConsole->Printf("ZSSZeroFps::Disconnect(%d)", iConnectionID);
 	
 	//assert( m_kClient[iConnectionID].m_pkObject );
 	
@@ -1938,7 +1938,7 @@ void ZeroFps::Disconnect(int iConnectionID)
 	Returns ID of of object Client use to send data to server. Returns -1 if object is unknown at the moment.
 	Keep asking :)
 */
-int ZeroFps::GetClientObjectID()
+int ZSSZeroFps::GetClientObjectID()
 {
 /*	if(m_iRTSClientObject == -1) {
 		m_pkNetWork->RTS_RequestClientObjectID();
@@ -1947,7 +1947,7 @@ int ZeroFps::GetClientObjectID()
 	return m_iClientEntityID;
 }
 
-vector<Entity*> ZeroFps::GetClientEntitys()
+vector<Entity*> ZSSZeroFps::GetClientEntitys()
 {
 	vector<Entity*>	kEntitys;
 
@@ -1962,7 +1962,7 @@ vector<Entity*> ZeroFps::GetClientEntitys()
 
 
 //vad gï¿½ denna hï¿½ igentligen?
-void ZeroFps::AddHMProperty(Entity* pkEntity, Vector3 kZoneSize)
+void ZSSZeroFps::AddHMProperty(Entity* pkEntity, Vector3 kZoneSize)
 {
 	// Get Entity, Check For Valid and Check if its already have a hmap.
 	//Entity* pkEntity = this->m_pkEntityManager->GetObjectByNetWorkID(iNetWorkId);
@@ -2044,7 +2044,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, Vector3 kZoneSize)
 
 
 /*
-void ZeroFps::SetCamera(Camera* pkCamera)
+void ZSSZeroFps::SetCamera(Camera* pkCamera)
 {
 	//set camera pointer 
 	m_pkCamera=pkCamera;		
@@ -2055,7 +2055,7 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	UpdateCamera();
 }
 
-void ZeroFps::UpdateCamera()
+void ZSSZeroFps::UpdateCamera()
 {
 	//update camera
 	m_pkCamera->Update();//m_pkRender->GetWidth(),m_pkRender->GetHeight());

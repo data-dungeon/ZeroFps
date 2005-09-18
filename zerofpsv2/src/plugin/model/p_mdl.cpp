@@ -534,7 +534,7 @@ Property* Create_P_Mdl()
 	return new P_Mdl;
 }
 
-void Register_P_Mdl(ZeroFps* pkZeroFps)
+void Register_P_Mdl(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Mdl", Create_P_Mdl);					

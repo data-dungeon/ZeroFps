@@ -1090,7 +1090,7 @@ Property* Create_P_Container()
 }
 
 
-void Register_P_Container(ZeroFps* pkZeroFps)
+void Register_P_Container(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Container", Create_P_Container);					

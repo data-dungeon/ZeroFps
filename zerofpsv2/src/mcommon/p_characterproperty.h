@@ -36,7 +36,7 @@ class MCOMMON_API Skill
 	private:
 		ZSSScriptSystem*	m_pkScript;		
 		ZFResourceHandle*	m_pkScriptFileHandle;	
-		ZeroFps*				m_pkZeroFps;
+		ZSSZeroFps*			m_pkZeroFps;
 		ZSSEntityManager*	m_pkEntityManager;
 		
 		string	m_strSkillScript;
@@ -411,7 +411,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 };
 
 MCOMMON_API Property* Create_P_CharacterProperty();
-MCOMMON_API void Register_P_CharacterProperty(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_CharacterProperty(ZSSZeroFps* pkZeroFps);
 
 #endif
 

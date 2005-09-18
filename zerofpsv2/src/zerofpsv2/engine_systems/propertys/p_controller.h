@@ -55,7 +55,7 @@ namespace SI_PController
 }
 
 Property* Create_P_Controller();
-void Register_PController(ZeroFps* pkZeroFps);
+void Register_PController(ZSSZeroFps* pkZeroFps);
 
 
 #endif

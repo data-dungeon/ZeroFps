@@ -38,7 +38,7 @@ class P_Ost : public Property
 };
 
 Property* Create_P_Ost();
-void Register_P_Ost(ZeroFps* pkZeroFps);
+void Register_P_Ost(ZSSZeroFps* pkZeroFps);
 
 #endif
 

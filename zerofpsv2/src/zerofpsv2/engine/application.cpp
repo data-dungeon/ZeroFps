@@ -19,7 +19,7 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 /**
 	Sets up all SubSystem ptr's so app can access subsystems.
 */
-void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
+void Application::SetEnginePointer(ZSSZeroFps* pkZeroFps) 
 {
 	m_pkZeroFps				=	pkZeroFps;	
 	m_pkConsole				=	m_pkZeroFps->m_pkConsole;

@@ -21,7 +21,7 @@ enum PrimType
 /// Used to display basic simple 3d objects.
 class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 	private:
-		ZeroFps*		m_pkFps;
+		ZSSZeroFps*	m_pkFps;
 		ZSSRender*	m_pkRender;
 		PrimType		m_ePrimType;
 		

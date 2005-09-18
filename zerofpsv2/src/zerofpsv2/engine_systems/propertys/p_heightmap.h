@@ -115,7 +115,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 };
 
 Property* Create_HeightmapProperty();
-void ENGINE_SYSTEMS_API Register_HeightmapProperty(ZeroFps* pkZeroFps);
+void ENGINE_SYSTEMS_API Register_HeightmapProperty(ZSSZeroFps* pkZeroFps);
 
 #endif
 

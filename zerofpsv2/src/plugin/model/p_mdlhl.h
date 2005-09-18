@@ -240,7 +240,7 @@ class P_MdlHL : public Property
 };
 
 Property* Create_P_MdlHL();
-void Register_P_MdlHL(ZeroFps* pkZeroFps);
+void Register_P_MdlHL(ZSSZeroFps* pkZeroFps);
 
 #endif
 

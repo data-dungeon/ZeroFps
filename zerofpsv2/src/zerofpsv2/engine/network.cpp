@@ -54,7 +54,7 @@ ZSSNetWork::ZSSNetWork()
 bool ZSSNetWork::StartUp()	
 { 
 	m_pkConsole	= static_cast<ZSSConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
-	m_pkZeroFps	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkZeroFps	= static_cast<ZSSZeroFps*>(GetSystem().GetObjectPtr("ZSSZeroFps"));
 	g_pkNetWork  = this;
 
 	// Create Log Files.

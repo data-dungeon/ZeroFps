@@ -28,6 +28,6 @@ class MCOMMON_API P_Projectile: public Property {
 };
 
 MCOMMON_API Property* Create_P_Projectile();
-void MCOMMON_API Register_P_Projectile(ZeroFps* pkZeroFps);
+void MCOMMON_API Register_P_Projectile(ZSSZeroFps* pkZeroFps);
 
 #endif

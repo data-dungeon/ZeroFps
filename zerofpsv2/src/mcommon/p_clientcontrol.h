@@ -57,7 +57,7 @@ class MCOMMON_API ClientOrder
 
 class MCOMMON_API P_ClientControl: public Property {
 	private:
-		ZeroFps* 		m_pkFps;
+		ZSSZeroFps* 	m_pkFps;
 		P_ServerInfo*	m_pkServerInfo;
 		ZSSRender*			m_pkRender;	
 		

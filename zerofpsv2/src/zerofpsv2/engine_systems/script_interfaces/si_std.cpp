@@ -6,7 +6,7 @@
 
 ZSSScriptSystem* StdLua::g_pkScript;
 ZSSVFileSystem*	StdLua::g_pkVFS;
-ZeroFps*	StdLua::g_pkZeroFps;
+ZSSZeroFps*	StdLua::g_pkZeroFps;
 
 extern ZSSEntityManager* g_pkObjMan;
 
@@ -16,7 +16,7 @@ namespace StdLua
  		\ingroup NewSi
    */
 
-void Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkVFS,ZeroFps* pkZeroFps)
+void Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkVFS,ZSSZeroFps* pkZeroFps)
 {
 	cout << "Add SI: Std" << endl;
 

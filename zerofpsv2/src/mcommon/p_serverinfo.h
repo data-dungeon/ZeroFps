@@ -33,7 +33,7 @@ enum PlayerRights
 */
 class MCOMMON_API P_ServerInfo: public Property {
 	private:
-		ZeroFps* m_pkFps;
+		ZSSZeroFps*				m_pkFps;
 		string 					m_sServerName;				
 		vector<PlayerInfo>	m_kPlayers;		
 		

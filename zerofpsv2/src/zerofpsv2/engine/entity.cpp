@@ -22,7 +22,7 @@ Entity::Entity()
 	// Get Ptrs to some usefull Subsystems.
 	m_pkEntityManager		= static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	m_pkPropertyFactory	= static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("ZSSPropertyFactory"));	
-	m_pkZeroFps			   = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps			   = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 		
 	ZFAssert(m_pkEntityManager,	"Entity::Entity(): Failed to find ZSSEntityManager");
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
@@ -2901,7 +2901,7 @@ int GetObjectRotLua(lua_State* pkLua)
 
 
 
-void Register_SIEntityProperty(ZeroFps* pkZeroFps)
+void Register_SIEntityProperty(ZSSZeroFps* pkZeroFps)
 {
 	cout << "Add SI: Entity" << endl;
 

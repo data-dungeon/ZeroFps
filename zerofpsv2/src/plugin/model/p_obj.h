@@ -71,7 +71,7 @@ class P_Obj : public Property
 };
 
 Property* Create_P_Obj();
-void Register_P_Obj(ZeroFps* pkZeroFps);
+void Register_P_Obj(ZSSZeroFps* pkZeroFps);
 
 #endif
 

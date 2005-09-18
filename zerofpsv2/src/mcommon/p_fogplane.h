@@ -44,7 +44,7 @@ class MCOMMON_API P_FogPlane: public Property
 };
 
 MCOMMON_API Property* Create_P_FogPlane();
-MCOMMON_API void Register_P_FogPlane(ZeroFps* pkZeroFps);
+MCOMMON_API void Register_P_FogPlane(ZSSZeroFps* pkZeroFps);
 
 #endif
 

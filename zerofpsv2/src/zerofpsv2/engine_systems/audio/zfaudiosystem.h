@@ -226,7 +226,7 @@ private:
 	//
 
 	ZSSEntityManager* m_pEntityMan;
-	ZeroFps* 			m_pkZeroFps;
+	ZSSZeroFps* 		m_pkZeroFps;
 
 	class AmbientArea
 	{

@@ -14,7 +14,7 @@ using namespace std;
 /// Property for a SkyBox.
 class ENGINE_SYSTEMS_API P_SkyBoxRender : public Property {
 		TextureManager* m_pkTexMan;
-		ZeroFps*		m_pkZeroFps;
+		ZSSZeroFps*		m_pkZeroFps;
 		ZSSRender*	m_pkRender;	
 	
 		int m_iHor;		

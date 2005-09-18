@@ -538,7 +538,7 @@ Property* Create_P_Item()
 	return new P_Item;
 }
 
-void Register_P_Item(ZeroFps* pkZeroFps)
+void Register_P_Item(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Item", Create_P_Item);					

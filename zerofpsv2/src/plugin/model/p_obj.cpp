@@ -435,7 +435,7 @@ Property* Create_P_Obj()
 	return new P_Obj;
 }
 
-void Register_P_Obj(ZeroFps* pkZeroFps)
+void Register_P_Obj(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Obj", Create_P_Obj);					

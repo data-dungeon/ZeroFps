@@ -890,7 +890,7 @@ Property* Create_P_Md5()
 	return new P_Md5;
 }
 
-void Register_P_Md5(ZeroFps* pkZeroFps)
+void Register_P_Md5(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Md5", Create_P_Md5);					

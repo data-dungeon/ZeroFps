@@ -109,7 +109,7 @@ class MCOMMON_API ZSSEnviroment : public ZFSubSystem
 			FID_CHANGEENVIROMENT,
 		};
 	
-		ZeroFps*						m_pkZeroFps;
+		ZSSZeroFps*					m_pkZeroFps;
 		
 		vector<P_Enviroment*>	m_kPEnviroments;
 		vector<EnvList*>			m_kEnvLists;

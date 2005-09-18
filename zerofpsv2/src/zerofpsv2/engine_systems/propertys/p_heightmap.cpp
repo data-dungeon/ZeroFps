@@ -954,7 +954,7 @@ Property* Create_HeightmapProperty()
 	return new P_Heightmap;
 }
 
-void Register_HeightmapProperty(ZeroFps* pkZeroFps)
+void Register_HeightmapProperty(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Heightmap", Create_HeightmapProperty);				

@@ -76,7 +76,7 @@ Property* Create_P_Projectile()
 }
 
 
-void Register_P_Projectile(ZeroFps* pkZeroFps)
+void Register_P_Projectile(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Projectile", Create_P_Projectile);					

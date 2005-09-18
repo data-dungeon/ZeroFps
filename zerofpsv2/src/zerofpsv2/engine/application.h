@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class ZeroFps;
+class ZSSZeroFps;
 class ZSSConsole;
 class ZSSRender;
 class ZSSInput;
@@ -64,7 +64,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZSSScriptSystem*		m_pkScript;
 		FileIo*					m_pkFile;
 		ZShadow*					m_pkZShadow;
-		ZeroFps*					m_pkZeroFps;
+		ZSSZeroFps*					m_pkZeroFps;
 		ZSSNetWork*				m_pkNetwork;
 		ZShaderSystem*			m_pkZShaderSystem;
 		Tcs*						m_pkTcs;
@@ -77,7 +77,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		InputHandle*	m_pkInputHandle;
 		bool				m_bIsEditor;
 
-		void SetEnginePointer(ZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
+		void SetEnginePointer(ZSSZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
 		void SetTitle(string strTitle);		
 		
 		Application(char* pName,int iWidth,int iHeight,int iDepth);

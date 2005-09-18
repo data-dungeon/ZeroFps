@@ -11,7 +11,7 @@
 using namespace std;
 
 class ZSSInput;
-class ZeroFps;
+class ZSSZeroFps;
 
 //max lenght of an entered command
 #define COMMAND_LENGHT 128
@@ -38,7 +38,7 @@ class ENGINE_API ZSSConsole : public BasicConsole
 			CONCMD_AUTOCOMPLETE,
 		};
 
-		ZeroFps*					m_pkEngine;		
+		ZSSZeroFps*					m_pkEngine;		
 		ZSSRender*				m_pkRender;
 		ZSSInput*				m_pkInput;
 		TextureManager*		m_pkTexMan;

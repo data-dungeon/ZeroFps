@@ -14,7 +14,7 @@
 using namespace std;
 
 
-class ZeroFps;
+class ZSSZeroFps;
 
 
 enum LIGHT_TYPE {
@@ -93,7 +93,7 @@ class RENDER_API ZSSLight : public ZFSubSystem
 			inline bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
 		} More_Light; 		
 		
-		ZeroFps*	m_pkZeroFps;	
+		ZSSZeroFps*	m_pkZeroFps;	
 		Vector3 m_kCamPos;
 		
 		int		m_iCurrentActiveLights;

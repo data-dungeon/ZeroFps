@@ -20,7 +20,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 	
 		ZSSLight*		m_pkLight;
 		ZSSRender*		m_pkRender;		// Ptr to render sys.
-		ZeroFps*			m_pkZeroFps;	// Ptr to zerofps sys.
+		ZSSZeroFps*		m_pkZeroFps;	// Ptr to zerofps sys.
 		ZShaderSystem* m_pkZShaderSystem;
 		
 		bool		m_bCulled;
@@ -137,7 +137,7 @@ namespace SI_PMad
 
 
 Property* Create_MadProperty();
-void ENGINE_SYSTEMS_API Register_MadProperty(ZeroFps* pkZeroFps);
+void ENGINE_SYSTEMS_API Register_MadProperty(ZSSZeroFps* pkZeroFps);
 
 #endif
 

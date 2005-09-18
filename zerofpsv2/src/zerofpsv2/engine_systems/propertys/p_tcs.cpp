@@ -1138,7 +1138,7 @@ Property* Create_P_Tcs()
 	return new P_Tcs;
 }
 
-void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
+void ENGINE_SYSTEMS_API Register_PTcs(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Tcs", Create_P_Tcs);					

@@ -591,7 +591,7 @@ Property* Create_P_DungeonGen()
 	return new P_DungeonGen;
 }
 
-void Register_P_DungeonGen(ZeroFps* pkZeroFps)
+void Register_P_DungeonGen(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_DungeonGen", Create_P_DungeonGen);					

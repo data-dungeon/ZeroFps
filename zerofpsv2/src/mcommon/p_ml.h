@@ -53,6 +53,6 @@ class MCOMMON_API P_Ml: public Property {
 };
 
 MCOMMON_API Property* Create_P_Ml();
-void MCOMMON_API Register_P_Ml(ZeroFps* pkZeroFps);
+void MCOMMON_API Register_P_Ml(ZSSZeroFps* pkZeroFps);
 
 #endif

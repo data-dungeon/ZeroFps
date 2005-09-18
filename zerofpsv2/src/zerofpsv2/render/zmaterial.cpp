@@ -967,7 +967,7 @@ namespace SI_ZMATERIAL
 	ZMaterial*			g_pkCurrentMaterial = 	NULL;
 	int					g_iCurrentMaterialPass = -1;
 	ZSSScriptSystem*	g_pkScript = 				NULL;
-	ZeroFps*				g_pkZeroFps = 				NULL;
+	ZSSZeroFps*			g_pkZeroFps = 				NULL;
 	ZShaderSystem*		g_pkZShaderSystem = 		NULL;
 	
 /**	\fn PassBegin( iPass )
@@ -1080,7 +1080,7 @@ namespace SI_ZMATERIAL
 void RegisterSI_Material()
 {
 	SI_ZMATERIAL::g_pkScript = 			static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
-	SI_ZMATERIAL::g_pkZeroFps = 			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	SI_ZMATERIAL::g_pkZeroFps = 			static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	SI_ZMATERIAL::g_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("PassBegin",				SI_ZMATERIAL::PassBeginLua);

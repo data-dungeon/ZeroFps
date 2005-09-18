@@ -40,7 +40,7 @@ void MCommon_RegisterSystems()
 
 }
 
-void MCommon_RegisterPropertys(ZeroFps* pkZeroFps, ZSSPropertyFactory*	pkPropertyFactory)
+void MCommon_RegisterPropertys(ZSSZeroFps* pkZeroFps, ZSSPropertyFactory*	pkPropertyFactory)
 {
 	Register_P_AI(pkZeroFps);
 	Register_P_Buff(pkZeroFps);	

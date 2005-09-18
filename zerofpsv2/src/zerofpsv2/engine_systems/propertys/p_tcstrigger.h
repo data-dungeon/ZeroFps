@@ -62,7 +62,7 @@ class ENGINE_SYSTEMS_API P_TcsTrigger : public Property
 
 
 Property* Create_P_TcsTrigger();
-void ENGINE_SYSTEMS_API Register_PTcsTrigger(ZeroFps* pkZeroFps);
+void ENGINE_SYSTEMS_API Register_PTcsTrigger(ZSSZeroFps* pkZeroFps);
 
 
 #endif

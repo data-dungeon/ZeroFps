@@ -7,7 +7,7 @@ P_HMRP2::P_HMRP2()
 	strcpy(m_acName,"P_HMRP2");		
 
 	m_pkTexMan	=	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-	m_pkZeroFps	=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkZeroFps	=	static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		
 	m_pkRender	=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 	m_pkLight   =	static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));	
 
@@ -138,7 +138,7 @@ Property* Create_HMRP2()
 	return new P_HMRP2();
 }
 
-void ENGINE_SYSTEMS_API Register_PHmrp(ZeroFps* pkZeroFps)
+void ENGINE_SYSTEMS_API Register_PHmrp(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_HMRP2", Create_HMRP2);					

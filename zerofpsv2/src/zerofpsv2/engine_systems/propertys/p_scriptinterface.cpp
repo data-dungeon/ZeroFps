@@ -9,7 +9,7 @@ P_ScriptInterface::P_ScriptInterface()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
-	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkScriptSys	= static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 	
 	m_bNetwork = false;
@@ -120,7 +120,7 @@ namespace SI_PScriptInterface
 	}	
 }
 
-void ENGINE_SYSTEMS_API Register_PScriptInterface(ZeroFps* pkZeroFps)
+void ENGINE_SYSTEMS_API Register_PScriptInterface(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_ScriptInterface", Create_P_ScriptInterface);					
