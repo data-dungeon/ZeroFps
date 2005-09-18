@@ -90,7 +90,7 @@ class P_Md5 : public Property
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
 		TextureManager*	m_pkTextureManger;
-		Render*				m_pkRender;
+		ZSSRender*			m_pkRender;
 
 		int					m_iNumOfJoints;
 		int					m_iNumOfMesh;

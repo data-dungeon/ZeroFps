@@ -48,8 +48,8 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		
 		
 		ZShaderSystem*		m_pkZShaderSystem;
-		Light*				m_pkLight;
-		Render*				m_pkRender;	
+		ZSSLight*			m_pkLight;
+		ZSSRender*			m_pkRender;	
 		
 		
 		LightProfile		m_kLightProfile;				//used for lighting				

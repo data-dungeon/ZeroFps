@@ -748,7 +748,7 @@ void Mad_Modell::DrawSkelleton()
 	Vector3 Position;
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
-	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	ZSSRender* pkRender = static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 
 	glColor3f(1,1,1);
 	for(unsigned int i=0; i<pkCore->GetNumOfBones(); i++) {

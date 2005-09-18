@@ -198,7 +198,7 @@ P_PfMesh::P_PfMesh()
 	m_pkSelected	= NULL;
 
 	m_pkAStar		= static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
-	m_pkRender		= static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	m_pkRender		= static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender")); 
 }
 
 P_PfMesh::~P_PfMesh()

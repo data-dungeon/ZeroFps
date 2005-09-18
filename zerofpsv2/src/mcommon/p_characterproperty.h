@@ -156,7 +156,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 {
 	private:
 		ZSSAudioSystem*	m_pkAudioSystem;
-		Render*			m_pkRender;	
+		ZSSRender*			m_pkRender;	
 		ZShaderSystem*	m_pkZShaderSystem;
 		EntityManager*	m_pkEntityMan;
 		Application*	m_pkApp;

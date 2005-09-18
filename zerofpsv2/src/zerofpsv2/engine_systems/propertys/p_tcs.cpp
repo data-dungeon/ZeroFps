@@ -23,7 +23,7 @@ P_Tcs::P_Tcs()
 	
 	
 	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
-	m_pkRender = 	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkRender = 	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 	
 	m_bHaveUpdated = false;
 	

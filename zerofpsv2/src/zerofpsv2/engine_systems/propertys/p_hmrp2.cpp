@@ -8,8 +8,8 @@ P_HMRP2::P_HMRP2()
 
 	m_pkTexMan	=	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps	=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkRender	=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
-	m_pkLight   =	static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));	
+	m_pkRender	=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
+	m_pkLight   =	static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));	
 
 	
 	m_iType	=	PROPERTY_TYPE_RENDER;

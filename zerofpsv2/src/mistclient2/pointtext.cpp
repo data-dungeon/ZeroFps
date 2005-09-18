@@ -4,7 +4,7 @@
 PointText::PointText()
 {
 	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkRender=	 static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender=	 static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 
 
 	//setup material

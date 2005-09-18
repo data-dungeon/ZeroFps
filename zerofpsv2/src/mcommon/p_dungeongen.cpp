@@ -8,7 +8,7 @@ P_DungeonGen::P_DungeonGen()
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	
 
-	m_pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender = static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 
 	m_bHaveBuild = false;
 }

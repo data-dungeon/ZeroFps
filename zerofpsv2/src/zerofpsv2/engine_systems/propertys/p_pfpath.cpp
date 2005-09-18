@@ -19,7 +19,7 @@ P_PfPath::P_PfPath()
 
 	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkAStar	=	static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
-	m_pkRender	=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	m_pkRender	=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender")); 
 
 	m_fSpeed			= 5;
 	m_bTilt			= false;

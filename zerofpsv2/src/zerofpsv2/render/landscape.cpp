@@ -3,9 +3,9 @@
 #include "../engine_systems/common/heightmap.h" 
 //#include "../engine_systems/common/i_heightmap2.h"
     
-void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
+void ZSSRender::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
-	m_pkZShaderSystem->Push("Render::DrawSkyBox_SixSided");
+	m_pkZShaderSystem->Push("ZSSRender::DrawSkyBox_SixSided");
 
 	glPushMatrix();
 //	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -100,9 +100,9 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 }
 
 
-void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) 
+void ZSSRender::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) 
 {
-	m_pkZShaderSystem->Push("Render::DrawSkyBox");
+	m_pkZShaderSystem->Push("ZSSRender::DrawSkyBox");
 	
 	
 	float fYpos;
@@ -185,9 +185,9 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop)
 }
 
 
-void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue) 
+void ZSSRender::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue) 
 {
-	m_pkZShaderSystem->Push("Render::DrawWater");
+	m_pkZShaderSystem->Push("ZSSRender::DrawWater");
 
 
 	float freq=500.0;
@@ -282,7 +282,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	m_pkZShaderSystem->Pop();
 }
 
-void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture) {
+void ZSSRender::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture) {
 	//recomended color  .3,.3,.4,.99;
 	
 	glPushMatrix();
@@ -341,7 +341,7 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 
 
 //this funktion calculates the texture cordinat for a subtexture in a 1024x1024 texture
-void Render::GiveTexCor(float &iX,float &iY,int iNr) {	
+void ZSSRender::GiveTexCor(float &iX,float &iY,int iNr) {	
 	iX = float(iNr%4);	
 	iY = float((iNr-(iNr%4))/4);
 
@@ -354,7 +354,7 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 
 
 
-void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale,float fAlpha)//,int& iTexture1) //,int iTexture2) 
+void ZSSRender::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale,float fAlpha)//,int& iTexture1) //,int iTexture2) 
 {
 // 	static Vector3 normaldata[8] = { Vector3(0,1,0),
 // 												Vector3(0,1,0),
@@ -437,7 +437,7 @@ void Render::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& k
 }
 
 
-void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
+void ZSSRender::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
 	// Check if we should draw this at all.
 	if(!m_iDrawLandscape)					return;
@@ -461,7 +461,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		}
 	}
 
-	m_pkZShaderSystem->Push("Render::DrawHMLodSplat");	
+	m_pkZShaderSystem->Push("ZSSRender::DrawHMLodSplat");	
 	
 		
 // 	glPushMatrix();
@@ -549,7 +549,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	m_pkZShaderSystem->Pop();
 }
 
-void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
+void ZSSRender::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
 {
 	int iPatchSize = 1;
 	glColor3f(1,1,1);
@@ -563,7 +563,7 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
 	}
 }
 
-void Render::DrawHMVertex(HeightMap* kMap)
+void ZSSRender::DrawHMVertex(HeightMap* kMap)
 {
 	HM_vert* pkHmVertex = kMap->verts;
 
@@ -587,7 +587,7 @@ void Render::DrawHMVertex(HeightMap* kMap)
 	glEnable(GL_LIGHTING);
 }
 
-void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
+void ZSSRender::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
 	glDisable(GL_TEXTURE_2D);
 
@@ -619,7 +619,7 @@ void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glEnd();
 }
 
-void Render::DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected)
+void ZSSRender::DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected)
 {
 	for(unsigned int i=0; i<kSelected.size(); i++) {
 		kmap->verts[kSelected[i].m_iIndex].height = 3 * kSelected[i].m_fValue;
@@ -628,7 +628,7 @@ void Render::DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected)
 
 
 
-void Render::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 )
+void ZSSRender::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 )
 {
 	int iTestX = kMap->m_iVertexSide;
 	int iVertexIndex = int(z*iTestX+x);
@@ -642,7 +642,7 @@ void Render::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& 
 	kTex2.Set(x / TEX_SCALE, z/TEX_SCALE,0);
 }
 
-void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
+void ZSSRender::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
 {
 	int	iStep;
 	float fDistance;

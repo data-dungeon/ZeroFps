@@ -20,12 +20,12 @@ P_Enviroment::P_Enviroment()
 	
 	m_pkFps=					static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityManager=	static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkAudioSystem =		static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pkEnviroment =		static_cast<ZSSEnviroment*>(g_ZFObjSys.GetObjectPtr("ZSSEnviroment"));
 	m_pkMLTime =			static_cast<ZSSMLTime*>(g_ZFObjSys.GetObjectPtr("ZSSMLTime"));
-	m_pkLight = 			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkLight = 			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 	
 	m_bEnabled = 						false;	
 	m_strCurrentZoneEnviroment =	"Default";

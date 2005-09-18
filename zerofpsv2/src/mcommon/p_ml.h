@@ -18,7 +18,7 @@ using namespace std;
 */
 class MCOMMON_API P_Ml: public Property {
 	private:
-		Render*				m_pkRender;	
+		ZSSRender*			m_pkRender;	
 		ZShaderSystem*		m_pkZShaderSystem;
 		
 		vector<string>		m_kActions;				///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"

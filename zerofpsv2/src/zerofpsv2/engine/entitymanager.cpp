@@ -117,7 +117,7 @@ bool EntityManager::StartUp()
 	m_pkNetWork		=	static_cast<ZSSNetWork*>(GetSystem().GetObjectPtr("ZSSNetWork"));
 	m_pkScript		=	static_cast<ZSSScriptSystem*>(GetSystem().GetObjectPtr("ZSSScriptSystem"));
 	m_pkBasicFS		=	static_cast<ZSSBasicFS*>(GetSystem().GetObjectPtr("ZSSBasicFS"));		
-	m_pkRender		=	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	m_pkRender		=	static_cast<ZSSRender*>(GetSystem().GetObjectPtr("ZSSRender"));
 	m_pkPropertyFactory	= static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("ZSSPropertyFactory"));	
 	m_pkZShaderSystem		= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	

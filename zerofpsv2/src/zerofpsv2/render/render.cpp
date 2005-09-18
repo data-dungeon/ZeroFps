@@ -8,8 +8,8 @@
 
 FILE* pkGlDumpLog;
   
-Render::Render()  
-:	ZFSubSystem("Render")
+ZSSRender::ZSSRender()  
+:	ZFSubSystem("ZSSRender")
 {
 	m_pkScreen = NULL;
 
@@ -64,11 +64,11 @@ Render::Render()
 // Setup_EditColors();
 }
 
-bool Render::StartUp()
+bool ZSSRender::StartUp()
 {
 	// Get SubSystem Ptrs
 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+ 	m_pkLight	= static_cast<ZSSLight*>(GetSystem().GetObjectPtr("ZSSLight"));
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
@@ -78,7 +78,7 @@ bool Render::StartUp()
 	return true;
 }
 
-void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
+void ZSSRender::InitDisplay(int iWidth,int iHeight,int iDepth)
 {
 	// Anything sent from app overrides default and ini files.
 	if(iWidth || iHeight || iDepth) {
@@ -108,13 +108,13 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void Render::ToggleFullScreen(void)
+void ZSSRender::ToggleFullScreen(void)
 {
 	m_iFullScreen = !m_iFullScreen;
 	SDL_WM_ToggleFullScreen(m_pkScreen);
 }
 
-void Render::SetDisplay(int iWidth,int iHeight,int iDepth, bool bFullscreen)
+void ZSSRender::SetDisplay(int iWidth,int iHeight,int iDepth, bool bFullscreen)
 {
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
@@ -125,7 +125,7 @@ void Render::SetDisplay(int iWidth,int iHeight,int iDepth, bool bFullscreen)
 }
 
 
-void Render::SetDisplay()
+void ZSSRender::SetDisplay()
 {
 	m_pkTexMan->ClearAll();
 
@@ -158,7 +158,7 @@ void Render::SetDisplay()
 	m_pkLight->SetStartUpValues();
 }
 
-void Render::Swap(void) 
+void ZSSRender::Swap(void) 
 {
 	SDL_GL_SwapBuffers();  //guess
 
@@ -182,7 +182,7 @@ void Render::Swap(void)
 
 
 
-void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)
+void ZSSRender::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)
 {
 	m_pkZShaderSystem->Push("render::sphere");
 
@@ -243,7 +243,7 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 	m_pkZShaderSystem->Pop();	
 }
 
-void Render::Normalize(float v[3]) {    
+void ZSSRender::Normalize(float v[3]) {    
    float d = float( sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) ); 
    
    if (d == 0.0) {  
@@ -255,7 +255,7 @@ void Render::Normalize(float v[3]) {
    v[2] /= d; 
 }
 
-void Render::SubDivide(float *v1, float *v2, float *v3, long depth)
+void ZSSRender::SubDivide(float *v1, float *v2, float *v3, long depth)
 {
    float v12[3], v23[3], v31[3];
    int i;
@@ -287,7 +287,7 @@ void Render::SubDivide(float *v1, float *v2, float *v3, long depth)
    SubDivide(v12, v23, v31, depth-1);
 }
 
-void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const int& iTexture)
+void ZSSRender::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const int& iTexture)
 {
 	m_pkZShaderSystem->Push("polygon4");
 
@@ -322,7 +322,7 @@ void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,c
 	m_pkZShaderSystem->Pop();
 }
 
-void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor)
+void ZSSRender::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor)
 {
 	m_pkZShaderSystem->Push("render::sphere");	
 
@@ -358,7 +358,7 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 	m_pkZShaderSystem->Pop();
 }
 
-void Render::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial)
+void ZSSRender::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial)
 {
 	static Matrix4 temp;
 	temp=kCamRotMatrix;
@@ -392,7 +392,7 @@ void Render::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,
 	m_pkZShaderSystem->MatrixPop();
 }
 
-void Render::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
+void ZSSRender::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
 {
 	static Matrix4 temp;
 	
@@ -416,7 +416,7 @@ void Render::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,flo
 
 }
 
-void Render::Print(const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont)
+void ZSSRender::Print(const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont)
 {
 	m_pkZShaderSystem->BindMaterial(pkMaterial);
 	
@@ -467,7 +467,7 @@ void Render::Print(const Vector3& kPos,float fScale,const string& strText,ZMater
 }
 
 
-void Render::PrintChar(char cChar,float fPos,float fScale) 
+void ZSSRender::PrintChar(char cChar,float fPos,float fScale) 
 {
 	static float fWidth = 1.0/16.0;
 	
@@ -501,7 +501,7 @@ void Render::PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos,const char
 	m_pkZShaderSystem->MatrixPop();
 }*/
 
-void Render::Print(Vector3 kPos,const char* aText,float fScale) 
+void ZSSRender::Print(Vector3 kPos,const char* aText,float fScale) 
 {
 	if(strlen(aText) == 0)
 		return;
@@ -529,7 +529,7 @@ void Render::Print(Vector3 kPos,const char* aText,float fScale)
 }
 
 
-void Render::Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor)
+void ZSSRender::Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor)
 {
 	static ZMaterial* pkLine = NULL;
 	if(!pkLine)
@@ -553,7 +553,7 @@ void Render::Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColo
 	m_pkZShaderSystem->DrawGeometry();
 }
 
-void Render::Line(const Vector3& kPos1,const Vector3& kPos2)
+void ZSSRender::Line(const Vector3& kPos1,const Vector3& kPos2)
 {
 	static ZMaterial* pkLine = NULL;
 	if(!pkLine)
@@ -575,14 +575,14 @@ void Render::Line(const Vector3& kPos1,const Vector3& kPos2)
 	
 }
 /*
-void Render::SetColor(Vector3 kColor)
+void ZSSRender::SetColor(Vector3 kColor)
 {
 	//glColor3f(kColor.x,kColor.y,kColor.z);
 }
 */
 
 
-void Render::Mode2D_Start()
+void ZSSRender::Mode2D_Start()
 {
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
 	m_pkZShaderSystem->MatrixPush();
@@ -615,7 +615,7 @@ void Render::Mode2D_Start()
 */	
 }
 
-void Render::Mode2D_End()
+void ZSSRender::Mode2D_End()
 {
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
 	m_pkZShaderSystem->MatrixPop();
@@ -632,7 +632,7 @@ void Render::Mode2D_End()
 
 
  
-void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine, int iMarkerPos, int iMarker) 
+void ZSSRender::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine, int iMarkerPos, int iMarker) 
 {
 	static ZMaterial* pkConsole = NULL;
 	if(!pkConsole)
@@ -696,7 +696,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	Mode2D_End();
 }
 
-void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite, bool bAlpha, bool bBlend) 
+void ZSSRender::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite, bool bAlpha, bool bBlend) 
 {
 	m_pkZShaderSystem->Push("DrawBillboard");
 
@@ -779,7 +779,7 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	m_pkZShaderSystem->Pop();
 }
 
-void Render::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
+void ZSSRender::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
 {
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	glColor3f(kColor.x,kColor.y,kColor.z);
@@ -797,7 +797,7 @@ void Render::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
 }
 
 
-void Render::DrawBoundSphere(float fRadius, Vector3)
+void ZSSRender::DrawBoundSphere(float fRadius, Vector3)
 {
 	cout<<"Render::DrawBoundSphere"<<endl;
 
@@ -820,7 +820,7 @@ void Render::DrawBoundSphere(float fRadius, Vector3)
 }
 
 
-void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
+void ZSSRender::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 {
 	glPushMatrix();
 		
@@ -884,7 +884,7 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
-void Render::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,int iTexture)
+void ZSSRender::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,int iTexture)
 {
 	glPushMatrix();
 
@@ -964,7 +964,7 @@ void Render::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,
 
 }
 
-void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSolid)
+void ZSSRender::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSolid)
 {
 	cout<<"Render::DrawPyramid"<<endl;
 
@@ -1059,7 +1059,7 @@ void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSol
 	glPopAttrib();
 }
 
-void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight, 
+void ZSSRender::DrawCone(Vector3 kPos, float fRadie, float fHeight, 
 					  Vector3 kColor, bool bSolid, int iSegments)
 {
 	cout<<"Render::DrawCone"<<endl;
@@ -1150,7 +1150,7 @@ void Render::DrawCone(Vector3 kPos, float fRadie, float fHeight,
 	glPopAttrib();
 }
 
-void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 kColor)
+void ZSSRender::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 kColor)
 {
 	cout<<"Render::DrawBoundingBox"<<endl;
 
@@ -1202,7 +1202,7 @@ void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 k
 
 }
 
-void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor)
+void ZSSRender::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor)
 {
 	cout<<"Render::DrawColorBox"<<endl;
 
@@ -1273,7 +1273,7 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 	glPopMatrix();
 	
 }
-void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax)
+void ZSSRender::DrawAABB( const Vector3& kMin,const Vector3& kMax)
 {
 	m_pkZShaderSystem->ClearGeometry();
 	
@@ -1319,7 +1319,7 @@ void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax)
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
-void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor, float fLineSize )
+void ZSSRender::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor, float fLineSize )
 {
 	static ZMaterial* pkLine = NULL;
 	if(!pkLine)
@@ -1362,7 +1362,7 @@ void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& k
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
-void Render::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor )
+void ZSSRender::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor )
 {
 	cout<<"Render::DrawSolidAABB"<<endl;
 
@@ -1414,7 +1414,7 @@ void Render::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vecto
 }
 
 
-void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor )
+void ZSSRender::DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor )
 {
 	cout<<"Render::DrawAABB"<<endl;
 
@@ -1460,7 +1460,7 @@ void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float 
 	glPopAttrib();
 }
 
-void Render::Draw_AxisIcon(float scale)
+void ZSSRender::Draw_AxisIcon(float scale)
 {
 
 	Line(Vector3(0,0,0),Vector3(scale,0,0),Vector3(1,0,0));
@@ -1469,7 +1469,7 @@ void Render::Draw_AxisIcon(float scale)
 
 }
 
-void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
+void ZSSRender::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 {
 	m_pkZShaderSystem->Push("Draw_AxisIcon");
 
@@ -1502,7 +1502,7 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 	m_pkZShaderSystem->Pop();
 }
 
-void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
+void ZSSRender::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 {
 	Image kScreen;
 	kScreen.CreateEmpty(m_iWidth, m_iHeight);
@@ -1693,7 +1693,7 @@ void GlDump_GetMatrixv(int iGlEnum, char* szName, int iValues)
 
 
 
-void Render::DumpGLState(char* szFileName)
+void ZSSRender::DumpGLState(char* szFileName)
 {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
@@ -2106,7 +2106,7 @@ RENDER_API char* GetOpenGLErrorName(GLenum id )
 	return "*** --- ***";
 }
 
-void Render::GlInfo()
+void ZSSRender::GlInfo()
 {
 	m_pkConsole->Printf("Gl Version: %s", glGetString(GL_VERSION));
 	m_pkConsole->Printf("Gl Vendor:  %s", glGetString(GL_VENDOR));
@@ -2124,7 +2124,7 @@ void Render::GlInfo()
 		}
 }
 
-void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSRender::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	float r,g,b;
 
@@ -2278,7 +2278,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 
 }*/
 
-void Render::EditColor_Set(string strName, float r, float g, float b)
+void ZSSRender::EditColor_Set(string strName, float r, float g, float b)
 {
 	cout << "Name: " <<  strName << endl;
 
@@ -2294,7 +2294,7 @@ void Render::EditColor_Set(string strName, float r, float g, float b)
 	m_kEditColor.push_back( EditColor(strName,	Vector3(r,g,b) ));	
 }
 
-Vector3 Render::GetEditColor(string strName)
+Vector3 ZSSRender::GetEditColor(string strName)
 {
 	Vector3 kColor(1,0,0);
 

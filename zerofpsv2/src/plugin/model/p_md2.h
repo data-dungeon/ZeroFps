@@ -84,7 +84,7 @@ class P_Md2 : public Property
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
 		TextureManager*	m_pkTextureManger;
-		Render*				m_pkRender;
+		ZSSRender*			m_pkRender;
 
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );

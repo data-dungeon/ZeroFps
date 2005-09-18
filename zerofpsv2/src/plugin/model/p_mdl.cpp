@@ -187,7 +187,7 @@ P_Mdl::P_Mdl()
 	
 	m_pkZShaderSystem	=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
 	m_pkTextureManger =	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));			
-	m_pkRender			=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender			=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 	
 	head.numverts		=	0;
 	m_iRenderFrame		=	0;

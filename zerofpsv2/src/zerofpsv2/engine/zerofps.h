@@ -21,7 +21,7 @@
 using namespace std;
 
 class Basic;
-class Render;
+class ZSSRender;
 class ZGui;
 class ZGuiResourceManager;
 class GLGuiRender;
@@ -233,8 +233,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		ZSSInput*				m_pkInput;					///< Handles all Local Input.
 		ZSSPropertyFactory*	m_pkPropertyFactory;		///< Property Creation for Objects.
 		Frustum*					m_pkFrustum;				///< Global Frustum object for culling.
-		Light*					m_pkLight;					///< Light Engine.
-		Render*					m_pkRender;					///< Renders Graphic primitives
+		ZSSLight*				m_pkLight;					///< ZSSLight Engine.
+		ZSSRender*				m_pkRender;					///< Renders Graphic primitives
 		Console*					m_pkConsole;				///< ZeroFps Console.
 		EntityManager*			m_pkEntityManager;		///< In Game Object System.
 		ZSSAudioSystem*			m_pkAudioSystem;			///< Soundy

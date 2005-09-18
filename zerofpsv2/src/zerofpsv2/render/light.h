@@ -85,7 +85,7 @@ class RENDER_API LightSource
 /**	\brief	SubSystem that handles all lights in ZeroFPS.
 		\ingroup Render
 */
-class RENDER_API Light : public ZFSubSystem 
+class RENDER_API ZSSLight : public ZFSubSystem 
 {
 	private:
 	
@@ -116,7 +116,7 @@ class RENDER_API Light : public ZFSubSystem
 		
 	public:
 
-		Light();
+		ZSSLight();
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

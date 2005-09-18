@@ -15,7 +15,7 @@
 
 #include "i_camera.h"
 
-class Render;
+class ZSSRender;
 class P_Camera;
 
 
@@ -65,11 +65,11 @@ class ENGINE_API Camera : public I_Camera
 	private:	
 
 		EntityManager*	m_pkEntityMan;
-		Render*			m_pkRender;
+		ZSSRender*		m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZeroFps*			m_pkZeroFps;
 		ZShadow*			m_pkZShadow;
-		Light*			m_pkLight;
+		ZSSLight*		m_pkLight;
 		TextureManager* m_pkTexMan;
 		
 		//matrises and position

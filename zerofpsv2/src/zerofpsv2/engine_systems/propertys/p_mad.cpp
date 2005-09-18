@@ -13,9 +13,9 @@ P_Mad::P_Mad()
 {
 
 	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkRender	=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	m_pkRender	=		static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender")); 
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
-	m_pkLight=		static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
+	m_pkLight=		static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight")); 
 		
 	strcpy(m_acName,"P_Mad");
 	m_bNetwork	 = true;

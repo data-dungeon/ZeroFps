@@ -16,8 +16,8 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 	private:
 		TextureManager*	m_pkTexMan;
 		ZeroFps*				m_pkZeroFps;
-		Render*				m_pkRender;	
-		Light*				m_pkLight;	
+		ZSSRender*			m_pkRender;	
+		ZSSLight*			m_pkLight;	
 		
 		LightProfile		m_kLightProfile;				//used for lighting
 		

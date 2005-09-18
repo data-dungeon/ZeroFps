@@ -13,7 +13,7 @@ using namespace std;
 class ENGINE_SYSTEMS_API P_EditIcon : public Property 
 {
 		TextureManager*	m_pkTexMan;
-		Render*				m_pkRender;	
+		ZSSRender*			m_pkRender;	
 		ZeroFps*				m_pkFps;
 			
 		string				m_kTexture; 

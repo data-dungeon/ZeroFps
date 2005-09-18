@@ -190,7 +190,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 	
 	
 		TextureManager*	m_pkTexMan;
-		Light*				m_pkLight;	
+		ZSSLight*			m_pkLight;	
 		
 		//current selected material
 		ZMaterial*		m_pkCurrentMaterial;

@@ -23,8 +23,8 @@ enum TriggerType
 class ENGINE_SYSTEMS_API P_TcsTrigger : public Property
 {
 	private:
-		Tcs*		m_pkTcs;
-		Render*	m_pkRender;
+		Tcs*			m_pkTcs;
+		ZSSRender*	m_pkRender;
 		
 		int		m_iTriggerType;
 		int		m_iTriggerID;

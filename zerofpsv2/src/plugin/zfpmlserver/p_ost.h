@@ -13,7 +13,7 @@ class P_Ost : public Property
 {
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
-		Render*				m_pkRender;
+		ZSSRender*				m_pkRender;
 		ZMaterial*			m_pkFogMaterial;
 
 		float					m_fSize;

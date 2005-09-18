@@ -55,7 +55,7 @@ public:
 /**	\brief	Render SubSystem
 		\ingroup Render
 */
-class RENDER_API Render : public ZFSubSystem {
+class RENDER_API ZSSRender : public ZFSubSystem {
 	private:
 		enum FuncId_e
 		{
@@ -69,7 +69,7 @@ class RENDER_API Render : public ZFSubSystem {
 		};
 
 		TextureManager*	m_pkTexMan;
-		Light*				m_pkLight;
+		ZSSLight*			m_pkLight;
 		BasicConsole*		m_pkConsole;
 		ZShaderSystem*		m_pkZShaderSystem;
 		
@@ -112,7 +112,7 @@ class RENDER_API Render : public ZFSubSystem {
 	public:
 		PolygonMode m_eLandscapePolygonMode;
 
-		Render();	
+		ZSSRender();	
 		bool StartUp();
 		bool ShutDown()	{ return true;	}
 		bool IsValid()		{ return true;	}

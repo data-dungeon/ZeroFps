@@ -14,7 +14,7 @@
 using namespace std;
 
 class P_PSystem;
-class Render;
+class ZSSRender;
 
 struct PSystemType;
 
@@ -57,7 +57,7 @@ private:
 	Matrix4 m_kRotation;
 
 	LightProfile		m_kLightProfile;
-	Light*				m_pkLight;
+	ZSSLight*			m_pkLight;
 
 	float 
 		*m_pfVertices,

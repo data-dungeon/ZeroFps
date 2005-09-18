@@ -28,7 +28,7 @@ using namespace std;
 
 P_AI::P_AI()
 {
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 
 	strcpy(m_acName,"P_AI");
 	m_iSide		= PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;

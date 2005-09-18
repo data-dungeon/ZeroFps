@@ -15,8 +15,8 @@ class ENGINE_SYSTEMS_API P_Light : public Property
 	private:
 		ZeroFps*				m_pkZeroFps;
 		LightSource*		m_pkLightSource;
-		Light*				m_pkLight;	
-		Render*				m_pkRender;
+		ZSSLight*			m_pkLight;	
+		ZSSRender*			m_pkRender;
 		ZShaderSystem*		m_pkZShaderSystem;
 		
 		int				m_iMode;		

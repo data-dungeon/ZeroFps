@@ -30,7 +30,7 @@ enum MCOMMON_API AI_STATES
 class MCOMMON_API P_AI: public Property 
 {
 	private:
-		Render*					m_pkRender;	
+		ZSSRender*					m_pkRender;	
 
 		P_CharacterControl*	m_pkCharacterControl;
 		P_CharacterProperty*	m_pkCharacterProperty;

@@ -54,9 +54,9 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 			FID_LISTSHADOWGROUPS,
 		};
 	
-		Light*			m_pkLight;
+		ZSSLight*		m_pkLight;
 		ZeroFps*			m_pkZeroFps;
-		Render*			m_pkRender;
+		ZSSRender*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		EntityManager*	m_pkEntityMan;
 		

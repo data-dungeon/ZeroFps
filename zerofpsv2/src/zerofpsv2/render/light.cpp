@@ -35,8 +35,8 @@ LightSource::LightSource()
 }
 
 
-Light::Light()
-: ZFSubSystem("Light") 
+ZSSLight::ZSSLight()
+: ZFSubSystem("ZSSLight") 
 {
 	m_iNrOfLights=		8;							//this shuld never be greater than 8
 	m_bAmbientOnly =	false;
@@ -56,7 +56,7 @@ Light::Light()
 }
 
 
-bool Light::StartUp()	
+bool ZSSLight::StartUp()	
 { 
 	m_pkZeroFps = static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 
@@ -64,19 +64,19 @@ bool Light::StartUp()
 	return true;	
 }
 
-bool Light::ShutDown()
+bool ZSSLight::ShutDown()
 { 
 	Remove(&m_kSun);
 
 	return true;
 }
 
-bool Light::IsValid()
+bool ZSSLight::IsValid()
 { 
 	return true;
 }
 
-void Light::SetLighting(bool bOn)
+void ZSSLight::SetLighting(bool bOn)
 {
 	if(bOn)
 	{
@@ -92,7 +92,7 @@ void Light::SetLighting(bool bOn)
 
 
 
-void Light::SetStartUpValues()
+void ZSSLight::SetStartUpValues()
 {
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0);
 
@@ -104,11 +104,11 @@ void Light::SetStartUpValues()
 
 }
 
-void Light::SetCamera(Vector3 kCamPos) {
+void ZSSLight::SetCamera(Vector3 kCamPos) {
 	m_kCamPos=kCamPos;
 }
 
-void Light::Add(LightSource *kNewLight)
+void ZSSLight::Add(LightSource *kNewLight)
 {
 	//cout << "Add Light" << endl;
 	m_kLights.push_back(kNewLight);
@@ -116,7 +116,7 @@ void Light::Add(LightSource *kNewLight)
 	m_iVersion++;
 }
 
-void Light::Remove(LightSource *kLight) 
+void ZSSLight::Remove(LightSource *kLight) 
 {
 
 	//loop trough all lightsources and find wich to view
@@ -140,7 +140,7 @@ bool comp(LightSource* x, LightSource* y)
 }
 
 
-void Light::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
+void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 {
 	//disable all lights
 	TurnOffAll();
@@ -238,7 +238,7 @@ void Light::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 }
  
 
-void Light::TurnOffAll() 
+void ZSSLight::TurnOffAll() 
 {
 	glDisable(GL_LIGHT0);	
 	glDisable(GL_LIGHT1);	
@@ -250,7 +250,7 @@ void Light::TurnOffAll()
 	glDisable(GL_LIGHT7);		
 }
 
-void Light::DisableLight(int iGlLight)
+void ZSSLight::DisableLight(int iGlLight)
 {
 	static GLenum light;		
 			
@@ -289,7 +289,7 @@ void Light::DisableLight(int iGlLight)
 	glDisable(light);	
 }
 
-void Light::EnableLight(LightSource* pkLight,int iGlLight)
+void ZSSLight::EnableLight(LightSource* pkLight,int iGlLight)
 {
 	static GLenum light;		
 			
@@ -392,7 +392,7 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 
 
 
-void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional)
+void ZSSLight::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional)
 {
 	vector<LightSource*> kSorted;
 
@@ -433,7 +433,7 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 		pkLights->push_back(kSorted[i]);
 }
 
-LightSource* Light::GetFirstDirectionalLight()
+LightSource* ZSSLight::GetFirstDirectionalLight()
 {
 	for(int i = 0;i < m_kLights.size();i++)
 	{

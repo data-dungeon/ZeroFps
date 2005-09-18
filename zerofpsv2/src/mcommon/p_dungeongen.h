@@ -43,7 +43,7 @@ class MCOMMON_API P_DungeonGen: public Property
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );			
 		
-		Render*				m_pkRender;
+		ZSSRender*			m_pkRender;
 		
 		vector<TileInfo> 	m_kTiles;
 		int					m_iWidth;

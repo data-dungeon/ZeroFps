@@ -59,7 +59,7 @@ class MCOMMON_API P_ClientControl: public Property {
 	private:
 		ZeroFps* 		m_pkFps;
 		P_ServerInfo*	m_pkServerInfo;
-		Render*			m_pkRender;	
+		ZSSRender*			m_pkRender;	
 		
 		int				m_iMaxOrders;
 		Vector3			m_kDirV;

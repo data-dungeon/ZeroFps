@@ -165,7 +165,7 @@ class ENGINE_SYSTEMS_API HeightMap
 		bool Layer_Clone(string strNameFrom, string strName);
 		vector<string>	Layers_GetNames();
 		
-		friend class Render;
+		friend class ZSSRender;
 		friend class P_HMRP2;
 };
 

@@ -35,7 +35,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 	private:
 		ZeroFps*				m_pkZeroFps;
 		EntityManager*		m_pkEntityMan;
-		Render*				m_pkRender;
+		ZSSRender*			m_pkRender;
 	
 		vector<P_Tcs*>				m_kBodys;	
 		vector<P_TcsTrigger*>	m_kTriggers;	

@@ -28,12 +28,12 @@ class MCOMMON_API P_Enviroment: public Property {
 	private:
 		ZeroFps* 		m_pkFps;
 		EntityManager* m_pkEntityManager;
-		Render*			m_pkRender;
+		ZSSRender*		m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZSSEnviroment*	m_pkEnviroment;
 		ZSSAudioSystem*	m_pkAudioSystem;
 		ZSSMLTime*		m_pkMLTime;
-		Light*			m_pkLight;
+		ZSSLight*		m_pkLight;
 		
 		bool				m_bEnabled;		
 		string			m_strCurrentZoneEnviroment;

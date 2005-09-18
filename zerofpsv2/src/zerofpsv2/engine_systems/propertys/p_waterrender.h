@@ -17,9 +17,9 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 {
 		TextureManager* 	m_pkTexMan;
 		ZeroFps* 			m_pkZeroFps;
-		Render*				m_pkRender;	
+		ZSSRender*			m_pkRender;	
 		ZShaderSystem*		m_pkZShaderSystem;
-		Light*				m_pkLight;
+		ZSSLight*			m_pkLight;
 		
 		ZFResourceHandle* m_pkMaterial; 
 		string				m_strMaterial;	

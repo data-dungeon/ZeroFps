@@ -13,7 +13,7 @@ P_TcsTrigger::P_TcsTrigger()
 	m_iVersion	= 1;
 		
 	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
-	m_pkRender = 	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkRender = 	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 	
 	
 	

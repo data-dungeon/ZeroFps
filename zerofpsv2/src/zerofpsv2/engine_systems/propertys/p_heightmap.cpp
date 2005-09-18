@@ -14,8 +14,8 @@ P_Heightmap::P_Heightmap()
 	m_bSortDistance = true;
 
 	m_pkZShaderSystem =	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
-	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkLight=				static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight")); 
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 
 	m_fLastOcculusionTime 	= 0;
 	m_bOculled					= false;

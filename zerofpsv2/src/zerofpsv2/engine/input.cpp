@@ -27,7 +27,7 @@ ZSSInput::ZSSInput()
 bool ZSSInput::StartUp()	
 { 
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-	m_pkRender = 	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	m_pkRender = 	static_cast<ZSSRender*>(GetSystem().GetObjectPtr("ZSSRender"));
 	m_pkConsole	= 	static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 	
 

@@ -37,7 +37,7 @@ private:
 	ZShaderSystem* m_pkZShaderSystem;
 	ZShadow* m_pkZShadow;
 	ZSSAudioSystem* m_pkAudioSys;
-	Render* m_pkRender;
+	ZSSRender* m_pkRender;
 	ZSSInput* m_pkInput;
 	ZeroFps* m_pkZeroFps;
 };

@@ -6,7 +6,7 @@ P_EditIcon::P_EditIcon()
 	strcpy(m_acName,"P_EditIcon");		
 
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
+	m_pkRender=static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
 	
 	m_iType=PROPERTY_TYPE_RENDER;

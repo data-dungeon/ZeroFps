@@ -14,7 +14,7 @@ class MCOMMON_API P_FogPlane: public Property
 {
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
-		Render*				m_pkRender;
+		ZSSRender*			m_pkRender;
 
 		float					m_fSize;
 		

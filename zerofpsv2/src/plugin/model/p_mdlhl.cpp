@@ -14,7 +14,7 @@ P_MdlHL::P_MdlHL()
 	
 	m_pkTextureManger =	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 	LoadMdl("halflife/dawn.mdl");
 }
 

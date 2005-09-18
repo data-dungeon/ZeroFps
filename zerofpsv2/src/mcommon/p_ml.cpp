@@ -9,7 +9,7 @@ P_Ml::P_Ml()
 	m_iType=0;//PROPERTY_TYPE_NORMAL;
 	m_iSide=0;//PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 
 	m_bNetwork = true;	

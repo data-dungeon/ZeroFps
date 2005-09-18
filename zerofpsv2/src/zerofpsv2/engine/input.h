@@ -90,7 +90,7 @@ class ENGINE_API ZSSInput : public ZFSubSystem {
 
 		BasicConsole*			m_pkConsole;
 		ZeroFps*					m_pkZeroFps;
-		Render*					m_pkRender;	
+		ZSSRender*				m_pkRender;	
 		
 		vector<VKData>			m_VirtualKeys;								// Virtual keys.
 		vector<InputHandle*>	m_kInputHandles;

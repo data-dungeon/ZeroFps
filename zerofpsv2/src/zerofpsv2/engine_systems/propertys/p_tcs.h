@@ -37,8 +37,8 @@ enum ENGINE_SYSTEMS_API TestTypes
 class ENGINE_SYSTEMS_API P_Tcs : public Property
 {
 	private:
-		Tcs*		m_pkTcs;
-		Render*	m_pkRender;
+		Tcs*			m_pkTcs;
+		ZSSRender*	m_pkRender;
 		
 		bool		m_bHaveUpdated;
 		

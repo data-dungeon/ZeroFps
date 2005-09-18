@@ -29,7 +29,7 @@ class P_Obj : public Property
 {
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
-		Render*				m_pkRender;
+		ZSSRender*			m_pkRender;
 		TextureManager*		m_pkTextureManger;
 
 		vector<PropertyValues> GetPropertyValues();

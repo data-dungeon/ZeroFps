@@ -128,9 +128,9 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 
 bool ZShadow::StartUp()
 {
-	m_pkLight 			= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+	m_pkLight 			= static_cast<ZSSLight*>(GetSystem().GetObjectPtr("ZSSLight"));
 	m_pkZeroFps			= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-	m_pkRender			= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+	m_pkRender			= static_cast<ZSSRender*>(GetSystem().GetObjectPtr("ZSSRender"));
 	m_pkEntityMan		= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
 	m_pkZShaderSystem	= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	

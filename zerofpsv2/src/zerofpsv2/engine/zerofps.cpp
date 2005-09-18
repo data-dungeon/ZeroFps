@@ -69,8 +69,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkNetWork					= new ZSSNetWork;
 	m_pkAudioSystem			= new ZSSAudioSystem;
 	m_pkConsole					= new Console;
-	m_pkRender					= new Render;
-	m_pkLight					= new Light;	
+	m_pkRender					= new ZSSRender;
+	m_pkLight					= new ZSSLight;	
 	m_pkFrustum					= new Frustum;	
 	m_pkPropertyFactory		= new ZSSPropertyFactory;
 	m_pkInput					= new ZSSInput;		

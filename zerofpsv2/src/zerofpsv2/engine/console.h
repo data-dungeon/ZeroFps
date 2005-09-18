@@ -39,7 +39,7 @@ class ENGINE_API Console : public BasicConsole
 		};
 
 		ZeroFps*					m_pkEngine;		
-		Render*					m_pkRender;
+		ZSSRender*				m_pkRender;
 		ZSSInput*				m_pkInput;
 		TextureManager*		m_pkTexMan;
 		

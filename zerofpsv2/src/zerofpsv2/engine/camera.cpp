@@ -9,12 +9,12 @@ bool Camera::m_bGridSnap(false);
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
  : I_Camera(kPos,kRot,fFov,fAspect,fNear,fFar) 
 {
-	m_pkRender = 			static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkRender = 			static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 	m_pkZShaderSystem =	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkEntityMan = 		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkZeroFps =			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkZShadow = 			static_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
-	m_pkLight	=			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkLight	=			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 	m_pkTexMan	=			static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	
 	

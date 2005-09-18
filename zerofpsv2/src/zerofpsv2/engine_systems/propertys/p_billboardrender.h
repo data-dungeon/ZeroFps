@@ -13,7 +13,7 @@ using namespace std;
 class ENGINE_SYSTEMS_API P_BillBoardRender : public Property 
 {
  		ZShaderSystem*		m_pkZShaderSystem;
-		Render*				m_pkRender;	
+		ZSSRender*			m_pkRender;	
 			
 		ZFResourceHandle* m_pkMaterial;
 		string				m_strMaterial;

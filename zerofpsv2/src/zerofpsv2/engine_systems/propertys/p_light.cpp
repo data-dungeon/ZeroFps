@@ -7,9 +7,9 @@
  
 P_Light::P_Light()
 {
-	m_pkLight	= 			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkLight	= 			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 	m_pkZeroFps = 			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	
 	strcpy(m_acName,"P_Light");

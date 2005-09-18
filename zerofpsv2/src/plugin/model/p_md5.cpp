@@ -15,7 +15,7 @@ P_Md5::P_Md5()
 	
 	m_pkTextureManger =	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
-	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
+	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 	LoadMesh("md5/mpplayer.md5mesh");
 
 	ZSSVFileSystem* fs = static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
@@ -89,7 +89,7 @@ void P_Md5::DrawSkelleton()
 	
 	Vector3 Position;
 
-	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	ZSSRender* pkRender = static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 
 	glColor3f(1,1,1);
 	glPointSize (12.0f);
@@ -127,7 +127,7 @@ void P_Md5::DrawSkelleton_old()
 	
 	Vector3 Position;
 
-	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	ZSSRender* pkRender = static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 
 	glColor3f(1,1,1);
 	glPointSize (12.0f);

@@ -83,7 +83,7 @@ bool ZShaderSystem::StartUp()
 	RegisterSI_Material();
 
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+ 	m_pkLight	= static_cast<ZSSLight*>(GetSystem().GetObjectPtr("ZSSLight"));
 
 	SetupOpenGL();
 	BindMaterial(NULL);

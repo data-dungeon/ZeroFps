@@ -63,7 +63,7 @@ public:
 
 class AStar;
 struct Mad_Face;
-class Render;
+class ZSSRender;
 
 /** \brief	Gives a entity ability to have a mesh used for pathfinding on it. 
 	 \ingroup Engine
@@ -72,7 +72,7 @@ class ENGINE_API P_PfMesh : public Property
 {
 	private:
 		AStar*						m_pkAStar;
-		Render*						m_pkRender;
+		ZSSRender*					m_pkRender;
 
 		vector<NaviMeshCell>		m_NaviMesh;
 		P_Mad*						m_pkMad;
