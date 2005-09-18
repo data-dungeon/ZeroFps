@@ -62,7 +62,7 @@ create, update and destroy entity's. It also handles to operation of replicating
 to other connected users that need to now about them.
 */
 
-class ENGINE_API EntityManager : public ZFSubSystem
+class ENGINE_API ZSSEntityManager : public ZFSubSystem
 {
 	private:
 		enum FuncId_e
@@ -185,8 +185,8 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		
 		bool						m_bAllowHide;
 
-		EntityManager();
-		~EntityManager();
+		ZSSEntityManager();
+		~ZSSEntityManager();
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

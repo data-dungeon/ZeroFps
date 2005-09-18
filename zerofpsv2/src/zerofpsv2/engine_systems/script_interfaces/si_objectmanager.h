@@ -4,7 +4,7 @@
 
 #include "../engine_systems_x.h"
 
-class EntityManager;
+class ZSSEntityManager;
 class ZSSScriptSystem;
 class Entity;
 class Property;
@@ -31,13 +31,13 @@ namespace ObjectManagerLua
 
 	Vector3 ENGINE_SYSTEMS_API GetVectorArg(lua_State* pkLua, int iIndex);
 
-	void ENGINE_SYSTEMS_API Init(EntityManager* pkObjMan, ZSSScriptSystem* pkScript);
+	void ENGINE_SYSTEMS_API Init(ZSSEntityManager* pkObjMan, ZSSScriptSystem* pkScript);
 	void ENGINE_SYSTEMS_API Reset();
 	void ENGINE_SYSTEMS_API Push();
 	void ENGINE_SYSTEMS_API Pop();	
 
 	extern ENGINE_SYSTEMS_API ZSSScriptSystem* 	g_pkScript;
-	extern ENGINE_SYSTEMS_API EntityManager*	g_pkObjMan;
+	extern ENGINE_SYSTEMS_API ZSSEntityManager*	g_pkObjMan;
 	
 	extern ENGINE_SYSTEMS_API	ScriptState	g_kScriptState;
 

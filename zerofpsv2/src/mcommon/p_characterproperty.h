@@ -37,7 +37,7 @@ class MCOMMON_API Skill
 		ZSSScriptSystem*	m_pkScript;		
 		ZFResourceHandle*	m_pkScriptFileHandle;	
 		ZeroFps*				m_pkZeroFps;
-		EntityManager*		m_pkEntityManager;
+		ZSSEntityManager*	m_pkEntityManager;
 		
 		string	m_strSkillScript;
 		
@@ -157,9 +157,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 	private:
 		ZSSAudioSystem*	m_pkAudioSystem;
 		ZSSRender*			m_pkRender;	
-		ZShaderSystem*	m_pkZShaderSystem;
-		EntityManager*	m_pkEntityMan;
-		Application*	m_pkApp;
+		ZShaderSystem*		m_pkZShaderSystem;
+		ZSSEntityManager*	m_pkEntityMan;
+		Application*		m_pkApp;
 		
 		//dirs
 		string	m_strBuffDir;

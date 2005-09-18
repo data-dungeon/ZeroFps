@@ -56,7 +56,7 @@ bool Tcs::StartUp()
 { 
 	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkRender		= static_cast<ZSSRender*>(GetSystem().GetObjectPtr("ZSSRender"));		
-	m_pkEntityMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));		
+	m_pkEntityMan	= static_cast<ZSSEntityManager*>(GetSystem().GetObjectPtr("ZSSEntityManager"));		
 	
 	m_pkBodyCopy1 = new P_Tcs();
 	m_pkBodyCopy2 = new P_Tcs();	

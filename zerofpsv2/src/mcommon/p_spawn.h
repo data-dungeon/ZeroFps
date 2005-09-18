@@ -19,7 +19,7 @@ class MCOMMON_API P_Spawn: public Property
 {
 	private:			
 // 		ZeroFps* 		m_pkFps;
-// 		EntityManager* m_pkEntityManager;
+// 		ZSSEntityManager* m_pkEntityManager;
 // 		Render*			m_pkRender;
 		
 		string			m_strEntityScript;

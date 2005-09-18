@@ -11,7 +11,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 {
 	m_pkRender = 			static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 	m_pkZShaderSystem =	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
-	m_pkEntityMan = 		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityMan = 		static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	m_pkZeroFps =			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkZShadow = 			static_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
 	m_pkLight	=			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));

@@ -28,13 +28,13 @@ using namespace std;
 
 namespace MistLandLua
 {
-	extern ZSSScriptSystem* 		g_pkScript;
-	extern EntityManager*		g_pkObjMan;
+	extern ZSSScriptSystem* 	g_pkScript;
+	extern ZSSEntityManager*	g_pkObjMan;
 	extern P_ServerInfo*			g_pkServerInfo;
 
 	extern int						g_iLastCollidedID;
 
-	void MCOMMON_API Init(EntityManager* pkObjMan,ZSSScriptSystem* pkScript);	
+	void MCOMMON_API Init(ZSSEntityManager* pkObjMan,ZSSScriptSystem* pkScript);	
 	
 	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);				//() return the callers object id	
 	int MCOMMON_API GetLastCollidedObjectLua(lua_State* pkLua);	

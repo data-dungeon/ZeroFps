@@ -26,9 +26,9 @@ class EnvSetting;
 
 class MCOMMON_API P_Enviroment: public Property {
 	private:
-		ZeroFps* 		m_pkFps;
-		EntityManager* m_pkEntityManager;
-		ZSSRender*		m_pkRender;
+		ZeroFps* 			m_pkFps;
+		ZSSEntityManager* m_pkEntityManager;
+		ZSSRender*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZSSEnviroment*	m_pkEnviroment;
 		ZSSAudioSystem*	m_pkAudioSystem;

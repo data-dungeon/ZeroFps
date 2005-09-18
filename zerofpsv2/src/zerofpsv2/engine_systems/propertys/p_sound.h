@@ -16,7 +16,7 @@ class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
 	ZSSAudioSystem* m_pkAudioSystem;
-	EntityManager* m_pEntityMan;
+	ZSSEntityManager* m_pEntityMan;
 
 	string m_strFileName;
 	bool m_bLoop;
@@ -54,7 +54,7 @@ class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
 	ZSSAudioSystem* m_pkAudioSystem;
-	EntityManager* m_pEntityMan;
+	ZSSEntityManager* m_pEntityMan;
 
 	string m_strFileName;
 	bool m_bLoop;

@@ -238,7 +238,7 @@ ZSSAudioSystem::ZSSAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZSSAudioSystem"
 	RegisterVariable("a_mainvolume",&m_fMainVolume,CSYS_FLOAT);
 	RegisterVariable("a_musicvolume",&m_fMusicGain,CSYS_FLOAT);
 
-	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
@@ -648,8 +648,8 @@ bool ZSSAudioSystem::StartUp()
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
-	EntityManager* pkObjectMan = reinterpret_cast<EntityManager*>(
-		g_ZFObjSys.GetObjectPtr("EntityManager"));
+	ZSSEntityManager* pkObjectMan = reinterpret_cast<ZSSEntityManager*>(
+		g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 
 	ZSSScriptSystem* pkScriptSys = reinterpret_cast<ZSSScriptSystem*>(
 		GetSystem().GetObjectPtr("ZSSScriptSystem"));

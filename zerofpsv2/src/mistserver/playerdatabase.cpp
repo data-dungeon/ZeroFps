@@ -7,7 +7,7 @@
 
 PlayerDatabase::PlayerDatabase()
 {
-	m_pkEntityMan			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityMan			= static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	ZSSBasicFS* pkBFPS	= static_cast<ZSSBasicFS*>(g_ZFObjSys.GetObjectPtr("ZSSBasicFS"));	
 
 	m_bStdPrivilege.m_bAdmin		= false;

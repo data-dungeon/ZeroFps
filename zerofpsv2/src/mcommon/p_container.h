@@ -54,7 +54,7 @@ class MCOMMON_API MLContainerInfo
 class MCOMMON_API P_Container: public Property 
 {
 	private:
-		EntityManager*	m_pkEntMan;
+		ZSSEntityManager*	m_pkEntMan;
 	
 		vector<int>		m_kSlots;				//slots
 		vector<int>		m_kItemTypes;			//contains item types that can be put in this container, empty = all 

@@ -16,7 +16,7 @@ AStar::AStar()
 
 bool AStar::StartUp()
 {
-	m_pkEntityManager	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
+	m_pkEntityManager	= static_cast<ZSSEntityManager*>(GetSystem().GetObjectPtr("ZSSEntityManager"));
 
 	return true;
 }

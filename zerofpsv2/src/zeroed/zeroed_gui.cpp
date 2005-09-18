@@ -947,8 +947,8 @@ void ZeroEd::InitMainMenu()
 	vector<string> akSections;
 	if(m_pkIni->Open("ZeroEd.ini", false))
 	{
-		pkMenu->SetCheckMark("Menu_DebugShowZones", m_pkIni->GetIntValue("EntityManager", "l_showzones"));
-		pkMenu->SetCheckMark("Menu_DebugShowZoneConn", m_pkIni->GetIntValue("EntityManager", "l_showconn"));
+		pkMenu->SetCheckMark("Menu_DebugShowZones", m_pkIni->GetIntValue("ZSSEntityManager", "l_showzones"));
+		pkMenu->SetCheckMark("Menu_DebugShowZoneConn", m_pkIni->GetIntValue("ZSSEntityManager", "l_showconn"));
 		pkMenu->SetCheckMark("Menu_SysRender", m_pkIni->GetIntValue("ZeroFps", "r_render"));
 		pkMenu->SetCheckMark("Menu_SysLockFps", m_pkIni->GetIntValue("ZeroFps", "e_lockfps"));
 

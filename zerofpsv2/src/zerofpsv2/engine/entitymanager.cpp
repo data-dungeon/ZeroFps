@@ -63,8 +63,8 @@ bool ZoneData::IsInside(const Vector3& kPoint)
 	return true;
 }
 
-EntityManager::EntityManager() 
-: ZFSubSystem("EntityManager") 
+ZSSEntityManager::ZSSEntityManager() 
+: ZFSubSystem("ZSSEntityManager") 
 {
 	// Set Default values
 	m_iNextEntityID			= 0;
@@ -110,7 +110,7 @@ EntityManager::EntityManager()
 	Register_Cmd("setworlddir",	FID_SETWORLDDIR,	CSYS_FLAG_SRC_ALL);		
 }
 
-bool EntityManager::StartUp()	
+bool ZSSEntityManager::StartUp()	
 {
 	// Get Subsystems.
 	m_pkZeroFps		=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
@@ -135,16 +135,16 @@ bool EntityManager::StartUp()
 	return true; 
 }
 
-bool EntityManager::ShutDown() 
+bool ZSSEntityManager::ShutDown() 
 { 
 	Clear();
 
 	return true; 
 }
 
-bool EntityManager::IsValid()	{ return true; }
+bool ZSSEntityManager::IsValid()	{ return true; }
 
-EntityManager::~EntityManager() 
+ZSSEntityManager::~ZSSEntityManager() 
 {
 	float fAvgObjSize = -1;
 
@@ -162,7 +162,7 @@ EntityManager::~EntityManager()
 }
 
 
-void EntityManager::UpdateSimTime()
+void ZSSEntityManager::UpdateSimTime()
 {
 	//calculate new scaled sim time delta
 	m_fSimTimeDelta = m_fSimTimeScale * m_pkZeroFps->GetSystemUpdateFpsDelta();
@@ -172,7 +172,7 @@ void EntityManager::UpdateSimTime()
 }
 
 
-Entity* EntityManager::GetEntityByType(const char* czType)
+Entity* ZSSEntityManager::GetEntityByType(const char* czType)
 {
 	vector<Entity*> kEntitys;		
 	GetAllEntitys(&kEntitys);
@@ -191,9 +191,9 @@ Entity* EntityManager::GetEntityByType(const char* czType)
 /**	\brief	Link this to the Entity manager
 
   This function is called by Entitys as they are created. It assigned a EntityID to the Entity and
-  also put them in the EntityManager.
+  also put them in the ZSSEntityManager.
 */
-void EntityManager::Link(Entity* pkEntity,int iId) 
+void ZSSEntityManager::Link(Entity* pkEntity,int iId) 
 {
 	if(pkEntity->m_iEntityID != -1)
 	{
@@ -222,7 +222,7 @@ void EntityManager::Link(Entity* pkEntity,int iId)
 	m_akEntitys[pkEntity->m_iEntityID] = pkEntity; 
 }
 
-bool EntityManager::IsLinked(Entity* pkEntity)
+bool ZSSEntityManager::IsLinked(Entity* pkEntity)
 {
 	if(m_akEntitys.find(pkEntity->m_iEntityID) == m_akEntitys.end())
 		return false;
@@ -230,11 +230,11 @@ bool EntityManager::IsLinked(Entity* pkEntity)
 		return true;
 }
 
-/**	\brief	UnLink this from EntityManager.
+/**	\brief	UnLink this from ZSSEntityManager.
 
-  Remvoves Entity from the EntityManager.
+  Remvoves Entity from the ZSSEntityManager.
 */
-void EntityManager::UnLink(Entity* pkEntity) 
+void ZSSEntityManager::UnLink(Entity* pkEntity) 
 {	
 	// If i own Entity mark so we remove it on clients.
 	//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
@@ -245,9 +245,9 @@ void EntityManager::UnLink(Entity* pkEntity)
 
 /**	\brief	Delete all Entitys.
 
-	Clear all data from EntityManager.
+	Clear all data from ZSSEntityManager.
 */
-void EntityManager::Clear()
+void ZSSEntityManager::Clear()
 {
 	//delete all Entitys in world
 	while(m_akEntitys.begin() != m_akEntitys.end())
@@ -265,7 +265,7 @@ void EntityManager::Clear()
 /**	\brief	Create the top level Entitys.
 
 */
-void EntityManager::CreateBaseEntitys()
+void ZSSEntityManager::CreateBaseEntitys()
 {
 	m_iNextEntityID = 0;
 	
@@ -305,7 +305,7 @@ void EntityManager::CreateBaseEntitys()
 
 	Creates a basic Entity without any propertys and all values set to defualt. 
 */
-Entity* EntityManager::CreateEntity(bool bLink)
+Entity* ZSSEntityManager::CreateEntity(bool bLink)
 {
 	Entity* pkObj = new Entity;
 	
@@ -317,14 +317,14 @@ Entity* EntityManager::CreateEntity(bool bLink)
 
 /**	\brief	Adds an Entity to delete qeue
 */
-void EntityManager::Delete(int iNetworkID) 
+void ZSSEntityManager::Delete(int iNetworkID) 
 {
    if( Entity* pkE = GetEntityByID(iNetworkID))
       Delete(pkE);
 }
 
 
-void EntityManager::Delete(Entity* pkEntity) 
+void ZSSEntityManager::Delete(Entity* pkEntity) 
 {
 	if(pkEntity == NULL)
 		return;
@@ -370,7 +370,7 @@ void EntityManager::Delete(Entity* pkEntity)
 
 	Walk DeleteList and delete all Entitys in it.
 */
-void EntityManager::UpdateDelete()
+void ZSSEntityManager::UpdateDelete()
 {
 	if(!m_kPropertyDeleteList.empty())
 	{
@@ -409,7 +409,7 @@ void EntityManager::UpdateDelete()
 	This function collects all propertys that fit the selected flags, sorts them if it needs to
 	and then runs the update function of each of this propertys.
 */
-void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,bool bForceRootOnly,bool bUpdateList)
+void ZSSEntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,bool bForceRootOnly,bool bUpdateList)
 {
 	if(bUpdateList)
 	{
@@ -462,7 +462,7 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 
 
 
-bool EntityManager::IsUpdate(int iFlags)
+bool ZSSEntityManager::IsUpdate(int iFlags)
 {
 	if(m_iUpdateFlags & iFlags)
 		return true;
@@ -473,7 +473,7 @@ bool EntityManager::IsUpdate(int iFlags)
 
 
 
-void EntityManager::UpdateGameMessages(void)
+void ZSSEntityManager::UpdateGameMessages(void)
 {
 /*	// Let Objects/Propertys handle messages
 	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
@@ -481,7 +481,7 @@ void EntityManager::UpdateGameMessages(void)
 	}*/
 }
 
-Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
+Entity* ZSSEntityManager::CreateEntityByNetWorkID(int iNetID)
 {
 	Entity *pkNew = CreateEntity(false);
 
@@ -504,7 +504,7 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 	Creates a Entity from a script and use it to set values and propertys. If script file
 	is not found no Entity will be created. 
 */
-Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
+Entity* ZSSEntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
 {
 	int id = GetZoneIndex(kPos,iCurrentZone,false);
 	
@@ -538,7 +538,7 @@ Entity* EntityManager::CreateEntityFromScriptInZone(const char* acName,Vector3 k
 	return newobj;
 }
 
-Entity* EntityManager::CreateEntityFromScript(const char* acName)
+Entity* ZSSEntityManager::CreateEntityFromScript(const char* acName)
 {
 	ZFResourceHandle	kScriptFileHandle;
 	
@@ -590,12 +590,12 @@ Entity* EntityManager::CreateEntityFromScript(const char* acName)
 
 
 // Gets
-void EntityManager::GetAllEntitys(vector<Entity*> *pakEntitys)
+void ZSSEntityManager::GetAllEntitys(vector<Entity*> *pakEntitys)
 {
 	m_pkWorldEntity->GetAllEntitys(pakEntitys,true);	
 }
 
-void EntityManager::GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
+void ZSSEntityManager::GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius)
 {
 	ZoneData* pkZone = GetZone(kPos);
 	
@@ -622,7 +622,7 @@ void EntityManager::GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,
 
 }
 
-void EntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRadius)
+void ZSSEntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRadius)
 {
 	set<int>::iterator it = pkZones->find(iZone);
 	
@@ -648,7 +648,7 @@ void EntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRad
 	}
 }
 
-Entity* EntityManager::GetEntityByName(const char* acName)
+Entity* ZSSEntityManager::GetEntityByName(const char* acName)
 {
 	vector<Entity*> kObjects;		
 	GetAllEntitys(&kObjects);
@@ -663,7 +663,7 @@ Entity* EntityManager::GetEntityByName(const char* acName)
 	return NULL;
 }
 
-Entity*	EntityManager::GetEntityByID(int iNetID)
+Entity*	ZSSEntityManager::GetEntityByID(int iNetID)
 {
 	if(iNetID == -1)
 		return NULL;
@@ -676,7 +676,7 @@ Entity*	EntityManager::GetEntityByID(int iNetID)
 		return NULL;
 }
 
-Property* EntityManager::GetPropertyFromEntityID(int iEntityID,const char* czPropertyName)
+Property* ZSSEntityManager::GetPropertyFromEntityID(int iEntityID,const char* czPropertyName)
 {
 	if(Entity* pkEnt = GetEntityByID(iEntityID))
 		return pkEnt->GetProperty(czPropertyName);
@@ -686,7 +686,7 @@ Property* EntityManager::GetPropertyFromEntityID(int iEntityID,const char* czPro
 
 
 // NetWork
-void EntityManager::UpdateState(NetPacket* pkNetPacket)
+void ZSSEntityManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Entity* pkNetSlave;
 	int iObjectID;
@@ -732,7 +732,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 
 
 
-void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bool bZoneObject,int iSendSize,Entity* pkReferens)
+void ZSSEntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bool bZoneObject,int iSendSize,Entity* pkReferens)
 {
 	int iPacketSize = 	0;
 	int iEndOfObject = 	-1;
@@ -860,7 +860,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*>& kObjects,bo
 	}
 }
 
-void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens,int iClientID)
+void ZSSEntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens,int iClientID)
 {
 	float fTime = m_pkZeroFps->GetEngineTime();
 	int iSize = kObjects.size();
@@ -886,7 +886,7 @@ void EntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkReferens,
 	}
 }
 
-Entity* EntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects,int iClientID)
+Entity* ZSSEntityManager::GetTopPriorityEntity(vector<Entity*>& kObjects,int iClientID)
 {
 	float fMax = -1;
 	Entity* pkEnt = NULL;
@@ -927,7 +927,7 @@ bool IsInsideVector(int iVal, vector<int>& iArray)
 
 
 
-void EntityManager::PackToClients()
+void ZSSEntityManager::PackToClients()
 {
 	bool bCheckSendStatus = true;
 	bool bForceAll = false;
@@ -943,7 +943,7 @@ void EntityManager::PackToClients()
 	if(m_pkNetWork->GetNumOfClients() == 0)
 		return;
 
-	//Logf("net", " *** EntityManager::PackToClients() *** \n");
+	//Logf("net", " *** ZSSEntityManager::PackToClients() *** \n");
 	vector<Entity*>	kObjects;
 
 
@@ -1111,14 +1111,14 @@ void EntityManager::PackToClients()
 
 
 // Debug / Help Functions		
-void EntityManager::DisplayTree()
+void ZSSEntityManager::DisplayTree()
 {
 	GetSystem().Log_Create("fisklins");
 	m_pkWorldEntity->PrintTree(0);
 }
 
 
-void EntityManager::DumpActiverPropertysToLog(char* szMsg)
+void ZSSEntityManager::DumpActiverPropertysToLog(char* szMsg)
 {
 	g_ZFObjSys.Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
 
@@ -1132,7 +1132,7 @@ void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 }
 
 // Message System.
-void EntityManager::SendMsg(string strName, string strParam, int iFrom, int iTo)
+void ZSSEntityManager::SendMsg(string strName, string strParam, int iFrom, int iTo)
 {
 	GameMessage Msg;
 	Msg.m_FromObject	 = iFrom;
@@ -1143,7 +1143,7 @@ void EntityManager::SendMsg(string strName, string strParam, int iFrom, int iTo)
 }
 
 
-void EntityManager::RouteMessage(GameMessage& Msg)
+void ZSSEntityManager::RouteMessage(GameMessage& Msg)
 {
 	Entity*	pkObject = GetEntityByID(Msg.m_ToObject);
 
@@ -1158,7 +1158,7 @@ void EntityManager::RouteMessage(GameMessage& Msg)
 
 
 // Get Strings.
-char* EntityManager::GetUpdateStatusName(int eStatus)
+char* ZSSEntityManager::GetUpdateStatusName(int eStatus)
 {
 	char* pkName = "";
 
@@ -1178,7 +1178,7 @@ char* EntityManager::GetUpdateStatusName(int eStatus)
 
 
 
-char* EntityManager::GetPropertyTypeName(int iType)
+char* ZSSEntityManager::GetPropertyTypeName(int iType)
 {
 	char* pkName = "";
 
@@ -1192,7 +1192,7 @@ char* EntityManager::GetPropertyTypeName(int iType)
 
 }
 
-char* EntityManager::GetPropertySideName(int iSide)
+char* ZSSEntityManager::GetPropertySideName(int iSide)
 {
 	char* pkName = "";
 
@@ -1207,7 +1207,7 @@ char* EntityManager::GetPropertySideName(int iSide)
 
 }
 
-bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec)
+bool ZSSEntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec)
 {
 	pkPPList->clear();
 
@@ -1240,7 +1240,7 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 }
 
 
-void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
+void ZSSEntityManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
 { 
 	string strName;
 	string strParam;
@@ -1337,7 +1337,7 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}	
 }
 
-void EntityManager::OwnerShip_Take(Entity* pkObj)
+void ZSSEntityManager::OwnerShip_Take(Entity* pkObj)
 {
 	if(!pkObj)
 		return;
@@ -1345,7 +1345,7 @@ void EntityManager::OwnerShip_Take(Entity* pkObj)
 	pkObj->m_eRemoteRole	= NETROLE_PROXY;
 }
 
-void EntityManager::OwnerShip_Give(Entity* pkObj)
+void ZSSEntityManager::OwnerShip_Give(Entity* pkObj)
 {
 	if(!pkObj)
 		return;
@@ -1353,7 +1353,7 @@ void EntityManager::OwnerShip_Give(Entity* pkObj)
 	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
 }
 
-void EntityManager::OwnerShip_Request(Entity* pkObj)
+void ZSSEntityManager::OwnerShip_Request(Entity* pkObj)
 {
 	if(pkObj == NULL)
 		return;
@@ -1375,7 +1375,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	
 }
 
-void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
+void ZSSEntityManager::OwnerShip_OnRequest(Entity* pkObj)
 {
 	if(pkObj == NULL)
 		return;
@@ -1399,7 +1399,7 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 
 }
 
-void EntityManager::OwnerShip_OnGrant(Entity* pkObj)
+void ZSSEntityManager::OwnerShip_OnGrant(Entity* pkObj)
 {
 	if(pkObj == NULL)
 		return;
@@ -1408,7 +1408,7 @@ void EntityManager::OwnerShip_OnGrant(Entity* pkObj)
 	g_ZFObjSys.Logf("net", " This node now own %d\n", pkObj->m_iEntityID);
 }
 
-Entity* EntityManager::CloneEntity(int iNetID)
+Entity* ZSSEntityManager::CloneEntity(int iNetID)
 {
 	Entity* pkObjOrginal = GetEntityByID(iNetID);
 	if(pkObjOrginal == NULL)
@@ -1437,13 +1437,13 @@ Entity* EntityManager::CloneEntity(int iNetID)
 		Active:		Green.
 		EditMode:	Blue.
 eeeeeeereere*/
-void EntityManager::DrawZones()
+void ZSSEntityManager::DrawZones()
 {
 	DrawZones(&m_kZones);
 }
 
 
-void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
+void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 {
 	if(!m_bDrawZones)
 		return;
@@ -1584,43 +1584,43 @@ void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 }
 
 
-Vector3 EntityManager::GetZoneCenter(int iZoneNum)
+Vector3 ZSSEntityManager::GetZoneCenter(int iZoneNum)
 {
 	return m_kZones[iZoneNum].m_kPos;
 }
 
-int EntityManager::GetNumOfZones()
+int ZSSEntityManager::GetNumOfZones()
 {
 	return m_kZones.size();
 }
 
-list<P_Track*>* EntityManager::GetTrackerList()
+list<P_Track*>* ZSSEntityManager::GetTrackerList()
 {
 	return &m_kTrackedObjects;
 }
 
-void EntityManager::AddTracker(P_Track* kObject)
+void ZSSEntityManager::AddTracker(P_Track* kObject)
 {
 	//cout << "Now tracking " << kObject->GetEntity()->m_iEntityID << endl;
 	m_kTrackedObjects.push_back(kObject);
 }
 
-void EntityManager::RemoveTracker(P_Track* kObject)
+void ZSSEntityManager::RemoveTracker(P_Track* kObject)
 {
 	m_kTrackedObjects.remove(kObject);
 }
 
-int EntityManager::GetNrOfTrackedObjects()
+int ZSSEntityManager::GetNrOfTrackedObjects()
 {
 	return m_kTrackedObjects.size();
 }
 
-void EntityManager::ClearTrackers()
+void ZSSEntityManager::ClearTrackers()
 {
 	m_kTrackedObjects.clear();
 }
 
-ZoneData* EntityManager::GetZone(const Vector3& kPos)
+ZoneData* ZSSEntityManager::GetZone(const Vector3& kPos)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		if(m_kZones[iZ].m_iStatus == EZS_UNUSED)
@@ -1634,7 +1634,7 @@ ZoneData* EntityManager::GetZone(const Vector3& kPos)
 }
 
 
-ZoneData* EntityManager::GetZone(Entity* PkObject)
+ZoneData* ZSSEntityManager::GetZone(Entity* PkObject)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
 	{
@@ -1648,7 +1648,7 @@ ZoneData* EntityManager::GetZone(Entity* PkObject)
 	return NULL;
 }
 
-int EntityManager::GetZoneIndex(int iEntityId)
+int ZSSEntityManager::GetZoneIndex(int iEntityId)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
 	{
@@ -1664,7 +1664,7 @@ int EntityManager::GetZoneIndex(int iEntityId)
 }
 
 
-int EntityManager::GetZoneIndex(const Vector3& kMyPos,int iCurrentZone,bool bClosestZone)
+int ZSSEntityManager::GetZoneIndex(const Vector3& kMyPos,int iCurrentZone,bool bClosestZone)
 {
 	//if theres a last visited zone
 	if(ZoneData* pkZd = GetZoneData(iCurrentZone)) 
@@ -1726,14 +1726,14 @@ int EntityManager::GetZoneIndex(const Vector3& kMyPos,int iCurrentZone,bool bClo
 
 
 
-vector<int>	EntityManager::GetActiveZoneIDs(int iTracker)
+vector<int>	ZSSEntityManager::GetActiveZoneIDs(int iTracker)
 {
 	vector<int>	Nisse;
 	return Nisse;
 }
 
 
-int EntityManager::CreateZone(const Vector3& kPos,const Vector3& kSize)
+int ZSSEntityManager::CreateZone(const Vector3& kPos,const Vector3& kSize)
 {
 	//check if for collissions
 	if(IsInsideZone(kPos, kSize))
@@ -1758,7 +1758,7 @@ int EntityManager::CreateZone(const Vector3& kPos,const Vector3& kSize)
 	}
 	else
 	{
-		cout<<"ERROR: EntityManager::CreateZone , could not create zone"<<endl;
+		cout<<"ERROR: ZSSEntityManager::CreateZone , could not create zone"<<endl;
 		return -1; 	
 	}
 	
@@ -1770,7 +1770,7 @@ int EntityManager::CreateZone(const Vector3& kPos,const Vector3& kSize)
 }
 
 
-void EntityManager::DeleteZone(int iId)
+void ZSSEntityManager::DeleteZone(int iId)
 {
 /*	if(iId == -1)	return;
 
@@ -1806,7 +1806,7 @@ void EntityManager::DeleteZone(int iId)
 
 
 
-bool EntityManager::LoadZones(string strSaveDir )
+bool ZSSEntityManager::LoadZones(string strSaveDir )
 {
 	ZFVFile kFile;
 	
@@ -1891,7 +1891,7 @@ bool EntityManager::LoadZones(string strSaveDir )
 
 
 
-bool EntityManager::SaveZones(string strSaveDir)
+bool ZSSEntityManager::SaveZones(string strSaveDir)
 {
 	string filename;
 
@@ -1952,7 +1952,7 @@ bool EntityManager::SaveZones(string strSaveDir)
 	return true;
 }
 
-bool EntityManager::SaveGlobalEntitys(string strSaveDir )
+bool ZSSEntityManager::SaveGlobalEntitys(string strSaveDir )
 {
 	string filename;
 
@@ -1979,7 +1979,7 @@ bool EntityManager::SaveGlobalEntitys(string strSaveDir )
 	return true;
 }
 
-bool EntityManager::LoadGlobalEntitys(string strSaveDir )
+bool ZSSEntityManager::LoadGlobalEntitys(string strSaveDir )
 {
 	string filename;
 
@@ -2007,7 +2007,7 @@ bool EntityManager::LoadGlobalEntitys(string strSaveDir )
 }
 
 
-bool EntityManager::SaveTrackers(string strSaveDir)
+bool ZSSEntityManager::SaveTrackers(string strSaveDir)
 {
 	string filename;
 
@@ -2046,7 +2046,7 @@ bool EntityManager::SaveTrackers(string strSaveDir)
 	return true;
 }
 
-bool EntityManager::LoadTrackers(string strSaveDir)
+bool ZSSEntityManager::LoadTrackers(string strSaveDir)
 {
 	string filename;
 
@@ -2093,7 +2093,7 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 	return true;
 }
 
-ZoneData* EntityManager::GetZoneData(int iID)
+ZoneData* ZSSEntityManager::GetZoneData(int iID)
 {
 	if(iID < 0 || iID >= (int) m_kZones.size())
 		return NULL;
@@ -2102,7 +2102,7 @@ ZoneData* EntityManager::GetZoneData(int iID)
 
 }
 
-void EntityManager::LoadZone(int iId,string strSaveDir)
+void ZSSEntityManager::LoadZone(int iId,string strSaveDir)
 {	
 	ZoneData* kZData = GetZoneData(iId);
 
@@ -2215,7 +2215,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 	}
 }
 
-void EntityManager::UnLoadZone(int iId)
+void ZSSEntityManager::UnLoadZone(int iId)
 {
 	ZoneData* kZData = GetZoneData(iId);
 	if(kZData->m_pkZone == NULL)
@@ -2230,7 +2230,7 @@ void EntityManager::UnLoadZone(int iId)
 	kZData->m_iStatus = EZS_UNLOADED;		
 }
 
-void EntityManager::SaveZone(int iId,string strSaveDir )
+void ZSSEntityManager::SaveZone(int iId,string strSaveDir )
 {
 	ZoneData* kZData = GetZoneData(iId);
 	assert(kZData);
@@ -2269,7 +2269,7 @@ void EntityManager::SaveZone(int iId,string strSaveDir )
 }
 
 
-int EntityManager::GetUnusedZoneID()
+int ZSSEntityManager::GetUnusedZoneID()
 {
 	for(unsigned int i=0;i<m_kZones.size();i++)
 	{
@@ -2293,7 +2293,7 @@ int EntityManager::GetUnusedZoneID()
 
 
 
-void EntityManager::ClearZoneLinks(int iId)
+void ZSSEntityManager::ClearZoneLinks(int iId)
 {
 	//loop trough all connected zones
 	for(unsigned int i = 0;i < m_kZones[iId].m_iZoneLinks.size();i++)
@@ -2318,7 +2318,7 @@ void EntityManager::ClearZoneLinks(int iId)
 	m_kZones[iId].m_iZoneLinks.clear();
 }
 
-bool EntityManager::IsInsideZone(const Vector3& kPos,const Vector3& kSize)
+bool ZSSEntityManager::IsInsideZone(const Vector3& kPos,const Vector3& kSize)
 {
 	Vector3 kOddSize;
 	kOddSize.x = (kSize.x/2 - int(kSize.x/2));
@@ -2337,7 +2337,7 @@ bool EntityManager::IsInsideZone(const Vector3& kPos,const Vector3& kSize)
 	
 }
 
-bool EntityManager::ZoneHaveNeighbour(const Vector3& kPos,const Vector3& kSize)
+bool ZSSEntityManager::ZoneHaveNeighbour(const Vector3& kPos,const Vector3& kSize)
 {
 	Vector3 kOddSize, kOddSize2;
 	kOddSize.x = (kSize.x/2 - int(kSize.x/2));
@@ -2361,7 +2361,7 @@ bool EntityManager::ZoneHaveNeighbour(const Vector3& kPos,const Vector3& kSize)
 }
 
 
-void EntityManager::UpdateZoneLinks(int iId)
+void ZSSEntityManager::UpdateZoneLinks(int iId)
 {
 	ZoneData* pkZone = GetZoneData(iId);
 	if(!pkZone)
@@ -2392,7 +2392,7 @@ void EntityManager::UpdateZoneLinks(int iId)
 }
 
 
-bool EntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2)
+bool ZSSEntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2)
 {
 	static Vector3 kSizeCopy1;
 	static Vector3 kSizeCopy2;
@@ -2487,7 +2487,7 @@ bool EntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 }
 
 
-void EntityManager::SetZoneModel(const char* szName,int iId)
+void ZSSEntityManager::SetZoneModel(const char* szName,int iId)
 {
 	ZoneData* zd = GetZoneData(iId);
 	if(!zd)
@@ -2563,7 +2563,7 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 
 
 
-void EntityManager::ForceUnload()
+void ZSSEntityManager::ForceUnload()
 {	
 
 	//loop trough all loaded zones, and unload em , to make sure that all zones is saved
@@ -2583,7 +2583,7 @@ void EntityManager::ForceUnload()
 
 }
 
-void EntityManager::ForceSave()
+void ZSSEntityManager::ForceSave()
 {
 	//loop trough all loaded zones, and unload em , to make sure that all zones is saved
 	for(unsigned int i=0;i<m_kZones.size();i++) 
@@ -2598,7 +2598,7 @@ void EntityManager::ForceSave()
 
 
 
-void EntityManager::ResetNetUpdateFlags(int iConID)
+void ZSSEntityManager::ResetNetUpdateFlags(int iConID)
 {
 	for(map<int,Entity*>::iterator it=m_akEntitys.begin();it!=m_akEntitys.end();it++) {
 		(*it).second->ResetAllNetFlags(iConID);
@@ -2606,7 +2606,7 @@ void EntityManager::ResetNetUpdateFlags(int iConID)
 }
 
 
-bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
+bool ZSSEntityManager::SaveWorld(string strSaveDir,bool bForce)
 {
 	//check if directory exist	
 	if(m_pkBasicFS->DirExist(strSaveDir.c_str()))
@@ -2676,7 +2676,7 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 	return true;
 }
 
-bool EntityManager::LoadWorld(string strLoadDir)
+bool ZSSEntityManager::LoadWorld(string strLoadDir)
 {
 	m_strLoadDirectory = strLoadDir;
 
@@ -2781,7 +2781,7 @@ bool EntityManager::LoadWorld(string strLoadDir)
 }
 
 
-void EntityManager::UpdateZoneSystem()
+void ZSSEntityManager::UpdateZoneSystem()
 {
 // 	StartProfileTimer("s__ZoneSystem");	
 	UpdateTrackers();
@@ -2789,7 +2789,7 @@ void EntityManager::UpdateZoneSystem()
 // 	StopProfileTimer("s__ZoneSystem");	
 }
 
-void EntityManager::UpdateTrackers()
+void ZSSEntityManager::UpdateTrackers()
 {
 	static Vector3 kTrackerPos;
 	static int iZoneIndex;	
@@ -2903,7 +2903,7 @@ void EntityManager::UpdateTrackers()
 	}
 }
 
-void EntityManager::UpdateZoneStatus()
+void ZSSEntityManager::UpdateZoneStatus()
 {
 	static int iZones;
 	static ZoneData* pkZone;
@@ -2991,7 +2991,7 @@ void EntityManager::UpdateZoneStatus()
 	}
 }
 
-bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector<ScriptFuncArg>* pkParams)
+bool ZSSEntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector<ScriptFuncArg>* pkParams)
 {
 	//cout << "Calling Func: " << acFunction << endl;
 	if(pkEntity->m_bZone)
@@ -3014,19 +3014,19 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 }
 
 
-void EntityManager::ClearClientDeleteQueue(int iClient)
+void ZSSEntityManager::ClearClientDeleteQueue(int iClient)
 {
 	while(!m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
 		m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.pop();
 }
 
-void EntityManager::ClearClientsDeleteQueues()
+void ZSSEntityManager::ClearClientsDeleteQueues()
 {
 	for(int i = 0;i<m_pkZeroFps->GetMaxPlayers();i++)
 		ClearClientDeleteQueue(i);
 }
 
-void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
+void ZSSEntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
 {
 	if(!m_pkNetWork->IsConnected(iClient))
 	{
@@ -3047,7 +3047,7 @@ void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
 	//cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;
 }
 
-void EntityManager::AddEntityToAllClientDeleteQueues(int iEntityID)
+void ZSSEntityManager::AddEntityToAllClientDeleteQueues(int iEntityID)
 {
 	if(Entity* pkEntity = GetEntityByID(iEntityID))
 	{	
@@ -3063,7 +3063,7 @@ void EntityManager::AddEntityToAllClientDeleteQueues(int iEntityID)
 }
 
 
-void EntityManager::SendDeleteQueue(int iClient)
+void ZSSEntityManager::SendDeleteQueue(int iClient)
 {
 	if(m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
 		return;
@@ -3107,7 +3107,7 @@ void EntityManager::SendDeleteQueue(int iClient)
 	
 }
 
-void EntityManager::HandleDeleteQueue(NetPacket* pkNetPacket)
+void ZSSEntityManager::HandleDeleteQueue(NetPacket* pkNetPacket)
 {
 	int iEntityID;
 	
@@ -3130,7 +3130,7 @@ void EntityManager::HandleDeleteQueue(NetPacket* pkNetPacket)
 	}
 }
 
-void EntityManager::DeleteUnloadedZones(int iClient)
+void ZSSEntityManager::DeleteUnloadedZones(int iClient)
 {	
 	for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.end(); itActiveZone++ ) 
 	{
@@ -3139,7 +3139,7 @@ void EntityManager::DeleteUnloadedZones(int iClient)
 }
 
 
-void EntityManager::RecreateEntitys(const string& strType)
+void ZSSEntityManager::RecreateEntitys(const string& strType)
 {
 	//loop trough all zones
 	for(int i = 0;i<m_kZones.size();i++)
@@ -3194,7 +3194,7 @@ void EntityManager::RecreateEntitys(const string& strType)
 
 
 /*
-void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
+void ZSSEntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 {
 	//if(iZones.size() != 0)
 	//	cout<<"Sending "<<iZones.size()<< " to client "<<iClient<<endl;
@@ -3213,7 +3213,7 @@ void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 
 
 /*
-void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
+void ZSSEntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 {
 	unsigned int i;
 
@@ -3242,7 +3242,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 
 /*
-//	LOGSIZE("EntityManager::ZoneList", kZones.size() * 4 + 4);
+//	LOGSIZE("ZSSEntityManager::ZoneList", kZones.size() * 4 + 4);
 
 
 	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
@@ -3283,7 +3283,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 
 
-void EntityManager::UpdateRenderPropertys(Entity* pkRootEntity,bool bForceRootOnly,bool bUpdateList)
+void ZSSEntityManager::UpdateRenderPropertys(Entity* pkRootEntity,bool bForceRootOnly,bool bUpdateList)
 {
 	m_iUpdateFlags = PROPERTY_TYPE_RENDER | PROPERTY_SIDE_CLIENT;	
 	

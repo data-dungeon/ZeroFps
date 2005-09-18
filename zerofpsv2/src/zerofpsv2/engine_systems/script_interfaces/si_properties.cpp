@@ -8,13 +8,13 @@
 #include "../../engine_systems/propertys/p_mad.h"
 
 ZSSScriptSystem* PropertiesLua::g_pkScript;
-EntityManager*  PropertiesLua::g_pkObjMan;
+ZSSEntityManager*  PropertiesLua::g_pkObjMan;
 
 
 // ------------------------------------------------------------------------------------------
 
 
-void PropertiesLua::Init(ZSSScriptSystem* pkScript, EntityManager* pkObjMan)
+void PropertiesLua::Init(ZSSScriptSystem* pkScript, ZSSEntityManager* pkObjMan)
 {
 	cout << "Add SI: Properties" << endl;
 

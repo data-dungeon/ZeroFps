@@ -10,7 +10,7 @@ P_Sound::P_Sound()
 
 	strcpy(m_acName,"P_Sound");
 	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
-	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 
 	m_fGain = 1.0f;
 	m_strFileName = "";
@@ -337,7 +337,7 @@ P_Sound::P_Sound()
 
 	strcpy(m_acName,"P_Sound");
 	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
-	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 
 	m_strFileName = "";
 	m_strStopFileName = "";

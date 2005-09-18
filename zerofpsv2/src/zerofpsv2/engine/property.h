@@ -12,7 +12,7 @@ using namespace std;
 struct Collision;
 //class Entity;
 class ZSSPropertyFactory;
-class EntityManager;
+class ZSSEntityManager;
 class GameMessage;
 
 /*	When property should be updated. 
@@ -143,7 +143,7 @@ class ENGINE_API Property
 	protected:
 		ZeroFps*				m_pkZeroFps;			
 		Entity*				m_pkEntity;
-		EntityManager*    m_pkEntityManager;
+		ZSSEntityManager* m_pkEntityManager;
 	
 		//netflags
 		void	SetNrOfConnections(int iConNR);

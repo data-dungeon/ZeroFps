@@ -17,15 +17,15 @@ class ZSSScriptSystem;
 using namespace std;
 
 class ZSSVFileSystem;
-class EntityManager;
+class ZSSEntityManager;
 
 namespace PropertiesLua
 {
 
 	extern ZSSScriptSystem* 		g_pkScript;
-	extern EntityManager*		g_pkObjMan;
+	extern ZSSEntityManager*		g_pkObjMan;
 
-	void ENGINE_SYSTEMS_API Init(ZSSScriptSystem* pkScript, EntityManager* pkObjMan);
+	void ENGINE_SYSTEMS_API Init(ZSSScriptSystem* pkScript, ZSSEntityManager* pkObjMan);
 };
 
 #endif

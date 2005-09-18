@@ -10,16 +10,16 @@
 
 class ZSSScriptSystem;
 class ZSSAudioSystem;
-class EntityManager;
+class ZSSEntityManager;
 
 namespace AudioLua
 {
-	void ENGINE_SYSTEMS_API Init(ZSSAudioSystem* pkAudio, EntityManager* pkObjMan,
+	void ENGINE_SYSTEMS_API Init(ZSSAudioSystem* pkAudio, ZSSEntityManager* pkObjMan,
 		ZSSScriptSystem* pkScript);
 
 	extern ZSSScriptSystem* g_pkScript;
 	extern ZSSAudioSystem* g_pAudioSys;
-	extern EntityManager* g_pkEntityMan;
+	extern ZSSEntityManager* g_pkEntityMan;
 
 	int ENGINE_SYSTEMS_API PlaySoundLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API StopSoundLua(lua_State* pkLua);

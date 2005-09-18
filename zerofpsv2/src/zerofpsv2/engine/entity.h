@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class		EntityManager;
+class		ZSSEntityManager;
 class		Property;
 class		ZSSPropertyFactory;
 
@@ -236,7 +236,7 @@ class ENGINE_API Entity
 				
 	public:
 
-		EntityManager*				m_pkEntityManager;				///< Ptr to Entity manger.
+		ZSSEntityManager*			m_pkEntityManager;				///< Ptr to Entity manger.
   		ZeroFps*						m_pkZeroFps;						///< Ptr to zerofps. 
 
 		NetWorkRole					m_eRole;								///< This node power on Entity.
@@ -392,7 +392,7 @@ class ENGINE_API Entity
 		
 		//friends
 		friend class ZSSNetWork;
-		friend class EntityManager;
+		friend class ZSSEntityManager;
 		friend class Property;
 
 		// Force class to be polymorfic.

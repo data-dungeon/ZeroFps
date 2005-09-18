@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-class EntityManager;
+class ZSSEntityManager;
 class Entity;
 
 using namespace std;
@@ -63,7 +63,7 @@ class PlayerData
 class PlayerDatabase
 {
 	private:
-		EntityManager*			m_pkEntityMan;
+		ZSSEntityManager*		m_pkEntityMan;
 		string					m_strPlayerDirectory;	
 
 		vector<PlayerData>	m_strActivePlayers;		// Names of loged in users.

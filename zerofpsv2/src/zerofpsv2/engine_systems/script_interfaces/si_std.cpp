@@ -8,7 +8,7 @@ ZSSScriptSystem* StdLua::g_pkScript;
 ZSSVFileSystem*	StdLua::g_pkVFS;
 ZeroFps*	StdLua::g_pkZeroFps;
 
-extern EntityManager* g_pkObjMan;
+extern ZSSEntityManager* g_pkObjMan;
 
 namespace StdLua
 {

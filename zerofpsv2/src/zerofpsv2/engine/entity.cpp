@@ -20,11 +20,11 @@ using namespace ObjectManagerLua;
 Entity::Entity() 
 {
 	// Get Ptrs to some usefull Subsystems.
-	m_pkEntityManager		= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager		= static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	m_pkPropertyFactory	= static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("ZSSPropertyFactory"));	
 	m_pkZeroFps			   = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
-	ZFAssert(m_pkEntityManager,	"Entity::Entity(): Failed to find EntityManager");
+	ZFAssert(m_pkEntityManager,	"Entity::Entity(): Failed to find ZSSEntityManager");
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
 	ZFAssert(m_pkZeroFps,		   "Entity::Entity(): Failed to find ZeroFps");
  

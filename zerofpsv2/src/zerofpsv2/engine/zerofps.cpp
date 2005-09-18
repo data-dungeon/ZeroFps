@@ -60,7 +60,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkAStar					= new AStar;
 	m_pkTexMan					= new TextureManager;
 	m_pkZShaderSystem			= new ZShaderSystem;
-	m_pkEntityManager			= new EntityManager;
+	m_pkEntityManager			= new ZSSEntityManager;
 	m_pkResourceDB				= new ZSSResourceDB;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(iScreenWidth, iScreenHeight);

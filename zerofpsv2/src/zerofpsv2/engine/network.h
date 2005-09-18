@@ -314,7 +314,7 @@ public:
 	void Ping();
 
 	friend class NetPacket;
-	friend class EntityManager;	
+	friend class ZSSEntityManager;	
 	friend class ZeroFps;					//dvoids was here =)
 };
 

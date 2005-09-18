@@ -26,7 +26,7 @@
 #define ZFAUDIO_2D			4  // en wav fil skall spelas som ett vanligt 2d ljud
 
 class ZSSAudioSystem;
-class EntityManager;
+class ZSSEntityManager;
 
 /// A Sound in the Resource SubSystem.
 class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
@@ -225,8 +225,8 @@ private:
 	// Ambient sound area
 	//
 
-	EntityManager* m_pEntityMan;
-	ZeroFps* 		m_pkZeroFps;
+	ZSSEntityManager* m_pEntityMan;
+	ZeroFps* 			m_pkZeroFps;
 
 	class AmbientArea
 	{

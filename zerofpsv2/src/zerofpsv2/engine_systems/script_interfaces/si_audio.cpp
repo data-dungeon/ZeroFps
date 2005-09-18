@@ -9,9 +9,9 @@
 
 ZSSScriptSystem* AudioLua::g_pkScript;
 ZSSAudioSystem* AudioLua::g_pAudioSys;
-EntityManager* AudioLua::g_pkEntityMan;
+ZSSEntityManager* AudioLua::g_pkEntityMan;
 
-void AudioLua::Init(ZSSAudioSystem* pkAudio, EntityManager* pkObjMan,
+void AudioLua::Init(ZSSAudioSystem* pkAudio, ZSSEntityManager* pkObjMan,
 						  ZSSScriptSystem* pkScript)
 {
 	cout << "Add SI: Audio" << endl;

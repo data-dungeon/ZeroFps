@@ -8,7 +8,7 @@
 Property::Property()
 {
 	m_pkZeroFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkEntityManager   	= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager   	= static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	
 	m_iType=				PROPERTY_TYPE_NORMAL;
 	m_iSide=				PROPERTY_SIDE_SERVER;	

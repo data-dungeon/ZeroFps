@@ -17,7 +17,7 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 {
 	m_pkScript = static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkEntityManager = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	
 	//create and setup script
 	m_pkScriptFileHandle = new ZFResourceHandle;
@@ -548,7 +548,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_pkAudioSystem = 	static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));			
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
-	m_pkEntityMan=			static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));			
+	m_pkEntityMan=			static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
 	m_pkApp=					static_cast<Application*>(g_ZFObjSys.GetObjectPtr("Application"));			
 	
 	strcpy(m_acName,"P_CharacterProperty");

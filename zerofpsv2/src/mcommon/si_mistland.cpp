@@ -11,14 +11,14 @@
 
 
 ZSSScriptSystem*			MistLandLua::g_pkScript;
-EntityManager*				MistLandLua::g_pkObjMan;
+ZSSEntityManager*			MistLandLua::g_pkObjMan;
 P_ServerInfo*		  		MistLandLua::g_pkServerInfo;
 
 int							MistLandLua::g_iLastCollidedID;
 map<string,LogInInfo* >	MistLandLua::g_kServerList;
 string						MistLandLua::g_kDefServer;
 
-void MistLandLua::Init(EntityManager* pkObjMan,ZSSScriptSystem* pkScript)
+void MistLandLua::Init(ZSSEntityManager* pkObjMan,ZSSScriptSystem* pkScript)
 {
 	cout << "Add SI: MistLand" << endl;
 
