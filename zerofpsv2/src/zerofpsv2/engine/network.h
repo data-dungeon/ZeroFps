@@ -181,7 +181,7 @@ private:
 
 	string					m_strServerName;	
 	bool						m_bAcceptClientConnections;		// If false all connect attemts are ignored.
-	Console*					m_pkConsole;							// Ptr to console.
+	ZSSConsole*				m_pkConsole;							// Ptr to console.
 	ZeroFps*					m_pkZeroFps;							// Ptr to zerofps engine.
 
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***

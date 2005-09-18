@@ -19,7 +19,7 @@ class ZeroFps;
 /** \brief	The Console
 	 \ingroup Engine
 */
-class ENGINE_API Console : public BasicConsole 
+class ENGINE_API ZSSConsole : public BasicConsole 
 {
 	private:
 		enum CON_CMD
@@ -80,8 +80,8 @@ class ENGINE_API Console : public BasicConsole
 		void AutoComplete();
 
 public:
-		Console();
-		~Console(){};
+		ZSSConsole();
+		~ZSSConsole(){};
 		
 		void Update(void);
 		void Draw(void);

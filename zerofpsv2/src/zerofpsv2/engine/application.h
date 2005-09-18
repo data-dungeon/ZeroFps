@@ -12,7 +12,7 @@
 using namespace std;
 
 class ZeroFps;
-class Console;
+class ZSSConsole;
 class ZSSRender;
 class ZSSInput;
 class FileIo;
@@ -26,7 +26,6 @@ class ZSSBasicFS;
 class ZSSVFileSystem;
 class TextureManager;
 class ZSSPropertyFactory;
-class Console;
 class ZGui;
 class FileIo;
 class ZSSLight;
@@ -55,7 +54,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZSSPropertyFactory*	m_pkPropertyFactory;
 		ZSSLight*				m_pkLight;
 		ZSSRender*				m_pkRender;
-		Console*					m_pkConsole;
+		ZSSConsole*				m_pkConsole;
 		ZSSEntityManager*		m_pkEntityManager;
 		ZSSAudioSystem*		m_pkAudioSys;
 		ZGuiResourceManager*	m_pkGuiMan;

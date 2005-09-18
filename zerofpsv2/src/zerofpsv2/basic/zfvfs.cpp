@@ -587,7 +587,7 @@ public:
 
 void ZSSVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-//	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
+//	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));		
 	unsigned int i;
 	vector<string> kFiles;
 	string strRootMerge;

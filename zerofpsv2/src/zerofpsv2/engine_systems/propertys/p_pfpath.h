@@ -15,7 +15,7 @@ class ENGINE_API P_PfPath : public Property
 {
 	private:
 		ZeroFps*				m_pkFps;				
-		AStar*				m_pkAStar;
+		ZSSAStar*			m_pkAStar;
 		ZSSRender*			m_pkRender;
 		
 		vector<Vector3>	m_kPath;				// The path we are following (if any).

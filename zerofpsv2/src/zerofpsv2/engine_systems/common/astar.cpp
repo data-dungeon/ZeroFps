@@ -1,8 +1,8 @@
 #include "astar.h"
 #include "../propertys/p_pfmesh.h"
 
-AStar::AStar()
-: ZFSubSystem("AStar")
+ZSSAStar::ZSSAStar()
+: ZFSubSystem("ZSSAStar")
 {
 	// Set Default values
 	m_bDrawNaviMesh	= false;
@@ -14,7 +14,7 @@ AStar::AStar()
 }
 
 
-bool AStar::StartUp()
+bool ZSSAStar::StartUp()
 {
 	m_pkEntityManager	= static_cast<ZSSEntityManager*>(GetSystem().GetObjectPtr("ZSSEntityManager"));
 
@@ -34,7 +34,7 @@ AStarCellNode* FindNodeInList( vector< AStarCellNode*>& List, NaviMeshCell* pkCe
 }
 
 
-void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
+void ZSSAStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 {
 	PathNode kNode;
 
@@ -53,7 +53,7 @@ void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 }
 
 
-void AStar::CalcCoset(AStarCellNode* pkNode)
+void ZSSAStar::CalcCoset(AStarCellNode* pkNode)
 {
 //	ZoneData* pkZone;
 //	pkZone = m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID);
@@ -65,7 +65,7 @@ void AStar::CalcCoset(AStarCellNode* pkNode)
 }
 
 
-AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3 kB)
+AStarCellNode* ZSSAStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3 kB)
 {
 	ZoneData*		pkOtherZone;
 	P_PfMesh*		pkMesh;
@@ -94,7 +94,7 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 }
 
 
-void AStar::Reset()
+void ZSSAStar::Reset()
 {
 	unsigned int i;
 
@@ -119,7 +119,7 @@ void AStar::Reset()
 }
 
 
-bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
+bool ZSSAStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 {
 	Reset();
 
@@ -297,7 +297,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	return false;
 }
 
-P_PfMesh* AStar::GetPathFindMesh(Vector3 kPos)
+P_PfMesh* ZSSAStar::GetPathFindMesh(Vector3 kPos)
 {
 	m_pkEntityManager->GetZoneIndex(kPos,-1, false);
 	if(m_iStartZone < 0)	return NULL;
@@ -310,7 +310,7 @@ P_PfMesh* AStar::GetPathFindMesh(Vector3 kPos)
 	return pkMesh;
 }
 
-vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
+vector<Vector3> ZSSAStar::OptimizePath(vector<PathNode>& kInPath)
 {
 	unsigned int i;
 	vector<Vector3> kResult;
@@ -384,7 +384,7 @@ AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
 	return NULL;
 }
 
-bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
+bool ZSSAStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 {
 	m_kStart		= kStart;
 	m_kGoal			= kEnd;
@@ -470,7 +470,7 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 
 
 /*
-void AStar::CalcCoset(AStarNode* pkNode)
+void ZSSAStar::CalcCoset(AStarNode* pkNode)
 {
 	ZoneData* pkZone;
 	pkZone = m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID);
@@ -482,7 +482,7 @@ void AStar::CalcCoset(AStarNode* pkNode)
 
 }
 
-void AStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
+void ZSSAStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
 {
 	do {
 		kPath.push_back(m_pkEntityManagerger->GetZoneData(pkNode->m_iZoneID)->m_kPos);

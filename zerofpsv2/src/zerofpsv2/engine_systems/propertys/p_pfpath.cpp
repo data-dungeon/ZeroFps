@@ -18,7 +18,7 @@ P_PfPath::P_PfPath()
 	m_iSide = PROPERTY_SIDE_SERVER;// | PROPERTY_SIDE_CLIENT;
 
 	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkAStar	=	static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
+	m_pkAStar	=	static_cast<ZSSAStar*>(g_ZFObjSys.GetObjectPtr("ZSSAStar"));	
 	m_pkRender	=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender")); 
 
 	m_fSpeed			= 5;

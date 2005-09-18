@@ -57,7 +57,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 
 	// Create Engine SubSystems 
 	m_pkBasicFS					= new ZSSBasicFS;	
-	m_pkAStar					= new AStar;
+	m_pkAStar					= new ZSSAStar;
 	m_pkTexMan					= new TextureManager;
 	m_pkZShaderSystem			= new ZShaderSystem;
 	m_pkEntityManager			= new ZSSEntityManager;
@@ -68,7 +68,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkNetWork					= new ZSSNetWork;
 	m_pkAudioSystem			= new ZSSAudioSystem;
-	m_pkConsole					= new Console;
+	m_pkConsole					= new ZSSConsole;
 	m_pkRender					= new ZSSRender;
 	m_pkLight					= new ZSSLight;	
 	m_pkFrustum					= new Frustum;	

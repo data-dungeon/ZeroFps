@@ -28,7 +28,7 @@ bool ZSSInput::StartUp()
 { 
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	m_pkRender = 	static_cast<ZSSRender*>(GetSystem().GetObjectPtr("ZSSRender"));
-	m_pkConsole	= 	static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
+	m_pkConsole	= 	static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 	
 
 	m_bKeyRepeat	= 	true;

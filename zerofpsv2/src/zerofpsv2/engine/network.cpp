@@ -53,7 +53,7 @@ ZSSNetWork::ZSSNetWork()
 
 bool ZSSNetWork::StartUp()	
 { 
-	m_pkConsole	= static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
+	m_pkConsole	= static_cast<ZSSConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 	m_pkZeroFps	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	g_pkNetWork  = this;
 

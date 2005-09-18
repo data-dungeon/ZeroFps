@@ -907,7 +907,7 @@ void MistServer::OnClientStart(void)
 
 bool MistServer::StartUp()	
 { 
-//	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
+//	m_pkAStar	= static_cast<ZSSAStar*>(GetSystem().GetObjectPtr("ZSSAStar"));
 	g_ZFObjSys.Log_Create("mistserver");
 	return true; 
 }

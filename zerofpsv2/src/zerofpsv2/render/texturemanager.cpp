@@ -612,7 +612,7 @@ int TextureManager::GetTextureID (int iTexture)
 
 void TextureManager::ListTextures(void)
 {
-	BasicConsole* pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
+	BasicConsole* pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 
 	pkConsole->Printf("Texture Dump");
 	for(unsigned int i=0; i<m_iTextures.size(); i++){
@@ -625,7 +625,7 @@ void TextureManager::ListTextures(void)
 
 void TextureManager::ReloadAll(void)
 {
-	BasicConsole* pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
+	BasicConsole* pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 	texture *pkTex;
 
 	pkConsole->Printf("Texture Force Reload");

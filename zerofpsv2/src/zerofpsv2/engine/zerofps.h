@@ -34,7 +34,7 @@ class InputHandle;
 class ZShadow;
 class ZSSAudioSystem;
 class Network;
-class AStar;
+class ZSSAStar;
 
 
 // #define	ZFGP_OBJECTSTATE		1
@@ -235,7 +235,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		Frustum*					m_pkFrustum;				///< Global Frustum object for culling.
 		ZSSLight*				m_pkLight;					///< ZSSLight Engine.
 		ZSSRender*				m_pkRender;					///< Renders Graphic primitives
-		Console*					m_pkConsole;				///< ZeroFps Console.
+		ZSSConsole*				m_pkConsole;				///< ZeroFps Console.
 		ZSSEntityManager*		m_pkEntityManager;		///< In Game Object System.
 		ZSSAudioSystem*		m_pkAudioSystem;			///< Soundy
 		ZSSNetWork*				m_pkNetWork;				///< NetWork Interface.
@@ -248,7 +248,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		Application*			m_pkApp;						///< Application object.
 		ZShaderSystem*			m_pkZShaderSystem;		///< zerofps shader system
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
-		AStar*					m_pkAStar;
+		ZSSAStar*				m_pkAStar;
 		Tcs*						m_pkTcs;
 		ZShadow*					m_pkZShadow;
 

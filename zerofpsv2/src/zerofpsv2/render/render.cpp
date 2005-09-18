@@ -69,7 +69,7 @@ bool ZSSRender::StartUp()
 	// Get SubSystem Ptrs
 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
  	m_pkLight	= static_cast<ZSSLight*>(GetSystem().GetObjectPtr("ZSSLight"));
- 	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
+ 	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
 	InitDisplay(m_iWidth,m_iHeight,m_iDepth);

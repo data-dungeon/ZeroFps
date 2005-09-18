@@ -61,7 +61,7 @@ public:
 
 };
 
-class AStar;
+class ZSSAStar;
 struct Mad_Face;
 class ZSSRender;
 
@@ -71,7 +71,7 @@ class ZSSRender;
 class ENGINE_API P_PfMesh : public Property 
 {
 	private:
-		AStar*						m_pkAStar;
+		ZSSAStar*					m_pkAStar;
 		ZSSRender*					m_pkRender;
 
 		vector<NaviMeshCell>		m_NaviMesh;
@@ -113,7 +113,7 @@ class ENGINE_API P_PfMesh : public Property
 	protected:
 		vector<PropertyValues> GetPropertyValues();
 
-	friend class  AStar;
+	friend class  ZSSAStar;
 };
 
 Property* Create_P_PfMesh();

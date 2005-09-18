@@ -18,7 +18,7 @@ using namespace std;
 
 class ZeroFps;
 class InputHandle;
-class Console;
+class ZSSConsole;
 
 
 #define MAX_KEYS		1000

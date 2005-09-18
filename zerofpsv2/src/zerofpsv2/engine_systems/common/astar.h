@@ -10,7 +10,7 @@
 class NaviMeshCell;
 
 
-/** \brief	A Node used by the AStar algo.
+/** \brief	A Node used by the ZSSAStar algo.
 	 \ingroup Engine
 */
 class AStarCellNode
@@ -65,7 +65,7 @@ public:
 /** \brief	Subsystem used for pathfinding
 	 \ingroup Engine
 */
-class ENGINE_API AStar : public ZFSubSystem 
+class ENGINE_API ZSSAStar : public ZFSubSystem 
 {
 private:
 	ZSSEntityManager*	m_pkEntityManager;
@@ -82,8 +82,8 @@ private:
 	bool				m_bDrawPaths;
 
 public:
-	AStar();
-	virtual ~AStar() {}
+	ZSSAStar();
+	virtual ~ZSSAStar() {}
 
 	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath);
 	void Reset();

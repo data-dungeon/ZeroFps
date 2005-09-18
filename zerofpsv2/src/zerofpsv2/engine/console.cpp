@@ -7,8 +7,8 @@
  
 using namespace std;
 
-Console::Console()
-  : BasicConsole("Console"), MAX_CMD_HISTRORY_LENGTH(50) {
+ZSSConsole::ZSSConsole()
+  : BasicConsole("ZSSConsole"), MAX_CMD_HISTRORY_LENGTH(50) {
    	
 
 	
@@ -16,7 +16,7 @@ Console::Console()
 	RegisterVariable("conlog",			&m_bLog,			CSYS_BOOL);	
 }
 
-bool Console::StartUp()	
+bool ZSSConsole::StartUp()	
 { 
 	m_pkEngine	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	m_pkInput	= static_cast<ZSSInput*>(GetSystem().GetObjectPtr("ZSSInput"));	
@@ -51,17 +51,17 @@ bool Console::StartUp()
 	return true; 
 }
 
-bool Console::ShutDown() 
+bool ZSSConsole::ShutDown() 
 { 
 	delete m_pkInputHandle;
 
 	return true; 
 }
 
-bool Console::IsValid()	{ return true; }
+bool ZSSConsole::IsValid()	{ return true; }
 
 
-void Console::AutoComplete()
+void ZSSConsole::AutoComplete()
 {
 	vector<string> kFoundCommands;
 
@@ -104,7 +104,7 @@ void Console::AutoComplete()
 	}
 }
 
-void Console::InsertKey(unsigned char ucKey)
+void ZSSConsole::InsertKey(unsigned char ucKey)
 {
 	if(ucKey == KEY_BACKSPACE) {
 		RemoveKey(false);
@@ -140,7 +140,7 @@ void Console::InsertKey(unsigned char ucKey)
 	
 /*	Delete at current input position. If bDelete == true it will act like Delete and remove at the postion and if
 false it will act like backspace and remove before the current input position.*/
-void Console::RemoveKey(bool bDelete)
+void ZSSConsole::RemoveKey(bool bDelete)
 {
 	if(bDelete) {
 		if( m_iInputPos >= strlen(m_aCommand ))	// Delete at end of line does nothing.
@@ -161,7 +161,7 @@ void Console::RemoveKey(bool bDelete)
 
 }
 
-void Console::Draw(void)
+void ZSSConsole::Draw(void)
 {
 	int iMarker;
 
@@ -182,7 +182,7 @@ void Console::Draw(void)
 	}
 }
 
-void Console::ConsoleCmd(CON_CMD eCmd)
+void ZSSConsole::ConsoleCmd(CON_CMD eCmd)
 {
 	// Any command turns of autocomplete
 	m_bAutoCompleteOn = false;
@@ -288,7 +288,7 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 		}
 }
 	
-void Console::Update(void) 
+void ZSSConsole::Update(void) 
 {
 	// Scroll console text
 	static float PREVTIME = m_pkEngine->GetEngineTime();	//GetGameTime();
@@ -364,7 +364,7 @@ void Console::Update(void)
 	}
 }
 
-void Console::KeyPressed(QueuedKeyInfo& kKey)
+void ZSSConsole::KeyPressed(QueuedKeyInfo& kKey)
 {
 	//no command
 	CON_CMD eCmd = CONCMD_NONE;	
@@ -403,7 +403,7 @@ void Console::KeyPressed(QueuedKeyInfo& kKey)
 }
 
 
-bool Console::Execute(char* aText) 
+bool ZSSConsole::Execute(char* aText) 
 {
 	if(strlen(aText)==0){
 		Printf("");
@@ -446,7 +446,7 @@ bool Console::Execute(char* aText)
 	return true;
 }
 
-char Console::FormatKey(QueuedKeyInfo& kKey)
+char ZSSConsole::FormatKey(QueuedKeyInfo& kKey)
 {
 	if(kKey.m_iModifiers & MODIFIER_SHIFT) 
 	{
@@ -480,7 +480,7 @@ char Console::FormatKey(QueuedKeyInfo& kKey)
 }
 
 
-void Console::Toggle()
+void ZSSConsole::Toggle()
 {
 	float fTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 	if(fTime < m_fToggleTime)

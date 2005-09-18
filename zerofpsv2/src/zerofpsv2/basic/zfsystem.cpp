@@ -22,7 +22,7 @@ ZFSystem* ZFSystem::pkInstance;
 void ZFSystem::PrintVariables()
 {
 	BasicConsole*		m_pkCon;
-	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("ZSSConsole"));
 	string strValue;
 
 	m_pkCon->Printf("### variable list ###");
@@ -40,7 +40,7 @@ void ZFSystem::PrintVariables()
 void ZFSystem::PrintCommands()
 {
 	BasicConsole*		m_pkCon;
-	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("ZSSConsole"));
 	string strValue;
 
 	m_pkCon->Printf("### variable list ###");
@@ -466,7 +466,7 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 	switch(kCmdData->m_eType) {
 		case CSYS_FUNCTION:	
 			if(kcmdargs.m_kSplitCommand.size() <= (unsigned int)kCmdData->m_iMinNumOfArgs) {
-				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("ZSSConsole"));
 				con->Printf(kCmdData->m_strHelpText.c_str());
 				}
 			else {
@@ -481,7 +481,7 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 			if(kcmdargs.m_kSplitCommand.size() == 1)
 			{
 				strValue = GetVarValue(kCmdData);
-				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("ZSSConsole"));
 				con->Printf(" %s = [ %s]",kCmdData->m_strName.c_str(), strValue.c_str());
 			}
 			
@@ -872,7 +872,7 @@ void ZFSystem::Config_Load(string strFileName)
 void ZFSystem::Printf(const char* szMessageFmt,...)
 {
 	if(!m_pkConsole) {
- 		m_pkConsole = static_cast<BasicConsole*>(GetObjectPtr("Console")); 	 	
+ 		m_pkConsole = static_cast<BasicConsole*>(GetObjectPtr("ZSSConsole")); 	 	
 		if(!m_pkConsole)
 			return;
 		}
