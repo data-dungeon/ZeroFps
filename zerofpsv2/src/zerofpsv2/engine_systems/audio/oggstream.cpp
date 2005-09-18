@@ -39,7 +39,7 @@ bool OggStream::Create()
 		return false;
 	}
 
-	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkAudioSys = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	if(m_pkAudioSys==NULL) 
 	{
 		cout<<"OggStream - could not retrive m_pkAudioSys object" <<endl;

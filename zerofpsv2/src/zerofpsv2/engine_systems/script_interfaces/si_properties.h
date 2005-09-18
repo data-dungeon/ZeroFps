@@ -8,7 +8,7 @@
 #ifndef _SI_PROPERTIES_H_
 #define _SI_PROPERTIES_H_
 
-class ZFScriptSystem;
+class ZSSScriptSystem;
 
 #include "../engine_systems_x.h"
 #include "../../script/zfscript.h"
@@ -16,16 +16,16 @@ class ZFScriptSystem;
 
 using namespace std;
 
-class ZFVFileSystem;
+class ZSSVFileSystem;
 class EntityManager;
 
 namespace PropertiesLua
 {
 
-	extern ZFScriptSystem* 		g_pkScript;
+	extern ZSSScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
 
-	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan);
+	void ENGINE_SYSTEMS_API Init(ZSSScriptSystem* pkScript, EntityManager* pkObjMan);
 };
 
 #endif

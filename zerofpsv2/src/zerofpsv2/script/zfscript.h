@@ -23,7 +23,7 @@ using namespace std;
 #include "../basic/zfsystem.h"
 #include "../basic/zfresource.h"
 
-class ZFVFileSystem;
+class ZSSVFileSystem;
 
 #pragma warning (disable : 4251)
 
@@ -83,7 +83,7 @@ class SCRIPT_API ZFScript : public ZFResource
 	private:
 		char* m_szScriptName;		
 		
-		friend class ZFScriptSystem;
+		friend class ZSSScriptSystem;
 
 	public:
 		lua_State* m_pkLuaState;
@@ -99,7 +99,7 @@ SCRIPT_API ZFResource* Create__ZFScript();
 /**	\brief	SubSys that handles scripts.
 		\ingroup Script
 */
-class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
+class SCRIPT_API ZSSScriptSystem  : public ZFSubSystem
 {
 private:
 
@@ -117,7 +117,7 @@ private:
 	};
 
 	lua_State* m_pkLua;
-	ZFVFileSystem* m_pkFileSys;
+	ZSSVFileSystem* m_pkFileSys;
 
 	vector<GlobalFuncInfo*> m_vkGlobalFunctions;
 	vector<GlobalVarInfo*> m_vkGlobalVariables;
@@ -187,8 +187,8 @@ public:
 	
 	string FormatMultiLineTextFromLua(string strLuaText);
 	
-	ZFScriptSystem();
-	virtual ~ZFScriptSystem();
+	ZSSScriptSystem();
+	virtual ~ZSSScriptSystem();
 
 };
 

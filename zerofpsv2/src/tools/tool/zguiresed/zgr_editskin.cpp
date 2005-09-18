@@ -61,8 +61,8 @@ void ZGuiResEd::UpdatePreviewImage(const char* szFileName)
 
 void ZGuiResEd::AddFilesInFolderToListbox(const char* szFolderName)
 {
-	ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	ZSSVFileSystem* m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+		g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	vector<string> t;
 	m_pkFileSys->ListDir(&t, szFolderName);
@@ -162,8 +162,8 @@ void ZGuiResEd::SelNewSkin(int iIndex)
 			//string strName = m_pkTexMan->GetTextureNameFromOpenGlIndex(m_pkTexMan->GetTextureID(id));
 			string strName = GetTexNameFromID(id);
 
-			ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-					g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+			ZSSVFileSystem* m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+					g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 			// set name
 			strRealName = m_pkFileSys->GetFullPath(strName.c_str());		
@@ -344,8 +344,8 @@ void ZGuiResEd::ResizeWndToImage()
 	{
 		string strName = m_strCurrTexDir + string("/") + string(szTexName);
 
-		ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-				g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+		ZSSVFileSystem* m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+				g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 		string strRealName = m_pkFileSys->GetFullPath(strName.c_str());
 

@@ -6,16 +6,16 @@
 #define _SI_GUI_H
 
 class ZGuiApp;
-class ZFScriptSystem;
+class ZSSScriptSystem;
 
 #include "../engine_systems_x.h"
 
 namespace GuiAppLua
 {
-	void ENGINE_SYSTEMS_API Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript);
+	void ENGINE_SYSTEMS_API Init(ZGuiApp* pkGuiApp, ZSSScriptSystem* pkScript);
 
 	 ZGuiApp* g_pkGuiApp;
-	 ZFScriptSystem* g_pkScript;
+	 ZSSScriptSystem* g_pkScript;
 
 	int ENGINE_SYSTEMS_API CreateWndLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AddTabPageLua(lua_State* pkLua);

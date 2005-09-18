@@ -6,7 +6,7 @@
 
 #include <cstdio>
 
-bool ZFBasicFS::DirExist(const char* acName)
+bool ZSSBasicFS::DirExist(const char* acName)
 {
 	vector<string> pkFiles;
 	//pkFiles.clear();
@@ -21,7 +21,7 @@ bool ZFBasicFS::DirExist(const char* acName)
 	return false;
 }
 
-bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMaps)
+bool ZSSBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMaps)
 {
 
 	DIR* kDir;
@@ -56,7 +56,7 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMap
 	return true;
 }
 
-bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 							  const char* acName, bool bIgnoreMaps)
 {  
 	DIR* kDir;
@@ -100,7 +100,7 @@ bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters
 
 
 
-bool ZFBasicFS::CreateDir(const char* acName)
+bool ZSSBasicFS::CreateDir(const char* acName)
 {
 	if(mkdir(acName,S_IRWXU)==-1)
 		return false;
@@ -108,7 +108,7 @@ bool ZFBasicFS::CreateDir(const char* acName)
 	return true;
 }
 
-bool ZFBasicFS::RemoveDir(const char* acName)
+bool ZSSBasicFS::RemoveDir(const char* acName)
 {
 	if(rmdir(acName)==-1)
 		return false;
@@ -116,7 +116,7 @@ bool ZFBasicFS::RemoveDir(const char* acName)
 	return true;
 }
 
-bool ZFBasicFS::RemoveFile(const char* acName)
+bool ZSSBasicFS::RemoveFile(const char* acName)
 {
 	if(unlink(acName)==-1)
 		return false;
@@ -124,13 +124,13 @@ bool ZFBasicFS::RemoveFile(const char* acName)
 	return true;
 }
 
-char* ZFBasicFS::GetCWD()
+char* ZSSBasicFS::GetCWD()
 {
 	getcwd(m_acDir,2048);
 	return m_acDir;
 }
 
-bool ZFBasicFS::FileExist(const char* szFile)
+bool ZSSBasicFS::FileExist(const char* szFile)
 {
 	bool bOK = false;
 	FILE* f = fopen(szFile, "r"); 
@@ -138,7 +138,7 @@ bool ZFBasicFS::FileExist(const char* szFile)
 	return bOK;
 }
 
-bool ZFBasicFS::IsDirectory(const char* szName)
+bool ZSSBasicFS::IsDirectory(const char* szName)
 {
 	// write evil linux code here :)
 }

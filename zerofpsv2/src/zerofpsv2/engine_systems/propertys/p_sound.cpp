@@ -9,7 +9,7 @@ P_Sound::P_Sound()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	strcpy(m_acName,"P_Sound");
-	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 
 	m_fGain = 1.0f;
@@ -336,7 +336,7 @@ P_Sound::P_Sound()
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	strcpy(m_acName,"P_Sound");
-	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 
 	m_strFileName = "";

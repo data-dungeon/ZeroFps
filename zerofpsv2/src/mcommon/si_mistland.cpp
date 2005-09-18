@@ -10,7 +10,7 @@
 #include <cmath>                    // for trigonometry functions
 
 
-ZFScriptSystem*			MistLandLua::g_pkScript;
+ZSSScriptSystem*			MistLandLua::g_pkScript;
 EntityManager*				MistLandLua::g_pkObjMan;
 P_ServerInfo*		  		MistLandLua::g_pkServerInfo;
 
@@ -18,7 +18,7 @@ int							MistLandLua::g_iLastCollidedID;
 map<string,LogInInfo* >	MistLandLua::g_kServerList;
 string						MistLandLua::g_kDefServer;
 
-void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
+void MistLandLua::Init(EntityManager* pkObjMan,ZSSScriptSystem* pkScript)
 {
 	cout << "Add SI: MistLand" << endl;
 

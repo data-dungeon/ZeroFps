@@ -94,7 +94,7 @@ options can be givven to manipulate a texture by entering them like "[Options]#[
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:		
-		ZFScriptSystem*				m_pkScript;
+		ZSSScriptSystem*				m_pkScript;
 		
 		vector<ZMaterialSettings*> m_kPasses;		//material passes
 		ZFIni								m_kIni;			//inifile
@@ -160,7 +160,7 @@ namespace SI_ZMATERIAL
 	extern RENDER_API ZMaterial*			g_pkCurrentMaterial;	
 	extern RENDER_API int					g_iCurrentMaterialPass;	
 	
-	extern RENDER_API ZFScriptSystem*	g_pkScript;
+	extern RENDER_API ZSSScriptSystem*	g_pkScript;
 	extern RENDER_API ZeroFps*				g_pkZeroFps;
 	extern RENDER_API ZShaderSystem*		g_pkZShaderSystem;
 	

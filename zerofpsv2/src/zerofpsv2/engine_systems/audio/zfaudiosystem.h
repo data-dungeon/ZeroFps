@@ -25,7 +25,7 @@
 #define ZFAUDIO_3DOGG		2	// ogg:en har en position i 3d världen OBS! filen måste vara mono
 #define ZFAUDIO_2D			4  // en wav fil skall spelas som ett vanligt 2d ljud
 
-class ZFAudioSystem;
+class ZSSAudioSystem;
 class EntityManager;
 
 /// A Sound in the Resource SubSystem.
@@ -69,7 +69,7 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 		ALuint m_uiSourceBufferName;
 		bool m_bLoopingNoLongerHearable;
 
-		friend class ZFAudioSystem;
+		friend class ZSSAudioSystem;
 };
 
 /** \brief	Sub System for Sound. 
@@ -82,7 +82,7 @@ a cach system to load and unload wav files from memory when they are no longer n
 Importent: Only mono wav files should be used as resources!
 */
 
-class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
+class ENGINE_SYSTEMS_API ZSSAudioSystem  : public ZFSubSystem
 {
 
 public:
@@ -164,8 +164,8 @@ public:
 	Vector3 GetListnerDir() { return m_kHead; }
 	static void PrintError(ALenum error, char* szDesc);
 	
-	ZFAudioSystem(int uiMaxCachSize=19021844); // ca. 18 Meg
-	virtual ~ZFAudioSystem();
+	ZSSAudioSystem(int uiMaxCachSize=19021844); // ca. 18 Meg
+	virtual ~ZSSAudioSystem();
 
 private:
 

@@ -241,7 +241,7 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile)
 
 	//get script system pointer
 	if(!m_pkScript)
-		m_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+		m_pkScript = static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 
 		
 	//create script object
@@ -966,7 +966,7 @@ namespace SI_ZMATERIAL
 {
 	ZMaterial*			g_pkCurrentMaterial = 	NULL;
 	int					g_iCurrentMaterialPass = -1;
-	ZFScriptSystem*	g_pkScript = 				NULL;
+	ZSSScriptSystem*	g_pkScript = 				NULL;
 	ZeroFps*				g_pkZeroFps = 				NULL;
 	ZShaderSystem*		g_pkZShaderSystem = 		NULL;
 	
@@ -1079,7 +1079,7 @@ namespace SI_ZMATERIAL
 
 void RegisterSI_Material()
 {
-	SI_ZMATERIAL::g_pkScript = 			static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	SI_ZMATERIAL::g_pkScript = 			static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 	SI_ZMATERIAL::g_pkZeroFps = 			static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	SI_ZMATERIAL::g_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	

@@ -4,8 +4,8 @@
 #include "../../engine/entitymanager.h"
 #include "../../engine/zerofps.h"
 
-ZFScriptSystem* StdLua::g_pkScript;
-ZFVFileSystem*	StdLua::g_pkVFS;
+ZSSScriptSystem* StdLua::g_pkScript;
+ZSSVFileSystem*	StdLua::g_pkVFS;
 ZeroFps*	StdLua::g_pkZeroFps;
 
 extern EntityManager* g_pkObjMan;
@@ -16,7 +16,7 @@ namespace StdLua
  		\ingroup NewSi
    */
 
-void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS,ZeroFps* pkZeroFps)
+void Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkVFS,ZeroFps* pkZeroFps)
 {
 	cout << "Add SI: Std" << endl;
 

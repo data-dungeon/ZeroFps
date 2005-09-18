@@ -4,7 +4,7 @@
 #include <string>
 #include "basic_x.h"
 
-class ZFResourceDB;
+class ZSSResourceDB;
 
 using namespace std;
 
@@ -41,7 +41,7 @@ public:
 		*/
 	int GetSize();									
 
-	friend class ZFResourceDB;
+	friend class ZSSResourceDB;
 };
 
 /**	\brief	A Handle to a Resource.
@@ -50,7 +50,7 @@ public:
 class BASIC_API ZFResourceHandle
 {
 private:
-	ZFResourceDB*	m_pkResDB;
+	ZSSResourceDB*	m_pkResDB;
 
 	int		m_iHandleID;
 	string	m_strName;
@@ -71,7 +71,7 @@ public:
 
 	ZFResource*	GetResourcePtr() const	{return m_pkResource;}
 
-	friend class ZFResourceDB;
+	friend class ZSSResourceDB;
 };
 
 #endif

@@ -7,12 +7,12 @@
 #include "../../engine_systems/propertys/p_sound.h"
 #include "si_audio.h"
 
-ZFScriptSystem* AudioLua::g_pkScript;
-ZFAudioSystem* AudioLua::g_pAudioSys;
+ZSSScriptSystem* AudioLua::g_pkScript;
+ZSSAudioSystem* AudioLua::g_pAudioSys;
 EntityManager* AudioLua::g_pkEntityMan;
 
-void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
-						  ZFScriptSystem* pkScript)
+void AudioLua::Init(ZSSAudioSystem* pkAudio, EntityManager* pkObjMan,
+						  ZSSScriptSystem* pkScript)
 {
 	cout << "Add SI: Audio" << endl;
 

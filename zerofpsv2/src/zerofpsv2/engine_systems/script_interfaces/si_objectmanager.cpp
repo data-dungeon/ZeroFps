@@ -23,7 +23,7 @@ using namespace ObjectManagerLua;
 
 namespace ObjectManagerLua
 {
-ZFScriptSystem* g_pkScript;
+ZSSScriptSystem* g_pkScript;
 EntityManager*  g_pkObjMan;
 
 ScriptState				g_kScriptState;
@@ -42,7 +42,7 @@ Vector3 GetVectorArg(lua_State* pkLua, int iIndex)
 	return kPos;
 }
 
-void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
+void Init(EntityManager* pkObjMan, ZSSScriptSystem* pkScript)
 {
 	cout << "Add SI: EntityManger" << endl;
 

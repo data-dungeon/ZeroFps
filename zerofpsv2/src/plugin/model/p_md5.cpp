@@ -18,7 +18,7 @@ P_Md5::P_Md5()
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 	LoadMesh("md5/mpplayer.md5mesh");
 
-	ZFVFileSystem* fs = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+	ZSSVFileSystem* fs = static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
 
 	char* ext;
 	vector<string> kstrFileNames;

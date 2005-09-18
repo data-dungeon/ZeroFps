@@ -13,7 +13,7 @@ using namespace std;
 class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 	private:
 		ZeroFps* 			m_pkFps;
-		ZFScriptSystem* 	m_pkScriptSys;
+		ZSSScriptSystem* 	m_pkScriptSys;
 
 		float 	m_fHeartRate;
 		float 	m_fTimer;

@@ -114,9 +114,9 @@ bool EntityManager::StartUp()
 {
 	// Get Subsystems.
 	m_pkZeroFps		=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
-	m_pkNetWork		=	static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	m_pkScript		=	static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
-	m_pkBasicFS		=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
+	m_pkNetWork		=	static_cast<ZSSNetWork*>(GetSystem().GetObjectPtr("ZSSNetWork"));
+	m_pkScript		=	static_cast<ZSSScriptSystem*>(GetSystem().GetObjectPtr("ZSSScriptSystem"));
+	m_pkBasicFS		=	static_cast<ZSSBasicFS*>(GetSystem().GetObjectPtr("ZSSBasicFS"));		
 	m_pkRender		=	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 	m_pkPropertyFactory	= static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("ZSSPropertyFactory"));	
 	m_pkZShaderSystem		= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
@@ -1367,7 +1367,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.Write((char) ZFGP_REQOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
-	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+	ZSSNetWork* net = static_cast<ZSSNetWork*>(GetSystem().GetObjectPtr("ZSSNetWork"));
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);

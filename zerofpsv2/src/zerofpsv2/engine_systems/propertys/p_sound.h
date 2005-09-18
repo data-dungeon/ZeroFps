@@ -15,7 +15,7 @@ ENGINE_SYSTEMS_API void Register_P_Sound(ZeroFps* pkZeroFps);
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
-	ZFAudioSystem* m_pkAudioSystem;
+	ZSSAudioSystem* m_pkAudioSystem;
 	EntityManager* m_pEntityMan;
 
 	string m_strFileName;
@@ -53,7 +53,7 @@ public:
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
-	ZFAudioSystem* m_pkAudioSystem;
+	ZSSAudioSystem* m_pkAudioSystem;
 	EntityManager* m_pEntityMan;
 
 	string m_strFileName;

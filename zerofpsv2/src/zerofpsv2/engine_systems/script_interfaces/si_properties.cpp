@@ -7,14 +7,14 @@
 #include "../../engine_systems/propertys/p_controller.h"
 #include "../../engine_systems/propertys/p_mad.h"
 
-ZFScriptSystem* PropertiesLua::g_pkScript;
+ZSSScriptSystem* PropertiesLua::g_pkScript;
 EntityManager*  PropertiesLua::g_pkObjMan;
 
 
 // ------------------------------------------------------------------------------------------
 
 
-void PropertiesLua::Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
+void PropertiesLua::Init(ZSSScriptSystem* pkScript, EntityManager* pkObjMan)
 {
 	cout << "Add SI: Properties" << endl;
 

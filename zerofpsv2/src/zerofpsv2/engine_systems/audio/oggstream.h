@@ -8,7 +8,7 @@
 
 class ZeroFps;
 class Vector3;
-class ZFAudioSystem;
+class ZSSAudioSystem;
 
 class OggStream
 {
@@ -46,7 +46,7 @@ protected:
 	bool			m_bListenerRelCoords; // true = spelas alltid där lyssnaren befinner sig
 	float			m_fVolume;
 
-	friend class ZFAudioSystem;
+	friend class ZSSAudioSystem;
 
 private:
 
@@ -67,7 +67,7 @@ private:
 	ALuint				m_uiSource;
 	ALuint*				m_pALuiBuffers;
 	ZeroFps*				m_pkZeroFpsObject;
-	ZFAudioSystem*		m_pkAudioSys;
+	ZSSAudioSystem*		m_pkAudioSys;
 };
 
 #endif // __oggstream_h__

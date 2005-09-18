@@ -174,7 +174,7 @@ public:
 /** \brief	NetWork SubSystem
 	 \ingroup Engine
 */
-class ENGINE_API NetWork : public ZFSubSystem 
+class ENGINE_API ZSSNetWork : public ZFSubSystem 
 {
 private:
 	UDPsocket				m_pkSocket;								// Socket we use for all our messages.
@@ -235,8 +235,8 @@ public:
 //	vector<RemoteNode>	m_akClients;
 	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
 
-	NetWork();
-	~NetWork();
+	ZSSNetWork();
+	~ZSSNetWork();
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();

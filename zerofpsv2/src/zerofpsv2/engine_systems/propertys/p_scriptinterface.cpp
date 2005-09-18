@@ -10,7 +10,7 @@ P_ScriptInterface::P_ScriptInterface()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkScriptSys	= static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	m_pkScriptSys	= static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 	
 	m_bNetwork = false;
 	

@@ -14,7 +14,7 @@ using namespace std;
 /**	\brief	Used by ZFSystem to register it's own commands.
 		\ingroup Basic
 */
-class BASIC_API CmdSystem : public ZFSubSystem  
+class BASIC_API ZSSCmdSystem : public ZFSubSystem  
 {
 	private:
 //		BasicConsole*			m_pkCon;
@@ -34,7 +34,7 @@ class BASIC_API CmdSystem : public ZFSubSystem
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
-		CmdSystem(void);
+		ZSSCmdSystem(void);
 		
 		bool Set(const char* aName,const char* acData);							//set variable aName to dData
 

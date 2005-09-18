@@ -15,7 +15,7 @@ using namespace std;
 
 class ZFSubSystem;
 class BasicConsole;
-class CmdSystem;
+class ZSSCmdSystem;
 
 #pragma warning(disable: 4267) // disable warning C4267: possible loss of data, okay to ignore
 
@@ -102,7 +102,7 @@ There should only be one of this in the program.
 class BASIC_API ZFSystem	/*	ZFSystem	*/
 {
 private:
-	CmdSystem*				m_pkCmdSystem;
+	ZSSCmdSystem*				m_pkCmdSystem;
 
 	//want to log
 	bool						m_bLogEnabled;
@@ -205,7 +205,7 @@ public:
 	void SetPreLogName(string strPreLogName);
 	string GetPreLogName()	{ return m_strPreLogName; }
 
-	friend class CmdSystem;
+	friend class ZSSCmdSystem;
 };
 
 extern BASIC_API ZFSystem g_ZFObjSys;

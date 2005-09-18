@@ -19,7 +19,7 @@ extern ZFSystem g_ZFObjSys;
 
 ZFVFile::ZFVFile()
 {
-	m_pkFileSystem = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+	m_pkFileSystem = static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
 	
 	m_pkFilePointer = NULL;
 	
@@ -87,10 +87,10 @@ int ZFVFile::GetSize()
 
 
 
-ZFVFileSystem::ZFVFileSystem()
-: ZFSubSystem("ZFVFileSystem")
+ZSSVFileSystem::ZSSVFileSystem()
+: ZFSubSystem("ZSSVFileSystem")
 {
-	m_pkBasicFS = static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
+	m_pkBasicFS = static_cast<ZSSBasicFS*>(GetSystem().GetObjectPtr("ZSSBasicFS"));		
 	
 	m_strCurentDir = "";
 	m_bCaseSensitive = false;
@@ -111,7 +111,7 @@ ZFVFileSystem::ZFVFileSystem()
 
 }
 
-bool ZFVFileSystem::StartUp()
+bool ZSSVFileSystem::StartUp()
 { 
 	char* strDir = m_pkBasicFS->GetCWD();	
 	cout << "WorkingDir is: " << strDir << endl;
@@ -121,12 +121,12 @@ bool ZFVFileSystem::StartUp()
 	return true;
 }
 
-bool ZFVFileSystem::ShutDown()
+bool ZSSVFileSystem::ShutDown()
 { 
 	return true;	
 }
 
-bool ZFVFileSystem::IsValid()	
+bool ZSSVFileSystem::IsValid()	
 { 
 	return true;
 }
@@ -134,12 +134,12 @@ bool ZFVFileSystem::IsValid()
 
 
 
-ZFVFileSystem::~ZFVFileSystem()
+ZSSVFileSystem::~ZSSVFileSystem()
 {
 
 }
 
-bool ZFVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge)
+bool ZSSVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge)
 {
 	// always convert to an absolut path, 
 	if(strFileName[0] != '/')
@@ -169,7 +169,7 @@ bool ZFVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& str
 }
 
 
-FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
+FILE* ZSSVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 {
 
 	FILE*	pkFp;
@@ -234,7 +234,7 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	return NULL;
 }
 
-string ZFVFileSystem::GetFullPath(string strFileName)
+string ZSSVFileSystem::GetFullPath(string strFileName)
 {
 	FILE*	pkFp;
 	string strRootMerge;
@@ -259,7 +259,7 @@ string ZFVFileSystem::GetFullPath(string strFileName)
 }
 
 
-void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
+void ZSSVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 {
 
 	//always absolut vfs paths
@@ -283,29 +283,29 @@ void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 	m_kRootPath.insert(m_kRootPath.begin(),VfsRootPath(strRootPath, strVfsPath));
 }
 
-string	ZFVFileSystem::GetCurrentWorkingDir()
+string	ZSSVFileSystem::GetCurrentWorkingDir()
 {
 	string strWorkDir = m_pkBasicFS->GetCWD();
 	return strWorkDir;
 }
 
-bool ZFVFileSystem::CreateDir(string strDir)
+bool ZSSVFileSystem::CreateDir(string strDir)
 {
 	return m_pkBasicFS->CreateDir(strDir.c_str());
 }
 
-bool ZFVFileSystem::RemoveDir(string strDir)
+bool ZSSVFileSystem::RemoveDir(string strDir)
 {
 	return m_pkBasicFS->RemoveDir(strDir.c_str());
 }
 
-bool ZFVFileSystem::RemoveFile(const char* acName)
+bool ZSSVFileSystem::RemoveFile(const char* acName)
 {
 	return m_pkBasicFS->RemoveFile(acName);
 }
 
 
-void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, 
+void ZSSVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, 
 												 vector<string>& szExtensions, bool bAlsoFolders)
 {
 	if(strRootPath.size() > 1)
@@ -422,7 +422,7 @@ void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath
 	}
 }
 
-bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
+bool ZSSVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
 {
 	string	strRootMerge;
 
@@ -488,14 +488,14 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 	return true;
 }
 
-bool ZFVFileSystem::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+bool ZSSVFileSystem::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 	string strName, bool bIgnoreMaps)
 {
 	return m_pkBasicFS->ListDirFilter(pkFiles, pkFilters, strName.c_str(), bIgnoreMaps);
 
 }
 
-bool ZFVFileSystem::DirExist(string strName)
+bool ZSSVFileSystem::DirExist(string strName)
 {
 	//try to list directory
 	vector<string> kDirs;
@@ -508,7 +508,7 @@ bool ZFVFileSystem::DirExist(string strName)
 	return false;
 }
 
-bool ZFVFileSystem::FileExists(string strName)
+bool ZSSVFileSystem::FileExists(string strName)
 {
 	string strDir;
 	string strFile;
@@ -547,7 +547,7 @@ bool ZFVFileSystem::FileExists(string strName)
 	return false;
 }
 
-string ZFVFileSystem::GetRealName(const string& strName)
+string ZSSVFileSystem::GetRealName(const string& strName)
 {
 	string strDir;
 	string strFile;
@@ -585,7 +585,7 @@ public:
 	virtual string GetName() = 0;
 };
 
-void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 //	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
 	unsigned int i;

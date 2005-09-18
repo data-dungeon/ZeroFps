@@ -29,7 +29,7 @@ TextureManager::TextureManager()
 
 bool TextureManager::StartUp()	
 {
-	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(GetSystem().GetObjectPtr("ZFVFileSystem"));		
+	m_pkZFFileSystem	=	static_cast<ZSSVFileSystem*>(GetSystem().GetObjectPtr("ZSSVFileSystem"));		
 	m_pkZShaderSystem =  static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));		
 	
  	m_bSupportARBTC = m_pkZShaderSystem->HaveExtension("ARB_texture_compression");

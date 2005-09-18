@@ -39,7 +39,7 @@ public:
 	ZFResourceInfo();
 	~ZFResourceInfo();
 
-	friend class ZFResourceDB;
+	friend class ZSSResourceDB;
 
 	ZFResourceInfo& operator=(const ZFResourceInfo &kOther) {
 		m_strName		= kOther.m_strName;
@@ -58,7 +58,7 @@ Handles all resources in the game. All Res types needs to be registred before th
 To use a resource one must first use a ZFResourceHandle to load the Res and the get the Res ptr 
 from it.   
 */
-class BASIC_API ZFResourceDB : public ZFSubSystem {
+class BASIC_API ZSSResourceDB : public ZFSubSystem {
 	private:
 		enum FuncId_e
 		{
@@ -86,8 +86,8 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		void ReloadAllResorces();
 
 	public:
-		ZFResourceDB();
-		~ZFResourceDB();
+		ZSSResourceDB();
+		~ZSSResourceDB();
 
 		bool StartUp();
 		bool ShutDown();

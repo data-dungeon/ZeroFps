@@ -14,7 +14,7 @@ using namespace std;
 
 class ZeroFps;
 class GameMessage;
-class NetWork;
+class ZSSNetWork;
 class P_Track;
 
 enum EZoneStatus
@@ -85,8 +85,8 @@ class ENGINE_API EntityManager : public ZFSubSystem
 		
 		//some system pointers
 		ZeroFps*					m_pkZeroFps;
-		NetWork*					m_pkNetWork;
-		ZFBasicFS*				m_pkBasicFS;
+		ZSSNetWork*				m_pkNetWork;
+		ZSSBasicFS*				m_pkBasicFS;
 		ZShaderSystem*			m_pkZShaderSystem;
 		Render*					m_pkRender;
 		ZSSPropertyFactory*	m_pkPropertyFactory;	
@@ -181,7 +181,7 @@ class ENGINE_API EntityManager : public ZFSubSystem
 	public:
 		set<string>				m_kEditorHide;													///< List of entity types hidden when in editor mode.		
 
-		ZFScriptSystem* 		m_pkScript;
+		ZSSScriptSystem* 		m_pkScript;
 		
 		bool						m_bAllowHide;
 

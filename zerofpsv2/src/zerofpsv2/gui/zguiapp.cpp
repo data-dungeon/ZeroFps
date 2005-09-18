@@ -730,7 +730,7 @@ void ZGuiApp::InitDefaultSkins(/*ZFScriptSystem* pkScript*/)
 }
 
 // Måste anropas före allt annat!
-void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName, 
+void ZGuiApp::InitGui(ZSSScriptSystem* pkScriptSys, char* szFontName, 
 							 char* szScriptFile, char* szMenuFile,
 							 bool bUseHardwareMouse, int iScaleMode)
 {
@@ -1484,8 +1484,8 @@ bool ZGuiApp::CreateMenu(char* szFileName, char* szName, bool bPopup)
 
 bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension)
 {
-	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	ZSSVFileSystem* pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+		g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	// kolla inparametrar
 	if(szRootPath == NULL || szTreeBoxName == NULL)
@@ -1757,7 +1757,7 @@ void ZGuiApp::FindGuiTextureByResolution()
 	vkExtension.push_back(".bmp");
 	vkExtension.push_back(".tga");
 
-	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	ZSSVFileSystem* pkFileSys = reinterpret_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	pkFileSys->ListDirRecursive(&kTexMap_640x480, string("data/textures/gui/640x480/"), vkExtension);
 	pkFileSys->ListDirRecursive(&kTexMap_800x600, string("data/textures/gui/800x600/"), vkExtension);

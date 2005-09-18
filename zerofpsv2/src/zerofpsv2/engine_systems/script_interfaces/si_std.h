@@ -2,7 +2,7 @@
 #ifndef _SI_STD_H_
 #define _SI_STD_H_
 
-class ZFScriptSystem;
+class ZSSScriptSystem;
 
 #include "../engine_systems_x.h"
 #include "../../script/zfscript.h"
@@ -10,17 +10,17 @@ class ZFScriptSystem;
 
 using namespace std;
 
-class ZFVFileSystem;
+class ZSSVFileSystem;
 class ZeroFps;
 
 namespace StdLua
 {
 
-	extern ZFScriptSystem* 		g_pkScript;
-	extern ZFVFileSystem*		g_pkVFS;
+	extern ZSSScriptSystem* 		g_pkScript;
+	extern ZSSVFileSystem*		g_pkVFS;
 	extern ZeroFps*				g_pkZeroFps;
 	
-	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkBasicFS,ZeroFps* pkZeroFps);
+	void ENGINE_SYSTEMS_API Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkBasicFS,ZeroFps* pkZeroFps);
 	
 	//GENERAL
 	int ENGINE_SYSTEMS_API PrintLua(lua_State* pkLua);		

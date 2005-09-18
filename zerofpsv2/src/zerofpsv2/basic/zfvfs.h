@@ -10,9 +10,9 @@
 
 using namespace std;
 
-class ZFVFileSystem;
+class ZSSVFileSystem;
 class ZFIni;
-class ZFBasicFS;
+class ZSSBasicFS;
 
 /**	\brief	A Open File in the VFS
 		\ingroup Basic
@@ -23,7 +23,7 @@ It should be used to open all files the ZeroFPS uses.
 class BASIC_API ZFVFile : public ZFIoInterface
 {
 private:
-	ZFVFileSystem*	m_pkFileSystem;
+	ZSSVFileSystem*	m_pkFileSystem;
 
 public:
 	ZFVFile();
@@ -59,7 +59,7 @@ close files with it.
 The VFS can be set to many root paths. The base one is one step above the exe file.
 */
 
-class BASIC_API ZFVFileSystem : public ZFSubSystem 
+class BASIC_API ZSSVFileSystem : public ZFSubSystem 
 {
 	private:
 		enum FuncId_e
@@ -72,7 +72,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		};
 
 				
-		ZFBasicFS*				m_pkBasicFS;					
+		ZSSBasicFS*				m_pkBasicFS;					
 		vector<VfsRootPath>	m_kRootPath;
 		string					m_strCurentDir;
 
@@ -86,8 +86,8 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		} SortFiles;
 
 	public:
-		ZFVFileSystem();
-		~ZFVFileSystem();
+		ZSSVFileSystem();
+		~ZSSVFileSystem();
 
 		void AddRootPath(string strRootPath, string strVfsPath);		///< Add path to list of active roots
 		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.

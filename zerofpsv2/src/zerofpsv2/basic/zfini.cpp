@@ -44,8 +44,8 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 
 	m_bCommandFile = bCommandFile;
 
-	ZFVFileSystem* pkVFFileSys = static_cast<ZFVFileSystem*>
-		(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+	ZSSVFileSystem* pkVFFileSys = static_cast<ZSSVFileSystem*>
+		(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
 
 	//if ((pkFile = fopen(strFileName, "rb")) == NULL)
 

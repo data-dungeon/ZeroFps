@@ -2,7 +2,7 @@
 #ifndef _SI_MISTLAND_H_
 #define _SI_MISTLAND_H_
 
-class ZFScriptSystem;
+class ZSSScriptSystem;
 class PSystemProperty;
 
 #include "mcommon_x.h"
@@ -28,13 +28,13 @@ using namespace std;
 
 namespace MistLandLua
 {
-	extern ZFScriptSystem* 		g_pkScript;
+	extern ZSSScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
 	extern P_ServerInfo*			g_pkServerInfo;
 
 	extern int						g_iLastCollidedID;
 
-	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);	
+	void MCOMMON_API Init(EntityManager* pkObjMan,ZSSScriptSystem* pkScript);	
 	
 	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);				//() return the callers object id	
 	int MCOMMON_API GetLastCollidedObjectLua(lua_State* pkLua);	

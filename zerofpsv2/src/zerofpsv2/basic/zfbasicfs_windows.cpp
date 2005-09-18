@@ -12,7 +12,7 @@
 #include "zfvfs.h"
 
 
-bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps)
+bool ZSSBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps)
 {  
 	WIN32_FIND_DATA finddata;
 
@@ -44,7 +44,7 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyM
 	return true;
 }
 
-bool ZFBasicFS::IsDirectory(const char* szName)
+bool ZSSBasicFS::IsDirectory(const char* szName)
 {
 	//DWORD attributes = GetFileAttributes(szName);
 	//if(attributes == INVALID_FILE_ATTRIBUTES)
@@ -66,7 +66,7 @@ bool ZFBasicFS::IsDirectory(const char* szName)
 	return direxists;
 }
 
-bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 							  const char* acName, bool bIgnoreMaps)
 {  
 	WIN32_FIND_DATA finddata;
@@ -110,14 +110,14 @@ bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters
 	return true;
 }
 
-bool ZFBasicFS::CreateDir(const char* acName)
+bool ZSSBasicFS::CreateDir(const char* acName)
 {
 	if(!CreateDirectory(acName, NULL))
 		return false;
 	return true;
 }
 
-bool ZFBasicFS::RemoveDir(const char* acName)
+bool ZSSBasicFS::RemoveDir(const char* acName)
 {
 	if(!RemoveDirectory(acName))
 		return false;
@@ -134,14 +134,14 @@ static void FormatString(char* strPath)
 	}
 }
 
-char* ZFBasicFS::GetCWD()
+char* ZSSBasicFS::GetCWD()
 {
 	GetCurrentDirectory(2048, m_acDir);
 	FormatString(m_acDir);
 	return m_acDir;
 }
 
-bool ZFBasicFS::DirExist(const char* acName)
+bool ZSSBasicFS::DirExist(const char* acName)
 {
 	if(acName == NULL)
 		return false;
@@ -165,7 +165,7 @@ bool ZFBasicFS::DirExist(const char* acName)
 
 
 
-bool ZFBasicFS::FileExist(const char* szFile)
+bool ZSSBasicFS::FileExist(const char* szFile)
 {
 	bool bOK = false;
 	FILE* f = fopen(szFile, "r"); 
@@ -173,7 +173,7 @@ bool ZFBasicFS::FileExist(const char* szFile)
 	return bOK;
 }
 
-bool ZFBasicFS::RemoveFile(const char* acName)
+bool ZSSBasicFS::RemoveFile(const char* acName)
 {
 	bool bRes = DeleteFile(acName);
 	if(bRes)

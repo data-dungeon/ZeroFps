@@ -21,9 +21,9 @@ class ZShadow;
 class Tcs;
 class ZGuiResourceManager;
 class ZGui;
-class ZFAudioSystem;
-class ZFBasicFS;
-class ZFVFileSystem;
+class ZSSAudioSystem;
+class ZSSBasicFS;
+class ZSSVFileSystem;
 class TextureManager;
 class ZSSPropertyFactory;
 class Console;
@@ -33,9 +33,9 @@ class Light;
 class EntityManager;
 class Render;
 class ZFIni;
-class ZFResourceDB;
+class ZSSResourceDB;
 class ZShadow;
-class ZFScriptSystem;
+class ZSSScriptSystem;
 class ZShaderSystem;
 class InputHandle;
 class NetWork;
@@ -48,8 +48,8 @@ class NetPacket;
 */
 class ENGINE_API Application : public ZFSubSystem {
 	protected:
-		ZFBasicFS*				m_pkBasicFS;
-		ZFVFileSystem*			m_pkZFVFileSystem;
+		ZSSBasicFS*				m_pkBasicFS;
+		ZSSVFileSystem*		m_pkZFVFileSystem;
 		TextureManager*		m_pkTexMan;
 		ZSSInput*				m_pkInput;
 		ZSSPropertyFactory*	m_pkPropertyFactory;
@@ -57,16 +57,16 @@ class ENGINE_API Application : public ZFSubSystem {
 		Render*					m_pkRender;
 		Console*					m_pkConsole;
 		EntityManager*			m_pkEntityManager;
-		ZFAudioSystem*			m_pkAudioSys;
+		ZSSAudioSystem*		m_pkAudioSys;
 		ZGuiResourceManager*	m_pkGuiMan;
 		ZGui*						m_pkGui;
 		ZFIni*					m_pkIni;
-		ZFResourceDB*			m_pkResourceDB;
-		ZFScriptSystem*		m_pkScript;
+		ZSSResourceDB*			m_pkResourceDB;
+		ZSSScriptSystem*		m_pkScript;
 		FileIo*					m_pkFile;
 		ZShadow*					m_pkZShadow;
 		ZeroFps*					m_pkZeroFps;
-		NetWork*					m_pkNetwork;
+		ZSSNetWork*				m_pkNetwork;
 		ZShaderSystem*			m_pkZShaderSystem;
 		Tcs*						m_pkTcs;
 		

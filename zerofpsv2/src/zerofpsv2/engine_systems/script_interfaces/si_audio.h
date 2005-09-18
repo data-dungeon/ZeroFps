@@ -8,17 +8,17 @@
 #include "../../script/zfscript.h"
 #include "../engine_systems_x.h"
 
-class ZFScriptSystem;
-class ZFAudioSystem;
+class ZSSScriptSystem;
+class ZSSAudioSystem;
 class EntityManager;
 
 namespace AudioLua
 {
-	void ENGINE_SYSTEMS_API Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
-		ZFScriptSystem* pkScript);
+	void ENGINE_SYSTEMS_API Init(ZSSAudioSystem* pkAudio, EntityManager* pkObjMan,
+		ZSSScriptSystem* pkScript);
 
-	extern ZFScriptSystem* g_pkScript;
-	extern ZFAudioSystem* g_pAudioSys;
+	extern ZSSScriptSystem* g_pkScript;
+	extern ZSSAudioSystem* g_pAudioSys;
 	extern EntityManager* g_pkEntityMan;
 
 	int ENGINE_SYSTEMS_API PlaySoundLua(lua_State* pkLua);

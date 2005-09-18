@@ -21,12 +21,12 @@ using namespace std;
 /**	\brief	SubSystem for LowLevel FileIO.
 		\ingroup Basic
 */
-class BASIC_API ZFBasicFS : public ZFSubSystem 
+class BASIC_API ZSSBasicFS : public ZFSubSystem 
 {
 	char m_acDir[2048];
 
 	public:
-		ZFBasicFS() : ZFSubSystem("ZFBasicFS") 
+		ZSSBasicFS() : ZFSubSystem("ZSSBasicFS") 
 		{
 		}
 		

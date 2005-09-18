@@ -82,7 +82,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		vector<texture*>	m_iTextures;
 		vector<int>			m_iFreeID;
 		
-		ZFVFileSystem*		m_pkZFFileSystem;
+		ZSSVFileSystem*	m_pkZFFileSystem;
 		ZShaderSystem*		m_pkZShaderSystem;
 
 		texture*	GetFreeTexture();												// Returns a free texture manger texture object.
@@ -156,7 +156,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		string GetTextureNameFromOpenGlIndex(int iGlObject);	// Returns name of texture from opengl texture object ID:
 
 	
-		friend class ZFResourceDB;
+		friend class ZSSResourceDB;
 
 		//bool Blit(SDL_Surface* pkImage,int x,int y);
 		//void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);

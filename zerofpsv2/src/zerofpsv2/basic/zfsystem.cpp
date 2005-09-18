@@ -123,7 +123,7 @@ ZFSystem::ZFSystem()
 	g_Logf("Starting ZeroFps Object System\n");
 #endif
 
-	m_pkCmdSystem = new CmdSystem;
+	m_pkCmdSystem = new ZSSCmdSystem;
 	
 	m_bProfileEnabled =	false;
 	m_bLogEnabled	=		false;

@@ -34,7 +34,7 @@ enum MCOMMON_API SkillType
 class MCOMMON_API Skill
 {
 	private:
-		ZFScriptSystem*	m_pkScript;		
+		ZSSScriptSystem*	m_pkScript;		
 		ZFResourceHandle*	m_pkScriptFileHandle;	
 		ZeroFps*				m_pkZeroFps;
 		EntityManager*		m_pkEntityManager;
@@ -155,7 +155,7 @@ struct AIDebugVar
 class MCOMMON_API P_CharacterProperty: public Property
 {
 	private:
-		ZFAudioSystem*	m_pkAudioSystem;
+		ZSSAudioSystem*	m_pkAudioSystem;
 		Render*			m_pkRender;	
 		ZShaderSystem*	m_pkZShaderSystem;
 		EntityManager*	m_pkEntityMan;

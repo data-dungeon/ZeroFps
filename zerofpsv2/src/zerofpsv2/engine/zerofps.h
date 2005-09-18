@@ -25,14 +25,14 @@ class Render;
 class ZGui;
 class ZGuiResourceManager;
 class GLGuiRender;
-class ZFScriptSystem;
+class ZSSScriptSystem;
 class Application;
 class NetPacket;
 class PSystemManager;
 class Tcs;
 class InputHandle;
 class ZShadow;
-class ZFAudioSystem;
+class ZSSAudioSystem;
 class Network;
 class AStar;
 
@@ -227,8 +227,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 			ZeroFps();
 		*/
 
-		ZFBasicFS*				m_pkBasicFS;				///< Low level platform depended File Functions.
-		ZFVFileSystem*			m_pkZFVFileSystem;		///< ZeroFps own File System.
+		ZSSBasicFS*				m_pkBasicFS;				///< Low level platform depended File Functions.
+		ZSSVFileSystem*		m_pkZFVFileSystem;		///< ZeroFps own File System.
 		TextureManager*		m_pkTexMan;					///< Manges Textures
 		ZSSInput*				m_pkInput;					///< Handles all Local Input.
 		ZSSPropertyFactory*	m_pkPropertyFactory;		///< Property Creation for Objects.
@@ -237,14 +237,14 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		Render*					m_pkRender;					///< Renders Graphic primitives
 		Console*					m_pkConsole;				///< ZeroFps Console.
 		EntityManager*			m_pkEntityManager;		///< In Game Object System.
-		ZFAudioSystem*			m_pkAudioSystem;			///< Soundy
-		NetWork*					m_pkNetWork;				///< NetWork Interface.
+		ZSSAudioSystem*			m_pkAudioSystem;			///< Soundy
+		ZSSNetWork*				m_pkNetWork;				///< NetWork Interface.
 		GLGuiRender*			m_pkGuiRenderer;			///< Gui - Zeb
 		ZGuiResourceManager*	m_pkGuiMan;					///< Gui - Zeb
 		ZGui*						m_pkGui;						///< Gui - Zeb
 		ZFIni*					m_pkIni;						///< Ini Files - Zeb
-		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
-		ZFScriptSystem*		m_pkScript;					///< script
+		ZSSResourceDB*			m_pkResourceDB;			///< Resouce Handler.
+		ZSSScriptSystem*		m_pkScript;					///< script
 		Application*			m_pkApp;						///< Application object.
 		ZShaderSystem*			m_pkZShaderSystem;		///< zerofps shader system
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
@@ -367,7 +367,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps
 		void RouteEditCommand(NetPacket* pkNetPacket);						
 		void SetEnableLogin(bool bLogin) { m_bClientLoginState = bLogin; }
 	
-		friend class NetWork;
+		friend class ZSSNetWork;
 		friend class Camera;
 };
 

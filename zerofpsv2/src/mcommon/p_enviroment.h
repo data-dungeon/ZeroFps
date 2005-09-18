@@ -31,7 +31,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		Render*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		ZSSEnviroment*	m_pkEnviroment;
-		ZFAudioSystem*	m_pkAudioSystem;
+		ZSSAudioSystem*	m_pkAudioSystem;
 		ZSSMLTime*		m_pkMLTime;
 		Light*			m_pkLight;
 		

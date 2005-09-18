@@ -58,7 +58,7 @@ private:
 
 	FILE* m_pkSaveFile;
 	Camera* m_pkCamera;
-	ZFBasicFS* m_pkBasicFS;
+	ZSSBasicFS* m_pkBasicFS;
 	ZGuiWnd* m_pkFocusWnd, *m_pkCopyWnd;
 	ZGuiSkin* m_pkCopySkin;
 	vector<ZGuiWnd::SKIN_DESC> m_vCopySkinDesc;

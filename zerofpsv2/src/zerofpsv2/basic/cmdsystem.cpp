@@ -12,8 +12,8 @@
 
 
 
-CmdSystem::CmdSystem()
-: ZFSubSystem("CmdSystem") 
+ZSSCmdSystem::ZSSCmdSystem()
+: ZFSubSystem("ZSSCmdSystem") 
 {
 //	m_pkCon = NULL;
 
@@ -27,28 +27,28 @@ CmdSystem::CmdSystem()
 	Register_Cmd("plist",		FID_PLUGINLIST,			CSYS_FLAG_SRC_ALL);
 }
 
-bool CmdSystem::StartUp()	
+bool ZSSCmdSystem::StartUp()	
 { 
 //	m_pkCon = dynamic_cast<BasicConsole*>((GetSystem().GetObjectPtr("Console")));
 	return true; 
 }
 
-bool CmdSystem::ShutDown() 
+bool ZSSCmdSystem::ShutDown() 
 { 
 	return true; 
 }
 
-bool CmdSystem::IsValid()	
+bool ZSSCmdSystem::IsValid()	
 { 
 	return true; 
 }
 
-bool CmdSystem::Set(const char* acName,const char* acData)
+bool ZSSCmdSystem::Set(const char* acName,const char* acData)
 {
 	return GetSystem().SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
 }
 
-void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSCmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) 
 	{
@@ -125,7 +125,7 @@ map<string,ModuleInfo>	g_kModule;
 typedef bool (*ZPF_PluginLoad)();
 typedef bool (*ZPF_PluginUnLoad)();
 
-void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
+void ZSSCmdSystem::Plugin_LoadSubSystem(string strPluginName)
 {
 	ModuleInfo	kInfo;
 	kInfo.m_strModuleName = strPluginName;
@@ -170,7 +170,7 @@ void CmdSystem::Plugin_LoadSubSystem(string strPluginName)
 	GetSystem().Printf("Plugin '%s' is now loaded.\n", strPluginName.c_str());
 }
 
-void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
+void ZSSCmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
 {
 	// First we check so module is really loaded.
 	static map<string,ModuleInfo>::iterator it;
@@ -203,7 +203,7 @@ void CmdSystem::Plugin_UnLoadSubSystem(string strPluginName)
 	GetSystem().Printf("Plugin '%s' is now unloaded.\n", strPluginName.c_str());
 }
 
-void CmdSystem::Plugin_List()
+void ZSSCmdSystem::Plugin_List()
 {
 	GetSystem().Printf("Loaded Modules\n");
 

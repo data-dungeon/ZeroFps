@@ -391,7 +391,7 @@ class ENGINE_API Entity
 		unsigned char				m_ucIcon;							// Icon, 0 = None.
 		
 		//friends
-		friend class NetWork;
+		friend class ZSSNetWork;
 		friend class EntityManager;
 		friend class Property;
 

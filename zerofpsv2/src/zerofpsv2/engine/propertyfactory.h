@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class NetWork;
+class ZSSNetWork;
 class Property;
 
 /// Links property name to a create function.
@@ -43,7 +43,7 @@ private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
 	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
-	NetWork*			m_pkNetWork;
+	ZSSNetWork*		m_pkNetWork;
 
 public:
 	ZSSPropertyFactory();

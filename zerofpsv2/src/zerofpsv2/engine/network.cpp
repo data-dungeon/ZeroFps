@@ -7,10 +7,10 @@
 
 //#define	NET_LOGALL	
 
-NetWork* g_pkNetWork;
+ZSSNetWork* g_pkNetWork;
 
-NetWork::NetWork()
-: ZFSubSystem("NetWork")
+ZSSNetWork::ZSSNetWork()
+: ZFSubSystem("ZSSNetWork")
 {
 	strcpy(m_szGameName, "ZeroFps");
 	m_bAcceptClientConnections = false;
@@ -51,7 +51,7 @@ NetWork::NetWork()
 		}
 }
 
-bool NetWork::StartUp()	
+bool ZSSNetWork::StartUp()	
 { 
 	m_pkConsole	= static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
 	m_pkZeroFps	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
@@ -94,14 +94,14 @@ bool NetWork::StartUp()
 	return true; 
 }
 
-bool NetWork::ShutDown() 
+bool ZSSNetWork::ShutDown() 
 {	
 	
 	return true;	
 }
-bool NetWork::IsValid()	 { return true;	}
+bool ZSSNetWork::IsValid()	 { return true;	}
 
-NetWork::~NetWork()
+ZSSNetWork::~ZSSNetWork()
 {
 #ifdef NET_LOGALL
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
@@ -119,7 +119,7 @@ NetWork::~NetWork()
 #endif
 }
 
-string NetWork::GetLocalIP()
+string ZSSNetWork::GetLocalIP()
 {
 //	char MyIp[256];
 //	m_kLocalIP kIp;
@@ -128,7 +128,7 @@ string NetWork::GetLocalIP()
 }
 
 // NetStrings are strings that are sent as int's over network. 
-int NetWork::NetString_GetFree()
+int ZSSNetWork::NetString_GetFree()
 {
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		if(m_kStringTable[i].m_bInUse == false)
@@ -137,7 +137,7 @@ int NetWork::NetString_GetFree()
 	return ZF_NET_NONETSTRING;
 }
 
-int NetWork::NetString_Add(const char* szString)
+int ZSSNetWork::NetString_Add(const char* szString)
 {
 	string strTest;
 	strTest = /*string("A Cool ") +*/ string(szString);
@@ -161,7 +161,7 @@ int NetWork::NetString_Add(const char* szString)
 	return iIndex;
 }
 
-int NetWork::NetString_GetIndex(const char* szString)
+int ZSSNetWork::NetString_GetIndex(const char* szString)
 {
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		if(m_kStringTable[i].m_bInUse && (strcmp(szString, m_kStringTable[i].m_NetString.c_str()) == 0) )
@@ -171,7 +171,7 @@ int NetWork::NetString_GetIndex(const char* szString)
 	return ZF_NET_NONETSTRING;
 }
 
-string NetWork::NetString_GetString(int iIndex)
+string ZSSNetWork::NetString_GetString(int iIndex)
 {
 	if(iIndex < 0 || iIndex >= int(m_kStringTable.size()))
 		return string("nons");
@@ -184,14 +184,14 @@ string NetWork::NetString_GetString(int iIndex)
 		}
 }
 
-void NetWork::NetString_ReSendAll()
+void ZSSNetWork::NetString_ReSendAll()
 {
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++)
 		m_kStringTable[i].m_bUpdated = true;
 }
 
 // Check all netstrings for updates and send them to the other side.
-void NetWork::Send_NetStrings()
+void ZSSNetWork::Send_NetStrings()
 {
 	if( m_eNetStatus == NET_NONE )	return;
 	if( m_eNetStatus == NET_CLIENT )	return;
@@ -240,7 +240,7 @@ void NetWork::Send_NetStrings()
 	Send2(&NP);
 }
 
-bool NetWork::NetStringIsUpdated()
+bool ZSSNetWork::NetStringIsUpdated()
 {
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		if(m_kStringTable[i].m_bInUse && m_kStringTable[i].m_bUpdated)
@@ -250,7 +250,7 @@ bool NetWork::NetStringIsUpdated()
 	return false;
 }
 
-void NetWork::NetString_Refresh()
+void ZSSNetWork::NetString_Refresh()
 {
 	if( m_eNetStatus == NET_NONE )	return;
 	if( m_eNetStatus == NET_SERVER )	return;
@@ -263,7 +263,7 @@ void NetWork::NetString_Refresh()
 		}
 }
 
-void NetWork::NetString_Request(int iIndex)
+void ZSSNetWork::NetString_Request(int iIndex)
 {
 	NetPacket kNetPRespons;
 	kNetPRespons.Clear();
@@ -275,7 +275,7 @@ void NetWork::NetString_Request(int iIndex)
 	Send2(&kNetPRespons);
 }
 
-int NetWork::GetNumOfClients(void)
+int ZSSNetWork::GetNumOfClients(void)
 {
 	int iNumOfClients = 0;
 	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) 
@@ -287,7 +287,7 @@ int NetWork::GetNumOfClients(void)
 	return iNumOfClients;
 }
 
-bool NetWork::IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2)
+bool ZSSNetWork::IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2)
 {
 	if(pkAdr1->host != pkAdr2->host)	return false;
 	if(pkAdr1->port != pkAdr2->port)	return false;
@@ -295,7 +295,7 @@ bool NetWork::IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2)
 	return true;
 }
 
-int NetWork::GetClientNumber(IPaddress* pkAddress)
+int ZSSNetWork::GetClientNumber(IPaddress* pkAddress)
 {
 	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		if(IsAddressEquals(pkAddress, &m_RemoteNodes[i]->m_kAddress))
@@ -305,7 +305,7 @@ int NetWork::GetClientNumber(IPaddress* pkAddress)
 	return ZF_NET_NOCLIENT;
 }
 
-void NetWork::SetMaxNodes(int iMaxNode)
+void ZSSNetWork::SetMaxNodes(int iMaxNode)
 {
 	for(unsigned int i = 0;i<m_RemoteNodes.size();i++)
 	{
@@ -331,7 +331,7 @@ void NetWork::SetMaxNodes(int iMaxNode)
 
 }
 
-int NetWork::GetFreeClientNum()
+int ZSSNetWork::GetFreeClientNum()
 {
 	for(int i=0; m_RemoteNodes.size(); i++) 
 	{
@@ -345,7 +345,7 @@ int NetWork::GetFreeClientNum()
 	return ZF_NET_NOCLIENT;
 }
 
-bool NetWork::IsConnected(int iId)
+bool ZSSNetWork::IsConnected(int iId)
 {
 	if(m_RemoteNodes[iId]->m_eConnectStatus == NETSTATUS_CONNECTED)
 		return true;
@@ -353,7 +353,7 @@ bool NetWork::IsConnected(int iId)
 		return false;
 }
 
-int NetWork::GetClientNetSpeed(int iId)
+int ZSSNetWork::GetClientNetSpeed(int iId)
 {
 	if(m_RemoteNodes[iId]->m_eConnectStatus == NETSTATUS_DISCONNECT)
 		return 0;
@@ -364,7 +364,7 @@ int NetWork::GetClientNetSpeed(int iId)
 	return Min(iNetSpeed,iMaxSpeed);
 }
 
-void NetWork::StartSocket(bool bStartServer,int iPort)
+void ZSSNetWork::StartSocket(bool bStartServer,int iPort)
 {
 	if(m_pkSocket) 
 	{
@@ -389,7 +389,7 @@ void NetWork::StartSocket(bool bStartServer,int iPort)
 	}
 }
 
-void NetWork::CloseSocket()
+void ZSSNetWork::CloseSocket()
 {
 	if(!m_pkSocket)	return;
 	SDLNet_UDP_Close(m_pkSocket);
@@ -397,13 +397,13 @@ void NetWork::CloseSocket()
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ServerStart(int iPort)
+void ZSSNetWork::ServerStart(int iPort)
 {
 	StartSocket(true,iPort);
 	m_eNetStatus = NET_SERVER;
 }
 
-void NetWork::ServerEnd(void)
+void ZSSNetWork::ServerEnd(void)
 {
 	if(m_eNetStatus == NET_SERVER)
 	{
@@ -415,7 +415,7 @@ void NetWork::ServerEnd(void)
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ClientStart()
+void ZSSNetWork::ClientStart()
 {
 	if(m_eNetStatus == NET_SERVER)
 		return;
@@ -424,7 +424,7 @@ void NetWork::ClientStart()
 	m_eNetStatus = NET_CLIENT;
 }
 
-void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed)
+void ZSSNetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const char* szPass, bool bConnectAsEditor,int iNetSpeed)
 {
 	if(m_eNetStatus == NET_SERVER)
 		return;
@@ -487,7 +487,7 @@ void NetWork::ClientStart(const char* szIp,int iPort ,const char* szLogin, const
 	m_kServerAddress = NetP.m_kAddress;
 }
 
-void NetWork::RequestServerInfo(ServerInfo* pkServer)
+void ZSSNetWork::RequestServerInfo(ServerInfo* pkServer)
 {
 	//save request time
 	pkServer->m_fRequestTime = m_pkZeroFps->GetEngineTime();
@@ -503,7 +503,7 @@ void NetWork::RequestServerInfo(ServerInfo* pkServer)
 	SendRaw(&NetP);
 }
 
-void NetWork::SendServerInfo(IPaddress kIp)
+void ZSSNetWork::SendServerInfo(IPaddress kIp)
 {
 	NetPacket NetP;
 
@@ -520,7 +520,7 @@ void NetWork::SendServerInfo(IPaddress kIp)
 	SendRaw(&NetP);
 }
 
-void NetWork::GotServerInfo(NetPacket* pkNetPacket)
+void ZSSNetWork::GotServerInfo(NetPacket* pkNetPacket)
 {
 	// Read out info
 	char szServerName[256];
@@ -553,7 +553,7 @@ void NetWork::GotServerInfo(NetPacket* pkNetPacket)
 
 
 
-void NetWork::MS_ServerIsActive()
+void ZSSNetWork::MS_ServerIsActive()
 {
 	if(!m_bPublishServer)
 		return;
@@ -587,7 +587,7 @@ void NetWork::MS_ServerIsActive()
 	SendRaw(&NetP);
 }
 
-void NetWork::MS_ServerDown()
+void ZSSNetWork::MS_ServerDown()
 {
 /*	IPaddress kTargetIP;
 	char szFinalTarget[256];
@@ -604,7 +604,7 @@ void NetWork::MS_ServerDown()
 	SendRaw(&NetP);
 }
 
-void NetWork::MS_RequestServers()
+void ZSSNetWork::MS_RequestServers()
 {
 /*	IPaddress kTargetIP;
 	char szFinalTarget[256];
@@ -621,7 +621,7 @@ void NetWork::MS_RequestServers()
 	SendRaw(&NetP);
 }
 
-void NetWork::MS_GotServers(NetPacket* pkNetPack)
+void ZSSNetWork::MS_GotServers(NetPacket* pkNetPack)
 {
 	m_kServers.clear();
 	char SzAdress[128];
@@ -654,7 +654,7 @@ void NetWork::MS_GotServers(NetPacket* pkNetPack)
 	
 	Checks if any packet have arrived and if so puts it in the netpacket,
 */
-bool NetWork::Recv(NetPacket* pkNetPacket)
+bool ZSSNetWork::Recv(NetPacket* pkNetPacket)
 {
 	pkNetPacket->Clear();
 
@@ -700,7 +700,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 /**	\brief	Sends a package.
 	
 */
-bool NetWork::SendRaw(NetPacket* pkNetPacket)
+bool ZSSNetWork::SendRaw(NetPacket* pkNetPacket)
 {
 	// Check that it is a valid package.
 	if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == 204)
@@ -768,7 +768,7 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 	return true;
 }
 
-void NetWork::SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp)
+void ZSSNetWork::SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp)
 {
 	UDPpacket kPacket;
 	kPacket.channel	= -1;
@@ -787,7 +787,7 @@ void NetWork::SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp)
 }
 
 
-bool NetWork::Send2(NetPacket* pkNetPacket)
+bool ZSSNetWork::Send2(NetPacket* pkNetPacket)
 {
 	static int iSpliceSize = 1018;
 
@@ -838,7 +838,7 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 	return RealSend2(pkNetPacket);
 }
 
-bool NetWork::RealSend2(NetPacket* pkNetPacket)
+bool ZSSNetWork::RealSend2(NetPacket* pkNetPacket)
 {
 	// If we have any clients to send to.
 	if(pkNetPacket->m_iTargetClients.size()) 
@@ -864,7 +864,7 @@ bool NetWork::RealSend2(NetPacket* pkNetPacket)
 	}
 }
 
-void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
+void ZSSNetWork::HandleControlMessage(NetPacket* pkNetPacket)
 {
 	int iObjId;
 	char szText[256];
@@ -1176,7 +1176,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 	}
 }
 
-void NetWork::DevShow_ClientConnections()
+void ZSSNetWork::DevShow_ClientConnections()
 {
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
 	m_pkZeroFps->DevPrintf("conn", "Engine Time: %f", fEngineTime);
@@ -1217,7 +1217,7 @@ void NetWork::DevShow_ClientConnections()
 	}
 }
 	
-int NetWork::GetPing(int iConID)
+int ZSSNetWork::GetPing(int iConID)
 {
 	if(iConID < 0 || iConID >= m_RemoteNodes.size())
 		return -1;
@@ -1225,14 +1225,14 @@ int NetWork::GetPing(int iConID)
 	return int(m_RemoteNodes[iConID]->m_fPing * 1000);
 }
 	
-void NetWork::DrawConnectionGraphs()
+void ZSSNetWork::DrawConnectionGraphs()
 {
 	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
 		//m_RemoteNodes[i]->m_kRecvGraph.DrawGraph(0, 55 * i + 100);
 	}
 }
 
-void NetWork::SendAckList(int iClient, vector<int>& kAckList)
+void ZSSNetWork::SendAckList(int iClient, vector<int>& kAckList)
 {
 	if(kAckList.size() == 0)
 		return;
@@ -1257,7 +1257,7 @@ void NetWork::SendAckList(int iClient, vector<int>& kAckList)
 	
 	if(kAckList.size() > 256)
 	{
-		cout << " ***** ERROR - NetWork::SendAckList: - Tell Vim NOW :)." << endl;
+		cout << " ***** ERROR - ZSSNetWork::SendAckList: - Tell Vim NOW :)." << endl;
 	}
 
 	SendRaw(&kNetPRespons);
@@ -1268,7 +1268,7 @@ void NetWork::SendAckList(int iClient, vector<int>& kAckList)
 	Updates the network by looking for incoming packages and sending them
 	the the right place and also checking for timeouts on all connections.
 */
-void NetWork::Run()
+void ZSSNetWork::Run()
 {	
 	int iRecvBytes = 0;
 	m_iBadPackages = 0;	
@@ -1516,7 +1516,7 @@ void NetWork::Run()
 	NetString_Refresh();
 }
 
-bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
+bool ZSSNetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 {
 	int iPort = 0;
 	iPort = iPort | ((pkAddress->port >> 8) & 0xff);  
@@ -1527,7 +1527,7 @@ bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 	return true;
 }
 
-bool NetWork::StrToAddress(const char* szString, IPaddress* pkAddress)
+bool ZSSNetWork::StrToAddress(const char* szString, IPaddress* pkAddress)
 {
 	int ha1, ha2, ha3, ha4, hp;
 	int ip_addr;
@@ -1545,7 +1545,7 @@ bool NetWork::StrToAddress(const char* szString, IPaddress* pkAddress)
 	return true;
 }
 
-bool NetWork::IsValidIPAddress( const char* szString )
+bool ZSSNetWork::IsValidIPAddress( const char* szString )
 {
 	int ha1, ha2, ha3, ha4, hp;
 	int iScanResultat = sscanf(szString, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
@@ -1568,7 +1568,7 @@ bool NetWork::IsValidIPAddress( const char* szString )
 
 
 // Force Disconnect on all nodes.
-void NetWork::DisconnectAll()
+void ZSSNetWork::DisconnectAll()
 {
 	if(!m_pkSocket)	return;
 
@@ -1592,7 +1592,7 @@ void NetWork::DisconnectAll()
 	}
 }
 
-void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSNetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	float fMax;
 
@@ -1630,7 +1630,7 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 }
 
-bool NetWork::DnsLookUp(const char* szHost,IPaddress& kIp)
+bool ZSSNetWork::DnsLookUp(const char* szHost,IPaddress& kIp)
 {
 	kIp.host	=	INADDR_NONE;
 	kIp.port	=  0;
@@ -1644,7 +1644,7 @@ bool NetWork::DnsLookUp(const char* szHost,IPaddress& kIp)
 	return true;
 }
 
-void NetWork::SetGameName(char* szGameName)
+void ZSSNetWork::SetGameName(char* szGameName)
 {
 	if(strlen(szGameName) >= ZF_MAX_GAMENAME)
 		return;
@@ -1652,7 +1652,7 @@ void NetWork::SetGameName(char* szGameName)
    strcpy(m_szGameName, szGameName);
 }
 
-void NetWork::Ping()
+void ZSSNetWork::Ping()
 {
 	NetPacket kNetPRespons;
 	kNetPRespons.Clear();

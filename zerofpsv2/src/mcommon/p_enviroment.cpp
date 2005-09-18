@@ -22,7 +22,7 @@ P_Enviroment::P_Enviroment()
 	m_pkEntityManager=	static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
-	m_pkAudioSystem =		static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	m_pkAudioSystem =		static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pkEnviroment =		static_cast<ZSSEnviroment*>(g_ZFObjSys.GetObjectPtr("ZSSEnviroment"));
 	m_pkMLTime =			static_cast<ZSSMLTime*>(g_ZFObjSys.GetObjectPtr("ZSSMLTime"));
 	m_pkLight = 			static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));

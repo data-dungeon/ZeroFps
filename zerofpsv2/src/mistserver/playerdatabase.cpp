@@ -7,8 +7,8 @@
 
 PlayerDatabase::PlayerDatabase()
 {
-	m_pkEntityMan		= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	ZFBasicFS* pkBFPS	= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));	
+	m_pkEntityMan			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	ZSSBasicFS* pkBFPS	= static_cast<ZSSBasicFS*>(g_ZFObjSys.GetObjectPtr("ZSSBasicFS"));	
 
 	m_bStdPrivilege.m_bAdmin		= false;
 	m_bStdPrivilege.m_bBuilder		= false;
@@ -105,7 +105,7 @@ bool PlayerDatabase::UserDelete(string strUser)
 	}
 
 	cout << "Delete Login '" << strUser << "'" << endl;
-	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	ZSSVFileSystem* pkVFS	= static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	string strLoginDir = m_strPlayerDirectory + strUser; 
 	string strLoginDataFile = strLoginDir + string("/playerdata.dat"); 
@@ -414,7 +414,7 @@ bool PlayerDatabase::CharacterSave(Entity* pkEntity,string strPlayer)
 void PlayerDatabase::CharacterDelete(string strPlayer, string strCharacter)
 {
 	cout << "Delete Character '" << strCharacter << "' from Login '" << strPlayer << "'" << endl;
-	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	ZSSVFileSystem* pkVFS	= static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 
 	string strCharacterDataDir = m_strPlayerDirectory + (strPlayer + "/") + strCharacter; 
@@ -436,7 +436,7 @@ vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
 	string strPlayerDataFile = m_strPlayerDirectory + strLogin; 
 	cout << "***Scaning in" << strPlayerDataFile << endl;
 
-	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	ZSSVFileSystem* pkVFS	= static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
 
 	

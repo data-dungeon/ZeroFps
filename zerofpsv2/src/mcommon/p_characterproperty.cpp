@@ -15,7 +15,7 @@
 
 Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 {
-	m_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	m_pkScript = static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityManager = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	
@@ -545,7 +545,7 @@ float Stats::GetTotal(const string& strName)
 //-------P_CharacterProperty---------
 P_CharacterProperty::P_CharacterProperty()
 {
-	m_pkAudioSystem = 	static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));			
+	m_pkAudioSystem = 	static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));			
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 	m_pkEntityMan=			static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));			
@@ -3070,7 +3070,7 @@ namespace SI_P_CharacterProperty
 		if(!pkCP)
 			return 0;
 
-		ZFVFileSystem* pkFs = dynamic_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));
+		ZSSVFileSystem* pkFs = dynamic_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
 		vector<string>	kFiles;
 		pkFs->ListDir(&kFiles, "data/script/objects/game objects/skills");
 		

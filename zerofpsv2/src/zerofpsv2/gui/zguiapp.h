@@ -14,7 +14,7 @@ using namespace std;
 #include "../script/zfscript.h"
 
 class TextureManager;
-class ZFScriptSystem;
+class ZSSScriptSystem;
 class ZGuiResourceManager;
 class ZFResourceHandle;
 class ZFScript;
@@ -94,7 +94,7 @@ public:
 	struct THREAD_INFO
 	{
 		char* szFileName;
-		ZFScriptSystem* pkScriptSys;
+		ZSSScriptSystem* pkScriptSys;
 	};
 
 	int LoadGuiTextureByRes(string strFile); ///< Use this function instead of LoadTexture in texturemanager to load correct image based on resolution.
@@ -134,7 +134,7 @@ public:
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id=-1);
 	
-	void InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, 
+	void InitGui(ZSSScriptSystem* pkScriptSys, char* szFontTexture, 
 		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse, int iScaleMode=-1);
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
@@ -200,7 +200,7 @@ private:
 	ZGuiResourceManager* m_pkResMan;
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	TextureManager* m_pkTextureMan;
-	ZFScriptSystem* m_pkScriptSystem;
+	ZSSScriptSystem* m_pkScriptSystem;
 	map<string, ZGuiSkin*> m_kSkins;
 	map<int, ZGuiWnd*> m_kWindows;
 

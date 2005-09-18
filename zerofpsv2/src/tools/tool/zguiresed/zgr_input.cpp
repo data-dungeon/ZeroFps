@@ -494,8 +494,8 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 		{
 			string strName = m_strCurrTexDir + string("/") + string(szTexName);
 
-			ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-					g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+			ZSSVFileSystem* m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+					g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 			string strRealName = m_pkFileSys->GetFullPath(strName.c_str());
 
@@ -515,8 +515,8 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 		{
 			string strName = m_strCurrTexDir + string("/") + string(szTexName);
 
-			ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-					g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+			ZSSVFileSystem* m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+					g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 			string strRealName = m_pkFileSys->GetFullPath(strName.c_str());
 
@@ -665,8 +665,8 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 			GetWnd("GuiEd_SelectFileWnd")->SetPos(x,y,true,true); 
 		}
 
-		ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-				g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+		ZSSVFileSystem* m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+				g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 		
 		vector<string> kFiles;
 		vector<string> ext;

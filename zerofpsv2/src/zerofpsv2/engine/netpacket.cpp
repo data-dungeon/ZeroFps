@@ -5,7 +5,7 @@
 
 #include "../basic/zfsystem.h"
 
-extern NetWork* g_pkNetWork;
+extern ZSSNetWork* g_pkNetWork;
 
 
 

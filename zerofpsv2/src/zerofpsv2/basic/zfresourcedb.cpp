@@ -27,7 +27,7 @@ ZFResourceInfo::~ZFResourceInfo()
 
 ZFResourceHandle::ZFResourceHandle()
 {
-	m_pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+	m_pkResDB = static_cast<ZSSResourceDB*>(g_ZFObjSys.GetObjectPtr("ZSSResourceDB"));
 
 	m_iHandleID = g_iResourceHandleID ++;
 	m_iID = -1;
@@ -36,7 +36,7 @@ ZFResourceHandle::ZFResourceHandle()
 
 ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
 {
-	m_pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+	m_pkResDB = static_cast<ZSSResourceDB*>(g_ZFObjSys.GetObjectPtr("ZSSResourceDB"));
 	
 	m_iHandleID = g_iResourceHandleID ++;
 	m_iID = -1;
@@ -87,7 +87,7 @@ void ZFResourceHandle::FreeRes()
 
 // ZFResourceDB ***********************************************************
 
-ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName)
+ResourceCreateLink*	ZSSResourceDB::FindResourceTypeFromFullName(string strResName)
 {
 	char szFullName[256];
 	strcpy(szFullName, strResName.c_str());
@@ -101,7 +101,7 @@ ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName
 	return FindResourceType(string(pcExt));
 }
 
-void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	vector<ZFResourceInfo*>::iterator it;
 
@@ -133,8 +133,8 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		};
 }
 
-ZFResourceDB::ZFResourceDB()
- : ZFSubSystem("ZFResourceDB") 
+ZSSResourceDB::ZSSResourceDB()
+ : ZFSubSystem("ZSSResourceDB") 
 {
 	m_iNextID			= 0;
 	m_bInstantExpire	= false;
@@ -148,18 +148,18 @@ ZFResourceDB::ZFResourceDB()
 
 }
 
-ZFResourceDB::~ZFResourceDB()
+ZSSResourceDB::~ZSSResourceDB()
 {
 	
 }
 
-bool ZFResourceDB::StartUp()	
+bool ZSSResourceDB::StartUp()	
 { 
 	g_ZFObjSys.Log_Create("resdb");
 	return true; 
 }
 
-bool ZFResourceDB::ShutDown() 
+bool ZSSResourceDB::ShutDown() 
 { 
 	m_bInstantExpire = true;
 
@@ -184,10 +184,10 @@ bool ZFResourceDB::ShutDown()
 	return true; 
 }
 
-bool ZFResourceDB::IsValid()	{ return true; }
+bool ZSSResourceDB::IsValid()	{ return true; }
 
 /**	Register a new Resource and the function used to create it. */
-void ZFResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
+void ZSSResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
 {
 	ResourceCreateLink kResLink;
 	kResLink.m_strName = strName;
@@ -199,7 +199,7 @@ void ZFResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
 }
 
 /**	Refresh the resource DB by unloading unused resources. */
-bool ZFResourceDB::Refresh()
+bool ZSSResourceDB::Refresh()
 {
 	bool bWasUnloaded = false;
 
@@ -284,12 +284,12 @@ bool ZFResourceDB::Refresh()
 	return bWasUnloaded;
 }
 
-ZFResourceInfo*	ZFResourceDB::GetResourceData(const string& strResName)
+ZFResourceInfo*	ZSSResourceDB::GetResourceData(const string& strResName)
 {
 	return FindResource(strResName);
 }
 
-ZFResourceInfo*	ZFResourceDB::FindResource(const string& strResName)
+ZFResourceInfo*	ZSSResourceDB::FindResource(const string& strResName)
 {
 	for(unsigned int i = 0;i<m_kResources.size();i++)
 		if(m_kResources[i]->m_strName == strResName)
@@ -304,7 +304,7 @@ ZFResourceInfo*	ZFResourceDB::FindResource(const string& strResName)
 	return NULL;
 }
 
-bool ZFResourceDB::IsResourceLoaded(string strResName)
+bool ZSSResourceDB::IsResourceLoaded(string strResName)
 {
 	if(FindResource(strResName) != NULL)
 		return true;
@@ -312,7 +312,7 @@ bool ZFResourceDB::IsResourceLoaded(string strResName)
 	return false;
 }
 
-void ZFResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
+void ZSSResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
 {
 	// Remove Old Resource
 	delete pkResInfo->m_pkResource;
@@ -336,7 +336,7 @@ void ZFResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
 }
 
 
-void ZFResourceDB::ReloadResource(string strResName)
+void ZSSResourceDB::ReloadResource(string strResName)
 {
 	ZFResourceInfo* pkResInfo = GetResourceData(strResName);
 
@@ -346,7 +346,7 @@ void ZFResourceDB::ReloadResource(string strResName)
 	ReloadResource( pkResInfo );
 }
 
-void ZFResourceDB::ReloadAllResorces()
+void ZSSResourceDB::ReloadAllResorces()
 {
 	for(unsigned int i = 0;i<m_kResources.size();i++)
 		ReloadResource(m_kResources[i]->m_strName);
@@ -360,7 +360,7 @@ void ZFResourceDB::ReloadAllResorces()
 }
 
 
-void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strResName)
+void ZSSResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strResName)
 {
 	
 	//check if resource is already loaded
@@ -413,7 +413,7 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strRes
 	return;
 }
 
-void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
+void ZSSResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 {
 	ZFResourceInfo* pkRes = GetResourceData(kResHandle.m_strName);
 	if(pkRes == NULL) {
@@ -430,7 +430,7 @@ void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 	kResHandle.m_strName = "";
 }
 
-ZFResource* ZFResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
+ZFResource* ZSSResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
 {
 	ZFResourceInfo* pkRes = GetResourceData(kResHandle.m_strName);
 	if(!pkRes)
@@ -439,7 +439,7 @@ ZFResource* ZFResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
 	return pkRes->m_pkResource;
 }
 
-ResourceCreateLink*	ZFResourceDB::FindResourceType(const string& strName)
+ResourceCreateLink*	ZSSResourceDB::FindResourceType(const string& strName)
 {
 	for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
 		if(m_kResourceFactory[i].m_strName == strName)
@@ -449,7 +449,7 @@ ResourceCreateLink*	ZFResourceDB::FindResourceType(const string& strName)
 	return NULL;
 }
 
-ZFResource*	ZFResourceDB::CreateResource(const string& strName)
+ZFResource*	ZSSResourceDB::CreateResource(const string& strName)
 {
 	ResourceCreateLink* pkLink = FindResourceTypeFromFullName(strName);
 	if(pkLink == NULL)
@@ -465,7 +465,7 @@ ZFResource*	ZFResourceDB::CreateResource(const string& strName)
 
 
 /**	Returns total size of all loaded resources. */
-int ZFResourceDB::GetResSizeInBytes()
+int ZSSResourceDB::GetResSizeInBytes()
 {
 	int iTotalBytes = 0;
 

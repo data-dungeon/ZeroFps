@@ -36,7 +36,7 @@ private:
 	MistClient* m_pkMC;
 	ZShaderSystem* m_pkZShaderSystem;
 	ZShadow* m_pkZShadow;
-	ZFAudioSystem* m_pkAudioSys;
+	ZSSAudioSystem* m_pkAudioSys;
 	Render* m_pkRender;
 	ZSSInput* m_pkInput;
 	ZeroFps* m_pkZeroFps;

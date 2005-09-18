@@ -208,7 +208,7 @@ bool ZeroEd::SaveCurrentToScript()
 {
    Entity* pkEnt;
    Property* pkProp;
-   ZFBasicFS* pkBFPS;	
+   ZSSBasicFS* pkBFPS;	
    ZSSPropertyFactory* pkPropFuck;
    string strFileName = GetText("SaveScriptFileNameEb");
 
@@ -216,7 +216,7 @@ bool ZeroEd::SaveCurrentToScript()
 
    string CREATED_SCRIPTS_DIR = "data/script/objects/";
    
-	if((pkBFPS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"))) &&
+	if((pkBFPS = static_cast<ZSSBasicFS*>(g_ZFObjSys.GetObjectPtr("ZSSBasicFS"))) &&
       (pkPropFuck = static_cast<ZSSPropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"))) &&
       (pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)) && !strFileName.empty())
    {

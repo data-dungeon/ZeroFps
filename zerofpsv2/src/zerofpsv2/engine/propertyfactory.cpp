@@ -12,7 +12,7 @@ ZSSPropertyFactory::ZSSPropertyFactory() :
 
 bool ZSSPropertyFactory::StartUp()	
 { 
-	m_pkNetWork = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));		
+	m_pkNetWork = static_cast<ZSSNetWork*>(g_ZFObjSys.GetObjectPtr("ZSSNetWork"));		
 
 	return true;
 }

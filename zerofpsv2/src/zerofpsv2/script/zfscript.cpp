@@ -10,33 +10,33 @@
 
 using namespace std;
 
-map<string,pair<void*,ScripVarType> > ZFScriptSystem::m_kVarMap;
+map<string,pair<void*,ScripVarType> > ZSSScriptSystem::m_kVarMap;
   
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
   
-ZFScriptSystem::ZFScriptSystem() : ZFSubSystem("ZFScriptSystem")
+ZSSScriptSystem::ZSSScriptSystem() : ZFSubSystem("ZSSScriptSystem")
 {
 	Open(); 
 }
 
-ZFScriptSystem::~ZFScriptSystem()
+ZSSScriptSystem::~ZSSScriptSystem()
 {
 	Close();
 }
 
-bool ZFScriptSystem::StartUp()
+bool ZSSScriptSystem::StartUp()
 { 
 	return true; 
 }
 
-bool ZFScriptSystem::ShutDown() 
+bool ZSSScriptSystem::ShutDown() 
 { 
 	return true; 
 }
 
-bool ZFScriptSystem::IsValid()	{ return true; }
+bool ZSSScriptSystem::IsValid()	{ return true; }
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,13 +45,13 @@ bool ZFScriptSystem::IsValid()	{ return true; }
 //				tag metoder som kr�s f� att kunna registrera globala variabler
 //				till Lua.
 //
-bool ZFScriptSystem::Open()
+bool ZSSScriptSystem::Open()
 {
 	// Open Lua
 	m_pkLua = lua_open();
 
-	m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
-		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	m_pkFileSys = reinterpret_cast<ZSSVFileSystem*>(
+		g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	// Open base lib for access to some useful functions.
 	lua_baselibopen(m_pkLua);
@@ -65,7 +65,7 @@ bool ZFScriptSystem::Open()
 
 
 
-void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
+void ZSSScriptSystem::CopyGlobalData(lua_State* pkState)
 {
 	unsigned int i;
 	const unsigned int iNumFunctions = m_vkGlobalFunctions.size();
@@ -91,7 +91,7 @@ void ZFScriptSystem::CopyGlobalData(lua_State* pkState)
 		
 }
 
-void ZFScriptSystem::Close()
+void ZSSScriptSystem::Close()
 {
 	lua_close(m_pkLua);
 
@@ -109,10 +109,10 @@ void ZFScriptSystem::Close()
 		delete m_vkGlobalVariables[i];
 	}
 
-	printf("ZFScriptSystem::Close\n");
+	printf("ZSSScriptSystem::Close\n");
 }
 
-void ZFScriptSystem::ExposeModule(lua_CFunction o_Function, lua_State* pkState)
+void ZSSScriptSystem::ExposeModule(lua_CFunction o_Function, lua_State* pkState)
 {
 	if(pkState == NULL)
 		pkState = m_pkLua;
@@ -127,7 +127,7 @@ void ZFScriptSystem::ExposeModule(lua_CFunction o_Function, lua_State* pkState)
 // Name:		ExposeFunction
 // Description:	Registrera en C++ function som Lua kan se.
 //
-void ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function, 
+void ZSSScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function, 
 												lua_State* pkState)
 {
 	if(pkState == NULL)
@@ -147,12 +147,12 @@ void ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function
 }
 
 
-int ZFScriptSystem::GetNumArgs(lua_State* state)
+int ZSSScriptSystem::GetNumArgs(lua_State* state)
 {
 	return lua_gettop(state);
 }
 
-bool ZFScriptSystem::GetArg(lua_State* state, int iIndex, void* data)
+bool ZSSScriptSystem::GetArg(lua_State* state, int iIndex, void* data)
 {
 	int iLuaIndex = iIndex + 1;
 
@@ -175,7 +175,7 @@ bool ZFScriptSystem::GetArg(lua_State* state, int iIndex, void* data)
 	return false;
 }
 
-bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
+bool ZSSScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
 {
     // table is in the stack at index `t'
     lua_pushnil(state);  // first key
@@ -208,7 +208,7 @@ bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA
 }
 
 // returnerar en tabel med data till lua
-void ZFScriptSystem::AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& vkData)
+void ZSSScriptSystem::AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& vkData)
 {
 	lua_newtable(state);
 
@@ -227,7 +227,7 @@ void ZFScriptSystem::AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& v
 	DeleteTable(vkData);
 }
 
-bool ZFScriptSystem::GetArgInt(lua_State* state, int iIndex, int* data)
+bool ZSSScriptSystem::GetArgInt(lua_State* state, int iIndex, int* data)
 {
 	double dNumber;
 	bool bRes = GetArgNumber(state, iIndex, &dNumber);		
@@ -236,7 +236,7 @@ bool ZFScriptSystem::GetArgInt(lua_State* state, int iIndex, int* data)
 }
 
 
-bool ZFScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)
+bool ZSSScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)
 {
 	int iLuaIndex = iIndex + 1;
 
@@ -259,7 +259,7 @@ bool ZFScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)
 	return false;
 }
 
-bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, char* data)
+bool ZSSScriptSystem::GetArgString(lua_State* state, int iIndex, char* data)
 {
 	int iLuaIndex = iIndex + 1;
 
@@ -273,7 +273,7 @@ bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, char* data)
 	return false;
 }
 
-bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, string& strData)
+bool ZSSScriptSystem::GetArgString(lua_State* state, int iIndex, string& strData)
 {
 	int iLuaIndex = iIndex + 1;
 
@@ -288,7 +288,7 @@ bool ZFScriptSystem::GetArgString(lua_State* state, int iIndex, string& strData)
 	return false;
 }
 
-const int ZFScriptSystem::GetGlobalInt(lua_State* state, char* szName, bool* bSuccess) const
+const int ZSSScriptSystem::GetGlobalInt(lua_State* state, char* szName, bool* bSuccess) const
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -316,7 +316,7 @@ const int ZFScriptSystem::GetGlobalInt(lua_State* state, char* szName, bool* bSu
 	return -1;
 }
 
-bool ZFScriptSystem::GetGlobal(lua_State* state, char* szName, double& data)
+bool ZSSScriptSystem::GetGlobal(lua_State* state, char* szName, double& data)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -335,7 +335,7 @@ bool ZFScriptSystem::GetGlobal(lua_State* state, char* szName, double& data)
 	return false;
 }
 
-bool ZFScriptSystem::RemoveGlobal(lua_State* state,const char* szName)
+bool ZSSScriptSystem::RemoveGlobal(lua_State* state,const char* szName)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -348,7 +348,7 @@ bool ZFScriptSystem::RemoveGlobal(lua_State* state,const char* szName)
 
 }
 
-bool ZFScriptSystem::GetGlobal(lua_State* state, char* szName, char* data)
+bool ZSSScriptSystem::GetGlobal(lua_State* state, char* szName, char* data)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -373,7 +373,7 @@ bool ZFScriptSystem::GetGlobal(lua_State* state, char* szName, char* data)
 	return false;
 }
 
-bool ZFScriptSystem::GetGlobal(lua_State* state, char* szTable, char* szVar, char* data)
+bool ZSSScriptSystem::GetGlobal(lua_State* state, char* szTable, char* szVar, char* data)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -403,7 +403,7 @@ bool ZFScriptSystem::GetGlobal(lua_State* state, char* szTable, char* szVar, cha
 	return true;
 }
 
-bool ZFScriptSystem::GetGlobal(lua_State* state, char* szTable, char* szVar, double& data)
+bool ZSSScriptSystem::GetGlobal(lua_State* state, char* szTable, char* szVar, double& data)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -432,7 +432,7 @@ bool ZFScriptSystem::GetGlobal(lua_State* state, char* szTable, char* szVar, dou
 	return true;
 }
 
-void ZFScriptSystem::AddReturnValue(lua_State* state, double dValue)
+void ZSSScriptSystem::AddReturnValue(lua_State* state, double dValue)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -440,7 +440,7 @@ void ZFScriptSystem::AddReturnValue(lua_State* state, double dValue)
 	lua_pushnumber(state, dValue); 
 }
 
-void ZFScriptSystem::AddReturnValue(lua_State* state,char *szValue, int legth)
+void ZSSScriptSystem::AddReturnValue(lua_State* state,char *szValue, int legth)
 {
 	if(state == NULL)
 		state = m_pkLua;
@@ -489,7 +489,7 @@ bool ZFScript::Create(const string& strName)
 	m_szScriptName = new char[strName.size()+1];				
 	strcpy(m_szScriptName, strName.c_str());
 
-	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	ZSSScriptSystem* pkScriptSys = static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 
 	pkScriptSys->CreateMetatables(m_pkLuaState);
 	pkScriptSys->CopyGlobalData(m_pkLuaState);
@@ -539,7 +539,7 @@ int ZFScript::CalculateSize()
 	return true;
 }*/
 
-bool ZFScriptSystem::Run(ZFScript* pkScript)
+bool ZSSScriptSystem::Run(ZFScript* pkScript)
 {	
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
@@ -566,7 +566,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 	return (lua_pcall(pkScript->m_pkLuaState, 0, 0, 0) == 0);
 }
 
-bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
+bool ZSSScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
 									vector<ScriptFuncArg>& vkParams)
 {
 	if(!pkResHandle->IsValid())
@@ -576,7 +576,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName,
 	return Call(pkScript,szFuncName,vkParams);
 }
 
-bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
+bool ZSSScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
 									vector<ScriptFuncArg>& vkParams)
 {
 // 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
@@ -657,7 +657,7 @@ bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName,
 	return true;
 }
 
-bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
+bool ZSSScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
 								  int iNumParams, int iNumResults)
 {	
 	if(!pkResHandle->IsValid())
@@ -667,7 +667,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName,
 	return Call(pkScript,szFuncName,iNumParams,iNumResults);
 }
 
-bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
+bool ZSSScriptSystem::Call(ZFScript *pkScript, const char* szFuncName, 
 								  int iNumParams, int iNumResults)
 {	
 // 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
@@ -707,7 +707,7 @@ bool ZFScriptSystem::Call(ZFScript *pkScript, const char* szFuncName,
 
 // ----------------------------------------------------------------------------------------------
 
-void ZFScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
+void ZSSScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
 {
 	for(unsigned int i=0; i<data.size(); i++)
 	{
@@ -719,7 +719,7 @@ void ZFScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
 
 
 
-string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
+string ZSSScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 {
 	string temp;
 
@@ -836,7 +836,7 @@ static int module_newindex_event (lua_State* L)
 
 
 
-void ZFScriptSystem::CreateMetatables(lua_State* L)
+void ZSSScriptSystem::CreateMetatables(lua_State* L)
 {
 	// Create meta funktions for get/set
 	lua_pushvalue(L,LUA_GLOBALSINDEX); // push module
@@ -856,7 +856,7 @@ void ZFScriptSystem::CreateMetatables(lua_State* L)
 // Name:		ExposeVariable
 // Description:	Registrera en standard variabel som Lua kan se.
 //
-void ZFScriptSystem::ExposeVariable (const char* name, void* pVar, ScripVarType eType, lua_State* L)
+void ZSSScriptSystem::ExposeVariable (const char* name, void* pVar, ScripVarType eType, lua_State* L)
 {
 	if(L == NULL)
 		L = m_pkLua;
@@ -919,7 +919,7 @@ void ZFScriptSystem::ExposeVariable (const char* name, void* pVar, ScripVarType 
 
 
 // get function: g_iExpIntVar
-int ZFScriptSystem::GetVar(lua_State* L)
+int ZSSScriptSystem::GetVar(lua_State* L)
 {
 	pair<void*, int> t = m_kVarMap[g_strCurrVariable];
 
@@ -949,7 +949,7 @@ int ZFScriptSystem::GetVar(lua_State* L)
 }
 
 // set function: g_iExpIntVar
-int ZFScriptSystem::SetVar(lua_State* L)
+int ZSSScriptSystem::SetVar(lua_State* L)
 {
 	pair<void*, int> t = m_kVarMap[g_strCurrVariable];
 
@@ -978,7 +978,7 @@ int ZFScriptSystem::SetVar(lua_State* L)
 	return 0;
 }
 
-string ZFScriptSystem::GetFunctionName(lua_State* pkLua, int iStackPosition)
+string ZSSScriptSystem::GetFunctionName(lua_State* pkLua, int iStackPosition)
 {
 	string strName;
 
@@ -990,7 +990,7 @@ string ZFScriptSystem::GetFunctionName(lua_State* pkLua, int iStackPosition)
 	return strName;
 }
 
-string ZFScriptSystem::GetCallAdress(lua_State* pkLua)
+string ZSSScriptSystem::GetCallAdress(lua_State* pkLua)
 {
 	string strAdress;
 
@@ -1020,7 +1020,7 @@ string ZFScriptSystem::GetCallAdress(lua_State* pkLua)
 */
 }
 
-bool ZFScriptSystem::VerifyArg(lua_State* pkLua, int iRequiredNumOfArg)
+bool ZSSScriptSystem::VerifyArg(lua_State* pkLua, int iRequiredNumOfArg)
 {
 	int iNumOfArg = GetNumArgs(pkLua);
 
@@ -1037,7 +1037,7 @@ bool ZFScriptSystem::VerifyArg(lua_State* pkLua, int iRequiredNumOfArg)
 
 char szText[1024];
 
-void ZFScriptSystem::Error(lua_State* pkLua, const char* szMessageFmt,...)
+void ZSSScriptSystem::Error(lua_State* pkLua, const char* szMessageFmt,...)
 {
 	va_list		ap;							// Pointer To List Of Arguments
 
