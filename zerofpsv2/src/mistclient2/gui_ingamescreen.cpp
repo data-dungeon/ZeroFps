@@ -378,6 +378,11 @@ void MistClient::LoadInGameGui()
 
 	m_pkGui->SetFocus(GetWnd("GuiMainWnd"), false);
 	
+	SetFont("LifeProgressbar", "small7_outlined", 255, 255, 255, 1);
+	SetFont("StaminaProgressbar", "small7_outlined", 255, 255, 255, 1);
+	SetFont("ManaProgressbar", "small7_outlined", 255, 255, 255, 1);
+
+
 	
 }
 

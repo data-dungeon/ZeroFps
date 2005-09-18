@@ -27,6 +27,7 @@ ZGuiProgressbar::ZGuiProgressbar(Rect kRect, ZGuiWnd* pkParent, bool bVisible, i
 	m_bShowText = true;
 
 	CreateInternalControls();
+	Disable();
 }
 
 ZGuiProgressbar::~ZGuiProgressbar()

@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="FontGen"
+	ProjectGUID="{7D7E7A32-E55D-4909-8AEA-8341989ADF4A}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -36,11 +37,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="basic.lib"
+				AdditionalDependencies="basic_debug.lib"
 				OutputFile="../../../../bin/fontgen.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="../../../../bin"
+				AdditionalLibraryDirectories="../../../../lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/FontGen.pdb"
 				SubSystem="2"
