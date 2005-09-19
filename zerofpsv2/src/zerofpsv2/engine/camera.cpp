@@ -68,15 +68,6 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_kFSSTexture.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
 
-// 	ResTexture big;
-// 	big.CreateTextureFromFile("notexture.tga");
-// 	ResTexture small;
-// 	small.CreateBlankTexture(512,512,T_RGB|T_NOMIPMAPPING|T_NOCOMPRESSION);
-// 	small.CopyTexture(&big);
-// 
-// //  	big.SaveTexture("test.tga",1);
-// 	small.SaveTexture("test.tga");
-
 	//create fssprojection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
 	m_pkZShaderSystem->MatrixGenerateOrtho(-1,1,-1,1,0,2);
@@ -274,8 +265,9 @@ void Camera::FullScreenShader()
 									0,1};
 									
 	//calculate how to stretch the texture									
-	float xs = 	float(m_pkRender->GetWidth()) / float(m_iFSSTextureWidth);								
-	float ys = 	float(m_pkRender->GetHeight()) / float(m_iFSSTextureHeight);
+ 	float xs = 	float(m_kViewPortSize.x) / float(m_iFSSTextureWidth);								
+ 	float ys = 	float(m_kViewPortSize.y) / float(m_iFSSTextureHeight);
+
 
  	uvdata[2] = xs;
  	uvdata[4] = xs;
@@ -283,9 +275,7 @@ void Camera::FullScreenShader()
  	uvdata[7] = ys;
 	
 	//save screen surface to fss texture									
-	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
-	
+	m_kFSSTexture.CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
 	
 	//setup fss orthogonal projection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
@@ -340,17 +330,20 @@ float Camera::GetExposureFactor()
 	}
 	
 	//get framebuffer
-	pkTex->CopyFrameBuffer(0,0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
+	pkTex->CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
 	pkTex->RegenerateMipmaps();
 	
-	float fx= float(m_pkRender->GetWidth())/float(m_iFSSTextureWidth);
-	float fy= float(m_pkRender->GetHeight())/float(m_iFSSTextureHeight);
+	float fx= float(m_kViewPortSize.x)/float(m_iFSSTextureWidth);
+	float fy= float(m_kViewPortSize.y)/float(m_iFSSTextureHeight);
 	
 	
 	Image* pkImage = pkTex->GetTextureImage(4);
 
-	if(m_pkZeroFps->m_pkInputHandle->Pressed(KEY_L))
-		pkImage->Save("test.tga");
+// 	if(m_pkZeroFps->m_pkInputHandle->Pressed(KEY_L))
+// 	{
+// 		pkImage->Save("test.tga");
+// 		cout<<pkImage->m_iWidth*fx<<" x "<<pkImage->m_iHeight*fy<<endl;
+// 	}
 
 	color_rgba	kColor;	
 	float fTotal = 0;
@@ -403,8 +396,8 @@ void Camera::MakeBloom()
 									0,1};
 									
 	//calculate how to stretch the texture									
-	float xs = 	float(m_pkRender->GetWidth()) / float(m_iFSSTextureWidth);								
-	float ys = 	float(m_pkRender->GetHeight()) / float(m_iFSSTextureHeight);
+ 	float xs = 	float(m_kViewPortSize.x) / float(m_iFSSTextureWidth);								
+ 	float ys = 	float(m_kViewPortSize.y) / float(m_iFSSTextureHeight);
 
  	uvdata[2] = xs;
  	uvdata[4] = xs;
@@ -412,9 +405,7 @@ void Camera::MakeBloom()
  	uvdata[7] = ys;
 	
 	//save screen surface to fss texture									
-	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
-	
+	m_kFSSTexture.CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
 			
 	//setup fss orthogonal projection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
@@ -448,17 +439,17 @@ void Camera::MakeBloom()
   	
   	
 	//save image, and do another draw	
-	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);
-	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());	
+	m_kBloomTexture.CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
+	
+	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);	
+	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);		
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	m_pkZShaderSystem->DrawArray(QUADS_MODE); 
 	
-	
-	
+		
   	//reenable depth mask
 	m_pkZShaderSystem->SetDepthMask(true);
   	
@@ -750,8 +741,8 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 {
 	//m_bViewPortChange = true;
 
-	m_kViewPortCorner.Set(fX,fY,0);
-	m_kViewPortSize.Set(fW,fH,0);
+	m_kViewPortCorner.Set(fX,fY);
+	m_kViewPortSize.Set(fW,fH);
 }
 
 

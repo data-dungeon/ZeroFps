@@ -89,8 +89,8 @@ class ENGINE_API Camera : public I_Camera
 		int		m_iForceLighing;
 		
 		//viewport
-		Vector3	m_kViewPortCorner;
-		Vector3	m_kViewPortSize;
+		Vector2	m_kViewPortCorner;
+		Vector2	m_kViewPortSize;
 
 		//camera name
 		string	m_strName;							// Is used in GetCameraDesc.
@@ -256,7 +256,7 @@ class ENGINE_API Camera : public I_Camera
 		Vector3  Get3DCursorPos(float x,float y,bool bMouse=true);
 
 		//fullscreen shader stuff		
-		void SetBloomEnabled(bool bEn)			{	m_bBloomEnabled = bEn;			}
+		void SetBloomEnabled(bool bEn)			{	m_bBloomEnabled = bEn;		}
 		void SetFSSEnabled(bool bEn)				{	m_bFSSEnabled = bEn;			}
 		void SetFSSGLSLShader(const string& strShader);
 		ZMaterial* GetFSSMaterial()				{	return m_pkFSSMaterial;		}
