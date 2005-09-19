@@ -255,7 +255,7 @@ ZFSubSystem* ZFSystem::GetObjectPtr(const char* acName,bool bWarning)
 			//cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
 		}
 		
-		cout << "System Not Found: " << acName << endl;
+		//cout << "System Not Found: " << acName << endl;
 		//ZFAssert(0, "Requested system pointer not found");
 		return NULL;
 	}
