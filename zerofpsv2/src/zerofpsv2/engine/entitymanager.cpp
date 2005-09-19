@@ -73,7 +73,7 @@ ZSSEntityManager::ZSSEntityManager()
 	m_bDrawZones				= false;
 	m_bDrawZoneConnections	= false;
 	m_bDrawEnviroments		= false;
-	m_iTrackerLOS				= 25;	
+	m_iTrackerLOS				= 100;	
 	m_iObjectDistance			= 50;
 	m_fZoneUnloadTime			= 30;	
 	m_iMaxZoneIO 				= 4;	

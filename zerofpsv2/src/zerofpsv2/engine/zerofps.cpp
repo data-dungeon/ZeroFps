@@ -421,6 +421,7 @@ void ZSSZeroFps::UpdateDevPages()
 	DevPrintf("common","  GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
 	DevPrintf("common","  Total Vertises : %d", m_pkZShaderSystem->GetTotalVertises());
 	DevPrintf("common","  Vertises/Sec   : %d", int(m_pkZShaderSystem->GetTotalVertises() * m_fAvrageFps) );
+	DevPrintf("common","  Exposure       : %f", m_pkZShaderSystem->GetExposure());
 	m_pkZShaderSystem->ResetStatistics();	
 	
 	DevPrintf("common","FPS:");

@@ -400,6 +400,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int GetDepth(int iX,int iY);
 		
 		void SetExposure(float f)										{	m_fExposure = f;					}
+		float GetExposure()												{	return m_fExposure;				}
 		bool SetGamma(float fGamma);
 		bool SetGamma(float fRed,float fGreen,float fBlue);
 		void GetGamma(float& fRed,float& fGreen,float& fBlue)	{	fRed =   m_fRedGamma;
