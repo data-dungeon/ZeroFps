@@ -61,6 +61,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_TEST_JIDDRA,		// Owned by Vim.
 			FID_SNAPSIZE,
 			FID_FINDENT,
+			FID_TRANSIDENT,			
 		};
 			
 		enum EditMode_e

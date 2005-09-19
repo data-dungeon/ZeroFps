@@ -135,6 +135,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("snapsave",	FID_SNAPSAVE);
 	Register_Cmd("snapload",	FID_SNAPLOAD);
 	Register_Cmd("findent",		FID_FINDENT);
+	Register_Cmd("transformident",	FID_TRANSIDENT);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -1372,6 +1373,18 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			Select_None();
 			Select_Add( iMode );
 			break;
+
+
+		case FID_TRANSIDENT:
+		{
+			Entity* pkActiveEntity = m_pkEntityManager->GetEntityByID( m_iCurrentObject );
+			if(pkActiveEntity == NULL)
+				return;
+			Matrix4 kIdent;
+			kIdent.Identity();
+			pkActiveEntity->SetLocalRotM(kIdent);
+			break;
+		}
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)

@@ -369,7 +369,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
 			if(eCamMode == Camera::CAMMODE_PERSP)
 			{
-				;
+				float fTemp = kMove.y;
+				kMove.y = -kMove.z;
+				kMove.z = fTemp;
 			}
 			else
 			{
