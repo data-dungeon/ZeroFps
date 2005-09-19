@@ -1,14 +1,20 @@
 #include "res_texture.h"
 
+GLuint ResTexture::m_iCopyFBO = 0;
+GLuint ResTexture::m_iCopyFBOcolor = 0;
+
 ResTexture::ResTexture()
 {
 	m_pkZShaderSystem		=	NULL;
 
 	m_iOpenGLID 			=	0;
-	m_pkImage 				=	NULL;		
+// 	m_pkImage 				=	NULL;		
 	m_strTextureName 		=	"";
 	m_iSizeInBytes 		=	0;			
 	m_iOptions				=	0;
+	
+	m_iWidth					=	0;
+	m_iHeight				=	0;
 }
 
 ResTexture::~ResTexture()
@@ -138,6 +144,8 @@ bool ResTexture::CreateEmptyTexture(int iW,int iH,int iOptions)
 	m_strTextureName = "empty";
 	m_iSizeInBytes = iW * iH * 4;
 	m_iOptions = iOptions;
+	m_iWidth = iW;
+	m_iHeight = iH;
 	
 	//generate new texture
 	glGenTextures(1, &m_iOpenGLID);	
@@ -215,6 +223,10 @@ bool ResTexture::CreateTextureFromImage(Image* pkImage,const string& strName,int
 	
 	// Calc Size of texture.
 	m_iSizeInBytes = pkImage->m_iWidth * pkImage->m_iHeight * 4;	
+	
+	//save resulution	
+	m_iWidth = pkImage->m_iWidth;
+	m_iHeight = pkImage->m_iHeight;	
 	
 	//check for error size
 	float fCW = pkImage->m_iWidth / 2.0;
@@ -335,13 +347,14 @@ void ResTexture::Clear()
 	if(m_iOpenGLID != 0) glDeleteTextures(1, &m_iOpenGLID);
 	m_iOpenGLID				=	0;
 				
-	if(m_pkImage) delete m_pkImage;
-	m_pkImage 				=	NULL;
+// 	if(m_pkImage) delete m_pkImage;
+// 	m_pkImage 				=	NULL;
 		
 	m_strTextureName 		=	"";
 	m_iSizeInBytes 		=	0;		
 	m_iOptions				=	0;
-			
+	m_iWidth					=	0;			
+	m_iHeight				=	0;
 }
 
 
@@ -394,66 +407,84 @@ Image* ResTexture::LoadImage(const string& strFileName)
 	return kImage;
 }
 
-bool ResTexture::EditBegin()
+// bool ResTexture::EditBegin()
+// {
+// 	if(!SetupZShader())
+// 		return false;	
+// 	
+// 	if(m_iOpenGLID == 0)
+// 		return false;
+// 
+// 	// If texture already in edit mode return.
+// 	if(m_pkImage)
+// 		return true;
+// 
+// 	m_pkZShaderSystem->PushTexture();
+// 	m_pkZShaderSystem->BindTexture(this);
+// 	
+// 	m_pkImage = GetTexture(0);
+// 
+// 	m_pkZShaderSystem->PopTexture();
+// 
+// 	if(!m_pkImage)
+// 		return false;
+// 	
+// 	return true;
+// }
+// 
+// bool ResTexture::EditEnd()
+// {
+// 	if(!m_pkImage)
+// 		return false;
+// 		
+// 
+// 	delete m_pkImage;
+// 	m_pkImage = NULL;
+// 	
+// 	return true;
+// }
+// 
+// bool ResTexture::EditCommit()
+// {
+// 	if(!SetupZShader())
+// 		return false;	
+// 
+// 	if(!m_pkImage)
+// 		return false;
+// 		
+// 	if(m_iOpenGLID == 0)
+// 		return false;
+// 				
+// 
+// 	m_pkZShaderSystem->PushTexture();
+// 	m_pkZShaderSystem->BindTexture(this);
+// 	
+// 	PutTexture(m_pkImage, !(m_iOptions & T_NOMIPMAPPING) );
+// 	
+// 	m_pkZShaderSystem->PopTexture();
+// 	
+// 	return true;
+// }
+bool ResTexture::RegenerateMipmaps()
 {
 	if(!SetupZShader())
 		return false;	
 	
 	if(m_iOpenGLID == 0)
 		return false;
-
-	// If texture already in edit mode return.
-	if(m_pkImage)
-		return true;
-
+	
 	m_pkZShaderSystem->PushTexture();
 	m_pkZShaderSystem->BindTexture(this);
-	
-	m_pkImage = GetTexture(0);
 
-	m_pkZShaderSystem->PushTexture();
+	glGenerateMipmapEXT(GL_TEXTURE_2D);
 
-	if(!m_pkImage)
-		return false;
-	
-	return true;
-}
-
-bool ResTexture::EditEnd()
-{
-	if(!m_pkImage)
-		return false;
-
-	delete m_pkImage;
-	m_pkImage = NULL;
-	
-	return true;
-}
-
-bool ResTexture::EditCommit()
-{
-	if(!SetupZShader())
-		return false;	
-
-	if(!m_pkImage)
-		return false;
-
-	m_pkZShaderSystem->PushTexture();
-	m_pkZShaderSystem->BindTexture(this);
-	
-	PutTexture(m_pkImage, !(m_iOptions & T_NOMIPMAPPING) );
-	
 	m_pkZShaderSystem->PopTexture();
 	
 	return true;
 }
 
-
 void ResTexture::PutTexture(Image* pkImage,int iMipMapLevel)
-{
-	if(!SetupZShader())
-		return;	
-			
+{			
 	int iInternalFormat;
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
 
@@ -465,6 +496,42 @@ void ResTexture::PutTexture(Image* pkImage,int iMipMapLevel)
 
 
 	return;
+}
+
+bool ResTexture::PutTextureImage(Image* pkImage,int iMipMapLevel )
+{
+	if(!SetupZShader())
+		return false;	
+		
+	if(m_iOpenGLID == 0)
+		return false;
+
+	m_pkZShaderSystem->PushTexture();		
+	m_pkZShaderSystem->BindTexture(this);	
+
+	PutTexture(pkImage,iMipMapLevel);
+	
+	m_pkZShaderSystem->PopTexture();	
+	
+	return true;
+}
+
+Image* ResTexture::GetTextureImage(int iMipMapLevel)
+{
+	if(!SetupZShader())
+		return NULL;	
+		
+	if(m_iOpenGLID == 0)
+		return NULL;
+
+	m_pkZShaderSystem->PushTexture();		
+	m_pkZShaderSystem->BindTexture(this);	
+
+	Image* pkImage = GetTexture(iMipMapLevel);
+	
+	m_pkZShaderSystem->PopTexture();		
+	
+	return pkImage;
 }
 
 Image* ResTexture::GetTexture(int iMipMapLevel)
@@ -480,21 +547,24 @@ Image* ResTexture::GetTexture(int iMipMapLevel)
 
 	pkImage = new Image;
 	pkImage->CreateEmpty(iWidth,iHeight);
-	glGetTexImage(GL_TEXTURE_2D,iMipMapLevel,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);
-	
+	glGetTexImage(GL_TEXTURE_2D,iMipMapLevel,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);	
 	
 	return pkImage;
 }
 
-Image* ResTexture::GetEditImage()
-{
-	return m_pkImage;
-}
+// Image* ResTexture::GetEditImage()
+// {
+// 	return m_pkImage;
+// }
 
 void ResTexture::SetBorderColor(Vector4 kColor)
 {
 	if(!SetupZShader())
 		return;	
+		
+	if(m_iOpenGLID == 0)
+		return;
+		
 		
 	m_pkZShaderSystem->PushTexture();		
 	m_pkZShaderSystem->BindTexture(this);
@@ -506,8 +576,19 @@ void ResTexture::SetBorderColor(Vector4 kColor)
 
 bool ResTexture::SaveTexture(const string& strFile,int iMipMapLevel)
 {
+	if(!SetupZShader())
+		return false;	
+		
+	if(m_iOpenGLID == 0)
+		return false;
+		
+	m_pkZShaderSystem->PushTexture();
+	m_pkZShaderSystem->BindTexture(this);
+
 	//get image from opengl
 	Image* pkImage = GetTexture(iMipMapLevel);
+
+	m_pkZShaderSystem->PopTexture();		
 
 	//save image to file
 	bool bSuccess = pkImage->Save(strFile.c_str());
@@ -518,6 +599,129 @@ bool ResTexture::SaveTexture(const string& strFile,int iMipMapLevel)
 	return bSuccess;
 }
 
+bool ResTexture::CopyFrameBuffer(int iX,int iY,int iW,int iH)
+{
+	if(!SetupZShader())
+		return false;		
+
+	if(m_iOpenGLID == 0)
+		return false;
+
+
+	m_pkZShaderSystem->PushTexture();		
+	m_pkZShaderSystem->BindTexture(this);
+		
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, iX, iY,iW, iH);		
+				
+		
+	m_pkZShaderSystem->PopTexture();		
+
+	return true;
+}
+
+bool ResTexture::CopyTexture(ResTexture* pkSource)
+{
+	if(!SetupZShader())
+		return false;		
+
+	if(!m_pkZShaderSystem->SupportFBO())
+	{
+		cerr<<"WARNING: ResTexture::CopyTexture not possible without FBO support"<<endl;
+		return false;
+	}
+	
+	if(m_iOpenGLID == 0 || pkSource->m_iOpenGLID == 0)
+		return false;
+	
+	
+/*	if(m_iCopyFBO == 0)
+	{
+		cout<<"setting up copy fbo"<<endl;
+	
+		glGetError();
+		glGenFramebuffersEXT(1, &m_iCopyFBO);
+		if(glGetError() != GL_NO_ERROR) cout<<"ERROR generating FBO"<<endl;
+
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_iCopyFBO);			
+		if(glGetError() != GL_NO_ERROR) cout<<"ERROR binding FBO"<<endl;
+	
+		glFramebufferTexture2DEXT(	GL_FRAMEBUFFER_EXT,
+											GL_COLOR_ATTACHMENT0_EXT,
+											GL_TEXTURE_2D,m_iOpenGLID, 0);			
+		
+		if(glGetError() != GL_NO_ERROR) cout<<"ERROR glFramebufferTexture2DEXT"<<endl;
+	
+	}
+	
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_iCopyFBO);		*/	
+
+
+	static Matrix4	kOrtho(	1,0,0,0,
+									0,1,0,0,
+									0,0,-1,0,
+									0,0,-1,1);
+
+	static float data[]= {	-1,-1,-1,
+									 1,-1,-1,
+							 		 1, 1,-1,
+									-1, 1,-1};
+	
+	static float uvdata[]= {0,0,
+									1,0,
+							 		1,1,
+									0,1};	
+
+// 	//calculate how to stretch the texture									
+// 	float xs = 	float(m_pkRender->GetWidth()) / float(m_iFSSTextureWidth);								
+// 	float ys = 	float(m_pkRender->GetHeight()) / float(m_iFSSTextureHeight);
+// 
+//  	uvdata[2] = xs;
+//  	uvdata[4] = xs;
+//  	uvdata[5] = ys;
+//  	uvdata[7] = ys;
+
+	//orhto projection
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixLoad(&kOrtho);
+
+	//identity modelmatrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixIdentity();
+// 
+// 	m_pkZShaderSystem->PushTexture();	
+
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,data);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,uvdata);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+			
+  	//we dont wan to write any depth data
+  	m_pkZShaderSystem->SetDepthMask(false);
+  	
+	m_pkZShaderSystem->Push("copytexture");	
+	m_pkZShaderSystem->BindTexture(pkSource);
+	
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);  
+
+	m_pkZShaderSystem->BindTexture(this);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,512, 512);		
+
+	m_pkZShaderSystem->Pop();
+
+  	//pop matrices
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);	
+	m_pkZShaderSystem->MatrixPop();	
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
+	m_pkZShaderSystem->MatrixPop();	
+
+	
+// 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);			
+	
+	cout<<"COPY COMPLETE"<<endl;
+	
+}
 
 ZFResource* Create__ResTexture()
 {

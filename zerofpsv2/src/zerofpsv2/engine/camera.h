@@ -146,7 +146,8 @@ class ENGINE_API Camera : public I_Camera
 		ZMaterial*		m_pkBloomMaterial1;
 		ZMaterial*		m_pkBloomMaterial2;
 		
-		float				m_fIlluminationAvrage;
+		//HDR STUFF
+		float				m_fExposureFactor;
 		
 		//shadow hack
 		ResTexture		m_kShadowTexture;
@@ -172,6 +173,7 @@ class ENGINE_API Camera : public I_Camera
 		void		FullScreenShader();
 		void		MakeBloom();
 		
+		float		GetExposureFactor();
 	public:
 		bool				m_bForceFullScreen;	// Ignore own settings and render to fullscreen.
 		static bool		m_bDrawOrthoGrid;		// Draw grid when rendering from ortho cameras.
@@ -228,7 +230,6 @@ class ENGINE_API Camera : public I_Camera
 		bool		GetRootOnly()						{	return m_bRootOnly;					}
 		void		SetClearViewPort(bool bClear)	{	m_bClearViewPort = bClear;			}
 		bool		GetClearViewPort()				{	return m_bClearViewPort;			}
-		float		GetIlluminationAvrage()			{	return m_fIlluminationAvrage;		}
 		
 		void		SetDrawInterface(bool bDebug)	{	m_bDrawInterface = bDebug;			}
 		bool		GetDrawInterface()				{	return m_bDrawInterface;			}

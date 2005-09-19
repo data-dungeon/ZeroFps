@@ -39,6 +39,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_kEyePosition						=	Vector3(0,0,0);
 		
 	m_fExposure							= 1.0;
+	m_bUseHDR							= false;
+	m_bSupportHDR						= false;
 		
 	m_aiCurrentTextures[0]			= 0;
 	m_aiCurrentTextures[1]			= 0;
@@ -55,10 +57,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
 	RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
 	RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
-	
-	RegisterVariable("r_exposure",	&m_fExposure,		CSYS_FLOAT);	
-	
 	RegisterVariable("r_useglsl",	&m_bUseGLSL,		CSYS_BOOL);	
+	RegisterVariable("r_usehdr",	&m_bUseHDR,			CSYS_BOOL);	
 	
 	//register console commands
 	Register_Cmd("setgamma",FID_SETGAMMA);		
@@ -107,7 +107,7 @@ bool ZShaderSystem::StartUp()
 		cout<<"ZSHADER: No GLSL program support"<<endl;
 											
 	//check for framebuffer object support
-	m_bSupportFBO = 			HaveExtension("GL_EXT_framebuffer_object");
+	m_bSupportFBO = HaveExtension("GL_EXT_framebuffer_object");
 	if(!m_bSupportFBO)
 		cout<<"ZSHADER: No Framebuffer object support"<<endl;
 											
@@ -124,6 +124,9 @@ bool ZShaderSystem::StartUp()
 	m_bSupportARBTC = HaveExtension("ARB_texture_compression");
 	if(!m_bSupportARBTC)
 		cout<<"ZSHADER: No arb texturecompression support"<<endl;
+			
+	//hdr requires glsl support
+	m_bSupportHDR = m_bSupportGLSLProgram;
 			
 			
 	//set gamma after its been loaded
@@ -1636,29 +1639,8 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
  	//nr of active lights
  	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iActiveLights") , m_pkLight->GetNrOfActiveLights());
  
-
- 	//nr of active lights
- 	static float fLastTime = (float(SDL_GetTicks()) /1000.0);
- 	static float fCexp = 0.5;
- 	
- 	
-//  	if(fCexp < m_fExposure) fCexp += 0.1 * ((float(SDL_GetTicks()) /1000.0)-fLastTime);
-//  	if(fCexp > m_fExposure) fCexp -= 0.1 * ((float(SDL_GetTicks()) /1000.0)-fLastTime);
-//  	
-//  	if(fCexp < 0.1)
-//  		fCexp = 0.1;
-//  	
-//  	if(fCexp > 2.0)
-//  		fCexp = 2.0;
-//  	
-//  	fLastTime = (float(SDL_GetTicks()) /1000.0);
-//  	if(m_fExposure < 0.5)	fCexp += 0.01 ;
-//  	if(m_fExposure > 0.5)	fCexp -= 0.01 ;
-// 	
-// 	if(fCexp < 0.1) fCexp = 0.1; 	
-//  	if(fCexp > 2.0) fCexp = 2.0;
- 	
- 	//cout<<"exp"<<fCexp<<endl;
+ 	//HDR exposure
+ 	if(!UseHDR()) m_fExposure = 1.0;
  	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fExposure") , m_fExposure);
 
 }

@@ -10,7 +10,7 @@ class P_Powerup : public Property
 {
 	private:
 		StopEmUp*	m_pkStopEmUp;
-		Render*		m_pkRender;	
+		ZSSRender*	m_pkRender;	
 			
 		//over head text
 		ZMaterial*	m_pkTextMaterial;

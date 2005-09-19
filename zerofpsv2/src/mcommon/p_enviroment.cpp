@@ -499,6 +499,8 @@ void P_Enviroment::DrawSky()
 			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes("enviroment/sky.tga");
 			pkSkyBackMat->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
+			pkSkyBackMat->GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");
+			
 			pkSkyBackMat->GetPass(0)->m_iPolygonModeFront =	FILL_POLYGON;
 			pkSkyBackMat->GetPass(0)->m_iCullFace = 			CULL_FACE_NONE;		
 			pkSkyBackMat->GetPass(0)->m_bLighting = 			false;			
@@ -563,6 +565,7 @@ void P_Enviroment::DrawSky()
 			pkCloudMatLow->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
 			pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes("enviroment/cloud.tga");
 			pkCloudMatLow->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
+ 			pkCloudMatLow->GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");
 			
 			pkCloudMatLow->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
 			pkCloudMatLow->GetPass(0)->m_iCullFace = 			CULL_FACE_NONE;		
@@ -583,6 +586,7 @@ void P_Enviroment::DrawSky()
 			pkCloudMatHi->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
 			pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes("enviroment/cloud2.tga");
 			pkCloudMatHi->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
+			pkCloudMatHi->GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");
 			
 			pkCloudMatHi->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
 			pkCloudMatHi->GetPass(0)->m_iCullFace = 		CULL_FACE_NONE;		
@@ -632,8 +636,9 @@ void P_Enviroment::DrawSky()
 	
 	pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strCloudLow);
 	pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strCloudHi);
-						
 
+	pkCloudMatLow->GetPass(0)->m_kVertexColor = m_kCurrentEnvSetting.m_kSunDiffuseColor;						
+	pkCloudMatHi->GetPass(0)->m_kVertexColor = m_kCurrentEnvSetting.m_kSunDiffuseColor;						
 
 
 	//draw sky planes	  							  
@@ -692,6 +697,7 @@ void P_Enviroment::DrawSky()
 		if(!m_kCurrentEnvSetting.m_strSky[0].empty())
 		{			
 			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strSky[0]);
+			pkSkyBackMat->GetPass(0)->m_kVertexColor = m_kCurrentEnvSetting.m_kSunDiffuseColor;
 		
 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);				
 			m_pkZShaderSystem->BindMaterial(pkSkyBackMat);												

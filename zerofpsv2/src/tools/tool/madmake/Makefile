@@ -5,7 +5,7 @@ BINDIR=$(SRC)../bin/
 LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lengine -lrender -lscript -lgui -lmcommon
 
 #SOURCE=$(wildcard *.cpp)
-SOURCE=mad.cpp madmake.cpp main.cpp qpack.cpp xxx.cpp obj.cpp
+SOURCE=mad.cpp madmake.cpp main.cpp xxx.cpp obj.cpp
 # ../../../zerofpsv2/engine_systems/mad/core.cpp ../../../zerofpsv2/engine_systems/mad/core_boneanim.cpp ../../../zerofpsv2/engine_systems/mad/core_bone.cpp ../../../zerofpsv2/engine_systems/mad/core_meshanim.cpp ../../../zerofpsv2/engine_systems/mad/core_mesh.cpp
 OBJS=$(SOURCE:.cpp=.o)
 DEP=$(SOURCE:.cpp=.d)

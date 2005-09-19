@@ -8,7 +8,7 @@
 P_Powerup::P_Powerup()
 {
 	m_pkStopEmUp = (StopEmUp*)(g_ZFObjSys.GetObjectPtr("Application"));
-	m_pkRender=		(Render*)(g_ZFObjSys.GetObjectPtr("Render"));	
+	m_pkRender=		(ZSSRender*)(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
 	
 	strcpy(m_acName,"P_Powerup");
 	m_iType=PROPERTY_TYPE_RENDER;

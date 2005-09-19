@@ -13,7 +13,7 @@ AmbientSoundAreas::~AmbientSoundAreas()
 	RemoveAllAmbientAreas();
 }
 
-void AmbientSoundAreas::Draw(Render* pkRender)
+void AmbientSoundAreas::Draw(ZSSRender* pkRender)
 {
 	Vector3 kColor;
 
@@ -236,7 +236,7 @@ string AmbientSoundAreas::GetAmbientSound(string strArea)
 	return "";
 }
 
-void AmbientSoundAreas::Update(ZFAudioSystem* pkAudioSys)
+void AmbientSoundAreas::Update(ZSSAudioSystem* pkAudioSys)
 {
 /*	if(m_iPlayingSoundID)
 		pkAudioSys->MoveSound(m_iPlayingSoundID,

@@ -273,7 +273,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int*	m_pkBakupIndexPointer;
 		Vector4*			m_pkBakupColorPointer;		
 		
-		float			m_fExposure;
+		//HDR
+		float			m_fExposure;										///< exposure factor sent to shaders
+		bool			m_bUseHDR;
+		bool			m_bSupportHDR;
 		
 		//current fog default setting
 		bool			m_bFogSetting;
@@ -428,6 +431,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}		
 		bool SupportFBO()											{	return m_bSupportFBO;					}
 		bool SupportARBTC()										{	return m_bSupportARBTC;					}
+		bool UseHDR()												{	return m_bUseHDR && m_bSupportHDR;	}
 		
 		//arrays
 		void ResetPointers();

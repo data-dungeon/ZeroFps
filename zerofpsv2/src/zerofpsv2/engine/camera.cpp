@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "../render/render.h"
 #include "../ogl/zfpsgl.h"
+#include "inputhandle.h"
 
 bool Camera::m_bDrawOrthoGrid(false);
 float	Camera::m_fGridSpace(1.0);
@@ -39,6 +40,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iRenderTarget= 		RENDERTARGET_SCREEN;
 	m_bClearViewPort=		true;	
 	m_bForceFullScreen = false;
+	m_fExposureFactor	=	0.5;
 	
 	m_kClearColor	=		Vector4(0.5,0.5,0.5,0);
 	m_kFogColor		=		Vector4(0.5,0.5,0.5,0);
@@ -53,7 +55,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iCurrentRenderMode=RENDER_NONE;
 	
 	m_bFSSEnabled		=	false;
-	m_bBloomEnabled	=	true;
+	m_bBloomEnabled	=	false;
 	
 	m_iShadowFBO = 		0;
 	m_iShadowRBOcolor =	0;	
@@ -66,6 +68,14 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	m_kFSSTexture.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
 
+// 	ResTexture big;
+// 	big.CreateTextureFromFile("notexture.tga");
+// 	ResTexture small;
+// 	small.CreateBlankTexture(512,512,T_RGB|T_NOMIPMAPPING|T_NOCOMPRESSION);
+// 	small.CopyTexture(&big);
+// 
+// //  	big.SaveTexture("test.tga",1);
+// 	small.SaveTexture("test.tga");
 
 	//create fssprojection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
@@ -319,6 +329,67 @@ void Camera::FullScreenShader()
 	m_pkZShaderSystem->MatrixPop();	
 }
 
+float Camera::GetExposureFactor()
+{
+	static ResTexture* pkTex = NULL;
+	
+	if(!pkTex)
+	{
+		pkTex = new ResTexture;
+ 		pkTex->CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION);		
+	}
+	
+	//get framebuffer
+	pkTex->CopyFrameBuffer(0,0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
+	pkTex->RegenerateMipmaps();
+	
+	float fx= float(m_pkRender->GetWidth())/float(m_iFSSTextureWidth);
+	float fy= float(m_pkRender->GetHeight())/float(m_iFSSTextureHeight);
+	
+	
+	Image* pkImage = pkTex->GetTextureImage(4);
+
+	if(m_pkZeroFps->m_pkInputHandle->Pressed(KEY_L))
+		pkImage->Save("test.tga");
+
+	color_rgba	kColor;	
+	float fTotal = 0;
+	int iSamples = 0;
+	
+	for(int y = 0;y<pkImage->m_iHeight*fy;y++)
+	{			
+		for(int x = 0;x<pkImage->m_iWidth*fx;x++)
+		{
+			pkImage->get_pixel(x,y,kColor);	
+			fTotal += (kColor.r*0.3+kColor.g*0.59+kColor.b*0.11);
+			iSamples++;
+		}			
+	}
+	
+	delete pkImage;
+	
+	//
+	//luminance = 0.3*R + 0.59 * G + 0.11*B
+	//
+ 	static const float fTargetBrightness = 0.4;
+	
+	//avrage	
+	float fExp = fTotal/ (iSamples * (255*0.3 + 255*0.59 + 255*0.11));
+	
+	//get current factor 	
+ 	float fEF = m_fExposureFactor;
+ 	
+ 	//adjust exposure factor
+  	fEF += (fTargetBrightness - fExp)*m_pkZeroFps->GetFrameTime();
+	
+	//min and max exposure
+	if(fEF < 0.1) fEF = 0.1; 	
+ 	if(fEF > 1.0) fEF = 1.0;	
+ 	
+	
+	return fEF;
+}
+
 void Camera::MakeBloom()
 {
 	static float data[]= {	-1,-1,-1,
@@ -344,56 +415,7 @@ void Camera::MakeBloom()
 	m_pkZShaderSystem->BindTexture(&m_kFSSTexture);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,m_pkRender->GetWidth(), m_pkRender->GetHeight());
 	
-		
-// 	//blub
-// 	int		iHeight;
-// 	int		iWidth;
-// 	int		iInternalFormat;
-// 
-// 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_WIDTH,				&iWidth);
-// 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_HEIGHT,				&iHeight);	
-// 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_INTERNAL_FORMAT,	&iInternalFormat);		
-// 
-// 	Image* pkImage = new Image;
-// 	pkImage->CreateEmpty(iWidth,iHeight);
-// 	glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);	
-// 
-// 	color_rgba	kColor;	
-// 	float fTotal = 0;
-// 	int iSamples = 0;
-// 	
-// 	for(int y = 0;y<m_pkRender->GetWidth();y+=32)
-// 	{			
-// 		for(int x = 0;x<m_pkRender->GetHeight();x+=32)
-// 		{
-// 			pkImage->get_pixel(x,y,kColor);					
-// 			fTotal += (kColor.r*0.3+kColor.g*0.59+kColor.b*0.11);
-// 			iSamples++;
-// 		}			
-// 	}
-// 	
-// 	delete pkImage;
-// 	m_fIlluminationAvrage = fTotal/ iSamples;
-// 	//luminance = 0.3*R + 0.59 * G + 0.11*B
-// 	float fExp = m_fIlluminationAvrage/(255*0.3 + 255*0.59 + 255*0.11);
-// 	
-//  	static float fCexp = 0.5;
-//  	
-//  	fCexp += 0.25 - fExp;
-//  	
-// /* 	if(fExp < 0.3)	fCexp += 0.01 ;
-//  	if(fExp > 0.3)	fCexp -= 0.01 ;*/	
-// 	if(fCexp < 0.1) fCexp = 0.1; 	
-//  	if(fCexp > 1.0) fCexp = 1.0;	
-//  	
-// 	
-// 	m_pkZShaderSystem->SetExposure(fCexp);
-// 	
-// 	cout<<"total "<<fExp<<endl;
-// 
-// 	//end of blub
-
-	
+			
 	//setup fss orthogonal projection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
 	m_pkZShaderSystem->MatrixPush();
@@ -949,9 +971,17 @@ void Camera::RenderView()
 	//set current camera in engine ( render propertys wants to know this)
 	m_pkZeroFps->m_pkCamera=this;			
 
+	
+	//set exposure
+	if(m_pkZShaderSystem->UseHDR())
+		m_pkZShaderSystem->SetExposure(m_fExposureFactor);
+	
 	//draw world
 	DrawWorld();
 	
+	//get current frames exposure factor
+	if(m_pkZShaderSystem->UseHDR())
+		m_fExposureFactor = GetExposureFactor();
 	
 	//apply fss
 	if(m_bFSSEnabled)

@@ -1,6 +1,7 @@
 
 #include "../zerofpsv2/basic/vector2.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/render/render.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 
 #include <vector>
@@ -18,7 +19,7 @@ public:
 	AmbientSoundAreas();
 	~AmbientSoundAreas();
 
-	void Draw(Render* pkRender);
+	void Draw(ZSSRender* pkRender);
 	bool Save(string strFileName);
 	bool Load(string strFileName, ZGuiListbox* pkList);
 
@@ -36,7 +37,7 @@ public:
 	string m_strAmbientAreaEdited;
 	int m_iPlayingSoundID;
 
-	void Update(ZFAudioSystem* pkAudioSys);
+	void Update(ZSSAudioSystem* pkAudioSys);
 
 private:
 

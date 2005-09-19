@@ -31,11 +31,16 @@ class RENDER_API ResTexture : public ZFResource
 		
 		GLuint			m_iOpenGLID;					///< actual opengl texture ID
 		string			m_strTextureName;				///< name of texture, usualy the filename	
-		Image*			m_pkImage;						///< for realtime editing of surface	
+ //		Image*			m_pkImage;						///< for realtime editing of surface	
 		int				m_iSizeInBytes;				///< Size of texture in bytes.	
-		int				m_iOptions;						///< texture options		
+		int				m_iOptions;						///< texture options			
+		int				m_iWidth;						///< texture width
+		int				m_iHeight;						///< texture height
 	
 		Vector4			m_kBorderColor;				///< border color used with clamptoborder,
+	
+		static GLuint	m_iCopyFBO;
+		static GLuint	m_iCopyFBOcolor;	
 	
 		
 		bool		SetupZShader();													///< sets up pointer to zshadersystem
@@ -82,10 +87,25 @@ class RENDER_API ResTexture : public ZFResource
 				
 				
 		// Edit Textures
-		bool EditBegin();								///< downloads texture from opengl to make it available for editing
+/*		bool EditBegin();								///< downloads texture from opengl to make it available for editing
 		bool EditEnd();								///< removes local copy of texture without commiting the changes
 		bool EditCommit();							///< commits the changes made to the texture
-		Image* GetEditImage();						///< returns pointer to edit image,or NULL if no edit image is available
+		Image* GetEditImage();						///< returns pointer to edit image,or NULL if no edit image is available*/
+				
+		///downloads a specified mipmap level to an image
+		Image* GetTextureImage(int iMipMapLevel = 0);
+		
+		///uploads image to a specified mipmap level
+		bool PutTextureImage(Image* pkImage,int iMipMapLevel = 0);
+				
+		///copy framebuffert to texture				
+		bool CopyFrameBuffer(int iX,int iY,int iW,int iH);		
+				
+		///make a copy of the source texture, will scale texture if it does not fit 				
+		bool CopyTexture(ResTexture* pkSource);				
+				
+		bool RegenerateMipmaps();				
+				
 				
 		//texture settings
 		void SetBorderColor(Vector4 kColor);
