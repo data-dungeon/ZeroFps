@@ -375,7 +375,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//hardware shader stuff
 		void UseDefaultGLSLProgram(bool bUse)					{	m_bUseDefaultGLSLProgram = bUse;	}
 		bool GetUseDefaultGLSLProgram()							{	return m_bUseDefaultGLSLProgram;	}
-		ZFResourceHandle* GetDefaultGLSLProgramResource()	{	return m_pkDefaultGLSLProgram;	}
+		void SetDefaultGLSLProgram(ZFResourceHandle* pkRH)	{	m_pkDefaultGLSLProgram = pkRH;	}
+		ZFResourceHandle* GetDefaultGLSLProgram()				{	return m_pkDefaultGLSLProgram;	}
 		void SetForceDisableGLSL(bool bDisable)				{	m_bForceDisableGLSL = bDisable;	}
 										
 										

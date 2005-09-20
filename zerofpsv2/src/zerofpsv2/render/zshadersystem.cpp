@@ -89,7 +89,7 @@ bool ZShaderSystem::StartUp()
 	BindMaterial(NULL);
 	
 	//create a default shader resource
-	m_pkDefaultGLSLProgram	= new ZFResourceHandle();	
+	//m_pkDefaultGLSLProgram	= new ZFResourceHandle();	
 	
 	//check for vertex and fragment program support
 	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
@@ -1689,7 +1689,7 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 	{
 		if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
 			iProgram = pkRt->m_iProgramIDs[m_pkLight->GetNrOfActiveLights()];
-		else if(m_bUseDefaultGLSLProgram)
+		else if(m_bUseDefaultGLSLProgram && m_pkDefaultGLSLProgram)
 				if(GLSLProgram* pkRt = (GLSLProgram*)m_pkDefaultGLSLProgram->GetResourcePtr())
 					iProgram = pkRt->m_iProgramIDs[m_pkLight->GetNrOfActiveLights()];
 	}

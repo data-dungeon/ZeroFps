@@ -60,12 +60,16 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iShadowFBO = 		0;
 	m_iShadowRBOcolor =	0;	
 	
+	
+	//setup default shaders
+	m_pkDefaultShadowmapShader = new ZFResourceHandle;
+	m_pkDefaultShadowmapShader->SetRes("shadowmap.vert#shadowmap.frag.glsl"); 				
+	m_pkDefaultFastShadowmapShader = new ZFResourceHandle;
+	m_pkDefaultFastShadowmapShader->SetRes("#fastshadowmap.frag.glsl");
+ 					
 	//create fsstexture
   	m_iFSSTextureWidth = GetMinSize(m_pkRender->GetWidth());
  	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
-  	//cout<<"size:"<<m_iFSSTextureWidth<<" "<<m_iFSSTextureHeight<<endl;
-	
-	
 	m_kFSSTexture.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
 
 	//create fssprojection matrix
@@ -203,6 +207,11 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 Camera::~Camera()
 {
+	if(m_pkDefaultShadowmapShader)
+		delete m_pkDefaultShadowmapShader;		
+	if(m_pkDefaultFastShadowmapShader)
+		delete m_pkDefaultFastShadowmapShader;
+
 				
 	if(m_pkFSSMaterial)
 		delete m_pkFSSMaterial;
@@ -1059,11 +1068,11 @@ void Camera::DrawWorld()
 			
 			//real no spec shadowmaps
 			if(iShadowMode == 1)			
- 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("shadowmap.vert#shadowmap.frag.glsl");
+				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultShadowmapShader);
  				
  			//only darken
 			if(iShadowMode == 2)			
- 				m_pkZShaderSystem->GetDefaultGLSLProgramResource()->SetRes("#fastshadowmap.frag.glsl");
+				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultFastShadowmapShader);
 			
 			m_iCurrentRenderMode = RENDER_SHADOWED;			
 			DrawShadowedScene();
