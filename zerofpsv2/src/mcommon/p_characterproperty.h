@@ -121,7 +121,8 @@ class MCOMMON_API Stat
 class MCOMMON_API Stats
 {
 	private:		
-		vector<Stat>	m_kStats;
+ 		map<string,Stat>	m_kStats;
+		Stat* GetStatPointer(const string& strName);
 
 	public:
 		

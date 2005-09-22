@@ -346,11 +346,23 @@ Stats::Stats()
 	
 }
 
+Stat* Stats::GetStatPointer(const string& strName)
+{
+	map<string,Stat>::iterator kFind = m_kStats.find(strName);
+	
+	if(kFind == m_kStats.end())
+	{
+		return NULL;
+	}
+
+	return &((*kFind).second);
+}
+
 void Stats::GetStatsList(vector<Stat>* pkStats)
 {
-	for(int i = 0;i<m_kStats.size();i++)
+	for(map<string,Stat>::iterator it = m_kStats.begin();it!=m_kStats.end();it++)
 	{
-		pkStats->push_back(m_kStats[i]);	
+		pkStats->push_back((*it).second);	
 	}
 }
 
@@ -358,36 +370,28 @@ void Stats::GetStatsList(vector<Stat>* pkStats)
 void Stats::AddStat(const string& strName,float fValue,float fMod)
 {
 	//check if stat already exist
-	for(int i = 0;i<m_kStats.size();i++)
+	if(GetStatPointer(strName))
 	{
-		if(m_kStats[i].m_strName == strName)
-		{
-			cout<<"Stat "<<strName<<" already exist in stats list"<<endl;
-			return;
-		}
+		cout<<"Stat "<<strName<<" already exist in stats list"<<endl;		
+		return;				
 	}
 		
-	m_kStats.push_back(Stat(strName,fValue,fMod));
-
+	m_kStats.insert(pair<string,Stat>(strName,Stat(strName,fValue,fMod))  );
 }
 
 void Stats::AddOn(Stats* pkTarget)
 {
-	for(int i = 0;i<m_kStats.size();i++)
+	for(map<string,Stat>::iterator it = m_kStats.begin();it!=m_kStats.end();it++)
 	{
-		pkTarget->ChangeMod(m_kStats[i].m_strName, m_kStats[i].m_fValue + m_kStats[i].m_fMod );
-		
-// 		cout<<"Applying stat "<<m_kStats[i].m_strName<<" "<<m_kStats[i].m_fValue + m_kStats[i].m_fMod<<endl;
+		pkTarget->ChangeMod((*it).second.m_strName, (*it).second.m_fValue + (*it).second.m_fMod );
 	}
 }
 
 void Stats::RemoveOn(Stats* pkTarget)
 {
-	for(int i = 0;i<m_kStats.size();i++)
+	for(map<string,Stat>::iterator it = m_kStats.begin();it!=m_kStats.end();it++)
 	{
-		pkTarget->ChangeMod(m_kStats[i].m_strName, -(m_kStats[i].m_fValue + m_kStats[i].m_fMod) );
-		
-		cout<<"removing stat "<<m_kStats[i].m_strName<<" "<<m_kStats[i].m_fValue + m_kStats[i].m_fMod<<endl;
+		pkTarget->ChangeMod((*it).second.m_strName, -((*it).second.m_fValue + (*it).second.m_fMod) );
 	}
 }
 
@@ -398,17 +402,12 @@ void Stats::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(iVersion);	
 
 	pkPackage->Write(m_kStats.size());
-	for(int i = 0;i<m_kStats.size();i++)
-	{
-		pkPackage->Write_Str(m_kStats[i].m_strName);
-		pkPackage->Write(m_kStats[i].m_fValue);
-		pkPackage->Write(m_kStats[i].m_fMod);	
+	for(map<string,Stat>::iterator it = m_kStats.begin();it!=m_kStats.end();it++)
+	{		
+		pkPackage->Write_Str((*it).second.m_strName);
+		pkPackage->Write((*it).second.m_fValue);
+		pkPackage->Write((*it).second.m_fMod);	
 	}
-
-	//pkPackage->Write_Str(string(""));
-	
-	
-// 	cout<<"saved stats"<<endl;
 }
 
 void Stats::Load(ZFIoInterface* pkPackage)
@@ -429,7 +428,7 @@ void Stats::Load(ZFIoInterface* pkPackage)
 			pkPackage->Read(fValue);
 			pkPackage->Read(fMod);
 			
-			m_kStats.push_back(Stat(strName,fValue,0)); //dont load mod value
+			m_kStats.insert(pair<string,Stat>(strName,Stat(strName,fValue,0)) ); //dont load mod value
 			
 			pkPackage->Read_Str(strName);
 		}
@@ -447,45 +446,42 @@ void Stats::Load(ZFIoInterface* pkPackage)
 			pkPackage->Read(fValue);
 			pkPackage->Read(fMod);
 			
-			m_kStats.push_back(Stat(strName,fValue,0)); //dont load mod value
+			m_kStats.insert(pair<string,Stat>(strName,Stat(strName,fValue,0)) ); //dont load mod value		
 		}
 		
 	}	
-// 	cout<<"loaded stats"<<endl;
 }
 
 void Stats::SetStat(const string& strName,float fValue)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			m_kStats[i].m_fValue = fValue;
-			return;
-		}
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		pkStat->m_fValue = fValue;	
+		return;
+	}
+	
 		
 	cout<<"WARNING:SetStat requested stat "<<strName<<" was not found"<<endl;
 }
 
 float Stats::GetStat(const string& strName)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			return m_kStats[i].m_fValue;
-		}		
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		return pkStat->m_fValue;
+	}
 
-	cout<<"WARNING:GetStat requested stat "<<strName<<" was not found"<<endl;
+	cout<<"WARNING:GetStat requested stat "<<strName<<" was not found"<<endl;	
 	return 0;
 }
 		
 void Stats::ChangeStat(const string& strName,float fValue)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			m_kStats[i].m_fValue += fValue;
-			return;
-		}
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		pkStat->m_fValue += fValue;
+		return;
+	}				
 		
 	cout<<"WARNING:ChangeStat requested stat "<<strName<<" was not found"<<endl;
 }
@@ -493,24 +489,21 @@ void Stats::ChangeStat(const string& strName,float fValue)
 
 void Stats::SetMod(const string& strName,float fValue)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			m_kStats[i].m_fMod = fValue;
-			return;
-		}
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		pkStat->m_fMod = fValue;	
+		return;
+	}
 	
 	cout<<"WARNING:SetMod requested stat "<<strName<<" was not found"<<endl;
 }
 
 float Stats::GetMod(const string& strName)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			return m_kStats[i].m_fMod;
-		}		
-
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		return pkStat->m_fMod;
+	}
 		
 	cout<<"WARNING:GetMod requested stat "<<strName<<" was not found"<<endl;
 	return 0;
@@ -518,24 +511,21 @@ float Stats::GetMod(const string& strName)
 
 void Stats::ChangeMod(const string& strName,float fValue)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			m_kStats[i].m_fMod += fValue;
-			return;	
-		}
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		pkStat->m_fMod += fValue;	
+		return;
+	}		
 		
 	cout<<"WARNING:ChangeMod requested stat "<<strName<<" was not found"<<endl;
 }
 
 float Stats::GetTotal(const string& strName)
 {
-	for(int i=0;i<m_kStats.size();i++)
-		if(m_kStats[i].m_strName == strName)
-		{
-			return m_kStats[i].m_fValue + m_kStats[i].m_fMod;
-		}				
-		
+	if(Stat* pkStat = GetStatPointer(strName))
+	{
+		return pkStat->m_fValue + pkStat->m_fMod;
+	}		
 		
 	cout<<"WARNING:GetTotal requested stat "<<strName<<" was not found"<<endl;
 	return 0;

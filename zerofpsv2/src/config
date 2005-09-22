@@ -14,10 +14,10 @@ MAKE = make		#make to use
 CXX = g++              #compiler to use
 CC = g++               #linker to use
 #CXXFLAGS= -O3 -g -DNDEBUG -DNOPROFILE			#compiler flags 
-#CXXFLAGS= -O3 -ggdb3 -march=pentium										#compiler flags 
-#C_ARGS = -O3 -ggdb3 -march=pentium  									#linker flags
-CXXFLAGS= -O0 -ggdb3 -march=pentium										#compiler flags 
-C_ARGS = -O0 -ggdb3 -march=pentium  									#linker flags
+CXXFLAGS= -O3 -ggdb3 -march=pentium										#compiler flags 
+C_ARGS = -O3 -ggdb3 -march=pentium  									#linker flags
+#CXXFLAGS= -O0 -ggdb3 -march=pentium										#compiler flags 
+#C_ARGS = -O0 -ggdb3 -march=pentium  									#linker flags
 
 
 ## whit profiling

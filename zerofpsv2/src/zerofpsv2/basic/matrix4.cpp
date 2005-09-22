@@ -45,20 +45,27 @@ void Matrix4::Set( float v1,float v2,float v3 ,float v4,
 // Operators	-	Assignment
 void Matrix4::operator=(const Matrix3 &rkMatrix)
 {
-
-	Identity();
+// 	Identity();
 
 	RowCol[0][0] = rkMatrix.m_aafRowCol[0][0];
 	RowCol[0][1] = rkMatrix.m_aafRowCol[0][1];
 	RowCol[0][2] = rkMatrix.m_aafRowCol[0][2];
+	RowCol[0][3] = 0;
 
 	RowCol[1][0] = rkMatrix.m_aafRowCol[1][0];
 	RowCol[1][1] = rkMatrix.m_aafRowCol[1][1];
 	RowCol[1][2] = rkMatrix.m_aafRowCol[1][2];
+	RowCol[1][3] = 0;
 
 	RowCol[2][0] = rkMatrix.m_aafRowCol[2][0];
 	RowCol[2][1] = rkMatrix.m_aafRowCol[2][1];
 	RowCol[2][2] = rkMatrix.m_aafRowCol[2][2];
+	RowCol[2][3] = 0;	
+	
+	RowCol[3][0] = 0;
+	RowCol[3][1] = 0;
+	RowCol[3][2] = 0;
+	RowCol[3][3] = 1;	
 }
 
 void Matrix4::operator= (const Quaternion& rkQuaternion)
