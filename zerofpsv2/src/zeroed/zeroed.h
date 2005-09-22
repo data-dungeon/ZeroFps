@@ -61,7 +61,8 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_TEST_JIDDRA,		// Owned by Vim.
 			FID_SNAPSIZE,
 			FID_FINDENT,
-			FID_TRANSIDENT,			
+			FID_TRANSIDENT,
+			FID_SCALEIDENT,
 		};
 			
 		enum EditMode_e
@@ -329,11 +330,10 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		void AutoSetZoneSize(string strName);
 		void SoloToggleView();
-
-
 		bool StartUp();
 		bool ShutDown()	{ return true; }
 		bool IsValid()		{ return true; }
+
 
 		//void SendAppMessage(NetPacket* pkNet);
 

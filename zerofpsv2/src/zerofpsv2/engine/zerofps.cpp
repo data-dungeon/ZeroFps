@@ -131,7 +131,8 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_bAiShowInfo				= false;
 	g_iMadLOD					= true;
 
-	
+	g_iNumOfFrames				= 0;
+
 	// Register Variables
 	RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
 	
@@ -892,7 +893,7 @@ Camera* ZSSZeroFps::GetRenderCamera(const string& strName) const
 }
 
 
-
+#define RUNPROFILE
 
 void ZSSZeroFps::Swap(void) 
 {
@@ -927,15 +928,10 @@ void ZSSZeroFps::Swap(void)
 		}
 		#endif
 	} 
-	 
-		
-	
 	
 #ifdef RUNPROFILE
 	g_iNumOfFrames++;
-//	if(g_iNumOfFrames >= 1000)
-//		m_iState = state_exit;
-
+	EndProfile(1,2,3);
 #endif
 }
 
@@ -2064,7 +2060,35 @@ void ZSSZeroFps::UpdateCamera()
 }
 */
 
+void ZSSZeroFps::StartProfile(int iGaa1, int iGaa2, int iGaa3)
+{
+	Matrix4 kNisse;
+	kNisse.Identity();
+	int iSmurfa[10];
+	iSmurfa[0] = iGaa1;
+	iSmurfa[1] = iGaa2;
+	iSmurfa[2] = iGaa3;
+	iSmurfa[4] = iSmurfa[0] + iSmurfa[1] + iSmurfa[2];
+	cout << "****************** Starting Profile" << endl;
+}
 
+void ZSSZeroFps::EndProfile(int iGaa1, int iGaa2, int iGaa3)
+{
+	return;
+	if(g_iNumOfFrames <= 2000)
+		return;
+
+	Matrix4 kNisse;
+	kNisse.Identity();
+	int iSmurfa[10];
+	iSmurfa[0] = iGaa1;
+	iSmurfa[1] = iGaa2;
+	iSmurfa[2] = iGaa3;
+	iSmurfa[4] = iSmurfa[0] + iSmurfa[1] + iSmurfa[2];
+	cout << "****************** End Profile" << endl;
+
+	m_iState = ENGINE_STATE_EXIT;
+}
 
 
 

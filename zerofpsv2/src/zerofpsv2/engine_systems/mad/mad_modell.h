@@ -113,6 +113,7 @@ public:
 	void NextCoreAnimation(void);
 		
 	void SetScale(float fScale);
+	float GetScale();
 
 	void SetReplaceTexture(char* szName);
 	void SetReplaceTexture(char* szOrgName, char* szNew);

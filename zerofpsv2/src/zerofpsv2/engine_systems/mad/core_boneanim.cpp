@@ -47,11 +47,9 @@ void Mad_CoreBoneAnimation::PushBack(Mad_CoreBoneKeyFrame kBoneKeyFrame)
 void Mad_CoreBoneAnimation::Save(ZFVFile* pkZFile)
 {
 	pkZFile->Write(m_szName,1,MAD_MAX_ANIMATIONNAME);
-	//fwrite(m_szName,1,MAD_MAX_ANIMATIONNAME,fp);
 
 	int iNumOfFrames = m_kBoneKeyFrames.size();
 	pkZFile->Write(&iNumOfFrames,1,sizeof(int));
-	//fwrite(&iNumOfFrames,1,sizeof(int),fp);
 
 	for(unsigned int i=0; i<m_kBoneKeyFrames.size(); i++) 
 		m_kBoneKeyFrames[i].Save(pkZFile);
@@ -61,11 +59,9 @@ void Mad_CoreBoneAnimation::Load(ZFVFile* pkZFile)
 {
 	Mad_CoreBoneKeyFrame	NewBoneKeyFrame;
 	pkZFile->Read(m_szName,1,MAD_MAX_ANIMATIONNAME);
-	//fread(m_szName,1,MAD_MAX_ANIMATIONNAME,fp);
 
 	int iNumOfFrames;
 	pkZFile->Read(&iNumOfFrames,1,sizeof(int));
-	//fread(&iNumOfFrames,1,sizeof(int),fp);
 
 	for(int i=0; i<iNumOfFrames; i++) 
 	{
@@ -73,8 +69,6 @@ void Mad_CoreBoneAnimation::Load(ZFVFile* pkZFile)
 		NewBoneKeyFrame.Load(pkZFile);
 		m_kBoneKeyFrames.push_back(NewBoneKeyFrame);
 	}
-
-//	printf("Loaded Anim %s - %d Frames\n", m_szName,iNumOfFrames);
 }
 
 int Mad_CoreBoneAnimation::GetSizeInBytes()
@@ -99,7 +93,6 @@ void Mad_CoreBoneKeyFrame::Save(ZFVFile* pkZFile)
 {
 	int iNumOfBones = m_kBonePose.size();
 	pkZFile->Write(&iNumOfBones,1,sizeof(int));
-	//fwrite(&iNumOfBones,1,sizeof(int),fp);
 
 	for(unsigned int i=0; i<m_kBonePose.size(); i++)
 		m_kBonePose[i].Save(pkZFile);
@@ -111,12 +104,12 @@ void Mad_CoreBoneKeyFrame::Load(ZFVFile* pkZFile)
 
 	int iNumOfBones;
 	pkZFile->Read(&iNumOfBones,1,sizeof(int));
-	//fread(&iNumOfBones,1,sizeof(int),fp);
 	
 	for(int i=0; i<iNumOfBones; i++)
 	{
 		NewBoneKey.Clear();
 		NewBoneKey.Load(pkZFile);
+		NewBoneKey.m_kQuatRotation.AngleQuaternion(NewBoneKey.m_kRotation);
 		m_kBonePose.push_back(NewBoneKey);
 	}
 }
@@ -167,19 +160,12 @@ void Mad_CoreBoneKey::Save(ZFVFile* pkZFile)
 {
 	pkZFile->Write(&m_kPosition, 1, sizeof(Vector3));
 	pkZFile->Write(&m_kRotation, 1, sizeof(Vector3));
-	//fwrite(&m_kPosition, 1, sizeof(Vector3), fp);
-	//fwrite(&m_kRotation, 1, sizeof(Vector3), fp);
 }
 
 void Mad_CoreBoneKey::Load(ZFVFile* pkZFile)
 {
 	pkZFile->Read(&m_kPosition, 1, sizeof(Vector3));
 	pkZFile->Read(&m_kRotation, 1, sizeof(Vector3));
-/*		cout << m_kRotation.x << "," 
-			 << m_kRotation.y << ","
-			 << m_kRotation.z << endl;*/
-	//fread(&m_kPosition, 1, sizeof(Vector3), fp);
-	//fread(&m_kRotation, 1, sizeof(Vector3), fp);
 }
 
 

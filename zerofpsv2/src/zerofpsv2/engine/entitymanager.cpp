@@ -416,8 +416,8 @@ void ZSSEntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntit
 		m_iUpdateFlags = iType | iSide;
 		
 		//clear property  list
-		m_akPropertys.clear();	
-	
+		m_akPropertys.clear();
+
 		//get propertys
 		if(bForceRootOnly)
 		{
@@ -443,7 +443,7 @@ void ZSSEntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntit
 // 			sort(m_akPropertys.begin(),m_akPropertys.end());
 		}
 	}
-		
+
 	//update normal propertys update counter
 	if(iType & PROPERTY_TYPE_NORMAL)
 		m_iNormalUpdates += m_akPropertys.size();

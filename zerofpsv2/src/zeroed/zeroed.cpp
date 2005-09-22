@@ -136,6 +136,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("snapload",	FID_SNAPLOAD);
 	Register_Cmd("findent",		FID_FINDENT);
 	Register_Cmd("transformident",	FID_TRANSIDENT);
+	Register_Cmd("scaleident",			FID_SCALEIDENT);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -1161,7 +1162,10 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			
 			if(m_bSoloMode)
+			{
+				m_fDelayTime = m_pkZeroFps->GetEngineTime();
 				SoloToggleView();
+			}
 
 			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
@@ -1177,7 +1181,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			cout<<"starting server"<<endl;
 			m_pkZeroFps->StartServer(true,false);
-
+			m_pkZeroFps->StartProfile(42,1,2);
 			break;		
 		
 		case FID_SAVE:
@@ -1385,6 +1389,18 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkActiveEntity->SetLocalRotM(kIdent);
 			break;
 		}
+
+		case FID_SCALEIDENT:
+		{
+			Entity* pkActiveEntity = m_pkEntityManager->GetEntityByID( m_iCurrentObject );
+			if(pkActiveEntity == NULL)
+				return;
+			
+			P_Mad* pkMad = (P_Mad*)pkActiveEntity->GetProperty("P_Mad");
+			if(pkMad)
+				pkMad->SetScale(1.0);
+			break;
+		}		
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1824,7 +1840,10 @@ void ZeroEd::UpdateZoneMarkerPos()
 
 void ZeroEd::UpdateObjectMakerPos()
 {
-	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetRenderPos() + Get3DMouseDir(true)*m_fObjectMarkerDistance;
+	if(m_pkActiveCamera)
+	{
+		m_kObjectMarkerPos = m_pkActiveCamera->GetRenderPos() + Get3DMouseDir(true)*m_fObjectMarkerDistance;
+	}
 
 
 	if(m_pkActiveCameraObject && m_iEditMode == EDIT_AMBIENTSOUNDS)
@@ -2195,5 +2214,6 @@ Vector3 ZeroEd::GetZonePosAutoSnap()
 
 	return pos;
 }
+
 
 

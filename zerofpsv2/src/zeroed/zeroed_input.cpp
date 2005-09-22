@@ -269,24 +269,19 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("paste") && !DelayCommand())	EditRunCommand(FID_PASTE);
 	if(m_pkInputHandle->VKIsDown("clone") && !DelayCommand())	EditRunCommand(FID_CLONE);	
 	
-	/*if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("scale") && !DelayCommand())	
 	{
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("spawn");
-		kNp.Write_Str(m_strActiveObjectName.c_str());
-		kNp.Write(m_kObjectMarkerPos);
-		m_pkZeroFps->RouteEditCommand(&kNp);
+		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
+		P_Mad* pkMad = (P_Mad*)pkEnt->GetProperty("P_Mad");
+		if(pkMad)
+		{
+			float fScale = pkMad->GetScale();
+			float fDeltaScale = float(fMouseX / 100.0);
+			fScale += fDeltaScale;
+			pkMad->SetScale(fScale);
+		}
+	}
 
-      if(m_bPlaceObjectsOnGround)
-      {
-		   Entity* pkObj; 
-		   if((pkObj = GetTargetObject()))
-		      if(pkObj->GetCurrentZone() != -1)
-				   PlaceObjectOnGround(pkObj->GetEntityID());
-      }		
-	}*/
-	
 	if(m_pkInputHandle->VKIsDown("select") && !DelayCommand())
 	{	
 		Entity* pkObj = GetTargetObject2();

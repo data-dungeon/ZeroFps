@@ -388,6 +388,7 @@ class ENGINE_SYSTEMS_API Mad_CoreBoneKey
 public:
 	Vector3				m_kPosition;		// Position of bone.
 	Vector3				m_kRotation;		// Rotation of bone.
+	Quaternion			m_kQuatRotation;	// Rotation as a quat.
 
 	Mad_CoreBoneKey() { }
 	~Mad_CoreBoneKey() { }

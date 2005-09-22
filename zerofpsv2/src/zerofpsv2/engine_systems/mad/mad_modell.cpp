@@ -165,6 +165,10 @@ void Mad_Modell::SetScale(float fScale)
 	m_fScale = fScale;
 }
 
+float Mad_Modell::GetScale()
+{
+	return m_fScale;
+}
 
 void	Mad_Modell::SetNextAnimation(int iAnimNum)
 {

@@ -368,6 +368,10 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		void RouteEditCommand(NetPacket* pkNetPacket);						
 		void SetEnableLogin(bool bLogin) { m_bClientLoginState = bLogin; }
 	
+		void StartProfile(int iGaa1, int iGaa2, int iGaa3);
+		void EndProfile(int iGaa1, int iGaa2, int iGaa3);
+		
+
 		friend class ZSSNetWork;
 		friend class Camera;
 };

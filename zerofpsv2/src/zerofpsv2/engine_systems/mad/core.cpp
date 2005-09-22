@@ -263,14 +263,11 @@ void Mad_Core::SetupBonePose(BoneTransform* pkBones)
 	if(iEndFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size())
 		assert(0);
 		//iEndFrame = 0;
-		
-		
 
 	Vector3 Angles;
 
 	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
 	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
-
 	
 	ZFAssert(pkStartKey, "Mad_Core::SetupBonePose: No StartKey");
 	ZFAssert(pkEndKey, "Mad_Core::SetupBonePose: No EndKey");
@@ -286,11 +283,14 @@ void Mad_Core::SetupBonePose(BoneTransform* pkBones)
 	
 	for(i=0; i<m_kSkelleton.size(); i++) {
 		// Get Start/End Keys
-		kStart.AngleQuaternion(pkStartKey[i].m_kRotation); 
-		kEnd.AngleQuaternion(pkEndKey[i].m_kRotation); 
+		//kStart.AngleQuaternion(pkStartKey[i].m_kRotation); 
+		//kEnd.AngleQuaternion(pkEndKey[i].m_kRotation); 
 
 		// Interp Keys
-		pkBones[i].m_kRot.QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
+		//pkBones[i].m_kRot.QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
+		
+		
+		pkBones[i].m_kRot.QuaternionSlerp(&pkStartKey[i].m_kQuatRotation, &pkEndKey[i].m_kQuatRotation, fFrameOffs);
 		pkBones[i].m_kPos = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
 		}
 }
@@ -316,7 +316,6 @@ void Mad_Core::GenerateBoneMatris(BoneTransform* pkBones)
 {
 	Matrix4		kMadkBoneMatrix;					
 
-	//vector<int> kJointId = GetJointSelection("leg_left leg_right neck");;
 	vector<int> kJointId = GetAllJointID();
 
 	for (int i = 0; i < kJointId.size(); i++) 
@@ -612,37 +611,22 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 {
 	g_pkSelectedMesh = pkMesh;
 	g_pkSelectedRawMesh = pkRawMesh;
-/*	cout << "Renderdist: "  << fRenderDistance << endl;
-	g_pkSelectedRawMesh = g_pkSelectedMesh->GetLODMesh(0);
-	if(fRenderDistance > 5)
-		g_pkSelectedRawMesh = g_pkSelectedMesh->GetLODMesh(1);	*/
 
 	if(iActiveAnimation == MAD_NOANIMINDEX)
 		return;
-	
 	if(pkMesh->bNotAnimated)
 		return;
 	
-	
-	
-	Vector3* pkVertexDst;
-	Vector3* pkNormalDst;
+	Vector3* pkVertexDst = g_TransformedVertex;
+	Vector3* pkNormalDst = g_TransformedNormal;
 		
-/*	Mad_RawMesh* pkRawMesh = g_pkSelectedMesh->GetLODMesh(0);	
-	if(fRenderDistance > 10)
-		pkRawMesh = g_pkSelectedMesh->GetLODMesh(1);	*/
-
-	int* piBoneConnection;
 	Vector3* pkVertex = &pkRawMesh->akFrames[0].akVertex[0];
 	Vector3* pkNormal = &pkRawMesh->akFrames[0].akNormal[0];
  
-	pkVertexDst = g_TransformedVertex;
-	pkNormalDst = g_TransformedNormal;
-	piBoneConnection = &pkRawMesh->akBoneConnections[0];
+	int* piBoneConnection = &pkRawMesh->akBoneConnections[0];
 
 	for(int i = 0; i<pkRawMesh->kHead.iNumOfVertex; i++) 
 	{
-		//iBoneConnection = pkMesh->akBoneConnections[i];
 		*pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );
 		*pkNormalDst = g_FullBoneTransform[*piBoneConnection].VectorRotate( *pkNormal );
 
@@ -651,13 +635,6 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 		piBoneConnection++;
 		pkVertex++;
 		pkNormal++;
-
-		
-		/*kFullTransform.Identity();
-		kFullTransform = g_FullBoneTransform[ pkMesh->akBoneConnections[i] ];
-		g_TransformedVertex[i] = kFullTransform.VectorTransform(pkMesh->akFrames[0].akVertex[i]);
-		g_TransformedNormal[i] = kFullTransform.VectorRotate(pkMesh->akFrames[0].akNormal[i]);
-		*/
 	}
 }
 
