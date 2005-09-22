@@ -487,18 +487,20 @@ void ZSSInput::AddQueuedKey(BasicKey* pkKey,bool bPressed)
 		m_aPressedKeys.pop();	
 }
 
-VKData* ZSSInput::GetVKByName(string strName)
-{
-	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
-	{
-		if(m_VirtualKeys[i].m_strName == strName)
-			return &m_VirtualKeys[i];
-	}
+VKData* ZSSInput::GetVKByName(const string& strName)
+{	
+	//try to find key
+	map<string,VKData>::iterator kFind = m_kVirtualKeys.find(strName);
 	
-	return NULL;
+	//we didt find it :(
+	if(kFind == m_kVirtualKeys.end())
+		return NULL;
+	
+	//return pointer
+	return &((*kFind).second);
 }
 
-bool ZSSInput::VKBind(string strName, Buttons kKey, int iIndex)
+bool ZSSInput::VKBind(const string& strName, Buttons kKey, int iIndex)
 {
 	// Make sure name is not to long and that the key is not outside the valid range.
 	if( (strName.length() + 1) >= MAX_KEYNAME)
@@ -506,8 +508,8 @@ bool ZSSInput::VKBind(string strName, Buttons kKey, int iIndex)
 	if(iIndex < -1 || iIndex >= VKMAPS) 
 		return false;
 
-	VKData* pkVk = GetVKByName(strName);
-	if(pkVk) 
+	//is key already registered?		
+	if(VKData* pkVk = GetVKByName(strName)) 
 	{
 		if(iIndex == -1)
 		{
@@ -523,24 +525,28 @@ bool ZSSInput::VKBind(string strName, Buttons kKey, int iIndex)
 	else
 	{
 		iIndex = 0;
+	   
+	   //create new key data
 	   VKData	kVk;
 		kVk.m_strName = strName;
 		kVk.m_iInputKey[0] = kVk.m_iInputKey[1] = kVk.m_iInputKey[2] = 0;
 		kVk.m_iInputKey[iIndex] = kKey;
-		m_VirtualKeys.push_back(kVk);
+		
+		//add key 
+		m_kVirtualKeys.insert(pair<string,VKData>(strName,kVk));
 	}
 
 	return true;	// Q - how could this possible hapen?, A - Ask not what your compiler can do for you. Ask what you can do for your compiler.
 }
 
-bool ZSSInput::VKBind(string strName, string strKeyName,int iIndex)
+bool ZSSInput::VKBind(const string& strName, const string& strKeyName,int iIndex)
 {
 	Buttons eKey = GetNameByKey( strKeyName );
 	return VKBind(strName, eKey, iIndex);
 }
 
 
-bool ZSSInput::VKIsDown(string strName)
+bool ZSSInput::VKIsDown(const string& strName)
 {
 	VKData* pkVk = GetVKByName(strName);
 	
@@ -561,17 +567,16 @@ bool ZSSInput::VKIsDown(string strName)
 
 void ZSSInput::VKList()
 {
-
 	m_pkConsole->Printf("VK List");	
 	string Key1, Key2, Key3;
 	
-	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
+	for(map<string,VKData>::iterator it=m_kVirtualKeys.begin();it!=m_kVirtualKeys.end();it++)
 	{
-		Key1 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[0]);
-		Key2 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[1]);
-		Key3 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[2]);
+		Key1 = GetKeyName((Buttons) ((*it).second.m_iInputKey[0]));
+		Key2 = GetKeyName((Buttons) ((*it).second.m_iInputKey[1]));
+		Key3 = GetKeyName((Buttons) ((*it).second.m_iInputKey[2]));
 
-		m_pkConsole->Printf(" %s : %s, %s, %s",m_VirtualKeys[i].m_strName.c_str(), 
+		m_pkConsole->Printf(" %s : %s, %s, %s",(*it).second.m_strName.c_str(), 
 			Key1.c_str(), Key2.c_str(), Key3.c_str());	
 	}
 }
@@ -772,17 +777,18 @@ void ZSSInput::Save(string strCfgName)
 	
 
 	// Write total number of key configs.
-	int iNumOfVkeys = m_VirtualKeys.size();
+	int iNumOfVkeys = m_kVirtualKeys.size();
 	kFile.Write(&iNumOfVkeys , sizeof(int),1);
 
-	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
+	for(map<string,VKData>::iterator it=m_kVirtualKeys.begin();it!=m_kVirtualKeys.end();it++)
 	{
-		Key1 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[0]);
-		Key2 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[1]);
-		Key3 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[2]);
+
+		Key1 = GetKeyName((Buttons) (*it).second.m_iInputKey[0]);
+		Key2 = GetKeyName((Buttons) (*it).second.m_iInputKey[1]);
+		Key3 = GetKeyName((Buttons) (*it).second.m_iInputKey[2]);
 
 		// Write Name.
-		strcpy(szVkName, m_VirtualKeys[i].m_strName.c_str());
+		strcpy(szVkName, (*it).second.m_strName.c_str());
 		kFile.Write(szVkName, sizeof(char), MAX_KEYNAME);
 
 		// Write Keys
@@ -802,7 +808,7 @@ void ZSSInput::Load(string strCfgName)
 	ZFVFile kFile;
 	kFile.Open(strCfgName,0,false);
 
-	int iNumOfVkeys = m_VirtualKeys.size();
+	int iNumOfVkeys = m_kVirtualKeys.size();
 	kFile.Read(&iNumOfVkeys , sizeof(int),1);
 
 	char szVkName[MAX_KEYNAME];

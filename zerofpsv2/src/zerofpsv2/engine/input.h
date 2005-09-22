@@ -92,7 +92,7 @@ class ENGINE_API ZSSInput : public ZFSubSystem {
 		ZSSZeroFps*					m_pkZeroFps;
 		ZSSRender*				m_pkRender;	
 		
-		vector<VKData>			m_VirtualKeys;								// Virtual keys.
+		map<string,VKData>	m_kVirtualKeys;								// Virtual keys.
 		vector<InputHandle*>	m_kInputHandles;
 		
 		InputKey					m_akKeyState[MAX_KEYS];					// State of all keys.	
@@ -147,7 +147,7 @@ class ENGINE_API ZSSInput : public ZFSubSystem {
 		void SetCursorInputPos(float x, float y);
 		
 		bool Pressed(Buttons eButton);		
-		bool VKIsDown(string strName);		
+		bool VKIsDown(const string& strName);		
 		void BindBindMode(int iKey);
 
 		void KeyDown(int iKey);
@@ -173,9 +173,9 @@ public:
 		//virtual keys
 		void StartBindMode(string strBindKey, int iBindIndex);
 		
-		VKData*	GetVKByName(string strName);
-		bool VKBind(string strName, Buttons kKey, int iIndex );
-		bool VKBind(string strName, string strKeyName,int iIndex = 0);
+		VKData*	GetVKByName(const string& strName);
+		bool VKBind(const string& strName, Buttons kKey, int iIndex );
+		bool VKBind(const string& strName, const string& strKeyName,int iIndex = 0);
 		
 		void VKList();
 		void Save(string strCfgName);
