@@ -690,6 +690,8 @@ bool  P_Heightmap::Inside(float x,float y)
 		return false;
 	if(y > m_pkEntity->GetWorldPosV().z + m_iHeight/2.0)
 		return false;
+		
+	return true;
 }
 
 float P_Heightmap::GetHeight(float x,float y)

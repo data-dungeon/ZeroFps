@@ -1596,35 +1596,59 @@ Vector3 Entity::GetIWorldPosV()
 
 Vector3 Entity::GetWorldPosV()
 {
-	if(!m_kGotOrientationData[WORLD_POS_V])
+	if(!m_bRelativeOri || !m_pkParent)
 	{
+		return m_kLocalPosV;
+	}
+	else if(!m_kGotOrientationData[WORLD_POS_V])
+	{
+		m_kWorldPosV  = GetWorldOriM().GetPosVector();
+		m_kGotOrientationData[WORLD_POS_V] = true;
+	}
+	
+	return m_kWorldPosV;
+/*		
 		if(m_bRelativeOri)
-		{
-			//check if we have a parent else use local pos
-			if(m_pkParent)
 			{
-				m_kWorldPosV  = GetWorldOriM().GetPosVector();
-				m_kGotOrientationData[WORLD_POS_V] = true;
+				//check if we have a parent else use local pos
+				if(m_pkParent)
+				{
+					m_kWorldPosV  = GetWorldOriM().GetPosVector();
+					m_kGotOrientationData[WORLD_POS_V] = true;
+				}
+				else
+				{
+					m_kWorldPosV = m_kLocalPosV;
+					m_kGotOrientationData[WORLD_POS_V] = true;			
+				}
+			
 			}
 			else
 			{
 				m_kWorldPosV = m_kLocalPosV;
-				m_kGotOrientationData[WORLD_POS_V] = true;			
+				m_kGotOrientationData[WORLD_POS_V] = true;
 			}
-		
 		}
-		else
-		{
-			m_kWorldPosV = m_kLocalPosV;
-			m_kGotOrientationData[WORLD_POS_V] = true;
-		}
-	}
 	
-	return m_kWorldPosV;
+	return m_kWorldPosV;*/
 }
 
 Matrix3 Entity::GetWorldRotM()
 {
+	if(!m_bRelativeOri || !m_pkParent)
+	{
+		return m_kLocalRotM;
+	}
+	else if(!m_kGotOrientationData[WORLD_ROT_M])
+	{
+		m_kWorldRotM  = m_kLocalRotM * m_pkParent->GetWorldRotM() ;
+		m_kGotOrientationData[WORLD_ROT_M] = true;
+	}
+	
+	return m_kWorldRotM;	
+	
+	
+/*	
 	if(!m_kGotOrientationData[WORLD_ROT_M])
 	{	
 		if(m_bRelativeOri)
@@ -1650,7 +1674,7 @@ Matrix3 Entity::GetWorldRotM()
 		
 	}
 	
-	return m_kWorldRotM;
+	return m_kWorldRotM;*/
 }
 
 Vector3 Entity::GetWorldRotV()

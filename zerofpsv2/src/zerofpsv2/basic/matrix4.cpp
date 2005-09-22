@@ -132,39 +132,84 @@ Matrix4 Matrix4::operator*(const Matrix4 &kOther) const
 {
     static Matrix4 kProd;
 	 
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            kProd.RowCol[iRow][iCol] =
-                RowCol[iRow][0]*kOther.RowCol[0][iCol] +
-                RowCol[iRow][1]*kOther.RowCol[1][iCol] +
-                RowCol[iRow][2]*kOther.RowCol[2][iCol] +
-                RowCol[iRow][3]*kOther.RowCol[3][iCol];
-        }
-    }
+//     for (int iRow = 0; iRow < 4; iRow++)
+//     {
+//         for (int iCol = 0; iCol < 4; iCol++)
+//         {
+//             kProd.RowCol[iRow][iCol] =
+//                 RowCol[iRow][0]*kOther.RowCol[0][iCol] +
+//                 RowCol[iRow][1]*kOther.RowCol[1][iCol] +
+//                 RowCol[iRow][2]*kOther.RowCol[2][iCol] +
+//                 RowCol[iRow][3]*kOther.RowCol[3][iCol];
+//         }
+//     }
+    
+	//dvoids new iteration less version
+	//row 0
+	kProd.RowCol[0][0] = RowCol[0][0]*kOther.RowCol[0][0] + RowCol[0][1]*kOther.RowCol[1][0] + RowCol[0][2]*kOther.RowCol[2][0] + RowCol[0][3]*kOther.RowCol[3][0];
+	kProd.RowCol[0][1] = RowCol[0][0]*kOther.RowCol[0][1] + RowCol[0][1]*kOther.RowCol[1][1] + RowCol[0][2]*kOther.RowCol[2][1] + RowCol[0][3]*kOther.RowCol[3][1];
+	kProd.RowCol[0][2] = RowCol[0][0]*kOther.RowCol[0][2] + RowCol[0][1]*kOther.RowCol[1][2] + RowCol[0][2]*kOther.RowCol[2][2] +	RowCol[0][3]*kOther.RowCol[3][2];
+	kProd.RowCol[0][3] = RowCol[0][0]*kOther.RowCol[0][3] + RowCol[0][1]*kOther.RowCol[1][3] + RowCol[0][2]*kOther.RowCol[2][3] + RowCol[0][3]*kOther.RowCol[3][3];
+	//row 1
+	kProd.RowCol[1][0] = RowCol[1][0]*kOther.RowCol[0][0] + RowCol[1][1]*kOther.RowCol[1][0] + RowCol[1][2]*kOther.RowCol[2][0] + RowCol[1][3]*kOther.RowCol[3][0];
+	kProd.RowCol[1][1] = RowCol[1][0]*kOther.RowCol[0][1] + RowCol[1][1]*kOther.RowCol[1][1] + RowCol[1][2]*kOther.RowCol[2][1] + RowCol[1][3]*kOther.RowCol[3][1];
+	kProd.RowCol[1][2] = RowCol[1][0]*kOther.RowCol[0][2] + RowCol[1][1]*kOther.RowCol[1][2] + RowCol[1][2]*kOther.RowCol[2][2] +	RowCol[1][3]*kOther.RowCol[3][2];
+	kProd.RowCol[1][3] = RowCol[1][0]*kOther.RowCol[0][3] + RowCol[1][1]*kOther.RowCol[1][3] + RowCol[1][2]*kOther.RowCol[2][3] + RowCol[1][3]*kOther.RowCol[3][3];
+	//row 2
+	kProd.RowCol[2][0] = RowCol[2][0]*kOther.RowCol[0][0] + RowCol[2][1]*kOther.RowCol[1][0] + RowCol[2][2]*kOther.RowCol[2][0] + RowCol[2][3]*kOther.RowCol[3][0];
+	kProd.RowCol[2][1] = RowCol[2][0]*kOther.RowCol[0][1] + RowCol[2][1]*kOther.RowCol[1][1] + RowCol[2][2]*kOther.RowCol[2][1] + RowCol[2][3]*kOther.RowCol[3][1];
+	kProd.RowCol[2][2] = RowCol[2][0]*kOther.RowCol[0][2] + RowCol[2][1]*kOther.RowCol[1][2] + RowCol[2][2]*kOther.RowCol[2][2] +	RowCol[2][3]*kOther.RowCol[3][2];
+	kProd.RowCol[2][3] = RowCol[2][0]*kOther.RowCol[0][3] + RowCol[2][1]*kOther.RowCol[1][3] + RowCol[2][2]*kOther.RowCol[2][3] + RowCol[2][3]*kOther.RowCol[3][3];
+	//row 3
+	kProd.RowCol[3][0] = RowCol[3][0]*kOther.RowCol[0][0] + RowCol[3][1]*kOther.RowCol[1][0] + RowCol[3][2]*kOther.RowCol[2][0] + RowCol[3][3]*kOther.RowCol[3][0];
+	kProd.RowCol[3][1] = RowCol[3][0]*kOther.RowCol[0][1] + RowCol[3][1]*kOther.RowCol[1][1] + RowCol[3][2]*kOther.RowCol[2][1] + RowCol[3][3]*kOther.RowCol[3][1];
+	kProd.RowCol[3][2] = RowCol[3][0]*kOther.RowCol[0][2] + RowCol[3][1]*kOther.RowCol[1][2] + RowCol[3][2]*kOther.RowCol[2][2] +	RowCol[3][3]*kOther.RowCol[3][2];
+	kProd.RowCol[3][3] = RowCol[3][0]*kOther.RowCol[0][3] + RowCol[3][1]*kOther.RowCol[1][3] + RowCol[3][2]*kOther.RowCol[2][3] + RowCol[3][3]*kOther.RowCol[3][3];
+    
     return kProd;
 }
 
-Matrix4 Matrix4::operator*= (const Matrix4& rkMatrix)
+Matrix4 Matrix4::operator*= (const Matrix4& kOther)
 {
     static Matrix4 kProd;
 	 
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            kProd.RowCol[iRow][iCol] =
-                RowCol[iRow][0]*rkMatrix.RowCol[0][iCol] +
-                RowCol[iRow][1]*rkMatrix.RowCol[1][iCol] +
-                RowCol[iRow][2]*rkMatrix.RowCol[2][iCol] +
-                RowCol[iRow][3]*rkMatrix.RowCol[3][iCol];
-        }
-    }
+//     for (int iRow = 0; iRow < 4; iRow++)
+//     {
+//         for (int iCol = 0; iCol < 4; iCol++)
+//         {
+//             kProd.RowCol[iRow][iCol] =
+//                 RowCol[iRow][0]*rkMatrix.RowCol[0][iCol] +
+//                 RowCol[iRow][1]*rkMatrix.RowCol[1][iCol] +
+//                 RowCol[iRow][2]*rkMatrix.RowCol[2][iCol] +
+//                 RowCol[iRow][3]*rkMatrix.RowCol[3][iCol];
+//         }
+//     }
 
-	*this = kProd;
+
+	//dvoids new iteration less version
+	//row 0
+	kProd.RowCol[0][0] = RowCol[0][0]*kOther.RowCol[0][0] + RowCol[0][1]*kOther.RowCol[1][0] + RowCol[0][2]*kOther.RowCol[2][0] + RowCol[0][3]*kOther.RowCol[3][0];
+	kProd.RowCol[0][1] = RowCol[0][0]*kOther.RowCol[0][1] + RowCol[0][1]*kOther.RowCol[1][1] + RowCol[0][2]*kOther.RowCol[2][1] + RowCol[0][3]*kOther.RowCol[3][1];
+	kProd.RowCol[0][2] = RowCol[0][0]*kOther.RowCol[0][2] + RowCol[0][1]*kOther.RowCol[1][2] + RowCol[0][2]*kOther.RowCol[2][2] +	RowCol[0][3]*kOther.RowCol[3][2];
+	kProd.RowCol[0][3] = RowCol[0][0]*kOther.RowCol[0][3] + RowCol[0][1]*kOther.RowCol[1][3] + RowCol[0][2]*kOther.RowCol[2][3] + RowCol[0][3]*kOther.RowCol[3][3];
+	//row 1
+	kProd.RowCol[1][0] = RowCol[1][0]*kOther.RowCol[0][0] + RowCol[1][1]*kOther.RowCol[1][0] + RowCol[1][2]*kOther.RowCol[2][0] + RowCol[1][3]*kOther.RowCol[3][0];
+	kProd.RowCol[1][1] = RowCol[1][0]*kOther.RowCol[0][1] + RowCol[1][1]*kOther.RowCol[1][1] + RowCol[1][2]*kOther.RowCol[2][1] + RowCol[1][3]*kOther.RowCol[3][1];
+	kProd.RowCol[1][2] = RowCol[1][0]*kOther.RowCol[0][2] + RowCol[1][1]*kOther.RowCol[1][2] + RowCol[1][2]*kOther.RowCol[2][2] +	RowCol[1][3]*kOther.RowCol[3][2];
+	kProd.RowCol[1][3] = RowCol[1][0]*kOther.RowCol[0][3] + RowCol[1][1]*kOther.RowCol[1][3] + RowCol[1][2]*kOther.RowCol[2][3] + RowCol[1][3]*kOther.RowCol[3][3];
+	//row 2
+	kProd.RowCol[2][0] = RowCol[2][0]*kOther.RowCol[0][0] + RowCol[2][1]*kOther.RowCol[1][0] + RowCol[2][2]*kOther.RowCol[2][0] + RowCol[2][3]*kOther.RowCol[3][0];
+	kProd.RowCol[2][1] = RowCol[2][0]*kOther.RowCol[0][1] + RowCol[2][1]*kOther.RowCol[1][1] + RowCol[2][2]*kOther.RowCol[2][1] + RowCol[2][3]*kOther.RowCol[3][1];
+	kProd.RowCol[2][2] = RowCol[2][0]*kOther.RowCol[0][2] + RowCol[2][1]*kOther.RowCol[1][2] + RowCol[2][2]*kOther.RowCol[2][2] +	RowCol[2][3]*kOther.RowCol[3][2];
+	kProd.RowCol[2][3] = RowCol[2][0]*kOther.RowCol[0][3] + RowCol[2][1]*kOther.RowCol[1][3] + RowCol[2][2]*kOther.RowCol[2][3] + RowCol[2][3]*kOther.RowCol[3][3];
+	//row 3
+	kProd.RowCol[3][0] = RowCol[3][0]*kOther.RowCol[0][0] + RowCol[3][1]*kOther.RowCol[1][0] + RowCol[3][2]*kOther.RowCol[2][0] + RowCol[3][3]*kOther.RowCol[3][0];
+	kProd.RowCol[3][1] = RowCol[3][0]*kOther.RowCol[0][1] + RowCol[3][1]*kOther.RowCol[1][1] + RowCol[3][2]*kOther.RowCol[2][1] + RowCol[3][3]*kOther.RowCol[3][1];
+	kProd.RowCol[3][2] = RowCol[3][0]*kOther.RowCol[0][2] + RowCol[3][1]*kOther.RowCol[1][2] + RowCol[3][2]*kOther.RowCol[2][2] +	RowCol[3][3]*kOther.RowCol[3][2];
+	kProd.RowCol[3][3] = RowCol[3][0]*kOther.RowCol[0][3] + RowCol[3][1]*kOther.RowCol[1][3] + RowCol[3][2]*kOther.RowCol[2][3] + RowCol[3][3]*kOther.RowCol[3][3];
+    
+ 	*this = kProd;
     return kProd;
-
 }
 
 Matrix4 Matrix4::operator*(const float &f) const

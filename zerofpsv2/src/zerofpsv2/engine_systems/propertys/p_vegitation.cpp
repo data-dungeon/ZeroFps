@@ -130,6 +130,7 @@ void P_Vegitation::Update()
 		{
 			if(hme->GetProperty("P_Heightmap"))
 			{
+			
 				vector<Entity*> kZones;
 				vector<P_Heightmap*> kHMaps;
 				
@@ -145,6 +146,7 @@ void P_Vegitation::Update()
 					if(P_Heightmap* pkHmap = (P_Heightmap*)kZones[i]->GetProperty("P_Heightmap"))
 						kHMaps.push_back(pkHmap);
 				}
+				
 				
 				//send heightmaps to random function
 				Random(&kHMaps);
