@@ -109,7 +109,7 @@ void SceneAABBNode::BindEntitys()
 	int iSize = m_kEntitys.size();
 	for(int i = 0;i<iSize;i++)
 	{
-		m_kEntitys[i]->m_pkSceneAABBNode = this;	
+// 		m_kEntitys[i]->m_pkSceneAABBNode = this;	
 	}
 
 }
@@ -266,7 +266,7 @@ void SceneAABBNode::RemoveEntity(Entity* pkEntity)
 	if(!bFound)
 		cout<<"WARNING  SceneAABBNode::RemoveEntity: did not find entity"<<endl;
 	
-	pkEntity->m_pkSceneAABBNode = NULL;
+// 	pkEntity->m_pkSceneAABBNode = NULL;
 	
 	if(m_pkParentNode)
 		m_pkParentNode->RebuildTree();
@@ -400,8 +400,8 @@ void SceneAABBTree::InsertEntity(Entity* pkEntity)
 		return;
 	}
 	
-	if(pkEntity->m_pkSceneAABBNode)
-		return;
+// 	if(pkEntity->m_pkSceneAABBNode)
+// 		return;
 	
 	m_pkRoot->InsertEntity(pkEntity);
 }
