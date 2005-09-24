@@ -1583,6 +1583,30 @@ void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 	}	
 }
 
+void ZSSEntityManager::DrawSceneGraph()
+{
+	static Vector3 kAABBColor(1,1,1);
+	static Vector3 kConColor(1,0,0);
+	
+	if(!m_pkZoneEntity)
+		return;
+	
+	
+	vector<Entity*>	kEntitys;
+	m_pkZoneEntity->GetAllEntitys(&kEntitys,true,false);
+	
+	int iSize = kEntitys.size();
+	for(int i = 0;i<iSize;i++)
+	{
+		m_pkRender->DrawAABB(kEntitys[i]->GetWorldPosV()+kEntitys[i]->m_kAABBMin,kEntitys[i]->GetWorldPosV()+kEntitys[i]->m_kAABBMax,kAABBColor);	
+		
+		if(kEntitys[i]->GetParent())
+		{
+			m_pkRender->Line(kEntitys[i]->GetWorldPosV(),kEntitys[i]->GetParent()->GetWorldPosV(),kConColor);
+		}
+		
+	}
+}
 
 Vector3 ZSSEntityManager::GetZoneCenter(int iZoneNum)
 {

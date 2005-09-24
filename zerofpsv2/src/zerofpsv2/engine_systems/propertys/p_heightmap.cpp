@@ -45,12 +45,14 @@ P_Heightmap::P_Heightmap()
 	pkTempMat->SetRes("heightmap/stone_path.zlm");	
 	m_kMaterials.push_back(pkTempMat);	
 	
-	SetSize(4,4);
 }
 
 void P_Heightmap::Init()
 {
-	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+// 	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+// 	m_pkEntity->SetLocalAABB(GetRadius());
+	SetSize(4,4);
+
 }
 
 P_Heightmap::~P_Heightmap()
@@ -555,6 +557,10 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 		}
 
 	m_bHaveRebuilt = false;
+	
+	
+	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+	m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 }
 
 void P_Heightmap::Smooth()
@@ -816,6 +822,7 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_fMaxValue);
 		
 			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+			m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 		
 			m_iRows = (m_iWidth/m_fScale)+1;
 			m_iCols = (m_iHeight/m_fScale)+1;
@@ -847,6 +854,7 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_fMaxValue);
 		
 			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+			m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 		
 			m_iRows = (m_iWidth/m_fScale)+1;
 			m_iCols = (m_iHeight/m_fScale)+1;
@@ -906,6 +914,7 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 	pkNetPacket->Read(m_fScale);
 
 	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+	m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;

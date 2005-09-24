@@ -36,6 +36,11 @@ Entity::Entity()
 	m_kAcc		= 	Vector3::ZERO;
 	m_fRadius	= 	1;
 	
+	m_kAABBMin.Set(0,0,0);
+	m_kAABBMax.Set(0,0,0);
+	m_kLocalAABBMin.Set(0,0,0);
+	m_kLocalAABBMax.Set(0,0,0);	
+	
   	SetName("A Entity");
 	SetType("Entity");
 
@@ -97,6 +102,75 @@ Entity::~Entity()
 	
 	delete(m_pScriptFileHandle);
 }
+
+void Entity::UpdateAABB()
+{
+	static Vector3 kOldMin;
+	static Vector3 kOldMax;
+	static Vector3 kTempRelPos;
+	static Vector3 kTempMin;
+	static Vector3 kTempMax;
+
+
+	kOldMin = m_kAABBMin;
+	kOldMax = m_kAABBMax;
+
+	m_kAABBMin = m_kLocalAABBMin;
+	m_kAABBMax = m_kLocalAABBMax;
+
+	
+	int iSize = m_akChilds.size();
+	for(int i = 0;i<iSize;i++)
+	{
+// 		if(m_akChilds[i]->m_kAABBMin == m_akChilds[i]->m_kAABBMax)
+// 			continue;
+	
+		kTempRelPos = m_akChilds[i]->GetWorldPosV() - GetWorldPosV();
+		kTempMin = m_akChilds[i]->m_kAABBMin + kTempRelPos;
+		kTempMax = m_akChilds[i]->m_kAABBMax + kTempRelPos;
+	
+		//min
+		if( kTempMin.x < m_kAABBMin.x)
+			m_kAABBMin.x = kTempMin.x;
+		if( kTempMin.y < m_kAABBMin.y)
+			m_kAABBMin.y = kTempMin.y;
+		if( kTempMin.z < m_kAABBMin.z)
+			m_kAABBMin.z = kTempMin.z;
+
+		//max
+		if( kTempMax.x > m_kAABBMax.x)
+			m_kAABBMax.x = kTempMax.x;
+		if( kTempMax.y > m_kAABBMax.y)
+			m_kAABBMax.y = kTempMax.y;
+		if( kTempMax.z > m_kAABBMax.z)
+			m_kAABBMax.z = kTempMax.z;					
+	}
+	
+	//if nothing changed, return
+	if(m_kAABBMin == kOldMin && m_kAABBMax == kOldMax)
+		return;
+	
+	//else update parent also
+	if(m_pkParent)
+		m_pkParent->UpdateAABB();
+}
+
+void Entity::SetLocalAABB(const Vector3& kMin,const Vector3& kMax)
+{
+	if(kMin == m_kLocalAABBMin && kMax == m_kLocalAABBMax)
+		return;
+
+	m_kLocalAABBMin = kMin;
+	m_kLocalAABBMax = kMax;
+	
+	UpdateAABB();
+}
+
+void Entity::SetLocalAABB(float fRadius)
+{
+	SetLocalAABB(Vector3(-fRadius,-fRadius,-fRadius),Vector3(fRadius,fRadius,fRadius));
+}
+
 
 /**	\brief	Adds a property to the Entity.
 */
@@ -389,6 +463,8 @@ void Entity::RemoveChild(Entity* pkEntity)
 		++kIt;
 	}
 	pkEntity->SetParent(NULL);		// Set Entitys parent to NULL.
+	
+	UpdateAABB();
 }
 
 /**	\brief	Sets Entity to be our parent.
@@ -1504,6 +1580,10 @@ void Entity::SetLocalPosV(const Vector3& kPos)
 		m_kILocalPosV=m_kLocalPosV;
 		m_bFirstSetPos=false;
 	}
+	
+	
+	if(m_pkParent)
+		m_pkParent->UpdateAABB();
 }
 
 void Entity::SetWorldPosV(const Vector3& kPos)

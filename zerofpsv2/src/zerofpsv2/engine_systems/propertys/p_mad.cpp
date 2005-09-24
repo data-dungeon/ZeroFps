@@ -340,6 +340,7 @@ void P_Mad::SetBase(const char* acName)
 
 	SetBasePtr(string(acName));		
 	m_pkEntity->SetRadius(GetRadius());
+	m_pkEntity->SetLocalAABB(GetRadius());
 	SetNetUpdateFlag(true);
 	
 	//dvoid hax, resetar vertex buffer object
@@ -357,9 +358,8 @@ void P_Mad::SetScale(float fScale)
 
 	Mad_Modell::SetScale(fScale);
 	m_pkEntity->SetRadius(GetRadius());	
-	
+	m_pkEntity->SetLocalAABB(GetRadius());	
 	SetNetUpdateFlag(true);
-
 }
 
 

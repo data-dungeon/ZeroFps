@@ -199,6 +199,11 @@ class ENGINE_API Entity
 		Vector3						m_kAcc;								///< Acc of entity.
 		float							m_fRadius;							///< Radius of entity.
 
+		Vector3						m_kAABBMin;
+		Vector3						m_kAABBMax;
+		Vector3						m_kLocalAABBMin;
+		Vector3						m_kLocalAABBMax;
+
 		bool							m_bUseZones;
 		int							m_iCurrentZone;
 		vector<Entity*>			m_akChilds;							///< List of child entitys.
@@ -338,7 +343,12 @@ class ENGINE_API Entity
 		void			SetName(string strName);
 		void			SetType(string strType);		
 		void			SetRadius(float fRadius);
-
+		
+		//AABB stuff
+		void			UpdateAABB();
+		void 			SetLocalAABB(const Vector3& kMin,const Vector3& kMax);
+		void 			SetLocalAABB(float fRadius);
+		
 		//interpolation
 		void			SetInterpolate(bool bInterpolate);
 		bool			GetInterpolate()						{	return m_bInterpolate;			};

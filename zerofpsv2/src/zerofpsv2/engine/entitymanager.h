@@ -273,7 +273,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
 		void DrawZones();
 		void DrawZones(const vector<ZoneData>* pkZoneList);
-
+		void DrawSceneGraph();
 		
 		// Message System.
 		void SendMsg(string strName, string strParam, int iFrom, int iTo);
