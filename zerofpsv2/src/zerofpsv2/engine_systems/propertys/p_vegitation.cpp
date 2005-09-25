@@ -28,7 +28,7 @@ P_Vegitation::P_Vegitation()
 	
 	
 	SetMaterial("forest_grass.zmt");	
-	SetScale(Vector3(1,0.7,1));
+	m_kScale.Set(1,0.7,1);
 	m_fWind = 10;	
 	
 	
@@ -43,8 +43,7 @@ P_Vegitation::~P_Vegitation()
 
 void P_Vegitation::Init()
 {
-	Random();
-	
+	Random();	
 }
 
 void P_Vegitation::Random(vector<P_Heightmap*>* pkHMaps)
@@ -430,6 +429,9 @@ void P_Vegitation::CreateAABB()
 	m_kAABBMax.x += maxwidth;
 	m_kAABBMax.z += maxwidth;
 
+
+
+	GetEntity()->SetLocalAABB(m_kAABBMin,m_kAABBMax);
 }
 
 

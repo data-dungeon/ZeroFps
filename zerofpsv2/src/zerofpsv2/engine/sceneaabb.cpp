@@ -305,6 +305,9 @@ void SceneAABBNode::GetRenderPropertysInFrustum(vector<Property*>* pkPropertys,F
 		int iSize = m_kEntitys.size();
 		for(int i = 0;i<iSize;i++)
 		{
+			if(m_kEntitys[i]->m_iUpdateStatus & UPDATE_NONE)
+				continue;
+		
 			m_kEntitys[i]->GetPropertys(pkPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);			
 		}
 	
