@@ -996,6 +996,7 @@ void Camera::RenderView()
 		//m_pkRender->Sphere(kCenter,1,1,Vector3(1,1,1),true);
 		
 // 		m_pkEntityMan->DrawSceneGraph();
+		m_pkEntityMan->DrawSceneAABBTree();	
 		m_pkEntityMan->DrawZones();				
 		m_pkZeroFps->m_pkApp->RenderInterface();	
 			

@@ -15,6 +15,7 @@ using namespace std;
 class		ZSSEntityManager;
 class		Property;
 class		ZSSPropertyFactory;
+class		SceneAABBNode;
 
 enum UpdateStatus 
 {
@@ -132,6 +133,7 @@ class ENGINE_API Entity
 		vector<EntityVariable>  m_kVariables;
 		int							m_iEntityID;						///< Uniq ID for every entiy in the world
 		float							m_fPriority;
+		SceneAABBNode*				m_pkSceneAABBNode;
 		
 	protected:
 		enum HAVE_DATA				//used in m_kGotData
@@ -199,10 +201,9 @@ class ENGINE_API Entity
 		Vector3						m_kAcc;								///< Acc of entity.
 		float							m_fRadius;							///< Radius of entity.
 
-		Vector3						m_kAABBMin;
-		Vector3						m_kAABBMax;
 		Vector3						m_kLocalAABBMin;
 		Vector3						m_kLocalAABBMax;
+		
 
 		bool							m_bUseZones;
 		int							m_iCurrentZone;
@@ -345,7 +346,6 @@ class ENGINE_API Entity
 		void			SetRadius(float fRadius);
 		
 		//AABB stuff
-		void			UpdateAABB();
 		void 			SetLocalAABB(const Vector3& kMin,const Vector3& kMax);
 		void 			SetLocalAABB(float fRadius);
 		
@@ -404,6 +404,8 @@ class ENGINE_API Entity
 		friend class ZSSNetWork;
 		friend class ZSSEntityManager;
 		friend class Property;
+		friend class SceneAABBTree;
+		friend class SceneAABBNode;
 
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}

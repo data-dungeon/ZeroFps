@@ -71,6 +71,7 @@ ZSSEntityManager::ZSSEntityManager()
 	m_iTotalNetEntityData	= 0;
 	m_iNumOfNetEntitys		= 0;
 	m_bDrawZones				= false;
+	m_bDrawAABBTree			= false;
 	m_bDrawZoneConnections	= false;
 	m_bDrawEnviroments		= false;
 	m_iTrackerLOS				= 100;	
@@ -89,8 +90,9 @@ ZSSEntityManager::ZSSEntityManager()
 
 	m_iSendType					= ZF_NETTYPE_REL;			// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
 
-	// Register Variables
-		
+	m_pkSceneAABBTree			= new SceneAABBTree(this);
+
+	// Register Variables		
 	RegisterVariable("l_showenvs",			&m_bDrawEnviroments,			CSYS_BOOL);
 	RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);
 	RegisterVariable("l_showconn",			&m_bDrawZoneConnections,	CSYS_BOOL);
@@ -99,6 +101,7 @@ ZSSEntityManager::ZSSEntityManager()
 	RegisterVariable("l_zoneunloadtime",	&m_fZoneUnloadTime,			CSYS_FLOAT);	
 	RegisterVariable("l_maxzoneio",			&m_iMaxZoneIO,					CSYS_INT);	
 	RegisterVariable("l_objectdistance",	&m_iObjectDistance,			CSYS_FLOAT);		
+	RegisterVariable("l_showaabbtree",		&m_bDrawAABBTree,				CSYS_BOOL);		
 
 	// Register Commands
 	Register_Cmd("o_logtree",		FID_LOGOHTREE);	
@@ -146,6 +149,9 @@ bool ZSSEntityManager::IsValid()	{ return true; }
 
 ZSSEntityManager::~ZSSEntityManager() 
 {
+	if(m_pkSceneAABBTree)
+		delete m_pkSceneAABBTree;
+
 	float fAvgObjSize = -1;
 
 	if(m_iNumOfNetEntitys) {
@@ -431,7 +437,13 @@ void ZSSEntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntit
 			if(pkRootEntity)
 				pkRootEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
 			else
-				m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
+			{		
+				//AABBTree optimized version
+ 				if(iType == PROPERTY_TYPE_RENDER && iSide == PROPERTY_SIDE_CLIENT)
+ 					m_pkSceneAABBTree->GetRenderPropertysInFrustum(&m_akPropertys,m_pkZeroFps->GetCam()->GetFrustum());
+				else		
+					m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
+			}
 		}
 		
 	
@@ -1429,6 +1441,33 @@ Entity* ZSSEntityManager::CloneEntity(int iNetID)
 	return pkObjClone;
 }
 
+void ZSSEntityManager::DrawSceneAABBTree()
+{
+	if(!m_bDrawAABBTree)
+		return;
+
+	static Vector3 kLeaf(1,0.5,0);
+	static Vector3 kCulled(0,0.5,0.5);
+	static Vector3 kBranch(0.5,0.5,1);
+
+	vector<AABBGraphInfo>	kAABBs;
+
+
+	m_pkSceneAABBTree->GetAABBList(&kAABBs);
+
+	for(int i = 0;i<kAABBs.size();i++)
+	{
+		if(kAABBs[i].m_bLeaf)
+		{
+			if(kAABBs[i].m_bInFrustum)
+				m_pkRender->DrawAABB(kAABBs[i].m_kMin,kAABBs[i].m_kMax,kLeaf);
+			else
+				m_pkRender->DrawAABB(kAABBs[i].m_kMin,kAABBs[i].m_kMax,kCulled);
+		}
+		else
+			m_pkRender->DrawAABB(kAABBs[i].m_kMin,kAABBs[i].m_kMax,kBranch);
+	}
+}
 
 /*
 	Draws the Zone's to the screen as colored boxes.
@@ -1598,7 +1637,7 @@ void ZSSEntityManager::DrawSceneGraph()
 	int iSize = kEntitys.size();
 	for(int i = 0;i<iSize;i++)
 	{
-		m_pkRender->DrawAABB(kEntitys[i]->GetWorldPosV()+kEntitys[i]->m_kAABBMin,kEntitys[i]->GetWorldPosV()+kEntitys[i]->m_kAABBMax,kAABBColor);	
+// 		m_pkRender->DrawAABB(kEntitys[i]->GetWorldPosV()+kEntitys[i]->m_kAABBMin,kEntitys[i]->GetWorldPosV()+kEntitys[i]->m_kAABBMax,kAABBColor);	
 		
 		if(kEntitys[i]->GetParent())
 		{
@@ -2805,8 +2844,13 @@ bool ZSSEntityManager::LoadWorld(string strLoadDir)
 }
 
 
+#include "inputhandle.h"
 void ZSSEntityManager::UpdateZoneSystem()
 {
+	if(m_pkZeroFps->m_pkApp->m_pkInputHandle->Pressed(KEY_P))
+		m_pkSceneAABBTree->RebuildTree();
+
+
 // 	StartProfileTimer("s__ZoneSystem");	
 	UpdateTrackers();
 	UpdateZoneStatus();

@@ -80,11 +80,11 @@ void SceneAABBNode::Update(Entity* pkEntity,bool bOwner)
 		if(bOwner)
 		{
 // 			cout<<"just updating AABB"<<endl;
-// 			SetAABBSize(&m_kEntitys);
+			SetAABBSize(&m_kEntitys);
 			return;
 		}
 		
-		//if we're not rebuild ourself
+		//if we're, not rebuild ourself
 		RebuildTree();
 		
 		return;
@@ -94,13 +94,13 @@ void SceneAABBNode::Update(Entity* pkEntity,bool bOwner)
 	//if entity was not inside this node, and we have a parent send update to parent.
 	if(m_pkParentNode)
 	{
-		cout<<"entity was outside , trying parent"<<endl;
+// 		cout<<"entity was outside , trying parent"<<endl;
 		m_pkParentNode->Update(pkEntity,false);
 		return;
 	}
 	
 	//if entity was not inside this node, and we are the root node, rebuild tree
-	cout<<"entity was outside, where root, rebuilding"<<endl;
+// 	cout<<"entity was outside, where root, rebuilding"<<endl;
 	RebuildTree();
 }
 
@@ -109,7 +109,7 @@ void SceneAABBNode::BindEntitys()
 	int iSize = m_kEntitys.size();
 	for(int i = 0;i<iSize;i++)
 	{
-// 		m_kEntitys[i]->m_pkSceneAABBNode = this;	
+		m_kEntitys[i]->m_pkSceneAABBNode = this;	
 	}
 
 }
@@ -169,7 +169,6 @@ void SceneAABBNode::SetAABBSize(vector<Entity*>*	pkEntitys)
 {
 	static Vector3 kTempMin;
 	static Vector3 kTempMax;
-	static Vector3 kTempRadius;
 	
 	m_kAABBMin.Set(999999999,99999999,99999999);
 	m_kAABBMax.Set(-999999999,-99999999,-99999999);
@@ -179,9 +178,8 @@ void SceneAABBNode::SetAABBSize(vector<Entity*>*	pkEntitys)
 	int iSize = pkEntitys->size();
 	for(int i = 0;i<iSize;i++)
 	{
-		kTempRadius.Set( (*pkEntitys)[i]->GetRadius(),(*pkEntitys)[i]->GetRadius(),(*pkEntitys)[i]->GetRadius());
-		kTempMin = (*pkEntitys)[i]->GetWorldPosV() - kTempRadius;
-		kTempMax = (*pkEntitys)[i]->GetWorldPosV() + kTempRadius;
+ 		kTempMin = (*pkEntitys)[i]->GetWorldPosV() + (*pkEntitys)[i]->m_kLocalAABBMin;
+		kTempMax = (*pkEntitys)[i]->GetWorldPosV() + (*pkEntitys)[i]->m_kLocalAABBMax;
 	
 		//min
 		if( kTempMin.x < m_kAABBMin.x)
@@ -221,17 +219,17 @@ void SceneAABBNode::GetAABBList(vector<AABBGraphInfo>* pkAABBList)
 bool SceneAABBNode::EntityInsideNode(Entity* pkEnt)
 {
 	static Vector3 kPos;
-	static float fRadius;
+// 	static float fRadius;
 	
 	kPos = pkEnt->GetWorldPosV();
-	fRadius= pkEnt->GetRadius();
+// 	fRadius= pkEnt->GetRadius();
 
-	if(kPos.x +fRadius > m_kAABBMax.x)	return false;
-	if(kPos.x -fRadius < m_kAABBMin.x)	return false;
-	if(kPos.y +fRadius > m_kAABBMax.y)	return false;
-	if(kPos.y -fRadius < m_kAABBMin.y)	return false;
-	if(kPos.z +fRadius > m_kAABBMax.z)	return false;
-	if(kPos.z -fRadius < m_kAABBMin.z)	return false;
+	if(kPos.x +pkEnt->m_kLocalAABBMax.x > m_kAABBMax.x)	return false;
+	if(kPos.x +pkEnt->m_kLocalAABBMin.x < m_kAABBMin.x)	return false;
+	if(kPos.y +pkEnt->m_kLocalAABBMax.y > m_kAABBMax.y)	return false;
+	if(kPos.y +pkEnt->m_kLocalAABBMin.y < m_kAABBMin.y)	return false;
+	if(kPos.z +pkEnt->m_kLocalAABBMax.z > m_kAABBMax.z)	return false;
+	if(kPos.z +pkEnt->m_kLocalAABBMin.z < m_kAABBMin.z)	return false;
 
 	return true;
 }
@@ -266,7 +264,7 @@ void SceneAABBNode::RemoveEntity(Entity* pkEntity)
 	if(!bFound)
 		cout<<"WARNING  SceneAABBNode::RemoveEntity: did not find entity"<<endl;
 	
-// 	pkEntity->m_pkSceneAABBNode = NULL;
+	pkEntity->m_pkSceneAABBNode = NULL;
 	
 	if(m_pkParentNode)
 		m_pkParentNode->RebuildTree();
@@ -400,8 +398,8 @@ void SceneAABBTree::InsertEntity(Entity* pkEntity)
 		return;
 	}
 	
-// 	if(pkEntity->m_pkSceneAABBNode)
-// 		return;
+	if(pkEntity->m_pkSceneAABBNode)
+		return;
 	
 	m_pkRoot->InsertEntity(pkEntity);
 }

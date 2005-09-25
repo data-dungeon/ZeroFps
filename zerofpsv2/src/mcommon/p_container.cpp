@@ -44,7 +44,7 @@ P_Container::~P_Container()
 
 void P_Container::Init()
 {
-
+// 	GetEntity()->SetRelativeOri(true);
 }
 
 void P_Container::Update()

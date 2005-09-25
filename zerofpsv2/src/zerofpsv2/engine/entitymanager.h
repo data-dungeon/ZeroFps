@@ -9,6 +9,7 @@
 #include <set>
 #include "../script/zfscript.h"
 #include "propertyfactory.h"
+#include "sceneaabb.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ class ZSSZeroFps;
 class GameMessage;
 class ZSSNetWork;
 class P_Track;
+class SceneAABBTree;
 
 enum EZoneStatus
 {
@@ -91,6 +93,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		ZSSRender*				m_pkRender;
 		ZSSPropertyFactory*	m_pkPropertyFactory;	
 		
+		
 		// Base Entitys
 		Entity*					m_pkWorldEntity;											///< Top level entity.
 		Entity*					m_pkZoneEntity;											///< Top level entity.
@@ -126,6 +129,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		vector<ZoneData>		m_kZones;
 		
 		//debug
+		bool						m_bDrawAABBTree;
 		bool						m_bDrawZones;						//shuld zones be drawed
 		bool						m_bDrawEnviroments;
 		bool						m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
@@ -182,6 +186,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		set<string>				m_kEditorHide;													///< List of entity types hidden when in editor mode.		
 
 		ZSSScriptSystem* 		m_pkScript;
+		SceneAABBTree*			m_pkSceneAABBTree;
 		
 		bool						m_bAllowHide;
 
@@ -274,6 +279,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		void DrawZones();
 		void DrawZones(const vector<ZoneData>* pkZoneList);
 		void DrawSceneGraph();
+		void DrawSceneAABBTree();
 		
 		// Message System.
 		void SendMsg(string strName, string strParam, int iFrom, int iTo);

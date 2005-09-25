@@ -133,22 +133,22 @@ void P_Mad::Update()
 		kRot = m_pkEntity->GetWorldRotM();		
 		
 		//passed sphere, do AABB test
-		if(m_bHaveAABB)
-		{
-			//have up to date AABB?			
-			if(GetCurrentAnimation() == MAD_NOANIMINDEX &&
-				m_fScale == m_fOldScale &&
-				m_kLastRot == kRot)		
-			{
-				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + kPos,m_AABBMax + kPos))
-					return;
-			}
-			else
-			{
-				//AABB is not up to date
-				m_bHaveAABB = false;
-			}
-		}
+// 		if(m_bHaveAABB)
+// 		{
+// 			//have up to date AABB?			
+// 			if(GetCurrentAnimation() == MAD_NOANIMINDEX &&
+// 				m_fScale == m_fOldScale &&
+// 				m_kLastRot == kRot)		
+// 			{
+// 				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + kPos,m_AABBMax + kPos))
+// 					return;
+// 			}
+// 			else
+// 			{
+// 				//AABB is not up to date
+// 				m_bHaveAABB = false;
+// 			}
+// 		}
 		
 		
 		//not culled
@@ -159,30 +159,30 @@ void P_Mad::Update()
 		
 		if(m_bIsVisible)
 		{			
-			//update AABB 
-			if(!m_bHaveAABB)
-			{
-				if(m_pkZeroFps->GetEngineTime() - m_fLastAABBTest > 2)
-				{
-					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
-							m_fScale == m_fOldScale &&
-							m_kLastRot == kRot)
-					{
-						//create AABB
-						m_bHaveAABB = true;
-						
-						//cout<<"creating new AABB"<<endl;
-						CreateAABB();
-					}
-					else
-					{
-						//update test information
-						m_fLastAABBTest = m_pkZeroFps->GetEngineTime();
-						m_fOldScale = m_fScale;
-						m_kLastRot = kRot;
-					}
-				}
-			}
+// 			//update AABB 
+// 			if(!m_bHaveAABB)
+// 			{
+// 				if(m_pkZeroFps->GetEngineTime() - m_fLastAABBTest > 2)
+// 				{
+// 					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
+// 							m_fScale == m_fOldScale &&
+// 							m_kLastRot == kRot)
+// 					{
+// 						//create AABB
+// 						m_bHaveAABB = true;
+// 						
+// 						//cout<<"creating new AABB"<<endl;
+// 						CreateAABB();
+// 					}
+// 					else
+// 					{
+// 						//update test information
+// 						m_fLastAABBTest = m_pkZeroFps->GetEngineTime();
+// 						m_fOldScale = m_fScale;
+// 						m_kLastRot = kRot;
+// 					}
+// 				}
+// 			}
 			
 			
 			//update lighting

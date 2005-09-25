@@ -254,8 +254,9 @@ void ZeroEd::Input_CreateObject(float fMouseX, float fMouseY)
 		{
 			m_iEditMode = EDIT_OBJECTS;
 			Select_None();
-			if(pkObj->GetCurrentZone() != -1)
-				Select_Toggle(pkObj->GetEntityID(), false);  
+			if(pkObj)
+				if(pkObj->GetCurrentZone() != -1)
+					Select_Toggle(pkObj->GetEntityID(), false);  
 		}
 	}
 }

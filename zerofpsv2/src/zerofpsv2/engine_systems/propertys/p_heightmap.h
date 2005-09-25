@@ -101,7 +101,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
 	
 		void SetSize(int iWidth,int iHeight);
-		void SetMaxValue(float fMax)							{	m_fMaxValue = fMax;	};
+		void SetMaxValue(float fMax);
 		
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		float CalculateRadius();

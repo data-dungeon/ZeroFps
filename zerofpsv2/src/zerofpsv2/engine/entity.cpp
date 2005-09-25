@@ -36,8 +36,8 @@ Entity::Entity()
 	m_kAcc		= 	Vector3::ZERO;
 	m_fRadius	= 	1;
 	
-	m_kAABBMin.Set(0,0,0);
-	m_kAABBMax.Set(0,0,0);
+// 	m_kAABBMin.Set(0,0,0);
+// 	m_kAABBMax.Set(0,0,0);
 	m_kLocalAABBMin.Set(0,0,0);
 	m_kLocalAABBMax.Set(0,0,0);	
 	
@@ -66,7 +66,8 @@ Entity::Entity()
 	m_bHide					= 0;
 	
 	m_fPriority				= -1;
-
+	m_pkSceneAABBNode		= NULL;
+	
 	//clear child list
 	m_akChilds.clear();	
 	
@@ -103,57 +104,6 @@ Entity::~Entity()
 	delete(m_pScriptFileHandle);
 }
 
-void Entity::UpdateAABB()
-{
-	static Vector3 kOldMin;
-	static Vector3 kOldMax;
-	static Vector3 kTempRelPos;
-	static Vector3 kTempMin;
-	static Vector3 kTempMax;
-
-
-	kOldMin = m_kAABBMin;
-	kOldMax = m_kAABBMax;
-
-	m_kAABBMin = m_kLocalAABBMin;
-	m_kAABBMax = m_kLocalAABBMax;
-
-	
-	int iSize = m_akChilds.size();
-	for(int i = 0;i<iSize;i++)
-	{
-// 		if(m_akChilds[i]->m_kAABBMin == m_akChilds[i]->m_kAABBMax)
-// 			continue;
-	
-		kTempRelPos = m_akChilds[i]->GetWorldPosV() - GetWorldPosV();
-		kTempMin = m_akChilds[i]->m_kAABBMin + kTempRelPos;
-		kTempMax = m_akChilds[i]->m_kAABBMax + kTempRelPos;
-	
-		//min
-		if( kTempMin.x < m_kAABBMin.x)
-			m_kAABBMin.x = kTempMin.x;
-		if( kTempMin.y < m_kAABBMin.y)
-			m_kAABBMin.y = kTempMin.y;
-		if( kTempMin.z < m_kAABBMin.z)
-			m_kAABBMin.z = kTempMin.z;
-
-		//max
-		if( kTempMax.x > m_kAABBMax.x)
-			m_kAABBMax.x = kTempMax.x;
-		if( kTempMax.y > m_kAABBMax.y)
-			m_kAABBMax.y = kTempMax.y;
-		if( kTempMax.z > m_kAABBMax.z)
-			m_kAABBMax.z = kTempMax.z;					
-	}
-	
-	//if nothing changed, return
-	if(m_kAABBMin == kOldMin && m_kAABBMax == kOldMax)
-		return;
-	
-	//else update parent also
-	if(m_pkParent)
-		m_pkParent->UpdateAABB();
-}
 
 void Entity::SetLocalAABB(const Vector3& kMin,const Vector3& kMax)
 {
@@ -163,7 +113,9 @@ void Entity::SetLocalAABB(const Vector3& kMin,const Vector3& kMax)
 	m_kLocalAABBMin = kMin;
 	m_kLocalAABBMax = kMax;
 	
-	UpdateAABB();
+	if(m_pkSceneAABBNode)
+		m_pkSceneAABBNode->Update(this);
+		
 }
 
 void Entity::SetLocalAABB(float fRadius)
@@ -464,7 +416,7 @@ void Entity::RemoveChild(Entity* pkEntity)
 	}
 	pkEntity->SetParent(NULL);		// Set Entitys parent to NULL.
 	
-	UpdateAABB();
+// 	UpdateAABB();
 }
 
 /**	\brief	Sets Entity to be our parent.
@@ -478,15 +430,20 @@ void Entity::SetParent(Entity* pkEntity)
 	SetNetUpdateFlag(NETUPDATEFLAG_PARENT,true);
 
 	// Remove Parent
-	if(pkEntity == NULL) {
+	if(pkEntity == NULL) 
+	{
 		if(m_pkParent == NULL)
 			return;
 		
 		Entity* pkParent = m_pkParent;
 		m_pkParent = NULL;
 		pkParent->RemoveChild(this);
+		
+		if(m_pkSceneAABBNode)
+			m_pkSceneAABBNode->RemoveEntity(this);
+		
 		return;
-		}
+	}
 
 	if(m_pkParent == pkEntity)		// Dont do anything if this parent is already set
 		return;
@@ -498,6 +455,9 @@ void Entity::SetParent(Entity* pkEntity)
 	//reset current zone if this is not a zone entity and its not suppose to use zones
 	if(!m_bZone && !m_bUseZones)
 		m_iCurrentZone = -1;
+		
+	if(!m_pkSceneAABBNode)
+		m_pkEntityManager->m_pkSceneAABBTree->InsertEntity(this);
 }
 
 /**	\brief	Returns true if Entity is our child of this.
@@ -1582,8 +1542,11 @@ void Entity::SetLocalPosV(const Vector3& kPos)
 	}
 	
 	
-	if(m_pkParent)
-		m_pkParent->UpdateAABB();
+	if(m_pkSceneAABBNode)
+		m_pkSceneAABBNode->Update(this);
+	
+// 	if(m_pkParent)
+// 		m_pkParent->UpdateAABB();
 }
 
 void Entity::SetWorldPosV(const Vector3& kPos)

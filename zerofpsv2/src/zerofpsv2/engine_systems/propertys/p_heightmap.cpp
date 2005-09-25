@@ -68,6 +68,12 @@ P_Heightmap::~P_Heightmap()
 
 }
 
+void P_Heightmap::SetMaxValue(float fMax)							
+{
+	m_fMaxValue = fMax;	
+	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,-m_fMaxValue,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fMaxValue,m_iWidth/2.0));
+}
+
 void P_Heightmap::Update()
 {
 // 	if(!( (m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
@@ -559,8 +565,9 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	m_bHaveRebuilt = false;
 	
 	
-	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-	m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());	
+	//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 }
 
 void P_Heightmap::Smooth()
@@ -822,7 +829,8 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_fMaxValue);
 		
 			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-			m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 		
 			m_iRows = (m_iWidth/m_fScale)+1;
 			m_iCols = (m_iHeight/m_fScale)+1;
@@ -854,7 +862,8 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_fMaxValue);
 		
 			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-			m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 		
 			m_iRows = (m_iWidth/m_fScale)+1;
 			m_iCols = (m_iHeight/m_fScale)+1;
@@ -914,7 +923,8 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 	pkNetPacket->Read(m_fScale);
 
 	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-	m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+	//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 
 	m_iRows = (m_iWidth/m_fScale)+1;
 	m_iCols = (m_iHeight/m_fScale)+1;
