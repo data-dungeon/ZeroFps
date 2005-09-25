@@ -1,6 +1,7 @@
 #include "p_shadowblob.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
+#include "p_characterproperty.h"
 
 P_ShadowBlob::P_ShadowBlob()
 {
@@ -31,49 +32,84 @@ void P_ShadowBlob::Update()
 		return;
 
 
-	if(!m_pkMad)
-		m_pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
-
-	if(!m_bHaveSet)
+	
+	
+	
+	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
 	{
-		m_bHaveSet = true;		
-		m_fScale = m_pkMad->GetRadius();
+// 		if(pkTcs->GetOnGround())
+// 		{
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntity->GetProperty("P_CharacterProperty"))
+			{
+				Vector3 kShadowPos = m_pkEntity->GetIWorldPosV();
+				kShadowPos.y -= pkCP->GetLegLength();	
+				float fScale = 1;
+				
+				m_pkZShaderSystem->BindMaterial(m_pkMaterial);
+				m_pkZShaderSystem->ClearGeometry();
+				
+				m_pkZShaderSystem->MatrixPush();
+				m_pkZShaderSystem->MatrixTranslate(kShadowPos + Vector3(0,0.05,0));
+				
+				float x = fScale/2.0;
+				float z = fScale/2.0;
+				
+				m_pkZShaderSystem->AddQuadV(	Vector3(-x,0, z),Vector3( x,0, z),
+														Vector3( x,0,-z),Vector3(-x,0,-z));												
+			
+				m_pkZShaderSystem->AddQuadUV(	Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1));
+															
+				m_pkZShaderSystem->DrawGeometry(QUADS_MODE);	
+				m_pkZShaderSystem->MatrixPop();				
+			}
+// 		}
 	}
-	
-	if(m_pkMad)
-		if(m_pkMad->IsCulled())
-			return;
 
-	Vector3 kShadowPos = Vector3::ZERO;
-	float fScale = m_fScale;
-	
-	
+	return;
 
-	kShadowPos = GetShadowPos();
-	fScale = m_fScale - ( kShadowPos.DistanceTo(GetEntity()->GetIWorldPosV() + m_kOffset)/2.0 );	
-	if(fScale > m_fScale)
-		fScale = m_fScale;
+// 	if(!m_pkMad)
+// 		m_pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
+// 
+// 	if(!m_bHaveSet)
+// 	{
+// 		m_bHaveSet = true;		
+// 		m_fScale = m_pkMad->GetRadius();
+// 	}
+// 	
+// 	if(m_pkMad)
+// 		if(m_pkMad->IsCulled())
+// 			return;
+// 
+// 	Vector3 kShadowPos = Vector3::ZERO;
+// 	float fScale = m_fScale;
+// 	
+// 	
+// 
+// 	kShadowPos = GetShadowPos();
+// 	fScale = m_fScale - ( kShadowPos.DistanceTo(GetEntity()->GetIWorldPosV() + m_kOffset)/2.0 );	
+// 	if(fScale > m_fScale)
+// 		fScale = m_fScale;
 	
-	if(fScale < 0)
-		return;
-	
-	
-	m_pkZShaderSystem->BindMaterial(m_pkMaterial);
-	m_pkZShaderSystem->ClearGeometry();
-	
-	m_pkZShaderSystem->MatrixPush();
-	m_pkZShaderSystem->MatrixTranslate(kShadowPos + Vector3(0,0.05,0));
-	
-	float x = fScale/2.0;
-	float z = fScale/2.0;
-	
-	m_pkZShaderSystem->AddQuadV(	Vector3(-x,0, z),Vector3( x,0, z),
-											Vector3( x,0,-z),Vector3(-x,0,-z));												
-
-	m_pkZShaderSystem->AddQuadUV(	Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1));
-												
-	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);	
-	m_pkZShaderSystem->MatrixPop();
+// 	if(fScale < 0)
+// 		return;
+// 	float fScale = 0.5;
+// 	
+// 	m_pkZShaderSystem->BindMaterial(m_pkMaterial);
+// 	m_pkZShaderSystem->ClearGeometry();
+// 	
+// 	m_pkZShaderSystem->MatrixPush();
+// 	m_pkZShaderSystem->MatrixTranslate(kShadowPos + Vector3(0,0.05,0));
+// 	
+// 	float x = fScale/2.0;
+// 	float z = fScale/2.0;
+// 	
+// 	m_pkZShaderSystem->AddQuadV(	Vector3(-x,0, z),Vector3( x,0, z),
+// 											Vector3( x,0,-z),Vector3(-x,0,-z));												
+// 
+// 	m_pkZShaderSystem->AddQuadUV(	Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1));
+// 												
+// 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);	
+// 	m_pkZShaderSystem->MatrixPop();
 
 }
 
