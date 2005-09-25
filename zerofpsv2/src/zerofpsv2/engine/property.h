@@ -151,8 +151,8 @@ class ENGINE_API Property
 		
 		
 		virtual vector<PropertyValues> GetPropertyValues();
-		virtual bool HandleSetValue( const string& kValueName ,const string& kValue );
-		virtual bool HandleGetValue( const string& kValueName );
+		virtual bool HandleSetValue( const string& kValueName ,const string& kValue )			{	return false;	};
+		virtual void HaveSetValue( const string& kValueName )											{};
 		
 		///////////EVIL GUBB WAS HERE
 		virtual void PointerFound(const type_info& Type) {};

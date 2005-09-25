@@ -70,16 +70,6 @@ bool Property::operator<(const Property& kOther) const
 	return false;
 }
 
-bool Property::HandleSetValue( const string& kValueName ,const string& kValue )
-{
-	return false;
-}
-
-bool Property::HandleGetValue( const string& kValueName )
-{
-	return false;
-}
-
 vector<PropertyValues> Property::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn;
@@ -197,21 +187,35 @@ string Property::GetValue(const string& kValueName, unsigned int iIndex)
 
 bool Property::SetValue(const string& kValueName, const string& kValue)
 {
+	//does the property want to handle this value by itself?
 	if(HandleSetValue(kValueName, kValue))
+	{
+		HaveSetValue(kValueName);
 		return true;
+	}
+		
+	//get possible values
 	vector<PropertyValues> kTemp= GetPropertyValues();
+	
+	//do we have any values
 	if(!kTemp.empty())
 	{
-		vector<PropertyValues>::iterator kItor = kTemp.begin();
-		while (kItor != kTemp.end())
+		for(vector<PropertyValues>::iterator kItor = kTemp.begin();kItor != kTemp.end();kItor++)
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == (*kItor).kValueName)
 			{
-				return StringToValue(kValue, kItor->pkValue, &(*kItor));
+				if(StringToValue(kValue, kItor->pkValue, &(*kItor)))
+				{
+					HaveSetValue(kValueName);
+					return true;
+				}
+				else
+					return false;
 			}	
-			kItor++;
 		};
 	};
+	
+	
 	return false;
 }
 
@@ -469,159 +473,166 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 
 bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues *pkPropertyValue)
 {
-//	unsigned char cTemp1;
 	int iTemp1,iTemp2;
 	float fTemp1, fTemp2,fTemp3, fTemp4;
 	string kTemp1, kTemp2, kTemp3;
 	char *cStop;
 	
 	switch(pkPropertyValue->iValueType)
-	{	
-	case VALUETYPE_INT:
-		iTemp1=atoi(kValue.c_str());
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-			if(iTemp1>(pkPropertyValue->fUpperBound))
-				return false;
+	{
+		case VALUETYPE_INT:
+			iTemp1=atoi(kValue.c_str());
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+				if(iTemp1>(pkPropertyValue->fUpperBound))
+					return false;
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
 				if(iTemp1<(pkPropertyValue->fLowerBound))
 					return false;
-				*((int*)pkValue)=iTemp1;
-				return true;
-				
-	case VALUETYPE_CHARVAL:
-		iTemp1 = atoi(kValue.c_str());
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-			if(iTemp1>(pkPropertyValue->fUpperBound))
-				return false;
+			*((int*)pkValue)=iTemp1;
+			return true;
+					
+		case VALUETYPE_CHARVAL:
+			iTemp1 = atoi(kValue.c_str());
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+				if(iTemp1>(pkPropertyValue->fUpperBound))
+					return false;
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
 				if(iTemp1<(pkPropertyValue->fLowerBound))
 					return false;
-				*((char*)pkValue)=(char)iTemp1;
-				return true;		
-				
-	case VALUETYPE_STRING:
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-			if(kValue.size()>(pkPropertyValue->fUpperBound))
-				return false;
+			*((char*)pkValue)=(char)iTemp1;
+			return true;		
+					
+		case VALUETYPE_STRING:
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+				if(kValue.size()>(pkPropertyValue->fUpperBound))
+					return false;
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
 				if(kValue.size()<(pkPropertyValue->fLowerBound))
 					return false;
-				*(reinterpret_cast<string*>(pkValue))=kValue;
-				return true;
-				
-	case VALUETYPE_BOOL:
-		if(kValue=="true")
-			*((bool*)pkValue) = true; 
-		else if(kValue=="false")
-			*((bool*)pkValue) = false; 
-		else return false;
-		return true;
-		
-	case VALUETYPE_FLOAT:
-		fTemp1= (float) strtod( kValue.c_str(), &cStop );
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-			if(fTemp1>(pkPropertyValue->fUpperBound))
-				return false;
+			*(reinterpret_cast<string*>(pkValue))=kValue;
+			return true;
+					
+		case VALUETYPE_BOOL:
+			if(kValue=="true")
+				*((bool*)pkValue) = true; 
+			else if(kValue=="false")
+				*((bool*)pkValue) = false; 
+			else return false;
+			return true;
+			
+		case VALUETYPE_FLOAT:
+			fTemp1= (float) strtod( kValue.c_str(), &cStop );
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+				if(fTemp1>(pkPropertyValue->fUpperBound))
+					return false;
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
 				if(fTemp1<(pkPropertyValue->fLowerBound))
 					return false;
-				*((float*)pkValue)=fTemp1; 
-				return true;
-				
-	case VALUETYPE_VECTOR3:
-		if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
-			return false;		
-		kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
-		fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
-			if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
-				return false;
+			*((float*)pkValue)=fTemp1; 
+			return true;
+					
+		case VALUETYPE_VECTOR3:
+			if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
+				return false;		
+			kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
+			fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+				if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
+					return false;
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	//kollar lowerbound
 				if(fTemp1<(pkPropertyValue->fLowerBound))
 					return false;
-				
-				if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
-					return false;
-				kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
-				fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
-				if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-					if(fTemp2>(pkPropertyValue->fUpperBound))	   
-						return false;
-					if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-						if(fTemp2<(pkPropertyValue->fLowerBound))
-							return false;
-						
-						kTemp1=kValue.substr(iTemp2,kValue.length());
-						fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
-						if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-							if(fTemp3>(pkPropertyValue->fUpperBound))	   
-								return false;
-							if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-								if(fTemp3<(pkPropertyValue->fLowerBound))
-									return false;
-								
-								((Vector3*)pkValue)->Set(fTemp1,fTemp2,fTemp3); 
-								return true;
-								
-	case VALUETYPE_VECTOR4:
-		if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
-			return false;		
-		kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
-		fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
-			if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
+					
+			if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
 				return false;
+			kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
+			fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
+				if(fTemp2>(pkPropertyValue->fUpperBound))	   
+					return false;
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
+				if(fTemp2<(pkPropertyValue->fLowerBound))
+					return false;
+							
+			kTemp1=kValue.substr(iTemp2,kValue.length());
+			fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
+				if(fTemp3>(pkPropertyValue->fUpperBound))	   
+					return false;
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
+				if(fTemp3<(pkPropertyValue->fLowerBound))
+					return false;
+					
+			((Vector3*)pkValue)->Set(fTemp1,fTemp2,fTemp3); 
+			return true;
+									
+		case VALUETYPE_VECTOR4:
+			if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
+				return false;		
+			kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
+			fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+				if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
+					return false;
+			
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	//kollar lowerbound
 				if(fTemp1<(pkPropertyValue->fLowerBound))
 					return false;
-				
-				if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
-					return false;
-				kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
-				fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
-				if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-					if(fTemp2>(pkPropertyValue->fUpperBound))	   
-						return false;
-					if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-						if(fTemp2<(pkPropertyValue->fLowerBound))
-							return false;
-						
-						if((iTemp1=kValue.find(" ",iTemp2+1)) == -1) //kollar efter andra mellanslaget
-							return false;
-						kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
-						fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
-						if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-							if(fTemp2>(pkPropertyValue->fUpperBound))	   
-								return false;
-							if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-								if(fTemp2<(pkPropertyValue->fLowerBound))
-									return false;
-								
-								kTemp1=kValue.substr(iTemp1,kValue.length());
-								fTemp4= (float) strtod( kTemp1.c_str(), &cStop ); 
-								if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-									if(fTemp3>(pkPropertyValue->fUpperBound))	   
-										return false;
-									if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-										if(fTemp3<(pkPropertyValue->fLowerBound))
-											return false;
-										
-										((Vector4*)pkValue)->Set(fTemp1,fTemp2,fTemp3,fTemp4); 
-										return true;
-		
-			case VALUETYPE_CHARS:
-		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-			if(kValue.size()>(pkPropertyValue->fUpperBound))
+					
+			if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
 				return false;
+			
+			kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
+			fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
+			
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
+				if(fTemp2>(pkPropertyValue->fUpperBound))	   
+					return false;
+			
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
+				if(fTemp2<(pkPropertyValue->fLowerBound))
+					return false;
+							
+			if((iTemp1=kValue.find(" ",iTemp2+1)) == -1) //kollar efter andra mellanslaget
+				return false;
+							
+			kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
+			fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
+			
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
+				if(fTemp2>(pkPropertyValue->fUpperBound))	   
+					return false;
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
+				if(fTemp2<(pkPropertyValue->fLowerBound))
+					return false;
+									
+			kTemp1=kValue.substr(iTemp1,kValue.length());
+			fTemp4= (float) strtod( kTemp1.c_str(), &cStop ); 
+									
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
+				if(fTemp3>(pkPropertyValue->fUpperBound))	   
+					return false;
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
+				if(fTemp3<(pkPropertyValue->fLowerBound))
+					return false;
+											
+			((Vector4*)pkValue)->Set(fTemp1,fTemp2,fTemp3,fTemp4); 
+			return true;
+			
+		case VALUETYPE_CHARS:
+			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+				if(kValue.size()>(pkPropertyValue->fUpperBound))
+					return false;
 			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
 				if(kValue.size()<(pkPropertyValue->fLowerBound))
 					return false;
-				strcpy(reinterpret_cast<char*>(pkValue),kValue.c_str());
-				return true;						
-								
-										
-				};
-				return false;	
+					
+			strcpy(reinterpret_cast<char*>(pkValue),kValue.c_str());
+			return true;															
+											
+	};
+	
+	return false;	
 }
 
 

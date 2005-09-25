@@ -30,6 +30,11 @@ P_WaterRender::P_WaterRender()
 	SetMaterial("water.zmt");	
 }
 
+void P_WaterRender::Init()
+{
+	GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
+}
+
 void P_WaterRender::SetMaterial(const string& strMaterial)
 {
 	m_pkMaterial->SetRes(strMaterial);
@@ -54,6 +59,7 @@ void P_WaterRender::Update()
 
 	kMin.Set(kPos.x-m_kSize.x,kPos.y-m_kSize.y,kPos.z-m_kSize.z);
 	kMax.Set(kPos.x+m_kSize.x,kPos.y+m_kSize.y,kPos.z+m_kSize.z);
+	
 	
 	
 	//frustum culling
@@ -159,13 +165,12 @@ void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read(m_iStep);
 	pkNetPacket->Read_Str(m_strMaterial);	
 	SetMaterial(m_strMaterial);
+	GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
 }
 
 
 void P_WaterRender::Save(ZFIoInterface* pkPackage)
 {
-	
-
 	pkPackage->Write(m_kSize);
 	pkPackage->Write(m_iStep);
 	pkPackage->Write(m_fWave);
@@ -183,6 +188,7 @@ void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read(m_fWave);
 		pkPackage->Read_Str(m_strMaterial);	
 		SetMaterial(m_strMaterial);
+		GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
 	}
 	else
 	{
@@ -190,6 +196,7 @@ void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read(m_iStep);
 		pkPackage->Read_Str(m_strMaterial);	
 		SetMaterial(m_strMaterial);		
+		GetEntity()->SetLocalAABB(-m_kSize,m_kSize);		
 	}
 
 }
@@ -220,7 +227,8 @@ vector<PropertyValues> P_WaterRender::GetPropertyValues()
 
 bool P_WaterRender::HandleSetValue( const string& kValueName ,const string& kValue )
 {
-	if(strcmp(kValueName.c_str(), "material") == 0) {
+	if(kValueName == "material")
+	{
 		SetMaterial(kValue);		
 		return true;
 	}
@@ -228,6 +236,12 @@ bool P_WaterRender::HandleSetValue( const string& kValueName ,const string& kVal
 	return false;
 }
 
+void P_WaterRender::HaveSetValue( const string& kValueName)
+{
+	if(kValueName == "size")
+		GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
+
+}
 
 
 Property* Create_WaterRenderProperty()

@@ -36,13 +36,13 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
-		
+		void HaveSetValue( const string& kValueName);		
 		
 		void DrawSurface();
 		
 	public:
 		P_WaterRender();
-		
+		void Init();
 
 		void SetMaterial(const string& strMaterial);
 		
