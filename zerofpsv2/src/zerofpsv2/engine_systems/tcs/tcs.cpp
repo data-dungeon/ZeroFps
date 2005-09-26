@@ -11,7 +11,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fMinForce = 		0.2;	
 	m_fSleepLinVel = 	0.5;
 	m_fSleepRotVel = 	0.3;
-	m_fMaxVel = 		10.0;
+	m_fMaxVel = 		15.0;
 	m_fTimeSlice = 	2.0;
 	m_fGravity =		9.84;
 	
@@ -36,7 +36,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	//RegisterVariable("p_tcsminforce",	&m_fMinForce,CSYS_FLOAT);
 	//RegisterVariable("p_tcssleeplinvel",&m_fSleepLinVel,CSYS_FLOAT);
 	//RegisterVariable("p_tcssleeprotvel",&m_fSleepRotVel,CSYS_FLOAT);
-	RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);
+// 	RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);
 	
 	RegisterVariable("p_tcssleeptime",	&m_fSleepTime,CSYS_FLOAT);
 	RegisterVariable("p_tcscolit",		&m_iCollisionIterations,CSYS_INT);
@@ -536,7 +536,8 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 		
 		
 	//bounce	
-	float fBounce = pkCol->pkBody1->m_fBounce * pkCol->pkBody2->m_fBounce;
+// 	float fBounce = pkCol->pkBody1->m_fBounce * pkCol->pkBody2->m_fBounce;
+	float fBounce = Max(pkCol->pkBody1->m_fBounce,pkCol->pkBody2->m_fBounce);
 	
 	if(bNoBounce)
 		fBounce = 0.1;
@@ -584,19 +585,16 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 		
 				
 		//check if already solved
-		int iLoops = 0;
-		while(	pkCol->kNormals[i].Dot(
-				( (pkCol->pkBody1->m_kLinearVelocity-pkCol->pkBody2->m_kLinearVelocity) + 
-				(-pkCol->pkBody1->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos) - 
-				-pkCol->pkBody2->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos)) )) < 0	)
-		{					
-			iLoops++;			
-			if(iLoops >= 5)			
-				break;
-		
-			//if(iLoops > 1)
-			//	j*= 2.0;
-				
+// 		int iLoops = 0;
+// 		while(	pkCol->kNormals[i].Dot(
+// 				( (pkCol->pkBody1->m_kLinearVelocity-pkCol->pkBody2->m_kLinearVelocity) + 
+// 				(-pkCol->pkBody1->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos) - 
+// 				-pkCol->pkBody2->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos)) )) < 0	)
+// 		{					
+// 			iLoops++;			
+// 			if(iLoops >= 5)			
+// 				break;
+						
 			// APPLY IMPULSES					
 			if( (!pkCol->pkBody1->m_bStatic) && (!pkCol->pkBody1->m_bTempStatic) && (pkCol->pkBody1->m_bActive) )
 			{		
@@ -625,7 +623,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 					pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],kTangent * (j * fFriction) ,false);
 				}
 			}						
-		}
+// 		}
 	}
 
 	

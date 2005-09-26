@@ -49,7 +49,7 @@ P_Tcs::P_Tcs()
 	m_iGroup=				0;
 	m_bOnGround=			false;
 	m_bActiveMoment =		true;
-	m_fBounce =				1;
+	m_fBounce =				0.0;
 	m_fFriction = 			0.5;
 	m_bSleeping = 			false;
 	m_bCantSleep = 		false;
@@ -327,8 +327,7 @@ void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);						
 		
 			break;
-		}			
-		
+		}					
 	}					
 }
 
