@@ -132,6 +132,7 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	g_iMadLOD					= true;
 
 	g_iNumOfFrames				= 0;
+	m_bProfileMode				= 0;
 
 	// Register Variables
 	RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
@@ -167,7 +168,7 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
 	RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
 	
-	RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL);
+	RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL, CSYS_FLAG_SRC_CMDLINE);
 	
 	
 	// Register Commands
@@ -187,6 +188,7 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	Register_Cmd("shot",FID_SCREENSHOOT);	
 	Register_Cmd("mass",FID_MASSSPAWN);	
 	Register_Cmd("pos",FID_POS);	
+	Register_Cmd("profmode",FID_PROFILEMODE);	
 	
 }
 
@@ -653,11 +655,16 @@ void ZSSZeroFps::Update_System()
 	//set maximum number of loops, dont know if this is realy that good...but what the hell
 	if(iLoops > 10)
 	{
-		//cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
+		cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
 		iLoops = 10;
 	}
 	
-	
+	/*
+	if(iLoops > 1)
+	{
+		cout << "Normal Updates: " << iLoops << endl;
+	}*/
+		
 
 	/*
 	//calc real systemfps  (for debuging)
@@ -790,8 +797,14 @@ void ZSSZeroFps::MainLoop(void)
 		else
 		{
 			//current time
-			m_fEngineTime = float((SDL_GetTicks()/1000.0));
-			 			 
+			if(m_bProfileMode)
+			{
+				m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;	
+				m_fEngineTime += m_fSystemUpdateFpsDelta;
+			}
+			else
+				m_fEngineTime = float((SDL_GetTicks()/1000.0));
+
 			//check if application is minimized
 			m_bMinimized = ( !(SDL_GetAppState() & SDL_APPACTIVE) );	
 
@@ -931,7 +944,9 @@ void ZSSZeroFps::Swap(void)
 	
 #ifdef RUNPROFILE
 	g_iNumOfFrames++;
-	EndProfile(1,2,3);
+
+	if(m_bProfileMode && g_iNumOfFrames >= 2000)
+		EndProfile(1,2,3);
 #endif
 }
 
@@ -1114,6 +1129,11 @@ void ZSSZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	string	strMad("");
 
 	switch(cmdid) {
+		case FID_PROFILEMODE:
+			cout << "********************* Setting mode profile " << endl;
+			m_bProfileMode = true;
+			break;
+
 		case FID_SETDISPLAY:
 			m_pkRender->SetDisplay();
 			break;
@@ -2062,6 +2082,9 @@ void ZSSZeroFps::UpdateCamera()
 
 void ZSSZeroFps::StartProfile(int iGaa1, int iGaa2, int iGaa3)
 {
+	if(!m_bProfileMode)
+		return;
+
 	Matrix4 kNisse;
 	kNisse.Identity();
 	int iSmurfa[10];
@@ -2074,9 +2097,6 @@ void ZSSZeroFps::StartProfile(int iGaa1, int iGaa2, int iGaa3)
 
 void ZSSZeroFps::EndProfile(int iGaa1, int iGaa2, int iGaa3)
 {
-	return;
-	if(g_iNumOfFrames <= 2000)
-		return;
 
 	Matrix4 kNisse;
 	kNisse.Identity();

@@ -124,7 +124,8 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 			FID_DEV_TOGGLE,	// Show/hide a devpage
 			FID_SCREENSHOOT,	// Take screenshot at end of frame
 			FID_MASSSPAWN,		// Some weird shit
-			FID_POS 				// Dumps x,y,z of camera
+			FID_POS, 			// Dumps x,y,z of camera
+			FID_PROFILEMODE,
 		};
 
 		ZFVersion		m_kVersion;
@@ -144,6 +145,8 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		float				m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 			m_fSystemUpdateTime;				// last system update
 		
+		bool				m_bProfileMode;
+
 		//network
 		bool				m_bSyncNetwork;
 		float				m_fNetworkUpdateFps;				// number of network updates each second

@@ -10,16 +10,24 @@ class P_CharacterProperty;
 
 using namespace std;
 
+
+
+
+/**	\brief Sets the current state of the AI
+
+		Bhöa sdsjdf sdfkhsdk fjskadgfasi saeyfgwefg sdsadfgh -.		
+*/
 enum MCOMMON_API AI_STATES
 {
-	eAI_STATE_NONE 		=	0,
+	eAI_STATE_NONE 		=	0,	
 	eAI_STATE_RANDOMWALK =	1,
 	eAI_STATE_LOOKAT		=	2,
-	eAI_STATE_CHASE		=	3,
-	eAI_STATE_ATTACK 		=	5,
+	eAI_STATE_CHASE		=	3,		/// AI is following a target.
+	eAI_STATE_ATTACK 		=	5,		/// AI is fighting a target.
 	eAI_STATE_GUARD 		=	4,
-	eAI_STATE_DEAD			=	6,
+	eAI_STATE_DEAD			=	6,		/// Ai is dead and should do nothing.
 	eAI_STATE_AVOIDING	=	7,
+	eAI_STATE_SIT			=  8,		/// Sit down.
 
 };
 

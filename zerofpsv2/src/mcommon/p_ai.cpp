@@ -12,6 +12,10 @@
 
 using namespace std;
 
+int	g_iDefineStateGuard	= eAI_STATE_GUARD;
+int	g_iDefineStateWalk   = eAI_STATE_RANDOMWALK;
+int	g_iDefineStateSit		= eAI_STATE_SIT;
+
 #define EVENT_Update			1
 #define EVENT_Enter			2
 #define EVENT_Exit			3
@@ -402,6 +406,14 @@ bool P_AI::States(int iEvent, int iState)
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_DEAD");
 
 			OnUpdate
+
+		State(eAI_STATE_SIT)
+			OnEnter
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_SIT");
+				m_pkCharacterControl->Sit();	
+				
+			OnUpdate
+
 	EndStateMachine
 }
 
@@ -684,7 +696,7 @@ namespace SI_P_AI
 		return 0;			
 	}
 
-/**	\fn SetAIState( Entity, iState)
+/**	\fn SetAIState( Entity, AI_STATES)
 		\brief Sets the current state of the AI
 		\relates AI
 */
@@ -725,7 +737,10 @@ void Register_P_AI(ZSSZeroFps* pkZeroFps)
 	// Register Property Script Interface
  	g_pkScript->ExposeFunction("SetAITarget",	SI_P_AI::SetAITargetLua);
 	g_pkScript->ExposeFunction("SetAIState",	SI_P_AI::SetAIStateLua);
-}
 
+	g_pkScript->ExposeVariable("eAI_STATE_GUARD",			&g_iDefineStateGuard, tINT ,NULL);
+	g_pkScript->ExposeVariable("eAI_STATE_RANDOMWALK",		&g_iDefineStateWalk, tINT ,NULL);
+	g_pkScript->ExposeVariable("eAI_STATE_SIT",				&g_iDefineStateSit, tINT ,NULL);
+}
 
 

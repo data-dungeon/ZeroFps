@@ -83,7 +83,9 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = 
 FILE_PATTERNS          = si_*.cpp \
+						 si_*.h \
                          p_*.cpp \
+                         p_*.h \
                          entity.cpp \
                          zmaterial.cpp \
                          doxy.cpp

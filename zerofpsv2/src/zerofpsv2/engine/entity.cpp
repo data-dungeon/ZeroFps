@@ -2317,6 +2317,15 @@ bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObje
 	Scriptfunctions that modify one entity. Almost all of them takes entity to modify as first parameter.
 */
 
+/**	\var EntityId
+ 		\relates SIEntity
+		\brief This is a id to a entity.
+
+		Bhla Bhla Bhla Bhla
+*/
+
+
+
 namespace SI_Entity
 {
 // Property Mangment ******************************************************************************************************
@@ -2592,10 +2601,10 @@ int IsLocalSet(lua_State* pkLua)
 	and zero vector for Vector.
 */
 
-/**	\fn GetLocal( EntityID, VariableName)
+/**	\fn GetLocal( EntityId Entity , VariableName)
  	\relates SIEntity
    \brief Get value of a variable stored in Entity.
-   \param EntityID Entity to get variable from.
+   \param Entity Entity to get variable from.
    \param VariableName Name of variable.
 	\return Return Return value of variable
 
