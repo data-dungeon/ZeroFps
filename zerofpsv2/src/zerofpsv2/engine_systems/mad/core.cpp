@@ -247,8 +247,8 @@ void Mad_Core::SetupBonePose(BoneTransform* pkBones)
 {
 	unsigned int i;
 
-	for (i = 0; i < m_kSkelleton.size(); i++)
-		g_FullBoneTransform[i].Identity();
+//	for (i = 0; i < m_kSkelleton.size(); i++)	// pMad1
+//		g_FullBoneTransform[i].Identity();
 
 	if( iActiveAnimation == MAD_NOANIMINDEX) {
 		return;
@@ -322,7 +322,7 @@ void Mad_Core::GenerateBoneMatris(BoneTransform* pkBones)
 	{
 		int iId = kJointId[i];
 
-		kMadkBoneMatrix.Identity();
+		//kMadkBoneMatrix.Identity();	// pMad1
 		kMadkBoneMatrix = pkBones[ iId ].m_kRot.Inverse();
 		kMadkBoneMatrix.SetPos(pkBones[ iId ].m_kPos);
 
@@ -624,11 +624,25 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 	Vector3* pkNormal = &pkRawMesh->akFrames[0].akNormal[0];
  
 	int* piBoneConnection = &pkRawMesh->akBoneConnections[0];
+	Matrix4* pkMat;
 
 	for(int i = 0; i<pkRawMesh->kHead.iNumOfVertex; i++) 
 	{
-		*pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );
-		*pkNormalDst = g_FullBoneTransform[*piBoneConnection].VectorRotate( *pkNormal );
+		// p Mad 2
+		// *pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );
+		// *pkNormalDst = g_FullBoneTransform[*piBoneConnection].VectorRotate( *pkNormal ); 
+
+		// Calc vertex position.
+		pkMat = &g_FullBoneTransform[*piBoneConnection];
+		pkVertexDst->x = pkVertex->x * pkMat->RowCol[0][0] + pkVertex->y * pkMat->RowCol[1][0] + pkVertex->z * pkMat->RowCol[2][0] + pkMat->RowCol[3][0];
+		pkVertexDst->y = pkVertex->x * pkMat->RowCol[0][1] + pkVertex->y * pkMat->RowCol[1][1] + pkVertex->z * pkMat->RowCol[2][1] + pkMat->RowCol[3][1];
+		pkVertexDst->z = pkVertex->x * pkMat->RowCol[0][2] + pkVertex->y * pkMat->RowCol[1][2] + pkVertex->z * pkMat->RowCol[2][2] + pkMat->RowCol[3][2];
+		
+		// Calc normal for vertex.
+		pkNormalDst->x = pkNormal->x * pkMat->RowCol[0][0] + pkNormal->y * pkMat->RowCol[1][0] + pkNormal->z * pkMat->RowCol[2][0];
+		pkNormalDst->x = pkNormal->x * pkMat->RowCol[0][1] + pkNormal->y * pkMat->RowCol[1][1] + pkNormal->z * pkMat->RowCol[2][1];
+		pkNormalDst->x = pkNormal->x * pkMat->RowCol[0][2] + pkNormal->y * pkMat->RowCol[1][2] + pkNormal->z * pkMat->RowCol[2][2];
+
 
 		pkVertexDst++;
 		pkNormalDst++;
