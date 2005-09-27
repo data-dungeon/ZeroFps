@@ -14,7 +14,6 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../mcommon/ml_netmessages.h"
-
 #include "../mcommon/p_characterproperty.h"
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_container.h"
@@ -27,6 +26,7 @@
 #include "gui_equipwnd.h"
 #include "skillbar.h"
 #include "../mcommon/mainmcommon.h"
+#include "../zerofpsv2/basic/math.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -1286,7 +1286,7 @@ void MistClient::Input()
 						kDir.y = 0;
 						
 						fAngle = Vector3(0,0,1).Angle(kDir);
-						fAngle = -RadToDeg(fAngle);
+						fAngle = -Math::RadToDeg(fAngle);
 						
 						if(kDir.x > 0)
 							fAngle = fabs(fAngle);	

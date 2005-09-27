@@ -7,6 +7,7 @@
 #include "ml_netmessages.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
+#include "../zerofpsv2/basic/math.h"
 
 #include "p_ai.h"
 
@@ -266,7 +267,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 				kOwnerDir.Normalize();
 				kDir.Normalize();
 				
-				if(RadToDeg(kOwnerDir.Angle(kDir)) > 30)
+				if(Math::RadToDeg(kOwnerDir.Angle(kDir)) > 30)
 					return 4;				
 			}
 		}
@@ -1417,7 +1418,7 @@ bool P_CharacterProperty::AddSkillPoint(const string& strSkillName)
 
 void P_CharacterProperty::OnLevelUP()
 {
-	Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
+	Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
 
  	SendPointText("LEVEL UP!",m_pkEntity->GetWorldPosV()+kRandomPos,3);
 	SendTextToClient("You are now level "+IntToString((int)m_kCharacterStats.GetTotal("Level")));	

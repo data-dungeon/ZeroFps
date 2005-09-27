@@ -1,5 +1,6 @@
 #include "p_dungeongen.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_pfmesh.h"
+#include "../zerofpsv2/basic/math.h"
 
 P_DungeonGen::P_DungeonGen()
 {
@@ -95,9 +96,9 @@ void P_DungeonGen::GenerateDungeon()
 	
 	for(int i = 0;i<iTiles/50;i++)
 	{
-	 	int iX = Randomi(m_iWidth);
- 		int iY = Randomi(m_iHeight);
-		int iSize = Randomi(4)+2;
+	 	int iX = Math::Randomi(m_iWidth);
+ 		int iY = Math::Randomi(m_iHeight);
+		int iSize = Math::Randomi(4)+2;
 		
 		if(i == 0)
 		{
@@ -147,7 +148,7 @@ void P_DungeonGen::GenerateDungeon()
 			int iOtherRoom = i;
 	 		
 	 		while(iOtherRoom == i)
-				iOtherRoom = Randomi(kRooms.size());
+				iOtherRoom = Math::Randomi(kRooms.size());
 						
 			MakeCorridor(	kRooms[i].first,kRooms[i].second,
 								kRooms[iOtherRoom].first,kRooms[iOtherRoom].second);

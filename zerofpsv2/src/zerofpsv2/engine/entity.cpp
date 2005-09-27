@@ -5,6 +5,7 @@
 #include "zerofps.h"
 #include "../engine_systems/propertys/p_track.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h" 
+#include "../basic/math.h"
 
 using namespace ObjectManagerLua;
 
@@ -1497,17 +1498,17 @@ void Entity::SetWorldRotV(Vector3 kRot)
 	Vector3 	newlocal = GetLocalRotV();	
 	Vector3 diff;
 	
-	kRot.x = Clamp(kRot.x,0,360);
-	kRot.y = Clamp(kRot.y,0,360);
-	kRot.z = Clamp(kRot.z,0,360);
+	kRot.x = Math::Clamp(kRot.x,0,360);
+	kRot.y = Math::Clamp(kRot.y,0,360);
+	kRot.z = Math::Clamp(kRot.z,0,360);
 
 	diff.x = kRot.x - crot.x;
 	diff.y = kRot.y - crot.y;	
 	diff.z = kRot.z - crot.z;	
 	
-	diff.x = Clamp(diff.x,0,360);
-	diff.y = Clamp(diff.y,0,360);
-	diff.z = Clamp(diff.z,0,360);
+	diff.x = Math::Clamp(diff.x,0,360);
+	diff.y = Math::Clamp(diff.y,0,360);
+	diff.z = Math::Clamp(diff.z,0,360);
 	
 	newlocal.x += diff.x;
 	newlocal.y += diff.y;	

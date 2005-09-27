@@ -3,6 +3,7 @@
 #include "../zerofpsv2/basic/globals.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
 //#include "../zerofpsv2/engine_systems/script_interfaces/si_std.h"
+#include "../zerofpsv2/basic/math.h"
 
 using namespace ObjectManagerLua;
 
@@ -103,8 +104,8 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		Stats* pkStatsA = &pkAttacker->m_kCharacterStats;
 		Stats* pkStatsD = &pkDefender->m_kCharacterStats;
 	
-		float fRandA = Randomf(pkStatsA->GetTotal("Attack")  );
-		float fRandD = Randomf(pkStatsD->GetTotal("Defense") );
+		float fRandA = Math::Randomf(pkStatsA->GetTotal("Attack")  );
+		float fRandD = Math::Randomf(pkStatsD->GetTotal("Defense") );
 	
 //  		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
 // 		cout<<"randomized "<<fRandA<< " VS "<<fRandD<<endl;
@@ -112,7 +113,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		if(fRandA <= fRandD)
 		{
 			//cout<<"MISS"<<endl;
-			Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
+			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
 			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
 			
 			//tell defender its been missed
@@ -126,31 +127,31 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		
 			//calculate damage	
 			int iSlashing 	=int(pkStatsA->GetTotal("DamageSlashingMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamageSlashingMax") - pkStatsA->GetTotal("DamageSlashingMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamageSlashingMax") - pkStatsA->GetTotal("DamageSlashingMin") +1)));
 			int iCrushing 	=int(pkStatsA->GetTotal("DamageCrushingMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamageCrushingMax") - pkStatsA->GetTotal("DamageCrushingMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamageCrushingMax") - pkStatsA->GetTotal("DamageCrushingMin") +1)));
 			int iPiercing 	=int(pkStatsA->GetTotal("DamagePiercingMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamagePiercingMax") - pkStatsA->GetTotal("DamagePiercingMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamagePiercingMax") - pkStatsA->GetTotal("DamagePiercingMin") +1)));
 			int iFire 		=int(pkStatsA->GetTotal("DamageFireMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamageFireMax") - pkStatsA->GetTotal("DamageFireMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamageFireMax") - pkStatsA->GetTotal("DamageFireMin") +1)));
 			int iIce 		=int(pkStatsA->GetTotal("DamageIceMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamageIceMax") - pkStatsA->GetTotal("DamageIceMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamageIceMax") - pkStatsA->GetTotal("DamageIceMin") +1)));
 			int iLightning	=int(pkStatsA->GetTotal("DamageLightningMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamageLightningMax") - pkStatsA->GetTotal("DamageLightningMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamageLightningMax") - pkStatsA->GetTotal("DamageLightningMin") +1)));
 			int iMagic	=	int(pkStatsA->GetTotal("DamageMagicMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamageMagicMax") - pkStatsA->GetTotal("DamageMagicMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamageMagicMax") - pkStatsA->GetTotal("DamageMagicMin") +1)));
 			int iPoison	=	int(pkStatsA->GetTotal("DamagePoisonMin") + 
-								Randomi(int(pkStatsA->GetTotal("DamagePoisonMax") - pkStatsA->GetTotal("DamagePoisonMin") +1)));
+								Math::Randomi(int(pkStatsA->GetTotal("DamagePoisonMax") - pkStatsA->GetTotal("DamagePoisonMin") +1)));
 			
 			//absorb	
-			iSlashing 	-= Randomi((int)pkStatsD->GetTotal("AbsorbSlashing"));
-			iCrushing 	-= Randomi((int)pkStatsD->GetTotal("AbsorbCrushing"));
-			iPiercing 	-= Randomi((int)pkStatsD->GetTotal("AbsorbPiercing"));
-			iFire 		-= Randomi((int)pkStatsD->GetTotal("AbsorbFire"));
-			iIce 			-= Randomi((int)pkStatsD->GetTotal("AbsorbIce"));
-			iLightning 	-= Randomi((int)pkStatsD->GetTotal("AbsorbLightning"));
-			iMagic 		-= Randomi((int)pkStatsD->GetTotal("AbsorbMagic"));
-			iPoison 		-= Randomi((int)pkStatsD->GetTotal("AbsorbPoison"));
+			iSlashing 	-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbSlashing"));
+			iCrushing 	-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbCrushing"));
+			iPiercing 	-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbPiercing"));
+			iFire 		-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbFire"));
+			iIce 			-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbIce"));
+			iLightning 	-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbLightning"));
+			iMagic 		-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbMagic"));
+			iPoison 		-= Math::Randomi((int)pkStatsD->GetTotal("AbsorbPoison"));
 			
 			iSlashing = (int)Max(iSlashing,0);
 			iCrushing = (int)Max(iCrushing,0);
@@ -180,7 +181,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 			pkDefender->SetLastDamageFrom(iAttacker);
 			pkStatsD->ChangeStat("Health",-iTotal);		
 
-			Vector3 kRandomPos(Randomf(0.5)-0.25,Randomf(0.5)-0.25,Randomf(0.5)-0.25);
+			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
 			if(iTotal<=0)
 				SendPointText("NoDmg",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
 			else

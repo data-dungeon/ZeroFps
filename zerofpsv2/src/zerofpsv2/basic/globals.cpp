@@ -13,8 +13,8 @@
 using namespace std;
 
 
-#define NRDEG_IN_ONE_RAD	57.29577951
-#define NRRAD_IN_ONE_DEG	0.0174532952
+//#define NRDEG_IN_ONE_RAD	57.29577951
+//#define NRRAD_IN_ONE_DEG	0.0174532952
 
 extern ZFSystem g_ZFObjSys;
 
@@ -116,6 +116,7 @@ string BASIC_API IntToString(int iValue)
 	return temp;
 }
 	
+/*
 float BASIC_API DegToRad(float fAngle)
 {
 	return float((fAngle * NRRAD_IN_ONE_DEG));
@@ -165,7 +166,7 @@ float GetYawAngle(Vector3 kDir)
 {
 	float fAngle =  float(atan2(kDir.x, - kDir.z));
 	return RadToDeg(fAngle);
-}
+}*/
 
 //char LogFormatTxt[4096];	
 char g_szFormatText[4096];	
@@ -185,6 +186,7 @@ void g_Logf(const char *fmt, ...)
 	g_ZFObjSys.Log(g_szFormatText);
 }
 
+/*
 bool equal_f(float a, float b)
 {
 	return( (a > (b - epsilon) ) && (a < (b + epsilon)) );
@@ -212,7 +214,7 @@ float Clamp(float fValue,float fBotom,float fTop)
 	}
 
 	return fValue;
-}
+}*/
 
 Vector3 RndColor()
 {
@@ -224,19 +226,19 @@ Vector3 RndColor()
 
 	return kColor;
 }
-
+/*
 float round2(float val)
 {
 /*	int lower = (int) val;
 	if( (val - lower) > 0.499f)
 		return (float) lower + 1.0f;
-	return (float) lower;*/
+	return (float) lower;
 
 /*	if(val < 0)
 		return -((float) (int) (fabs(val) + 0.5f));
 	else
 		return (float) (int) (val + 0.5f);
-*/		
+		
 
 	if(val < 0)
 		return (float) (int) (val - 0.5f);
@@ -257,7 +259,7 @@ int Randomi(int iInterval)
 	float r = (float)rand() / (float)(RAND_MAX);
 	return int(r * iInterval );
 }
-
+*/
 
 void ZFError(const char *fmt, ...)
 {

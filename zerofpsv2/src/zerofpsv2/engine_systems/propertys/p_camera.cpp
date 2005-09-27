@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../../engine/camera.h"
 #include "../../engine/zerofps.h"
+#include "../../basic/math.h"
 
 #define CHASE_CAM_DISTANCE	5 
 
@@ -230,7 +231,7 @@ void P_Camera::Update()
 
 				
 			case CAM_TYPECHASE:
-				kYawVector = GetYawVector2(m_pkEntity->GetWorldRotV().y);
+				kYawVector = Math::GetYawVector2(m_pkEntity->GetWorldRotV().y);
 
 				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() - (kYawVector * CHASE_CAM_DISTANCE) + 
 					Vector3(0,CHASE_CAM_DISTANCE,0));
@@ -240,7 +241,7 @@ void P_Camera::Update()
 				break;
 
 			case CAM_TYPEDYNAMICISO:
-				kYawVector = GetYawVector2(m_kDynamicIso.y);
+				kYawVector = Math::GetYawVector2(m_kDynamicIso.y);
 
 				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() - (kYawVector * CHASE_CAM_DISTANCE) + 
 					Vector3(0,CHASE_CAM_DISTANCE,0));

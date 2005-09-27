@@ -2,6 +2,7 @@
 #include "../../basic/quaternion.h"
 #include "../../basic/zfassert.h"
 #include "../../basic/zfsystem.h"
+#include "../../basic/math.h"
 
 
 
@@ -640,8 +641,8 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 		
 		// Calc normal for vertex.
 		pkNormalDst->x = pkNormal->x * pkMat->RowCol[0][0] + pkNormal->y * pkMat->RowCol[1][0] + pkNormal->z * pkMat->RowCol[2][0];
-		pkNormalDst->x = pkNormal->x * pkMat->RowCol[0][1] + pkNormal->y * pkMat->RowCol[1][1] + pkNormal->z * pkMat->RowCol[2][1];
-		pkNormalDst->x = pkNormal->x * pkMat->RowCol[0][2] + pkNormal->y * pkMat->RowCol[1][2] + pkNormal->z * pkMat->RowCol[2][2];
+		pkNormalDst->y = pkNormal->x * pkMat->RowCol[0][1] + pkNormal->y * pkMat->RowCol[1][1] + pkNormal->z * pkMat->RowCol[2][1];
+		pkNormalDst->z = pkNormal->x * pkMat->RowCol[0][2] + pkNormal->y * pkMat->RowCol[1][2] + pkNormal->z * pkMat->RowCol[2][2];
 
 
 		pkVertexDst++;
@@ -873,8 +874,8 @@ void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis,
 	strcpy(kNewControll.m_szJointName, szJoint);
 	kNewControll.m_iJointID = GetJointID(szJoint);
 	kNewControll.m_eAxis = eAxis;
-	kNewControll.m_fMin = DegToRad(fMin);
-	kNewControll.m_fMax = DegToRad(fMax);
+	kNewControll.m_fMin = Math::DegToRad(fMin);
+	kNewControll.m_fMax = Math::DegToRad(fMax);
 	kNewControll.m_fValue = 0.0;
 
 	if(kNewControll.m_iJointID == -1) {

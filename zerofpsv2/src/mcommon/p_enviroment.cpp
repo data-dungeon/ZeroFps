@@ -1,5 +1,6 @@
 #include "p_enviroment.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+#include "../zerofpsv2/basic/math.h"
 
 const float MAX_VOL = 0.25f;
 
@@ -317,9 +318,9 @@ void P_Enviroment::MakeThunder()
 	static float fRate = 30;
 	static float fDistance = 2.0;
 
-	static float fNextFlash = m_pkZeroFps->GetEngineTime() + Randomf(fRate);;
+	static float fNextFlash = m_pkZeroFps->GetEngineTime() + Math::Randomf(fRate);;
 	static float fNextThunder = -1;
-	static Vector3 kNextPos = Vector3(Randomf(1)-0.5,1,Randomf(1)-0.5);
+	static Vector3 kNextPos = Vector3(Math::Randomf(1)-0.5,1,Math::Randomf(1)-0.5);
 
 
 
@@ -328,14 +329,14 @@ void P_Enviroment::MakeThunder()
 		float fDiff = m_pkZeroFps->GetEngineTime() - fNextFlash;
 		if(fDiff > 0.5) 
 		{
-			fNextFlash = m_pkZeroFps->GetEngineTime() + Randomf(fRate);
-			kNextPos = Vector3(Randomf(1)-0.5,1,Randomf(1)-0.5);
+			fNextFlash = m_pkZeroFps->GetEngineTime() + Math::Randomf(fRate);
+			kNextPos = Vector3(Math::Randomf(1)-0.5,1,Math::Randomf(1)-0.5);
 		}
 		else
 		{	
-			fNextThunder = m_pkZeroFps->GetEngineTime() +1.0 + Randomf(fDistance);
+			fNextThunder = m_pkZeroFps->GetEngineTime() +1.0 + Math::Randomf(fDistance);
 		
-			float fL = Randomf(0.5);
+			float fL = Math::Randomf(0.5);
 			float fFade = Max(1.0 - (fDiff / 0.5),0.0);
 	
 			LightSource* pkSun = m_pkLight->GetSunPointer();	
@@ -349,7 +350,7 @@ void P_Enviroment::MakeThunder()
 	if(fNextThunder != -1 && m_pkZeroFps->GetEngineTime() > fNextThunder)
 	{
 		fNextThunder = -1;
-		m_pkAudioSystem->PlayAudio(m_kThunderSounds[Randomi(m_kThunderSounds.size())],Vector3(0,0,0),Vector3(0,0,0),ZFAUDIO_2D,0.5);
+		m_pkAudioSystem->PlayAudio(m_kThunderSounds[Math::Randomi(m_kThunderSounds.size())],Vector3(0,0,0),Vector3(0,0,0),ZFAUDIO_2D,0.5);
 	}
 	
 
@@ -772,7 +773,7 @@ void P_Enviroment::DrawSun()
 	kRot.Transponse();
 	Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));	
 	float fAmp = 0;
-	float fAngle = RadToDeg(kDir.Angle(m_kCurrentEnvSetting.m_kSunPos.Unit()));
+	float fAngle = Math::RadToDeg(kDir.Angle(m_kCurrentEnvSetting.m_kSunPos.Unit()));
 	
 	//check if  angle is lower than maxangle
 	if( fAngle < fMaxAngle)
@@ -830,7 +831,7 @@ void P_Enviroment::MakeRainSplashes()
 			
 			for(int j = 0;j < m_kCurrentEnvSetting.m_iRain;j++)
 			{
-				kDropStart = kCenterPos + Vector3(  Randomf(12)-6.0,20,Randomf(12)-6.0);
+				kDropStart = kCenterPos + Vector3(  Math::Randomf(12)-6.0,20,Math::Randomf(12)-6.0);
 				
 				float fTop = -999999;
 				for(unsigned int i = 0;i < kObjects.size() ;i++)
@@ -864,7 +865,7 @@ void P_Enviroment::MakeRainSplashes()
 			for(int j = 0;j < iAmount;j++)
 			{
 			
-				kDropStart = kCenterPos + Vector3(  Randomf(12)-6.0,20,Randomf(12)-6.0);
+				kDropStart = kCenterPos + Vector3(  Math::Randomf(12)-6.0,20,Math::Randomf(12)-6.0);
 				
 				float fTop = -999999;
 				for(unsigned int i = 0;i < kObjects.size() ;i++)
@@ -891,7 +892,7 @@ void P_Enviroment::MakeRainSplashes()
 					kPos.y += 0.1;
 					
 					
-					m_kDrops[Randomi(m_kDrops.size())] = kPos;
+					m_kDrops[Math::Randomi(m_kDrops.size())] = kPos;
 
 				}		
 			}		

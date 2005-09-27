@@ -4,11 +4,10 @@
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include <iostream>
- 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
- 
 #include "p_charactercontrol.h"
 #include "p_characterproperty.h"
+#include "../zerofpsv2/basic/math.h"
 
 using namespace std;
 
@@ -73,7 +72,7 @@ P_AI::~P_AI()
 
 void P_AI::Init()
 {
-	m_fTime = m_pkZeroFps->GetEngineTime() + Randomf(5);
+	m_fTime = m_pkZeroFps->GetEngineTime() + Math::Randomf(5);
 
 }
 
@@ -85,8 +84,8 @@ void P_AI::DrawCircle(float fRadius, char* szEditColor)
 
 	for(int i=0; i<360; i+=(int)12.25) 
 	{
-		kVertex.x = float( cos(DegToRad( float(i) )) * fRadius );
-		kVertex.z = float( sin(DegToRad( float(i) )) * fRadius );
+		kVertex.x = float( cos(Math::DegToRad( float(i) )) * fRadius );
+		kVertex.z = float( sin(Math::DegToRad( float(i) )) * fRadius );
 		kVertex.y = 0;
 		
 		kVertex += kCenterPos;
@@ -127,7 +126,7 @@ void P_AI::Update()
 			return;		
 		}
 		
-		m_pkCharacterControl->SetYAngle(Randomf(360));								
+		m_pkCharacterControl->SetYAngle(Math::Randomf(360));								
 	}
 
 	//get characterproperty
@@ -216,7 +215,7 @@ bool P_AI::States(int iEvent, int iState)
 				{
 				
 					float fRot = m_pkCharacterControl->GetYAngle();				
-					fRot += Randomf(20)-10;
+					fRot += Math::Randomf(20)-10;
 					m_pkCharacterProperty->SetCombatMode(false);
 					m_pkCharacterControl->SetYAngle(fRot);								
 					m_pkCharacterControl->SetControl(eUP,true);

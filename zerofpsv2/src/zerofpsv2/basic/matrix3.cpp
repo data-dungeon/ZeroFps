@@ -3,7 +3,8 @@
 #include "matrix4.h"
 #include "quaternion.h"
 #include "zfassert.h"
-#include <math.h>
+#include <cmath>
+#include "math.h"
 
 using namespace std;
 
@@ -289,13 +290,13 @@ void Matrix3::Scale(const Vector3& kScale)
 
 void Matrix3::Rotate(float fX, float fY, float fZ)
 {
-	RadRotate(DegToRad(fX),DegToRad(fY),DegToRad(fZ));
+	RadRotate(Math::DegToRad(fX),Math::DegToRad(fY),Math::DegToRad(fZ));
 }
 
 
 void Matrix3::Rotate(const Vector3& kRot)
 {
-	RadRotate(DegToRad(kRot.x), DegToRad(kRot.y), DegToRad(kRot.z));
+	RadRotate(Math::DegToRad(kRot.x), Math::DegToRad(kRot.y), Math::DegToRad(kRot.z));
 }
 
 void Matrix3::RadRotate(float fX, float fY, float fZ)
@@ -356,9 +357,9 @@ Vector3 Matrix3::GetRotVector()
 	angle_z  = float(atan2( ftry, ftrx ) * degtorad );
 
 
-	angle_x = Clamp( angle_x, 0, 360 );
-	angle_y = Clamp( angle_y, 0, 360 );
-	angle_z = Clamp( angle_z, 0, 360 );
+	angle_x = Math::Clamp( angle_x, 0, 360 );
+	angle_y = Math::Clamp( angle_y, 0, 360 );
+	angle_z = Math::Clamp( angle_z, 0, 360 );
 
 	return Vector3(angle_x,angle_y,angle_z);
 }

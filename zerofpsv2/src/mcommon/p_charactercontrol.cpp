@@ -3,8 +3,8 @@
 #include "../zerofpsv2/engine_systems/propertys/p_tcstrigger.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_sound.h" 
-
 #include "p_characterproperty.h"
+#include "../zerofpsv2/basic/math.h"
 
 AnimationSet::AnimationSet()
 {
@@ -514,7 +514,7 @@ void P_CharacterControl::RotateTowards(const Vector3& kPos)
 	kDir.y = 0;
 	
 	fAngle = Vector3(0,0,1).Angle(kDir);
-	fAngle = -RadToDeg(fAngle);
+	fAngle = -Math::RadToDeg(fAngle);
 	
 	if(kDir.x > 0)
 		fAngle = fabs(fAngle);	

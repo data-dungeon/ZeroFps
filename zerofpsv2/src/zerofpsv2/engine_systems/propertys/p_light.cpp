@@ -3,6 +3,7 @@
 #include "p_light.h"
 #include "../../engine/entity.h"
 #include "../../basic/zfsystem.h"
+#include "../../basic/math.h"
 
  
 P_Light::P_Light()
@@ -133,7 +134,7 @@ void P_Light::UpdateLightMode()
 				m_fTimer = m_pkZeroFps->GetEngineTime();
 				//float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
 	
-				m_pkLightSource->fQuadratic_Atten = 0.05 + Randomf(0.01);
+				m_pkLightSource->fQuadratic_Atten = 0.05 + Math::Randomf(0.01);
 // 				m_pkLightSource->kDiffuse = Vector3(1,0.8,0.7).Unit();//Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03)).Unit();
 				m_pkLightSource->kDiffuse = Vector3(1,0.7,0.7);
 				m_pkLightSource->kSpecular = m_pkLightSource->kDiffuse;
@@ -149,7 +150,7 @@ void P_Light::UpdateLightMode()
 				m_fTimer = m_pkZeroFps->GetEngineTime();
 				//float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
 	
-				m_pkLightSource->fQuadratic_Atten = 0.3 + Randomf(0.005);
+				m_pkLightSource->fQuadratic_Atten = 0.3 + Math::Randomf(0.005);
 				m_pkLightSource->kDiffuse = Vector3(1,0.8,0.7).Unit();//Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03)).Unit();
 				m_pkLightSource->kSpecular = m_pkLightSource->kDiffuse;
 				

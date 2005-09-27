@@ -62,11 +62,11 @@ float const degtorad = float(57.2957795130823208767981548141052f);
 
 
 // angel funktions
-float BASIC_API DegToRad(float fAngle);				///< Convert a angle in degrees to radians.
+/*float BASIC_API DegToRad(float fAngle);				///< Convert a angle in degrees to radians.
 float BASIC_API RadToDeg(float fAngle);				///< Convert a angle in radians to degrees.
 Vector3 BASIC_API GetYawVector2(float fAngleDeg);
 float BASIC_API GetYawAngle(Vector3 kDir);
-
+*/
 
 //character handling
 void BASIC_API ConvertToLower(string& strText);
@@ -84,13 +84,13 @@ void BASIC_API g_Logf(const char *fmt, ...);
 
 
 // numerical funktions
-int BASIC_API PowerOf2(int iVal);										//returns closest integer whit the power of 2
-float BASIC_API Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
-bool BASIC_API equal_f(float a, float b);
-float BASIC_API round2(float val);										//round value to nearest integer
+//int BASIC_API PowerOf2(int iVal);										//returns closest integer whit the power of 2
+//float BASIC_API Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
+//bool BASIC_API equal_f(float a, float b);
+//float BASIC_API round2(float val);										//round value to nearest integer
 
-float BASIC_API Randomf(float fInterval);
-int BASIC_API Randomi(int iInterval);
+//float BASIC_API Randomf(float fInterval);
+//int BASIC_API Randomi(int iInterval);
 
 //strange funktions =D
 Vector3 BASIC_API RndColor();												//randomize a colorvector...i think

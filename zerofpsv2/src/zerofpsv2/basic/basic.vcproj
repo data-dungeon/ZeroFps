@@ -175,6 +175,9 @@
 				RelativePath=".\line2d.cpp">
 			</File>
 			<File
+				RelativePath=".\math.cpp">
+			</File>
+			<File
 				RelativePath=".\matrix3.cpp">
 			</File>
 			<File
@@ -270,6 +273,9 @@
 			</File>
 			<File
 				RelativePath=".\line2d.h">
+			</File>
+			<File
+				RelativePath=".\math.h">
 			</File>
 			<File
 				RelativePath=".\matrix3.h">

@@ -1,6 +1,7 @@
 #include "zssenviroment.h"
 #include <iostream>
 #include "p_enviroment.h"
+#include "../zerofpsv2/basic/math.h"
 
 //--------Start of envlist
 bool EnvList::Load(const string& strFile)
@@ -333,7 +334,7 @@ void ZSSEnviroment::UpdateEnvList(EnvList* pkEnvList)
 {
 	//randomize a new enviroment
 	
-	int iNew =  Randomi(pkEnvList->m_kEnvSettings.size());				
+	int iNew =  Math::Randomi(pkEnvList->m_kEnvSettings.size());				
 	
 	if(iNew == pkEnvList->m_iCurrent)
 		return;

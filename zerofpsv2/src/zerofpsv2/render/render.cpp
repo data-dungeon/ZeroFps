@@ -5,6 +5,7 @@
 #include "../engine_systems/common/psystemmanager.h"
 #include "../basic/globals.h"
 #include <time.h>
+#include "../basic/math.h"
 
 FILE* pkGlDumpLog;
   
@@ -809,8 +810,8 @@ void ZSSRender::DrawBoundSphere(float fRadius, Vector3)
 	float x,y;
 	glBegin(GL_LINE_LOOP );
 	for(int i=0; i<360; i+=(int)12.25) {
-		x = float( cos(DegToRad( float(i) )) * fRadius );
-		y = float( sin(DegToRad( float(i) )) * fRadius );
+		x = float( cos(Math::DegToRad( float(i) )) * fRadius );
+		y = float( sin(Math::DegToRad( float(i) )) * fRadius );
 		glVertex3f(x,y,0);
 	}
 	

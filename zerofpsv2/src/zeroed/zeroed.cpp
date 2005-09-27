@@ -25,6 +25,7 @@
 #include "../mcommon/mainmcommon.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include <time.h>
+#include "../zerofpsv2/basic/math.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
@@ -525,8 +526,8 @@ void ZeroEd::DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRad
 
 	for(int i=0; i<360; i+=(int)12.25) 
 	{
-		kVertex.x = float( cos(DegToRad( float(i) )) * fInRadius );
-		kVertex.z = float( sin(DegToRad( float(i) )) * fInRadius );
+		kVertex.x = float( cos(Math::DegToRad( float(i) )) * fInRadius );
+		kVertex.z = float( sin(Math::DegToRad( float(i) )) * fInRadius );
 		kVertex.y = h;
 		
 		for(int j = 0;j<kHMaps.size();j++)
@@ -542,8 +543,8 @@ void ZeroEd::DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRad
 	kVertexList.clear();
 	for(int i=0; i<360; i+=(int)12.25) 
 	{
-		kVertex.x = float( cos(DegToRad( float(i) )) * fOutRadius );
-		kVertex.z = float( sin(DegToRad( float(i) )) * fOutRadius );
+		kVertex.x = float( cos(Math::DegToRad( float(i) )) * fOutRadius );
+		kVertex.z = float( sin(Math::DegToRad( float(i) )) * fOutRadius );
 		kVertex.y = h;
 
 		for(int j = 0;j<kHMaps.size();j++)
@@ -1790,9 +1791,9 @@ void ZeroEd::UpdateZoneMarkerPos()
 		
 		if(m_iAutoSnapZoneCorner == -1)
 		{
-			m_kZoneMarkerPos.x = round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x + m_kSnapOffset.x;
-			m_kZoneMarkerPos.y = round2(temp.y/m_kSnapSize.y) * m_kSnapSize.y + m_kSnapOffset.y;
-			m_kZoneMarkerPos.z = round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z + m_kSnapOffset.z;
+			m_kZoneMarkerPos.x = Math::round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x + m_kSnapOffset.x;
+			m_kZoneMarkerPos.y = Math::round2(temp.y/m_kSnapSize.y) * m_kSnapSize.y + m_kSnapOffset.y;
+			m_kZoneMarkerPos.z = Math::round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z + m_kSnapOffset.z;
 			
 			/*
 			m_kZoneMarkerPos.x = (temp.x/m_kSnapSize.x ) * m_kSnapSize.x;
@@ -1850,9 +1851,9 @@ void ZeroEd::UpdateObjectMakerPos()
 	{
 		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMouseDir(false) * 15;
 	
-		m_kObjectMarkerPos.x = round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x;
+		m_kObjectMarkerPos.x = Math::round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x;
 		m_kObjectMarkerPos.y = 0;
-		m_kObjectMarkerPos.z = round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z;
+		m_kObjectMarkerPos.z = Math::round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z;
 	}	
 }
 

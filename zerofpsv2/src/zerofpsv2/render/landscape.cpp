@@ -1,4 +1,5 @@
 #include "render.h"
+#include "../basic/math.h"
    
 #include "../engine_systems/common/heightmap.h" 
 //#include "../engine_systems/common/i_heightmap2.h"
@@ -660,7 +661,7 @@ void ZSSRender::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize
 		(iSize/2)*HEIGHTMAP_SCALE,15*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return; */
 	
-	iStep=PowerOf2(int(fDistance / m_iDetail));
+	iStep=Math::PowerOf2(int(fDistance / m_iDetail));
 	iStep = 1;
 
 	// Draw the Terrain Patch.

@@ -3,6 +3,7 @@
 #include <math.h>
 #include <cstdlib>
 #include <cmath>
+#include "math.h"
 
 // Constructors
 Matrix4::Matrix4(void) 
@@ -293,12 +294,12 @@ void Matrix4::OldTranslate(float x, float y, float z)
 
 void Matrix4::Rotate(float fX, float fY, float fZ)
 {
-	RadRotate(DegToRad(fX),DegToRad(fY),DegToRad(fZ));
+	RadRotate(Math::DegToRad(fX),Math::DegToRad(fY),Math::DegToRad(fZ));
 }
 
 void Matrix4::Rotate(const Vector3& kRot)
 {
-	RadRotate(DegToRad(kRot.x), DegToRad(kRot.y), DegToRad(kRot.z));
+	RadRotate(Math::DegToRad(kRot.x), Math::DegToRad(kRot.y), Math::DegToRad(kRot.z));
 }
 
 void Matrix4::RadRotate(float fX, float fY, float fZ)
@@ -588,9 +589,9 @@ Vector3 Matrix4::GetRotVector()
 	ftry      = -data[1] / C;
 	angle_z  = float(atan2( ftry, ftrx ) * degtorad);
 
-	angle_x = Clamp( angle_x, 0, 360 );
-	angle_y = Clamp( angle_y, 0, 360 );
-	angle_z = Clamp( angle_z, 0, 360 );
+	angle_x = Math::Clamp( angle_x, 0, 360 );
+	angle_y = Math::Clamp( angle_y, 0, 360 );
+	angle_z = Math::Clamp( angle_z, 0, 360 );
 	
 
 	return Vector3(angle_x,angle_y,angle_z);

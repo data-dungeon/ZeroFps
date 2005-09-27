@@ -2,6 +2,7 @@
 #include "p_hmrp2.h"
 #include "../common/heightmap.h"
 #include "../../engine/camera.h"
+#include "../../basic/math.h"
 
 P_Vegitation::P_Vegitation()
 {
@@ -60,8 +61,8 @@ void P_Vegitation::Random(vector<P_Heightmap*>* pkHMaps)
 	
 		for(int i=0;i<m_iAmount;i++)
 		{
-			float x = Randomf(m_iSize) - float(m_iSize) / 2.0;
-			float z = Randomf(m_iSize) - float(m_iSize) / 2.0;
+			float x = Math::Randomf(m_iSize) - float(m_iSize) / 2.0;
+			float z = Math::Randomf(m_iSize) - float(m_iSize) / 2.0;
 			float y = 0;
 			
 			for(int i = 0;i<pkHMaps->size();i++)
@@ -554,13 +555,13 @@ void P_Vegitation::BuildArrays()
 	for(int i =0;i<iPositions;i++ )
 	{
 		//Vector3 off(Randomf(kScale.x*1.5)+0.25,0,Randomf(kScale.z*1.5)+0.25);
-		float r = DegToRad(Randomf(360));
+		float r = Math::DegToRad(Math::Randomf(360));
 		float cosr = cos(r);
 		float sinr = sin(r);
 		float cosrd2 = cos(r+PId2);
 		float sinrd2 = sin(r+PId2);
 		
-		float s = Randomf(0.4);
+		float s = Math::Randomf(0.4);
 		float h = kScale.y*s + kScale.y*0.6;
 		float w = kScale.x*s + kScale.x*0.6;
 		
