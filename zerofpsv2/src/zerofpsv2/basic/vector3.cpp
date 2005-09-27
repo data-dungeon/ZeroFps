@@ -41,18 +41,6 @@ void Vector3::Normalize(void)
 	z *= invlen;
 }
 
-
-// Vector3 Vector3::Cross( const Vector3& v )	const
-// {
-// 	return Vector3( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
-// }
-
-
-// bool Vector3::IsZero(void) const
-// {
-// 	return (x == 0.0f && y == 0.0f && z == 0.0f); 
-// }
-
 bool Vector3::NearlyEquals( const Vector3& v, const float e ) const	
 {
 	return (fabs(x-v.x) < e && fabs(y-v.y) < e && fabs(z-v.z) < e);
@@ -117,10 +105,13 @@ void Vector3::Lerp(Vector3& from, Vector3& to, float flerp)
 	*this += from;
 }
 
-void Vector3::Print(void)
+string Vector3::ToString()
 {
-	cout << "<" << x << "," << y << "," << z << ">";
+	char szVec[128];
+	sprintf(szVec, "%f,%f,%f", x,y,z);
+	return string(szVec);	
 }
+
 
 // FRIEND FUNCTIONS
 Vector3 operator * ( const float& s, const Vector3& v )

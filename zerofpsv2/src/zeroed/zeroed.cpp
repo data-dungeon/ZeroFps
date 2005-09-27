@@ -1568,8 +1568,8 @@ Entity*	ZeroEd::GetTargetObject2()
 		dir	= m_pkActiveCamera->GetOrthoAxisZ();
 	}
 
-	cout << "Start:";	start.Print();	cout << endl;
-	cout << "dir:";	dir.Print();	cout << endl;
+//	cout << "Start:";	start.Print();	cout << endl;
+//	cout << "dir:";	dir.Print();	cout << endl;
 
 
 

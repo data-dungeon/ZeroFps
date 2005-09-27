@@ -63,8 +63,8 @@ int VectorSubLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData));			
 			
-		kPos1.Print();
-		kPos2.Print();
+//		kPos1.Print();
+//		kPos2.Print();
 			
 		Vector3 kPos = kPos1 - kPos2;
 
