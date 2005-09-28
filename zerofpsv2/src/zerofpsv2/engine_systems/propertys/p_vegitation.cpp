@@ -558,8 +558,8 @@ void P_Vegitation::BuildArrays()
 		float r = Math::DegToRad(Math::Randomf(360));
 		float cosr = cos(r);
 		float sinr = sin(r);
-		float cosrd2 = cos(r+PId2);
-		float sinrd2 = sin(r+PId2);
+		float cosrd2 = cos(r+Math::HALF_PI);	// PId2
+		float sinrd2 = sin(r+Math::HALF_PI);
 		
 		float s = Math::Randomf(0.4);
 		float h = kScale.y*s + kScale.y*0.6;

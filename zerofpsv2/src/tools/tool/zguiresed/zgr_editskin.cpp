@@ -240,7 +240,7 @@ void ZGuiResEd::SelNewSkin(int iIndex)
 		CheckButton("GuiEd_Trans", (*ppkSkin)->m_bTransparent);
 		CheckButton("GuiEd_Tile", (*ppkSkin)->m_bTileBkSkin);
 
-		float procent_av_max = (*ppkSkin)->m_fRotDegree / (PI+PI);
+		float procent_av_max = (*ppkSkin)->m_fRotDegree / Math::TWO_PI;	// (PI+PI)
 		procent_av_max *= 360.0f;
 
 		sprintf(szText, "%i", (int)procent_av_max);

@@ -2,7 +2,7 @@
 #define _MOVEPSPROP_H_
 
 #include "particleproperty.h"
-#include "../../../basic/vector3.h"
+#include "../../../basic/math.h"
 
 class MovePSProp : public ParticleProperty
 {

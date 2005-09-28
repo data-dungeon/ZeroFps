@@ -5,9 +5,7 @@
 #include <iostream>
 #include "zmaterial.h"
 #include "../basic/zfsystem.h"
-#include "../basic/vector2.h"
-#include "../basic/vector3.h"
-#include "../basic/vector4.h"
+#include "../basic/math.h"
 #include "../ogl/zfpsgl.h"
 #include "texturemanager.h"
 #include "frustum.h"
@@ -468,7 +466,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//quad 4V
 		void AddQuadV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3,const Vector3& kPos4);
 		void AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3,const Vector3& kNormal4);
-		void AddQuadC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3,const Vector3& kColor4);
+		void AddQuadC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3,const Vector4& kColor4);
 		void AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const Vector2& kPos4,const int& iTU=0);	
 
 		//VERTEX 2 STUFF

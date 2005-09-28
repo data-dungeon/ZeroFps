@@ -27,8 +27,8 @@
 #include <time.h>
 #include "../zerofpsv2/basic/math.h"
 
-ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
-
+ZeroEd	g_kZeroEd("ZeroEd", 0, 0, 0);
+Matrix4	g_kMatrix;
 
 
 
@@ -138,6 +138,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("findent",		FID_FINDENT);
 	Register_Cmd("transformident",	FID_TRANSIDENT);
 	Register_Cmd("scaleident",			FID_SCALEIDENT);
+	Register_Cmd("ms",			FID_MS);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -166,6 +167,9 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kTestGraph.SetMinMax(0,1500);
 
 	m_iAutoSnapZoneCorner = -1;
+
+	g_kMatrix.Zero();
+	g_kMatrix.SetPos(Vector3(1,2,3));
 } 
 
 
@@ -1062,6 +1066,21 @@ void ZeroEd::OnHud(void)
 			
 		*/
 	}
+
+	string strMat = g_kMatrix.ToString();
+	m_pkZeroFps->DevPrintf("math","Matrix: %s", strMat.c_str());		
+	
+	strMat = g_kMatrix.ToString_Vec(0);
+	m_pkZeroFps->DevPrintf("math","Mat Vec0: %s", strMat.c_str());		
+	strMat = g_kMatrix.ToString_Vec(1);
+	m_pkZeroFps->DevPrintf("math","Mat Vec1: %s", strMat.c_str());		
+	strMat = g_kMatrix.ToString_Vec(2);
+	m_pkZeroFps->DevPrintf("math","Mat Vec2: %s", strMat.c_str());		
+	strMat = g_kMatrix.ToString_Vec(3);
+	m_pkZeroFps->DevPrintf("math","Mat Vec3: %s", strMat.c_str());		
+
+	
+
 }
 
 bool ZeroEd::DelayCommand()
@@ -1400,6 +1419,19 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			P_Mad* pkMad = (P_Mad*)pkActiveEntity->GetProperty("P_Mad");
 			if(pkMad)
 				pkMad->SetScale(1.0);
+			break;
+		}		
+
+		case FID_MS:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 2)
+				break;
+			
+			int iIndex = atoi(kCommand->m_kSplitCommand[1].c_str());
+			float fValue = atof(kCommand->m_kSplitCommand[2].c_str());
+
+			g_kMatrix.data[iIndex] = fValue;
+			g_kMatrix.SetPos(Vector3(1,2,3));
 			break;
 		}		
 

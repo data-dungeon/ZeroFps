@@ -1,7 +1,7 @@
 #ifndef _ENGINE_I_CAMERA_H_
 #define _ENGINE_I_CAMERA_H_
 
-#include "../basic/vector3.h"
+#include "../basic/math.h"
 #include "engine_x.h"
 
 /// Interface to Camera.

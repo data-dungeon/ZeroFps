@@ -1085,7 +1085,7 @@ void ZSSRender::DrawCone(Vector3 kPos, float fRadie, float fHeight,
 		glBegin(GL_LINES);
 
 	int i;
-	float grad = 0, grad_oka = zf_pi / iSegments, x, z;
+	float grad = 0, grad_oka = Math::TWO_PI / iSegments, x, z;	// zf_pi
 
 	for( i=0; i<iSegments+1; i++)
 	{

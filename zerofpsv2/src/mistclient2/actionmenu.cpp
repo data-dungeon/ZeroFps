@@ -156,7 +156,7 @@ void ActionMenu::Open()
 	{
 		float x = cx, y = cy; // centrum position
 
-		float fMultipel = (PI+PI) / 360.0f;
+		float fMultipel = Math::TWO_PI  / 360.0f;	//(PI+PI)
 		float rot = fMultipel * fAngle; 
 
 		Vector2 p = RotateXY(rot, Vector2(icon_angle_horz_offset,icon_angle_vert_offset));

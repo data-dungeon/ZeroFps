@@ -204,7 +204,7 @@ bool ZGuiResEd::WriteSkins()
 				if( pkSkin->m_fRotDegree > 0)
 				{
 					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
-					float procent_av_max = pkSkin->m_fRotDegree / (PI+PI);
+					float procent_av_max = pkSkin->m_fRotDegree / Math::TWO_PI;	//(PI+PI)
 					procent_av_max *= 360.0f;
 					fprintf(m_pkSaveFile, "degree=%i", (int) procent_av_max);					
 				}

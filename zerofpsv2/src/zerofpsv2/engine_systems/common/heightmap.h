@@ -5,7 +5,7 @@
 #include "../engine_systems_x.h"
 #include <vector>
 #include <string>
-#include "../../basic/vector3.h"
+#include "../../basic/math.h"
 #include "../../basic/rect.h"
 #include "../../basic/zfsystem.h"
 #include "../../render/texturemanager.h"

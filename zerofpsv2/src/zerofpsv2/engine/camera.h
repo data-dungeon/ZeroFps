@@ -1,8 +1,7 @@
 #ifndef _ENGINE_CAMERA_H_
 #define _ENGINE_CAMERA_H_
 
-#include "../basic/vector3.h"
-#include "../basic/matrix4.h"
+#include "../basic/math.h"
 #include "../render/frustum.h"
 #include "engine_x.h"
 #include "../render/zshadersystem.h"

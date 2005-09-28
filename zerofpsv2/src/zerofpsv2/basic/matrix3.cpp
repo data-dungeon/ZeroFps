@@ -1,7 +1,3 @@
-
-#include "matrix3.h"
-#include "matrix4.h"
-#include "quaternion.h"
 #include "zfassert.h"
 #include <cmath>
 #include "math.h"
@@ -12,41 +8,6 @@ const Matrix3 Matrix3::ZERO(0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f);
 const Matrix3 Matrix3::IDENTITY(1.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,1.0f);
 
 // Constructors
-
-Matrix3::Matrix3(float f00,float f01,float f02,
-				float f10,float f11,float f12,						
-				float f20,float f21,float f22)
-{							 	 
-	m_aafRowCol[0][0] = f00;
-	m_aafRowCol[0][1] = f01;
-	m_aafRowCol[0][2] = f02;
-
-	m_aafRowCol[1][0] = f10;
-	m_aafRowCol[1][1] = f11;
-	m_aafRowCol[1][2] = f12;
-
-	m_aafRowCol[2][0] = f20;
-	m_aafRowCol[2][1] = f21;
-	m_aafRowCol[2][2] = f22;
-};
-
-void Matrix3::Set(float f00,float f01,float f02,
-						float f10,float f11,float f12,						
-						float f20,float f21,float f22)
-{							 	 
-	m_aafRowCol[0][0] = f00;
-	m_aafRowCol[0][1] = f01;
-	m_aafRowCol[0][2] = f02;
-
-	m_aafRowCol[1][0] = f10;
-	m_aafRowCol[1][1] = f11;
-	m_aafRowCol[1][2] = f12;
-
-	m_aafRowCol[2][0] = f20;
-	m_aafRowCol[2][1] = f21;
-	m_aafRowCol[2][2] = f22;
-};
-
 void Matrix3::SetAxis(int iAxisNum, const Vector3& kNewAxis)
 {
         m_aafRowCol[iAxisNum][0] = kNewAxis.x;
@@ -62,153 +23,12 @@ Vector3 Matrix3::GetAxis(int iAxisNum)
 
 // Operators	-	Assignment
 
-void Matrix3::operator= (const Matrix4& rkMatrix)
-{
-	m_aafRowCol[0][0] = rkMatrix.RowCol[0][0];
-	m_aafRowCol[0][1] = rkMatrix.RowCol[0][1];
-	m_aafRowCol[0][2] = rkMatrix.RowCol[0][2];
 
-	m_aafRowCol[1][0] = rkMatrix.RowCol[1][0];
-	m_aafRowCol[1][1] = rkMatrix.RowCol[1][1];
-	m_aafRowCol[1][2] = rkMatrix.RowCol[1][2];
-
-	m_aafRowCol[2][0] = rkMatrix.RowCol[2][0];
-	m_aafRowCol[2][1] = rkMatrix.RowCol[2][1];
-	m_aafRowCol[2][2] = rkMatrix.RowCol[2][2];
-}
-
-void Matrix3::operator= (const Quaternion& rkQuaternion)
-{
-	rkQuaternion.ToRotationMatrix(*this);
-}
 
 
 // Operators	-	Arithmetic operations
-Matrix3 Matrix3::operator+ (const Matrix3& rkMatrix) const
-{
-    static Matrix3 kSum;
-	 
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            kSum.m_aafRowCol[iRow][iCol] = m_aafRowCol[iRow][iCol] +
-                rkMatrix.m_aafRowCol[iRow][iCol];
-        }
-    }
-    return kSum;
-}
-
-Matrix3 Matrix3::operator+= (const Matrix3& rkMatrix)
-{
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            m_aafRowCol[iRow][iCol] += rkMatrix.m_aafRowCol[iRow][iCol];
-        }
-    }
-    return *this;
-}
-
-Matrix3 Matrix3::operator- (const Matrix3& rkMatrix) const
-{
-    static Matrix3 kDiff;
-	 
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            kDiff.m_aafRowCol[iRow][iCol] = m_aafRowCol[iRow][iCol] -
-                rkMatrix.m_aafRowCol[iRow][iCol];
-        }
-    }
-    return kDiff;
-}
-
-Matrix3 Matrix3::operator-= (const Matrix3& rkMatrix)
-{
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            m_aafRowCol[iRow][iCol] -= rkMatrix.m_aafRowCol[iRow][iCol];
-        }
-    }
-    return *this;
-}
-
-Matrix3 Matrix3::operator* (const Matrix3& rkMatrix) const
-{
-    static Matrix3 kProd;
-	 
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            kProd.m_aafRowCol[iRow][iCol] =
-                m_aafRowCol[iRow][0]*rkMatrix.m_aafRowCol[0][iCol] +
-                m_aafRowCol[iRow][1]*rkMatrix.m_aafRowCol[1][iCol] +
-                m_aafRowCol[iRow][2]*rkMatrix.m_aafRowCol[2][iCol];
-        }
-    }
-    return kProd;
-}
-
-Matrix3 Matrix3::operator*= (const Matrix3& rkMatrix)
-{
-    static Matrix3 kProd;
-	 
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            kProd.m_aafRowCol[iRow][iCol] =
-                m_aafRowCol[iRow][0]*rkMatrix.m_aafRowCol[0][iCol] +
-                m_aafRowCol[iRow][1]*rkMatrix.m_aafRowCol[1][iCol] +
-                m_aafRowCol[iRow][2]*rkMatrix.m_aafRowCol[2][iCol];
-        }
-    }
-
-	*this = kProd;
-    return kProd;
-}
-
-Matrix3 Matrix3::operator*(const float &f) const
-{
-	return Matrix3(	m_afData[0]*f,m_afData[1]*f,m_afData[2]*f,m_afData[3]*f,
-      					m_afData[4]*f,m_afData[5]*f,m_afData[6]*f,m_afData[7]*f,
-      					m_afData[8]*f);
-      					
-}
-
-Matrix3 Matrix3::operator*=(const float &f) 
-{
-	for(int i=0;i<9;i++)
-		m_afData[i]*=f;
-		
-	return *this;
-}
 
 // Methods
-void Matrix3::Zero(void) 
-{
-	for(int i=0;i<9;i++)
-		m_afData[i]=0;
-}
-
-
-void Matrix3::Identity() 
-{
-	Set(1,0,0,
-		 0,1,0,
-		 0,0,1);
-
-/*	*this=Matrix3( 1,0,0,
-						0,1,0,
-						0,0,1);*/
-}
-
 void Matrix3::Transponse()
 {
 	swap(m_aafRowCol[0][1], m_aafRowCol[1][0]);
@@ -347,14 +167,14 @@ Vector3 Matrix3::GetRotVector()
 	
 	angle_y = D = float(-asin( m_afData[2]));
 	C           = float(cos( angle_y ));
-	angle_y    *= degtorad;
+	angle_y     = Math::RadToDeg(angle_y);
     
 	ftrx      =  m_afData[7] / C;
 	ftry      = -m_afData[6]  / C;
-	angle_x  = float( atan2( ftry, ftrx ) * degtorad );
+	angle_x   = Math::RadToDeg(float( atan2( ftry, ftrx )));
 	ftrx      =  m_afData[0] / C;
 	ftry      = -m_afData[1] / C;
-	angle_z  = float(atan2( ftry, ftrx ) * degtorad );
+	angle_z   = Math::RadToDeg(float(atan2( ftry, ftrx )));
 
 
 	angle_x = Math::Clamp( angle_x, 0, 360 );
@@ -384,8 +204,18 @@ void Matrix3::Print()
 	}
 }
 
+string Matrix3::ToString()
+{
+	char szMat[512];
+	szMat[0] = 0;
 
+	for(int i=0; i<9; i++)
+	{
+		sprintf(&szMat[strlen(szMat)], "%.2f, ", m_afData[i]);
+	}
 
+	return string(szMat);
+};
 
 
 

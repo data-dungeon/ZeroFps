@@ -299,7 +299,7 @@ void P_Camera::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
    if ( kLookDir == kLookDir.ZERO )
       return;
 
-	if(kLookDir.NearlyZero(0.001))
+	if(kLookDir.IsZero(0.001))
 		return;
 		
 	kCamera.LookDir(kLookDir,kCamUp);

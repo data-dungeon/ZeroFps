@@ -18,7 +18,7 @@
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 
 #include <vector>
-#include "../basic/vector3.h"
+#include "../basic/math.h"
 #include "engine_x.h"
 
 using namespace std;

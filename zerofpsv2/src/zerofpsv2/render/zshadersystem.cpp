@@ -1531,7 +1531,7 @@ void ZShaderSystem::AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,con
 	m_kNormals.push_back(kNormal4);
 }
 
-void ZShaderSystem::AddQuadC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3,const Vector3& kColor4)
+void ZShaderSystem::AddQuadC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3,const Vector4& kColor4)
 {
 	m_kColors.push_back(kColor1);
 	m_kColors.push_back(kColor2);

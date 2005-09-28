@@ -2,7 +2,7 @@
 #define _ENGINE_PSYSTEMMANAGER_H_
 
 #include "psystem.h"
-#include "../../basic/vector3.h"
+#include "../../basic/math.h"
 #include "../../basic/zfini.h"
 
 #include <string>

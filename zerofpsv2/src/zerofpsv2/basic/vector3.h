@@ -4,8 +4,6 @@
 #include <iostream>
 #include <cmath>
 #include "basic_x.h"
-#include "vector4.h"
-//#include "os.h"
 
 using namespace std;
 
@@ -23,7 +21,7 @@ class BASIC_API Vector3
 		static const Vector3 AXIS_X;								
 		static const Vector3 AXIS_Y;								
 		static const Vector3 AXIS_Z;								
-		static const float degtorad;
+//		static const float degtorad;
 
 // Data
 		float x;
@@ -34,45 +32,55 @@ class BASIC_API Vector3
 		Vector3() {	};											
 		Vector3(float fX,float fY,float fZ) : x(fX), y(fY), z(fZ) { };
 
+// Access 
+		float& operator[] (const int i);
+
 // Assignment 
 		Vector3& operator=(const Vector3 &kOtherV3);
 		void Set(float fXIn, float fYIn, float fZIn);
+		void Zero();
 
 // Comparison
+		bool Compare(const Vector3& kOtherV3)				const;
+		bool Compare( const Vector3& v, const float e ) const;		///< True if this is == v within the range of +-e
 		bool operator==(const Vector3 &kOtherV3)	const;
 		bool operator!=(const Vector3 &kOtherV3)	const;
 		bool IsZero(void) const; 												///< True if this = <0,0,0>
-		bool NearlyEquals( const Vector3& v, const float e ) const;	///< True if this is == v within the range of +-e
-		bool NearlyZero( const float e ) const; 							///< True if this is <0,0,0> within the range of +-e
+		bool IsZero(const float e ) const; 									///< True if this is <0,0,0> within the range of +-e
 
 // Arithmetic operations
-		Vector3 operator+(const Vector3 &kOtherV3)	const ;
-		Vector3 operator+(const float &fAdd)		const ;
-		Vector3 operator-(const Vector3 &kOtherV3)	const ;
-		Vector3 operator-(const float &fAdd)		const; 
-		Vector3 operator*(const float &fOther)		const; 	
-		float operator*(const Vector3 &kOther)		const; 	
-		Vector3 operator /  ( const float  s )	const; 
+		Vector3 operator-() const;
+		
+		Vector3 operator+(const Vector3 &kOtherV3)	const;
+		Vector3 operator-(const Vector3 &kOtherV3)	const;
 		Vector3& operator+=(const Vector3 &kOtherV3); 
 		Vector3& operator-=(const Vector3 &kOtherV3); 
-		Vector3& operator*=(const float &fOther) ;
-		Vector3& operator/=(const float fOther) ;
-		Vector3& operator /= ( const float& s ) ;
-		Vector3 operator-() const ;
+		float operator*(const Vector3 &kOther)			const; 	//??
 
-// Geometric operatins
+		Vector3 operator+(const float &fAdd)			const;
+		Vector3 operator-(const float &fAdd)			const; 
+		Vector3 operator*(const float &fOther)			const; 	
+		Vector3 operator/(const float s )				const; 
+		Vector3& operator*=(const float &fOther);
+		Vector3& operator/=(const float fOther);
+		Vector3& operator/=(const float& s );						//??
+
+// Geometric
+		Vector3 Cross( const Vector3& v )	const;						///< Return cross product between this vector and another one.
+		float Dot( const Vector3& v  )		const;	 					///< Return dot product between this vec and another one.
 		float Length(void) const;
 		float LengthSqr(void) const;
-		float SquaredLength(void) const;
-		float Dot( const Vector3& v  ) const;	 							///< Return dot product between this vec and another one.
 		void Normalize(void);													///< Normalize this to unit vector.
 		Vector3 Unit(void)						const;						///< Return unit vector of this.		
-		Vector3 Cross( const Vector3& v )	const;						///< Return cross product between this vector and another one.
 
 		// Vector operations.
-		float& operator[] (const int i);
-		Vector3 PEP(const Vector3 &fOther) const;							//per element pruduct
-		Vector3 Proj(const Vector3& v ) const;								///< Projects v on this.
+
+// Other
+		string ToString();
+
+// NoSort
+		Vector3 PEP(const Vector3 &fOther)	const;						//per element pruduct
+		Vector3 Proj(const Vector3& v )		const;						///< Projects v on this.
 		Vector3 Perp(const Vector3& v );										///< Perp v on this.
 		float Angle(const Vector3& v );										///< Angle (in rad) between two vectors. 
 		void Abs(void);															///< Do a fabs() on coo of this vectors.
@@ -86,9 +94,9 @@ class BASIC_API Vector3
       double DistanceTo (const Vector3& to) const;
 		double DistanceTo (const Vector4& to) const;
       double DistanceXZTo (const Vector3& to) const;
-
-		string ToString();
 };
+
+#include "vector4.h"
 
 BASIC_API Vector3 operator* ( const float& s, const Vector3& v );
 
@@ -114,18 +122,32 @@ inline void Vector3::Set(float fXIn, float fYIn, float fZIn)
 	z = fZIn;
 }
 
+inline void Vector3::Zero()
+{
+	x = 0.0f;
+	y = 0.0f;
+	z = 0.0f;
+}
 
 // Comparison
+inline bool Vector3::Compare(const Vector3& kOtherV3)		const
+{
+	return (x == kOtherV3.x) && (y && kOtherV3.y) && (z && kOtherV3.z);
+}
+
+inline bool Vector3::Compare( const Vector3& v, const float e ) const	
+{
+	return (fabs(x-v.x) < e && fabs(y-v.y) < e && fabs(z-v.z) < e);
+}
+
 inline bool Vector3::operator==(const Vector3 &kOtherV3)	const 
 {
-		return (	x == kOtherV3.x &&
-					y == kOtherV3.y &&
-					z == kOtherV3.z);
+	return Compare(kOtherV3);
 }
 
 inline bool Vector3::operator!=(const Vector3 &kOtherV3)	const 
 {
-		return !(kOtherV3 == *this); 
+	return !Compare(kOtherV3);
 }
 
 inline bool Vector3::IsZero(void) const 
@@ -133,41 +155,25 @@ inline bool Vector3::IsZero(void) const
 	return (x == 0.0f && y == 0.0f && z == 0.0f);
 }
 
+inline bool Vector3::IsZero( const float e ) const 				
+{
+	return (fabs(x) < e && fabs(y) < e && fabs(z) < e);
+}
+
 // Arithmetic operations
+inline Vector3 Vector3::operator-() const 
+{
+		return Vector3(-x,-y,-z);
+}
+
 inline Vector3 Vector3::operator+(const Vector3 &kOtherV3)	const 
 {
 		return Vector3(x+kOtherV3.x,y+kOtherV3.y,z+kOtherV3.z);
 }
 
-inline Vector3 Vector3::operator+(const float &fAdd)		const 
-{
-		return Vector3(x+fAdd,y+fAdd,z+fAdd);
-}
-
 inline Vector3 Vector3::operator-(const Vector3 &kOtherV3)	const 
 {
 		return Vector3(x-kOtherV3.x,y-kOtherV3.y,z-kOtherV3.z);
-}
-
-inline Vector3 Vector3::operator-(const float &fAdd)		const 
-{
-		return Vector3(x-fAdd,y-fAdd,z-fAdd);
-}
-
-inline Vector3 Vector3::operator*(const float &fOther)		const 
-{
-		return Vector3(x * fOther,y * fOther,z * fOther);
-}
-
-inline float Vector3::operator*(const Vector3 &kOther)		const 
-{
-		return Dot(kOther);
-}
-
-inline Vector3 Vector3::operator /  ( const float  s )	const 
-{
-		float invs = 1/s; 
-		return Vector3( invs*x, invs*y, invs*z );
 }
 
 inline Vector3& Vector3::operator+=(const Vector3 &kOtherV3) 
@@ -186,6 +192,32 @@ inline Vector3& Vector3::operator-=(const Vector3 &kOtherV3)
 		return *this;
 }
 
+inline float Vector3::operator*(const Vector3 &kOther)		const 
+{
+		return Dot(kOther);
+}
+
+inline Vector3 Vector3::operator+(const float &fAdd)		const 
+{
+		return Vector3(x+fAdd,y+fAdd,z+fAdd);
+}
+
+inline Vector3 Vector3::operator-(const float &fAdd)		const 
+{
+		return Vector3(x-fAdd,y-fAdd,z-fAdd);
+}
+
+inline Vector3 Vector3::operator*(const float &fOther)		const 
+{
+		return Vector3(x * fOther,y * fOther,z * fOther);
+}
+
+inline Vector3 Vector3::operator/( const float  s )	const 
+{
+		float invs = 1/s; 
+		return Vector3( invs*x, invs*y, invs*z );
+}
+
 inline Vector3& Vector3::operator*=(const float &fOther) 
 {
 		x *= fOther;
@@ -200,7 +232,7 @@ inline Vector3& Vector3::operator/=(const float fOther)
 		y /= fOther;
 		z /= fOther;
 		return *this;
-	}
+}
 
 inline Vector3& Vector3::operator /= ( const float& s ) 
 {
@@ -208,35 +240,53 @@ inline Vector3& Vector3::operator /= ( const float& s )
 		return *this; 
 }
 
-inline Vector3 Vector3::operator-() const 
-{
-		return Vector3(-x,-y,-z);
-}
-
 // Geometric operatins
-inline float Vector3::Length(void) const 
-{
-		return (float) sqrt( x*x + y*y + z*z );  
-}
-
-inline float Vector3::LengthSqr(void) const {
-		return (float)( x*x + y*y + z*z );  
-}
-
-inline float Vector3::SquaredLength(void) const 
-{
-	return x*x + y*y +z*z;  
+inline Vector3 Vector3::Cross( const Vector3& v )	const 
+{					
+	return Vector3( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
 }
 
 inline float Vector3::Dot( const Vector3& v  ) const
 {		 					
 		return x*v.x + y*v.y + z*v.z; 		
-}		
+}	
 
-inline Vector3 Vector3::Cross( const Vector3& v )	const 
-{					
-	return Vector3( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
+inline float Vector3::Length(void) const 
+{
+		return (float) sqrt( x*x + y*y + z*z );  
 }
+
+inline float Vector3::LengthSqr(void) const 
+{
+		return (float)( x*x + y*y + z*z );  
+}
+
+inline void Vector3::Normalize(void)						
+{
+	float invlen = Length();
+	
+	if(invlen == 0.0)
+		return;
+	
+	invlen = 1 / invlen;
+	x *= invlen;
+	y *= invlen;
+	z *= invlen;
+}
+
+inline Vector3 Vector3::Unit(void) const						
+{
+	float invlen = Length();
+	
+	if(invlen == 0.0)
+		return Vector3(0,0,0);
+	
+	invlen = 1 / invlen;
+	return Vector3(x * invlen, y * invlen, z * invlen);
+}
+	
+
+
 
 // DistanceTo
 inline double Vector3::DistanceTo (const Vector3& to) const
@@ -252,6 +302,12 @@ inline double Vector3::DistanceTo (const Vector4& to) const
 inline double Vector3::DistanceXZTo (const Vector3& to) const 
 {
 	return sqrt( (x-to.x)*(x-to.x) + (z-to.z)*(z-to.z) );
+}
+
+// Vector operations.
+inline void Vector3::Lerp(Vector3& from, Vector3& to, float flerp)
+{
+	*this = (to - from) * flerp + from;
 }
 
 #endif

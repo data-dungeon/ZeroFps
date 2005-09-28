@@ -3,10 +3,8 @@
 
 #include <iostream>
 #include "basic_x.h"
-//#include "os.h"
-#include "vector3.h"
-#include "vector4.h"
 #include "string.h"
+#include "math.h"
 
 class Matrix4;
 class Quaternion;
@@ -26,7 +24,6 @@ class BASIC_API Matrix3
 
 	   static const Matrix3 ZERO;
 		static const Matrix3 IDENTITY;
-		
 
 // Constructors
 		Matrix3(void) { };
@@ -34,32 +31,21 @@ class BASIC_API Matrix3
 					float f10,float f11,float f12,						
 					float f20,float f21,float f22);
 		
-// Operators
-		// assignment and comparison
-		Matrix3& operator= (const Matrix3& rkMatrix)
-			{
-				memcpy(m_afData,rkMatrix.m_afData,sizeof(m_afData));
-				return *this;
-			}
+// Assignment 
+		Matrix3& operator= (const Matrix3& rkMatrix);
 		void operator= (const Matrix4& rkMatrix);
 		void operator= (const Quaternion& rkQuaternion);
 		void Set(float f00,float f01,float f02,
 					float f10,float f11,float f12,						
 					float f20,float f21,float f22);
-
+		void Zero();								// Set whole matrix to zero.
+		void Identity();							// Set matrix to the identity matrix.
 		
-		
-		// Comparison
-		bool operator== (const Matrix3& rkMatrix) const
-			{
-				return (memcmp(m_afData,rkMatrix.m_afData,sizeof(m_afData)) == 0);
-			}
-		bool operator!= (const Matrix3& rkMatrix) const
-			{
-				return !operator==(rkMatrix);
-			}
+// Comparison
+		bool operator== (const Matrix3& rkMatrix) const;
+		bool operator!= (const Matrix3& rkMatrix) const;
 
-		// Arithmetic operations
+// Arithmetic operations
 		Matrix3 operator+ (const Matrix3& rkMatrix) const;
 		Matrix3 operator+= (const Matrix3& rkMatrix);
 		Matrix3 operator- (const Matrix3& rkMatrix) const;
@@ -70,18 +56,18 @@ class BASIC_API Matrix3
 		Matrix3 operator*(const float &f) const;
 		Matrix3 operator*=(const float &f);		
 
-// Methods
-		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
-		Vector3 GetAxis(int iAxisNum);
-		
-		void Zero();								// Set whole matrix to zero.
-		void Identity();							// Set matrix to the identity matrix.
+// Matrix/Vector 
+		const Vector3& VectorTransform (const Vector3& kVec) const;
+
+// Common Matrix Methods
 		void Transponse();
+		Matrix3 GetTransponse() const;
 		bool Inverse (Matrix3& inv, float tolerance) const;
 		float Determinant(void)	 const;
 		
-		Matrix3 GetTransponse() const;
-		
+		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
+		Vector3 GetAxis(int iAxisNum);
+	
 		void Scale(float fX, float fY, float fZ);
 		void Scale(const Vector3& kScale);		
 				
@@ -89,31 +75,10 @@ class BASIC_API Matrix3
 		void RadRotate(const Vector3& kRot);
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(const Vector3& kRot);
-		
-		
-		Vector3 GetRotVector();
 
-		const Vector3& VectorTransform (const Vector3& kVec) const
-		{
-			static Vector3 kV3;
-			
-			kV3.Set(
-				kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
-				kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
-				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
-				);
+		Vector3 GetRotVector();
 		
-			return kV3;
-				
-			/*return Vector3 (
-				kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
-				kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
-				kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
-				);*/
-		}
-		
-		
-// Accessors 
+// Access 
 		Vector3 GetColumn (int iCol) const;
 		
 		inline Vector3 Row1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[0][1], m_aafRowCol[0][2]); }
@@ -126,9 +91,229 @@ class BASIC_API Matrix3
 
 // Other
 		void Print();
-
-
+		string ToString();
 };
+
+#include "matrix4.h"
+
+// Constructors
+inline Matrix3::Matrix3(float f00,float f01,float f02,
+				float f10,float f11,float f12,						
+				float f20,float f21,float f22)
+{							 	 
+	m_aafRowCol[0][0] = f00;
+	m_aafRowCol[0][1] = f01;
+	m_aafRowCol[0][2] = f02;
+
+	m_aafRowCol[1][0] = f10;
+	m_aafRowCol[1][1] = f11;
+	m_aafRowCol[1][2] = f12;
+
+	m_aafRowCol[2][0] = f20;
+	m_aafRowCol[2][1] = f21;
+	m_aafRowCol[2][2] = f22;
+};
+
+// Assignment 
+inline Matrix3& Matrix3::operator= (const Matrix3& rkMatrix)
+{
+		memcpy(m_afData,rkMatrix.m_afData,sizeof(m_afData));
+		return *this;
+}
+
+
+inline void Matrix3::Set(float f00,float f01,float f02,
+						float f10,float f11,float f12,						
+						float f20,float f21,float f22)
+{							 	 
+	m_aafRowCol[0][0] = f00;
+	m_aafRowCol[0][1] = f01;
+	m_aafRowCol[0][2] = f02;
+
+	m_aafRowCol[1][0] = f10;
+	m_aafRowCol[1][1] = f11;
+	m_aafRowCol[1][2] = f12;
+
+	m_aafRowCol[2][0] = f20;
+	m_aafRowCol[2][1] = f21;
+	m_aafRowCol[2][2] = f22;
+};
+
+inline void Matrix3::operator= (const Matrix4& rkMatrix)
+{
+	m_aafRowCol[0][0] = rkMatrix.RowCol[0][0];
+	m_aafRowCol[0][1] = rkMatrix.RowCol[0][1];
+	m_aafRowCol[0][2] = rkMatrix.RowCol[0][2];
+
+	m_aafRowCol[1][0] = rkMatrix.RowCol[1][0];
+	m_aafRowCol[1][1] = rkMatrix.RowCol[1][1];
+	m_aafRowCol[1][2] = rkMatrix.RowCol[1][2];
+
+	m_aafRowCol[2][0] = rkMatrix.RowCol[2][0];
+	m_aafRowCol[2][1] = rkMatrix.RowCol[2][1];
+	m_aafRowCol[2][2] = rkMatrix.RowCol[2][2];
+}
+
+inline void Matrix3::operator= (const Quaternion& rkQuaternion)
+{
+	rkQuaternion.ToRotationMatrix(*this);
+}
+
+inline void Matrix3::Zero(void) 
+{
+	for(int i=0;i<9;i++)
+		m_afData[i]=0;
+}
+
+
+inline void Matrix3::Identity() 
+{
+	Set(1,0,0,
+		 0,1,0,
+		 0,0,1);
+
+/*	*this=Matrix3( 1,0,0,
+						0,1,0,
+						0,0,1);*/
+}
+
+// Comparison
+inline  bool Matrix3::operator== (const Matrix3& rkMatrix) const
+{
+	return (memcmp(m_afData,rkMatrix.m_afData,sizeof(m_afData)) == 0);
+}
+
+inline bool Matrix3::operator!= (const Matrix3& rkMatrix) const
+{
+	return !operator==(rkMatrix);
+}
+
+// Arithmetic operations
+inline Matrix3 Matrix3::operator+ (const Matrix3& rkMatrix) const
+{
+    static Matrix3 kSum;
+	 
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            kSum.m_aafRowCol[iRow][iCol] = m_aafRowCol[iRow][iCol] +
+                rkMatrix.m_aafRowCol[iRow][iCol];
+        }
+    }
+    return kSum;
+}
+
+inline Matrix3 Matrix3::operator+= (const Matrix3& rkMatrix)
+{
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            m_aafRowCol[iRow][iCol] += rkMatrix.m_aafRowCol[iRow][iCol];
+        }
+    }
+    return *this;
+}
+
+inline Matrix3 Matrix3::operator- (const Matrix3& rkMatrix) const
+{
+    static Matrix3 kDiff;
+	 
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            kDiff.m_aafRowCol[iRow][iCol] = m_aafRowCol[iRow][iCol] -
+                rkMatrix.m_aafRowCol[iRow][iCol];
+        }
+    }
+    return kDiff;
+}
+
+inline Matrix3 Matrix3::operator-= (const Matrix3& rkMatrix)
+{
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            m_aafRowCol[iRow][iCol] -= rkMatrix.m_aafRowCol[iRow][iCol];
+        }
+    }
+    return *this;
+}
+
+inline Matrix3 Matrix3::operator* (const Matrix3& rkMatrix) const
+{
+    static Matrix3 kProd;
+	 
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            kProd.m_aafRowCol[iRow][iCol] =
+                m_aafRowCol[iRow][0]*rkMatrix.m_aafRowCol[0][iCol] +
+                m_aafRowCol[iRow][1]*rkMatrix.m_aafRowCol[1][iCol] +
+                m_aafRowCol[iRow][2]*rkMatrix.m_aafRowCol[2][iCol];
+        }
+    }
+    return kProd;
+}
+
+inline Matrix3 Matrix3::operator*= (const Matrix3& rkMatrix)
+{
+    static Matrix3 kProd;
+	 
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            kProd.m_aafRowCol[iRow][iCol] =
+                m_aafRowCol[iRow][0]*rkMatrix.m_aafRowCol[0][iCol] +
+                m_aafRowCol[iRow][1]*rkMatrix.m_aafRowCol[1][iCol] +
+                m_aafRowCol[iRow][2]*rkMatrix.m_aafRowCol[2][iCol];
+        }
+    }
+
+	*this = kProd;
+    return kProd;
+}
+
+inline Matrix3 Matrix3::operator*(const float &f) const
+{
+	return Matrix3(	m_afData[0]*f,m_afData[1]*f,m_afData[2]*f,m_afData[3]*f,
+      					m_afData[4]*f,m_afData[5]*f,m_afData[6]*f,m_afData[7]*f,
+      					m_afData[8]*f);
+      					
+}
+
+inline Matrix3 Matrix3::operator*=(const float &f) 
+{
+	for(int i=0;i<9;i++)
+		m_afData[i]*=f;
+		
+	return *this;
+}
+
+// Matrix/Vector 
+inline const Vector3& Matrix3::VectorTransform (const Vector3& kVec) const
+{
+	static Vector3 kV3;
+	
+	kV3.Set(
+		kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
+		kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
+		kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
+		);
+
+	return kV3;
+		
+	/*return Vector3 (
+		kVec.x * m_aafRowCol[0][0] + kVec.y * m_aafRowCol[1][0] + kVec.z * m_aafRowCol[2][0],
+		kVec.x * m_aafRowCol[0][1] + kVec.y * m_aafRowCol[1][1] + kVec.z * m_aafRowCol[2][1],
+		kVec.x * m_aafRowCol[0][2] + kVec.y * m_aafRowCol[1][2] + kVec.z * m_aafRowCol[2][2]
+		);*/
+}
 
 
 #endif

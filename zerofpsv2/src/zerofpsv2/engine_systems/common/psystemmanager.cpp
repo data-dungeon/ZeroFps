@@ -772,8 +772,7 @@ void PSystemManager::CalculateMaxSize ( PSystemType *pkPSType )
 	kRandomDir4.x = -fMaxHeightX;
 	kRandomDir4.z = -fMaxHeightZ;
 
-
-	
+	float const degtorad = float(57.2957795130823208767981548141052f);
 	kRandomDir.y *= float( cos(kRandomDir.x / degtorad) * cos(kRandomDir.z / degtorad) );
 	kRandomDir.x = float( sin(kRandomDir.x / degtorad) + 
 						pkPSType->m_kParticleBehaviour.m_kDirection.x );

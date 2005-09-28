@@ -63,6 +63,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_FINDENT,
 			FID_TRANSIDENT,
 			FID_SCALEIDENT,
+			FID_MS,
 		};
 			
 		enum EditMode_e

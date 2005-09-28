@@ -3,7 +3,7 @@
 
 #include <AL/alc.h>
 #include <vorbis/vorbisfile.h>
-#include "../../basic/vector3.h"
+#include "../../basic/math.h"
 #include <SDL/SDL_thread.h>
 
 class ZSSZeroFps;

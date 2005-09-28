@@ -19,22 +19,22 @@ Vector3 CalcNormal(Vector3 VertA, Vector3 VertB, Vector3 VertC)
 
 bool NaviMeshCell::IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB)
 {
-	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,			0.01 )) 
+	if( m_kVertex[VERT_A].Compare(kVertexA,			0.01 )) 
 	{
-		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
-		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,		0.01 )  )	return true;
+		if( m_kVertex[VERT_B].Compare(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_C].Compare(kVertexB,		0.01 )  )	return true;
 	}
 
-	else if( m_kVertex[VERT_B].NearlyEquals(kVertexA,	0.01 ) ) 
+	else if( m_kVertex[VERT_B].Compare(kVertexA,	0.01 ) ) 
 	{
-		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
-		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_A].Compare(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_C].Compare(kVertexB,		0.01 ) )		return true;
 	}
 
-	else if( m_kVertex[VERT_C].NearlyEquals(kVertexA,	0.01 ) ) 
+	else if( m_kVertex[VERT_C].Compare(kVertexA,	0.01 ) ) 
 	{
-		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
-		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_A].Compare(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_B].Compare(kVertexB,		0.01 ) )		return true;
 	}
 
 	return false;

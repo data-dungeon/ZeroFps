@@ -2503,7 +2503,7 @@ bool Tcs::TestLineVSQuad(Vector3* pkVertex0,Vector3* pkVertex1,Vector3* pkVertex
 		fTotAngle += kV[3].Angle(kV[0]);
 	
 			
-		if(fTotAngle >= (1.95*PI))
+		if(fTotAngle >= (1.95*Math::PI))
 		{
 			//cout<<"inside"<<fTotAngle<<endl;
 			return true;

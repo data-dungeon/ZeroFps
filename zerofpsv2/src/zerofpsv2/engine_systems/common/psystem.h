@@ -3,10 +3,7 @@
 
 #include "../propertys/psproperties/particleproperty.h"
 
-#include "../../basic/vector3.h"
-#include "../../basic/vector4.h"
-#include "../../basic/matrix4.h"
-#include "../../basic/vector2.h"
+#include "../../basic/math.h"
 #include "../../engine/zerofps.h"
 
 #include <vector>

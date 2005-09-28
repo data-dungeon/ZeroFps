@@ -10,11 +10,7 @@
 #include "../engine_systems_x.h"
 #include "../../basic/zfresource.h"
 #include "../../basic/zfsubsystem.h"
-#include "../../basic/vector2.h"
-#include "../../basic/vector3.h"
-#include "../../basic/vector4.h"
-#include "../../basic/matrix4.h"
-#include "../../basic/matrix3.h"
+#include "../../basic/math.h"
 #include "oggstream.h"
 
 #define DUMMY_SOUND "/data/audio/dummy.wav"

@@ -650,7 +650,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "degree", dData))
 	{
 		float fAngle = dData;
-		float fMultipel = (PI+PI) / 360.0f;
+		float fMultipel = Math::TWO_PI / 360.0f;	// PI+PI
 		pkNewSkin->m_fRotDegree = fMultipel * fAngle;
 	}
 

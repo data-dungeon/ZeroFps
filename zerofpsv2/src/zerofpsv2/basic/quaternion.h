@@ -2,10 +2,11 @@
 #define _BASIC_QUATERNION_H_
 
 #include "basic_x.h"
-//#include "os.h"
-#include "vector3.h"
-#include "matrix4.h"
-#include "matrix3.h"
+#include "math.h"
+
+class Vector3;
+class Matrix3;
+class Matrix4;
 
 /**	\brief	A class for quaternions (4d num that describes rotation)
 		\ingroup Basic

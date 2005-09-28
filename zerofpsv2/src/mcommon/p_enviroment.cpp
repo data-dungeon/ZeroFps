@@ -197,8 +197,8 @@ void P_Enviroment::UpdateEnviroment()
 	
 	if(m_kCurrentEnvSetting.m_kSunDiffuseColor.x == -1)
 	{
-		float fA = 2*PI * m_fPosOfDay;
-		float fS = sin(fA - PI/2)/2.5 + 0.4;
+		float fA = 2*Math::PI * m_fPosOfDay;
+		float fS = sin(fA - Math::HALF_PI)/2.5 + 0.4;	//PI/2
 				
 		Vector4 kSunDColor(1,0.9,0.9,1);
 		Vector4 kSunAColor(0.9,0.9,1,1);

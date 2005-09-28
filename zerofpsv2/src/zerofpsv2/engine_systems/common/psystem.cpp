@@ -365,6 +365,8 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 		}
 	} // pfColor != 0
 
+	float const degtorad = float(57.2957795130823208767981548141052f);
+
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
 	
 	Vector3 kRandomDir = m_pkPSystemType->m_kParticleBehaviour.m_kDirection;

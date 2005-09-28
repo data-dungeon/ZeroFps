@@ -899,6 +899,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	iW = m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iWidth;
 	iH = m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iHeight;
 
+	float const degtorad = float(57.2957795130823208767981548141052f);
 
 	for(float i=0;i<fRealSize;i+=0.5)
 	{

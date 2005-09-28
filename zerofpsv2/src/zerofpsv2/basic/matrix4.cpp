@@ -1,277 +1,10 @@
-#include "matrix4.h"
-#include "matrix3.h"
 #include <math.h>
 #include <cstdlib>
 #include <cmath>
 #include "math.h"
 
-// Constructors
-Matrix4::Matrix4(void) 
-{
-	for(int i=0;i<16;i++)
-		data[i]=0;
-}
-
-Matrix4::Matrix4( float v1,float v2,float v3 ,float v4,
-						float v5,float v6,float v7 ,float v8,						
-						float v9,float v10,float v11 ,float v12,
-						float v13,float v14,float v15 ,float v16)
-{							 	 
-	data[0]=v1;		data[1]=v2;		data[2]=v3;		data[3]=v4;
-	data[4]=v5;		data[5]=v6;		data[6]=v7;		data[7]=v8;
-	data[8]=v9;		data[9]=v10;	data[10]=v11;	data[11]=v12;	
-	data[12]=v13;	data[13]=v14;	data[14]=v15;	data[15]=v16;	
-};
-
-Matrix4::Matrix4(	const Matrix3& kOther)
-{
-	data[0]=kOther.m_afData[0];	data[1]=kOther.m_afData[1];	data[2]=kOther.m_afData[2];	data[3]=0;
-	data[4]=kOther.m_afData[3];	data[5]=kOther.m_afData[4];	data[6]=kOther.m_afData[5];	data[7]=0;
-	data[8]=kOther.m_afData[6];	data[9]=kOther.m_afData[7];	data[10]=kOther.m_afData[8];	data[11]=0;	
-	data[12]=0;							data[13]=0;							data[14]=0;							data[15]=1;	
-}
-
-void Matrix4::Set( float v1,float v2,float v3 ,float v4,
-						float v5,float v6,float v7 ,float v8,						
-						float v9,float v10,float v11 ,float v12,
-						float v13,float v14,float v15 ,float v16)
-{							 	 
-	data[0]=v1;		data[1]=v2;		data[2]=v3;		data[3]=v4;
-	data[4]=v5;		data[5]=v6;		data[6]=v7;		data[7]=v8;
-	data[8]=v9;		data[9]=v10;	data[10]=v11;	data[11]=v12;	
-	data[12]=v13;	data[13]=v14;	data[14]=v15;	data[15]=v16;	
-};
-
-	
-// Operators	-	Assignment
-void Matrix4::operator=(const Matrix3 &rkMatrix)
-{
-// 	Identity();
-
-	RowCol[0][0] = rkMatrix.m_aafRowCol[0][0];
-	RowCol[0][1] = rkMatrix.m_aafRowCol[0][1];
-	RowCol[0][2] = rkMatrix.m_aafRowCol[0][2];
-	RowCol[0][3] = 0;
-
-	RowCol[1][0] = rkMatrix.m_aafRowCol[1][0];
-	RowCol[1][1] = rkMatrix.m_aafRowCol[1][1];
-	RowCol[1][2] = rkMatrix.m_aafRowCol[1][2];
-	RowCol[1][3] = 0;
-
-	RowCol[2][0] = rkMatrix.m_aafRowCol[2][0];
-	RowCol[2][1] = rkMatrix.m_aafRowCol[2][1];
-	RowCol[2][2] = rkMatrix.m_aafRowCol[2][2];
-	RowCol[2][3] = 0;	
-	
-	RowCol[3][0] = 0;
-	RowCol[3][1] = 0;
-	RowCol[3][2] = 0;
-	RowCol[3][3] = 1;	
-}
-
-void Matrix4::operator= (const Quaternion& rkQuaternion)
-{
-	static Matrix3 mat3;
-	mat3 = Matrix3::IDENTITY;
-	mat3 = rkQuaternion;
-	Identity();
-	*this = mat3;
-}
-
-
-// Operators	-	Arithmetic operations
-Matrix4 Matrix4::operator+ (const Matrix4& rkMatrix) const
-{
-    static Matrix4 kSum;
-	 
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            kSum.RowCol[iRow][iCol] = RowCol[iRow][iCol] +
-                rkMatrix.RowCol[iRow][iCol];
-        }
-    }
-    return kSum;
-
-}
-
-Matrix4 Matrix4::operator+= (const Matrix4& rkMatrix)
-{
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            RowCol[iRow][iCol] += rkMatrix.RowCol[iRow][iCol];
-        }
-    }
-    return *this;
-}
-
-Matrix4 Matrix4::operator- (const Matrix4& rkMatrix) const
-{
-    static Matrix4 kDiff;
-	 
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            kDiff.RowCol[iRow][iCol] = RowCol[iRow][iCol] -
-                rkMatrix.RowCol[iRow][iCol];
-        }
-    }
-    return kDiff;
-
-}
-
-Matrix4 Matrix4::operator-= (const Matrix4& rkMatrix)
-{
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            RowCol[iRow][iCol] -= rkMatrix.RowCol[iRow][iCol];
-        }
-    }
-    return *this;
-}
-
-Matrix4 Matrix4::operator*(const Matrix4 &kOther) const 
-{
-    static Matrix4 kProd;
-	 
-//     for (int iRow = 0; iRow < 4; iRow++)
-//     {
-//         for (int iCol = 0; iCol < 4; iCol++)
-//         {
-//             kProd.RowCol[iRow][iCol] =
-//                 RowCol[iRow][0]*kOther.RowCol[0][iCol] +
-//                 RowCol[iRow][1]*kOther.RowCol[1][iCol] +
-//                 RowCol[iRow][2]*kOther.RowCol[2][iCol] +
-//                 RowCol[iRow][3]*kOther.RowCol[3][iCol];
-//         }
-//     }
-    
-	//dvoids new iteration less version
-	//row 0
-	kProd.RowCol[0][0] = RowCol[0][0]*kOther.RowCol[0][0] + RowCol[0][1]*kOther.RowCol[1][0] + RowCol[0][2]*kOther.RowCol[2][0] + RowCol[0][3]*kOther.RowCol[3][0];
-	kProd.RowCol[0][1] = RowCol[0][0]*kOther.RowCol[0][1] + RowCol[0][1]*kOther.RowCol[1][1] + RowCol[0][2]*kOther.RowCol[2][1] + RowCol[0][3]*kOther.RowCol[3][1];
-	kProd.RowCol[0][2] = RowCol[0][0]*kOther.RowCol[0][2] + RowCol[0][1]*kOther.RowCol[1][2] + RowCol[0][2]*kOther.RowCol[2][2] +	RowCol[0][3]*kOther.RowCol[3][2];
-	kProd.RowCol[0][3] = RowCol[0][0]*kOther.RowCol[0][3] + RowCol[0][1]*kOther.RowCol[1][3] + RowCol[0][2]*kOther.RowCol[2][3] + RowCol[0][3]*kOther.RowCol[3][3];
-	//row 1
-	kProd.RowCol[1][0] = RowCol[1][0]*kOther.RowCol[0][0] + RowCol[1][1]*kOther.RowCol[1][0] + RowCol[1][2]*kOther.RowCol[2][0] + RowCol[1][3]*kOther.RowCol[3][0];
-	kProd.RowCol[1][1] = RowCol[1][0]*kOther.RowCol[0][1] + RowCol[1][1]*kOther.RowCol[1][1] + RowCol[1][2]*kOther.RowCol[2][1] + RowCol[1][3]*kOther.RowCol[3][1];
-	kProd.RowCol[1][2] = RowCol[1][0]*kOther.RowCol[0][2] + RowCol[1][1]*kOther.RowCol[1][2] + RowCol[1][2]*kOther.RowCol[2][2] +	RowCol[1][3]*kOther.RowCol[3][2];
-	kProd.RowCol[1][3] = RowCol[1][0]*kOther.RowCol[0][3] + RowCol[1][1]*kOther.RowCol[1][3] + RowCol[1][2]*kOther.RowCol[2][3] + RowCol[1][3]*kOther.RowCol[3][3];
-	//row 2
-	kProd.RowCol[2][0] = RowCol[2][0]*kOther.RowCol[0][0] + RowCol[2][1]*kOther.RowCol[1][0] + RowCol[2][2]*kOther.RowCol[2][0] + RowCol[2][3]*kOther.RowCol[3][0];
-	kProd.RowCol[2][1] = RowCol[2][0]*kOther.RowCol[0][1] + RowCol[2][1]*kOther.RowCol[1][1] + RowCol[2][2]*kOther.RowCol[2][1] + RowCol[2][3]*kOther.RowCol[3][1];
-	kProd.RowCol[2][2] = RowCol[2][0]*kOther.RowCol[0][2] + RowCol[2][1]*kOther.RowCol[1][2] + RowCol[2][2]*kOther.RowCol[2][2] +	RowCol[2][3]*kOther.RowCol[3][2];
-	kProd.RowCol[2][3] = RowCol[2][0]*kOther.RowCol[0][3] + RowCol[2][1]*kOther.RowCol[1][3] + RowCol[2][2]*kOther.RowCol[2][3] + RowCol[2][3]*kOther.RowCol[3][3];
-	//row 3
-	kProd.RowCol[3][0] = RowCol[3][0]*kOther.RowCol[0][0] + RowCol[3][1]*kOther.RowCol[1][0] + RowCol[3][2]*kOther.RowCol[2][0] + RowCol[3][3]*kOther.RowCol[3][0];
-	kProd.RowCol[3][1] = RowCol[3][0]*kOther.RowCol[0][1] + RowCol[3][1]*kOther.RowCol[1][1] + RowCol[3][2]*kOther.RowCol[2][1] + RowCol[3][3]*kOther.RowCol[3][1];
-	kProd.RowCol[3][2] = RowCol[3][0]*kOther.RowCol[0][2] + RowCol[3][1]*kOther.RowCol[1][2] + RowCol[3][2]*kOther.RowCol[2][2] +	RowCol[3][3]*kOther.RowCol[3][2];
-	kProd.RowCol[3][3] = RowCol[3][0]*kOther.RowCol[0][3] + RowCol[3][1]*kOther.RowCol[1][3] + RowCol[3][2]*kOther.RowCol[2][3] + RowCol[3][3]*kOther.RowCol[3][3];
-    
-    return kProd;
-}
-
-Matrix4 Matrix4::operator*= (const Matrix4& kOther)
-{
-    static Matrix4 kProd;
-	 
-//     for (int iRow = 0; iRow < 4; iRow++)
-//     {
-//         for (int iCol = 0; iCol < 4; iCol++)
-//         {
-//             kProd.RowCol[iRow][iCol] =
-//                 RowCol[iRow][0]*rkMatrix.RowCol[0][iCol] +
-//                 RowCol[iRow][1]*rkMatrix.RowCol[1][iCol] +
-//                 RowCol[iRow][2]*rkMatrix.RowCol[2][iCol] +
-//                 RowCol[iRow][3]*rkMatrix.RowCol[3][iCol];
-//         }
-//     }
-
-
-	//dvoids new iteration less version
-	//row 0
-	kProd.RowCol[0][0] = RowCol[0][0]*kOther.RowCol[0][0] + RowCol[0][1]*kOther.RowCol[1][0] + RowCol[0][2]*kOther.RowCol[2][0] + RowCol[0][3]*kOther.RowCol[3][0];
-	kProd.RowCol[0][1] = RowCol[0][0]*kOther.RowCol[0][1] + RowCol[0][1]*kOther.RowCol[1][1] + RowCol[0][2]*kOther.RowCol[2][1] + RowCol[0][3]*kOther.RowCol[3][1];
-	kProd.RowCol[0][2] = RowCol[0][0]*kOther.RowCol[0][2] + RowCol[0][1]*kOther.RowCol[1][2] + RowCol[0][2]*kOther.RowCol[2][2] +	RowCol[0][3]*kOther.RowCol[3][2];
-	kProd.RowCol[0][3] = RowCol[0][0]*kOther.RowCol[0][3] + RowCol[0][1]*kOther.RowCol[1][3] + RowCol[0][2]*kOther.RowCol[2][3] + RowCol[0][3]*kOther.RowCol[3][3];
-	//row 1
-	kProd.RowCol[1][0] = RowCol[1][0]*kOther.RowCol[0][0] + RowCol[1][1]*kOther.RowCol[1][0] + RowCol[1][2]*kOther.RowCol[2][0] + RowCol[1][3]*kOther.RowCol[3][0];
-	kProd.RowCol[1][1] = RowCol[1][0]*kOther.RowCol[0][1] + RowCol[1][1]*kOther.RowCol[1][1] + RowCol[1][2]*kOther.RowCol[2][1] + RowCol[1][3]*kOther.RowCol[3][1];
-	kProd.RowCol[1][2] = RowCol[1][0]*kOther.RowCol[0][2] + RowCol[1][1]*kOther.RowCol[1][2] + RowCol[1][2]*kOther.RowCol[2][2] +	RowCol[1][3]*kOther.RowCol[3][2];
-	kProd.RowCol[1][3] = RowCol[1][0]*kOther.RowCol[0][3] + RowCol[1][1]*kOther.RowCol[1][3] + RowCol[1][2]*kOther.RowCol[2][3] + RowCol[1][3]*kOther.RowCol[3][3];
-	//row 2
-	kProd.RowCol[2][0] = RowCol[2][0]*kOther.RowCol[0][0] + RowCol[2][1]*kOther.RowCol[1][0] + RowCol[2][2]*kOther.RowCol[2][0] + RowCol[2][3]*kOther.RowCol[3][0];
-	kProd.RowCol[2][1] = RowCol[2][0]*kOther.RowCol[0][1] + RowCol[2][1]*kOther.RowCol[1][1] + RowCol[2][2]*kOther.RowCol[2][1] + RowCol[2][3]*kOther.RowCol[3][1];
-	kProd.RowCol[2][2] = RowCol[2][0]*kOther.RowCol[0][2] + RowCol[2][1]*kOther.RowCol[1][2] + RowCol[2][2]*kOther.RowCol[2][2] +	RowCol[2][3]*kOther.RowCol[3][2];
-	kProd.RowCol[2][3] = RowCol[2][0]*kOther.RowCol[0][3] + RowCol[2][1]*kOther.RowCol[1][3] + RowCol[2][2]*kOther.RowCol[2][3] + RowCol[2][3]*kOther.RowCol[3][3];
-	//row 3
-	kProd.RowCol[3][0] = RowCol[3][0]*kOther.RowCol[0][0] + RowCol[3][1]*kOther.RowCol[1][0] + RowCol[3][2]*kOther.RowCol[2][0] + RowCol[3][3]*kOther.RowCol[3][0];
-	kProd.RowCol[3][1] = RowCol[3][0]*kOther.RowCol[0][1] + RowCol[3][1]*kOther.RowCol[1][1] + RowCol[3][2]*kOther.RowCol[2][1] + RowCol[3][3]*kOther.RowCol[3][1];
-	kProd.RowCol[3][2] = RowCol[3][0]*kOther.RowCol[0][2] + RowCol[3][1]*kOther.RowCol[1][2] + RowCol[3][2]*kOther.RowCol[2][2] +	RowCol[3][3]*kOther.RowCol[3][2];
-	kProd.RowCol[3][3] = RowCol[3][0]*kOther.RowCol[0][3] + RowCol[3][1]*kOther.RowCol[1][3] + RowCol[3][2]*kOther.RowCol[2][3] + RowCol[3][3]*kOther.RowCol[3][3];
-    
- 	*this = kProd;
-    return kProd;
-}
-
-Matrix4 Matrix4::operator*(const float &f) const
-{
-	return Matrix4(	data[0]*f,data[1]*f,data[2]*f,data[3]*f,
-      					data[4]*f,data[5]*f,data[6]*f,data[7]*f,
-      					data[8]*f,data[9]*f,data[10]*f,data[11]*f,
-      					data[12]*f,data[13]*f,data[14]*f,data[15]*f);
-      					
-}
-
-Matrix4 Matrix4::operator*=(const float &f) 
-{
-	for(int i=0;i<16;i++)
-		data[i]*=f;
-		
-	return *this;
-}
-
-Vector4 Matrix4::operator*(const Vector4 &f)
-{
-	static Vector4 ny;
-	
-	ny.x=data[0]*f.x + data[1]*f.y + data[2]*f.z + data[3]*f.w;
-	ny.y=data[4]*f.x + data[5]*f.y + data[6]*f.z + data[7]*f.w;
-	ny.z=data[8]*f.x + data[9]*f.y + data[10]*f.z + data[11]*f.w;
-	ny.w=data[12]*f.x + data[13]*f.y + data[14]*f.z + data[15]*f.w;
-
-	return ny;
-
-}
-
-
-
 // Methods
-void Matrix4::Zero(void) 
-{
-	for(int i=0;i<16;i++)
-		data[i]=0;
-}
 
-
-void Matrix4::Identity() 
-{
-	Set(	1,0,0,0,
-			0,1,0,0,
-			0,0,1,0,
-			0,0,0,1);
-
-// 	*this=Matrix4(1,0,0,0,
-// 		0,1,0,0,
-// 		0,0,1,0,
-// 		0,0,0,1);
-}
 
 void Matrix4::Transponse()
 {
@@ -407,19 +140,6 @@ void Matrix4::LookDir(Vector3 kDir,Vector3 kUp)
 	SetAxis(1,kUp);
 	SetAxis(2,kDir);
 	Transponse();
-
-}
-
-
-
-Vector3 Matrix4::VectorIRotate (const Vector3& kVec)
-{
-	static Vector3 res;
-	
-	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
-	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
-	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
-	return res;
 }
 
 void Matrix4::SetZeroDelta(float delta)
@@ -433,8 +153,6 @@ void Matrix4::SetZeroDelta(float delta)
         }
     }
 }
-
-
 
 float Matrix4::Determinant(void)
 {
@@ -580,14 +298,14 @@ Vector3 Matrix4::GetRotVector()
 	
 	angle_y = D = float(-asin( data[2]));
 	C           =  float(cos( angle_y ));
-	angle_y    *= degtorad;
+	angle_y     = Math::DegToRad(angle_y);
     
 	ftrx      =  data[9] / C;
 	ftry      = -data[8]  / C;
-	angle_x  = float(atan2( ftry, ftrx ) * degtorad);
+	angle_x   = Math::DegToRad(float(atan2( ftry, ftrx )));
 	ftrx      =  data[0] / C;
 	ftry      = -data[1] / C;
-	angle_z  = float(atan2( ftry, ftrx ) * degtorad);
+	angle_z   = Math::DegToRad(float(atan2( ftry, ftrx )));
 
 	angle_x = Math::Clamp( angle_x, 0, 360 );
 	angle_y = Math::Clamp( angle_y, 0, 360 );
@@ -635,6 +353,31 @@ void Matrix4::Print()
 
 
 }
+
+string Matrix4::ToString()
+{
+	char szMat[512];
+	szMat[0] = 0;
+
+
+	for(int i=0; i<16; i++)
+	{
+		sprintf(&szMat[strlen(szMat)], "%.2f, ", data[i]);
+	}
+
+	return string(szMat);
+};
+
+string Matrix4::ToString_Vec(int iIndex)
+{
+	char szMat[512];
+	szMat[0] = 0;
+
+	sprintf(szMat, "%.2f,%.2f,%.2f,%.2f ", vec[iIndex].x, vec[iIndex].y, vec[iIndex].z, vec[iIndex].w);
+
+	return string(szMat);
+}
+
 
 /*
 Vector3 Matrix4::VectorRotate (const Vector3& kVec)

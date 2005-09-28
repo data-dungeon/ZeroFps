@@ -1,6 +1,5 @@
 #include "zfassert.h"
-#include "vector3.h"
-#include "matrix3.h"
+#include "math.h"
 
 using namespace std;
 
@@ -8,48 +7,10 @@ const Vector3 Vector3::ZERO(0,0,0);
 const Vector3 Vector3::AXIS_X(1,0,0);
 const Vector3 Vector3::AXIS_Y(0,1,0);
 const Vector3 Vector3::AXIS_Z(0,0,1);
-const float Vector3::degtorad = float(57.3248);
+//const float Vector3::degtorad = float(57.3248);
 
 // used by the new distance formula
 #define SWAP(A, B, T) {T = A; A = B; B = T;}
-
-
-// Comparison
-
-
-Vector3 Vector3::Unit(void) const						
-{
-	float invlen = Length();
-	
-	if(invlen == 0.0)
-		return Vector3(0,0,0);
-	
-	invlen = 1 / invlen;
-	return Vector3(x * invlen, y * invlen, z * invlen);
-}
-
-void Vector3::Normalize(void)						
-{
-	float invlen = Length();
-	
-	if(invlen == 0.0)
-		return;
-	
-	invlen = 1 / invlen;
-	x *= invlen;
-	y *= invlen;
-	z *= invlen;
-}
-
-bool Vector3::NearlyEquals( const Vector3& v, const float e ) const	
-{
-	return (fabs(x-v.x) < e && fabs(y-v.y) < e && fabs(z-v.z) < e);
-}
-
-bool Vector3::NearlyZero( const float e ) const 				
-{
-	return (fabs(x) < e && fabs(y) < e && fabs(z) < e);
-}
 
 Vector3 Vector3::Proj(const Vector3& v ) const			
 {
@@ -98,12 +59,7 @@ int	Vector3::AbsMaxCoo(void)
 	return 0;
 }
 
-void Vector3::Lerp(Vector3& from, Vector3& to, float flerp)
-{
-	*this = to - from;
-	*this *= flerp;
-	*this += from;
-}
+
 
 string Vector3::ToString()
 {
@@ -130,7 +86,7 @@ Vector3 Vector3::Angels(void)
 {
 	Vector3 temp=Vector3(0,0,0);
 
-	temp.x= float(-atan(y/z) * degtorad);	
+	temp.x = Math::RadToDeg(float(-atan(y/z)));	
 /*	if(z<0)
 		temp.x+=180;
 */
@@ -143,7 +99,7 @@ Vector3 Vector3::Angels(void)
 
 
 
-	temp.y = float(atan(x/z) * degtorad);
+	temp.y = Math::RadToDeg(float(atan(x/z)));
 	
 	if(z<0)
 		temp.y+=180;
@@ -179,11 +135,12 @@ Vector3 Vector3::AToU()
 {
 	Vector3 New(0,0,0);
 	
+/*
 	New.y += float(cos((x+90)/degtorad));
 	New.x += float(cos((y)/degtorad)*cos((x)/degtorad) );
 	New.z += float(sin((y)/degtorad)*cos((x)/degtorad) );
-
 	New.Normalize();
+*/
 	return New;
 }
 

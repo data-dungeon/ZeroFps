@@ -6,8 +6,7 @@
 #include "../zerofpsv2/basic/zfsubsystem.h"
 #include "../zerofpsv2/basic/zfresource.h"
 #include "../zerofpsv2/basic/zfini.h"
-#include "../zerofpsv2/basic/vector4.h"
-#include "../zerofpsv2/basic/vector3.h"
+#include "../zerofpsv2/basic/math.h"
 #include "../zerofpsv2/engine/zerofps.h"
 
 #include "zssmltime.h"

@@ -12,6 +12,10 @@ extern ZFSystem g_ZFObjSys;
 #define NRDEG_IN_ONE_RAD	57.29577951
 #define NRRAD_IN_ONE_DEG	0.0174532952
 
+const float Math::PI			= 3.1415926535897932384626433832795f;
+const float Math::TWO_PI	= 2.0 * Math::PI;
+const float Math::HALF_PI  = 0.5 * Math::PI;
+const float Math::EPSILON  = 1.0e-4f;
 
 float BASIC_API Math::DegToRad(float fAngle)
 {
@@ -99,7 +103,7 @@ int Math::Randomi(int iInterval)
 
 bool Math::equal_f(float a, float b)
 {
-	return( (a > (b - epsilon) ) && (a < (b + epsilon)) );
+	return( (a > (b - EPSILON) ) && (a < (b + EPSILON)) );
 }
 
 float Math::Clamp(float fValue,float fBotom,float fTop)
