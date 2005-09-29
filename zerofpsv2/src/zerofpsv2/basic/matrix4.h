@@ -39,7 +39,14 @@ class BASIC_API Matrix4
 					float v9,float v10,float v11 ,float v12,
 					float v13,float v14,float v15 ,float v16);
 		Matrix4(	const Matrix3& kOther);
-					
+	
+// Access 
+		float &operator[](const int i);				
+		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
+		Vector3 GetAxis(int iAxisNum);
+		Vector3 GetPos();
+		void SetPos(const Vector3& kPos);
+
 // Assignment 
 		Matrix4 operator=(const Matrix4 &kOther);
 		void operator=(const Matrix3 &rkMatrix);
@@ -77,49 +84,27 @@ class BASIC_API Matrix4
 		Matrix4 	Inverse( );
 		float 	Determinant(void);
 
+// Other
+		string ToString();
+		string ToString_Vec(int iIndex);
+
+// NoSort
 		void 		SetZeroDelta(float delta);
 		Matrix3 	submat(int i, int j);
 
-		float &operator[](const int i);				
-		
 		void RadRotate(float fX, float fY, float fZ);
 		void RadRotate(const Vector3& kRot);
-		
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(const Vector3& kRot);
-		
 		void Scale(float fX, float fY, float fZ);
 		void Scale(const Vector3& kScale);
-		
 		void OldTranslate(float x, float y, float z);		
 		void Translate(float fX, float fY, float fZ);
 		void Translate(const Vector3& kPos);
-		
 		void LookDir(Vector3 kDir,Vector3 kUp);
 
-		// ************************************************
-// Accessors 
 		Vector3 GetRotVector();
-		Vector3 GetPosVector();
-		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
-		Vector3 GetAxis(int iAxisNum);
-				
-		Vector3 GetPos()
-		{
-			return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
-		}
-
-		void SetPos(const Vector3& kPos)
-		{
-			RowCol[3][0] = kPos.x;
-			RowCol[3][1] = kPos.y;
-			RowCol[3][2] = kPos.z;
-		}
-
-// Other
-		void Print();
-		string ToString();
-		string ToString_Vec(int iIndex);
+		//Vector3 GetPosVector();
 };
 
 #include "matrix3.h"
@@ -148,6 +133,36 @@ inline Matrix4::Matrix4(	const Matrix3& kOther)
 	data[4]=kOther.m_afData[3];	data[5]=kOther.m_afData[4];	data[6]=kOther.m_afData[5];	data[7]=0;
 	data[8]=kOther.m_afData[6];	data[9]=kOther.m_afData[7];	data[10]=kOther.m_afData[8];	data[11]=0;	
 	data[12]=0;							data[13]=0;							data[14]=0;							data[15]=1;	
+}
+
+// Access 
+inline float &Matrix4::operator[](const int i)
+{
+	return data[i];
+}
+
+inline void Matrix4::SetAxis(int iAxisNum, const Vector3& kNewAxis)
+{
+        RowCol[iAxisNum][0] = kNewAxis.x;
+        RowCol[iAxisNum][1] = kNewAxis.y;
+        RowCol[iAxisNum][2] = kNewAxis.z;
+}
+
+inline Vector3 Matrix4::GetAxis(int iAxisNum)
+{
+	return Vector3(RowCol[iAxisNum][0], RowCol[iAxisNum][1], RowCol[iAxisNum][2]);
+}
+
+inline Vector3 Matrix4::GetPos()
+{
+	return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
+}
+
+inline void Matrix4::SetPos(const Vector3& kPos)
+{
+	RowCol[3][0] = kPos.x;
+	RowCol[3][1] = kPos.y;
+	RowCol[3][2] = kPos.z;
 }
 
 // Assignment 

@@ -48,7 +48,7 @@ class BASIC_API Vector3
 		bool IsZero(void) const; 												///< True if this = <0,0,0>
 		bool IsZero(const float e ) const; 									///< True if this is <0,0,0> within the range of +-e
 
-// Arithmetic operations
+// Arithmetic 
 		Vector3 operator-() const;
 		
 		Vector3 operator+(const Vector3 &kOtherV3)	const;

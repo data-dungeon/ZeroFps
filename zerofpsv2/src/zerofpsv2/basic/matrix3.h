@@ -15,6 +15,10 @@ class Quaternion;
 class BASIC_API Matrix3 
 {
 	public:
+// Std Values
+	   static const Matrix3 ZERO;
+		static const Matrix3 IDENTITY;
+
 // Data
 		union 
 		{
@@ -22,15 +26,29 @@ class BASIC_API Matrix3
 			float m_afData[9];	
 		};
 
-	   static const Matrix3 ZERO;
-		static const Matrix3 IDENTITY;
-
 // Constructors
 		Matrix3(void) { };
 		Matrix3(float f00,float f01,float f02,
 					float f10,float f11,float f12,						
 					float f20,float f21,float f22);
+
+// Access 
+		Vector3 GetRow (int iRow) const;
+		void SetRow(int iRow,const Vector3& kVec);
+		Vector3 GetColumn (int iCol) const;
+		void SetColum(int iCol,const Vector3& kVec);
 		
+		Vector3 GetAxis(int iAxisNum);
+		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
+
+		inline Vector3 Row1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[0][1], m_aafRowCol[0][2]); }
+		inline Vector3 Row2() const { return Vector3 (m_aafRowCol[1][0], m_aafRowCol[1][1], m_aafRowCol[1][2]); }
+		inline Vector3 Row3() const { return Vector3 (m_aafRowCol[2][0], m_aafRowCol[2][1], m_aafRowCol[2][2]); }
+
+		inline Vector3 Col1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[1][0], m_aafRowCol[2][0]); }
+		inline Vector3 Col2() const { return Vector3 (m_aafRowCol[0][1], m_aafRowCol[1][1], m_aafRowCol[2][1]); }
+		inline Vector3 Col3() const { return Vector3 (m_aafRowCol[0][2], m_aafRowCol[1][2], m_aafRowCol[2][2]); }
+
 // Assignment 
 		Matrix3& operator= (const Matrix3& rkMatrix);
 		void operator= (const Matrix4& rkMatrix);
@@ -64,34 +82,18 @@ class BASIC_API Matrix3
 		Matrix3 GetTransponse() const;
 		bool Inverse (Matrix3& inv, float tolerance) const;
 		float Determinant(void)	 const;
-		
-		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
-		Vector3 GetAxis(int iAxisNum);
-	
+
+// Other
+		string ToString();
+
+// NoSort
 		void Scale(float fX, float fY, float fZ);
 		void Scale(const Vector3& kScale);		
-				
 		void RadRotate(float fX, float fY, float fZ);
 		void RadRotate(const Vector3& kRot);
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(const Vector3& kRot);
-
 		Vector3 GetRotVector();
-		
-// Access 
-		Vector3 GetColumn (int iCol) const;
-		
-		inline Vector3 Row1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[0][1], m_aafRowCol[0][2]); }
-		inline Vector3 Row2() const { return Vector3 (m_aafRowCol[1][0], m_aafRowCol[1][1], m_aafRowCol[1][2]); }
-		inline Vector3 Row3() const { return Vector3 (m_aafRowCol[2][0], m_aafRowCol[2][1], m_aafRowCol[2][2]); }
-
-		inline Vector3 Col1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[1][0], m_aafRowCol[2][0]); }
-		inline Vector3 Col2() const { return Vector3 (m_aafRowCol[0][1], m_aafRowCol[1][1], m_aafRowCol[2][1]); }
-		inline Vector3 Col3() const { return Vector3 (m_aafRowCol[0][2], m_aafRowCol[1][2], m_aafRowCol[2][2]); }
-
-// Other
-		void Print();
-		string ToString();
 };
 
 #include "matrix4.h"
@@ -113,6 +115,47 @@ inline Matrix3::Matrix3(float f00,float f01,float f02,
 	m_aafRowCol[2][1] = f21;
 	m_aafRowCol[2][2] = f22;
 };
+
+// Access 
+inline Vector3 Matrix3::GetRow (int iRow) const
+{
+	ZFAssert(0 <= iRow && iRow < 3, "Matrix3::GetRow: Index out of range");
+	return Vector3(m_aafRowCol[iRow][0], m_aafRowCol[iRow][1], m_aafRowCol[iRow][2]);
+}
+
+inline void Matrix3::SetRow(int iRow,const Vector3& kVec)
+{
+	ZFAssert(0 <= iRow && iRow < 3, "Matrix3::SetRow: Index out of range");
+	m_aafRowCol[iRow][0] = kVec.x;
+	m_aafRowCol[iRow][1] = kVec.y;
+	m_aafRowCol[iRow][2] = kVec.z;
+}
+
+inline Vector3 Matrix3::GetColumn (int iCol) const
+{
+	ZFAssert(0 <= iCol && iCol < 3, "Matrix3::GetColumn: Index out of range");
+	return Vector3(m_aafRowCol[0][iCol], m_aafRowCol[1][iCol], m_aafRowCol[2][iCol]);
+}
+
+inline void Matrix3::SetColum (int iCol, const Vector3& kVec) 
+{
+	ZFAssert(0 <= iCol && iCol < 3, "Matrix3::SetColumn: Index out of range");
+	m_aafRowCol[0][iCol] = kVec.x;
+	m_aafRowCol[1][iCol] = kVec.y;
+	m_aafRowCol[2][iCol] = kVec.z;
+}
+
+inline Vector3 Matrix3::GetAxis(int iAxisNum)
+{
+	return Vector3(m_aafRowCol[iAxisNum][0], m_aafRowCol[iAxisNum][1], m_aafRowCol[iAxisNum][2]);
+}
+
+inline void Matrix3::SetAxis(int iAxisNum, const Vector3& kNewAxis)
+{
+        m_aafRowCol[iAxisNum][0] = kNewAxis.x;
+        m_aafRowCol[iAxisNum][1] = kNewAxis.y;
+        m_aafRowCol[iAxisNum][2] = kNewAxis.z;
+}
 
 // Assignment 
 inline Matrix3& Matrix3::operator= (const Matrix3& rkMatrix)

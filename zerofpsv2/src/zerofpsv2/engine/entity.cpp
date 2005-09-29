@@ -1646,7 +1646,7 @@ Vector3 Entity::GetWorldPosV()
 	}
 	else if(!m_kGotOrientationData[WORLD_POS_V])
 	{
-		m_kWorldPosV  = GetWorldOriM().GetPosVector();
+		m_kWorldPosV  = GetWorldOriM().GetPos();
 		m_kGotOrientationData[WORLD_POS_V] = true;
 	}
 	

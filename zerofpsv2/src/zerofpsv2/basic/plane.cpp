@@ -1,40 +1,12 @@
 #include "zfassert.h"
 #include "plane.h"
 
-// Constructors
-Plane::Plane(const Plane& kPlane)
-{
-	m_kNormal	= kPlane.m_kNormal;
-	m_fD		= kPlane.m_fD;
-	
-}
-
-Plane::Plane(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2)
-{
-	Set(kPoint0,kPoint1,kPoint2);
-}
-
-
-// Operators
-Plane& Plane::operator=( const Plane& kIn )
-{
-	m_kNormal	= kIn.m_kNormal;
-	m_fD		= kIn.m_fD;
-	return (*this);
-}
-
 // Methods
-void Plane::Set( const Vector3& kNormal, const Vector3& kPos)
+Vector3 Plane::ProjectOnto(Vector3 kVec)
 {
-	m_kNormal=kNormal;
-
-	if(kPos.Dot(kNormal) >0)
-	{
-		m_fD = -(kNormal.Proj(kPos).Length());
-	}
-	else {
-		m_fD = kNormal.Proj(kPos).Length();	
-	}
+	float fDist = m_kNormal.Dot(kVec) + m_fD;
+	Vector3 kNewVec = kVec * fDist;
+	return kNewVec;
 }
 
 bool Plane::PointInside(const Vector3& kPoint)
@@ -56,6 +28,7 @@ float Plane::PointTest(const Vector3& kPoint)
 {
 	return (m_kNormal.Dot(kPoint) + m_fD);
 }
+
 
 float Plane::SphereTest(const Vector3& kPoint,const float& fRadius)
 {
@@ -90,21 +63,6 @@ bool Plane::LineTest(const Vector3& kP1,const Vector3& kP2,Vector3* kColPos)
 
 }
 
-void Plane::Set(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2)
-{
-	static Vector3 kDiff1;
-	static Vector3 kDiff2;
-
-	kDiff1 = kPoint1 - kPoint0;
-	kDiff2 = kPoint2 - kPoint0;
-
-	m_kNormal = kDiff1.Cross(kDiff2);
-	m_kNormal.Normalize();
-
-    m_fD = - kPoint0.Dot( m_kNormal );
-}
-
-
 float Plane::SolveY(const float& X, const float& Z)
 {
 	if (m_kNormal.y)
@@ -113,7 +71,12 @@ float Plane::SolveY(const float& X, const float& Z)
 	return (0.0f);
 }
 
-
+string Plane::ToString()
+{
+	char szVec[128];
+	sprintf(szVec, "%f,%f,%f,%f", m_kNormal.x,m_kNormal.y,m_kNormal.z, m_fD);
+	return string(szVec);	
+}
 
 
 

@@ -11,221 +11,21 @@ using namespace std;
 Quaternion Quaternion::ZERO(0.0,0.0,0.0,0.0);
 Quaternion Quaternion::IDENTITY(1.0,0.0,0.0,0.0);
 
-Quaternion::Quaternion()
+Vector3 Quaternion::RotateVector3(Vector3 v)
 {
-
-}
-
-Quaternion::Quaternion( float fW, float fX, float fY , float fZ)
-{
-	w = fW;
-	x = fX;
-	y = fY;
-	z = fZ;
-}
-
-Quaternion::Quaternion(const Quaternion& rkQ)
-{
-    w = rkQ.w;
-    x = rkQ.x;
-    y = rkQ.y;
-    z = rkQ.z;
-}
-/*
-Quaternion& Quaternion::operator= (Quaternion& rkQ )
-{
-    w = rkQ.w;
-    x = rkQ.x;
-    y = rkQ.y;
-    z = rkQ.z;
-	return *this;
-}
-*/
-
-Quaternion Quaternion::operator + (const Quaternion& rkQ ) const 
-{
-	return Quaternion(w+rkQ.w,x+rkQ.x,y+rkQ.y,z+rkQ.z);
-}
-
-Quaternion Quaternion::operator - (const Quaternion& rkQ ) const 
-{
-	return Quaternion(w-rkQ.w,x-rkQ.x,y-rkQ.y,z-rkQ.z);
-}
-
-Quaternion Quaternion::operator += (const Quaternion& rkQ )
-{
-    w += rkQ.w;
-    x += rkQ.x;
-    y += rkQ.y;
-    z += rkQ.z;
-	return *this;
-}
-
-Quaternion Quaternion::operator -= (const Quaternion& rkQ )
-{
-    w -= rkQ.w;
-    x -= rkQ.x;
-    y -= rkQ.y;
-    z -= rkQ.z;
-	return *this;
-}
-
-Quaternion Quaternion::operator * (const Quaternion& rkQ) const
-{
-    return Quaternion
-    (
-		w*rkQ.w - x*rkQ.x - y*rkQ.y - z*rkQ.z,
-		w*rkQ.x + x*rkQ.w + y*rkQ.z - z*rkQ.y,
-		w*rkQ.y + y*rkQ.w + z*rkQ.x - x*rkQ.z,
-		w*rkQ.z + z*rkQ.w + x*rkQ.y - y*rkQ.x
-    );
-
-/*	Quaternion qtmp;
+	Quaternion t,bla;
 	
-    qtmp.w		  = w * q.w		   - vector.x * q.vector.x - vector.y * q.vector.y - vector.z * q.vector.z;
-    qtmp.vector.x = w * q.vector.x + vector.x * q.w		   + vector.y * q.vector.z - vector.z * q.vector.y;
-    qtmp.vector.y = w * q.vector.y + vector.y * q.w        + vector.z * q.vector.x - vector.x * q.vector.z;
-    qtmp.vector.z = w * q.vector.z + vector.z * q.w        + vector.x * q.vector.y - vector.y * q.vector.x;
-	return qtmp;*/
-}
-
-Quaternion Quaternion::operator *= (const Quaternion& rkQ) 
-{
-    Quaternion res
-    (
-		w*rkQ.w - x*rkQ.x - y*rkQ.y - z*rkQ.z,
-		w*rkQ.x + x*rkQ.w + y*rkQ.z - z*rkQ.y,
-		w*rkQ.y + y*rkQ.w + z*rkQ.x - x*rkQ.z,
-		w*rkQ.z + z*rkQ.w + x*rkQ.y - y*rkQ.x
-    );
-
-	*this = res;
-	return res;
-/*	Quaternion qtmp;
+	t = (*this) * v * conjugate();
 	
-    qtmp.w		  = w * q.w		   - vector.x * q.vector.x - vector.y * q.vector.y - vector.z * q.vector.z;
-    qtmp.vector.x = w * q.vector.x + vector.x * q.w		   + vector.y * q.vector.z - vector.z * q.vector.y;
-    qtmp.vector.y = w * q.vector.y + vector.y * q.w        + vector.z * q.vector.x - vector.x * q.vector.z;
-    qtmp.vector.z = w * q.vector.z + vector.z * q.w        + vector.x * q.vector.y - vector.y * q.vector.x;
-	*this = qtmp;
-	return qtmp;*/
+	return t.GetVector3();
 }
 
-
-Quaternion Quaternion::operator* (float fScalar) const
+string Quaternion::ToString()
 {
-    return Quaternion(fScalar*w,fScalar*x,fScalar*y,fScalar*z);
+	char szVec[128];
+	sprintf(szVec, "%f,%f,%f,%f", x,y,z,w);
+	return string(szVec);	
 }
-
-Quaternion operator* (float fScalar, const Quaternion& rkQ)
-{
-    return Quaternion(fScalar*rkQ.w,fScalar*rkQ.x,fScalar*rkQ.y, fScalar*rkQ.z);
-}
-
-Quaternion Quaternion::operator- () const
-{
-    return Quaternion(-w,-x,-y,-z);
-}
-
-float Quaternion::Dot (const Quaternion& rkQ) const
-{
-	return w*rkQ.w + x*rkQ.x + y*rkQ.y + z*rkQ.z;
-}
-
-float Quaternion::Norm(void)
-{
-    return w*w + x*x + y*y + z*z;
-}
-
-float Quaternion::Length(void)
-{
-	return sqrt(Norm());
-}
-
-Quaternion Quaternion::Inverse (void) 
-{
-    float fNorm = Norm();
-
-    if ( fNorm > 0.0f )
-    {
-        float fInvNorm = 1.0f / fNorm;
-        return Quaternion(w*fInvNorm,-x*fInvNorm,-y*fInvNorm,-z*fInvNorm);
-    }
-    else
-    {
-        // return an invalid result to flag the error
-        return ZERO;
-    }
-}
-
-void Quaternion::Normalize(void)
-{
-    float fNorm = Norm();
-    if ( fNorm > 0.0f )
-    {
-        float fInvNorm = 1.0f / fNorm;
-        w *= fInvNorm;
-        x *= fInvNorm;
-        y *= fInvNorm;
-        z *= fInvNorm;
-    }
-}
-
-Quaternion Quaternion::UnitInverse (void)
-{
-   // this must be unit length.
-   return Quaternion (w,-x,-y,-z);
-}
-
-
-
-
-
-// Compare
-int Quaternion::operator== ( const Quaternion& rkQ ) const
-{
-	return (rkQ.x==x && rkQ.y==y && rkQ.z==z && rkQ.w == w);
-}
-
-int Quaternion::operator!= ( const Quaternion& rkQ ) const
-{
-	return !(rkQ == *this);
-}
-
-
-// conversion between quaternions, matrices, and angle-axes
-/*void Quaternion::operator = ( Matrix4& m )
-{
-    float root;
-	float trace = m.RowCol[0][0] + m.RowCol[1][1] + m.RowCol[2][2];
-
-	if(trace > 0.0) {
-        root = sqrt (trace + 1.0);
-        w = root * 0.5;
-        root = 0.5 / root;
-
-        vector.x = (m.RowCol[1][2] - m.RowCol[2][1]) * root;
-        vector.y = (m.RowCol[2][0] - m.RowCol[0][2]) * root;
-        vector.z = (m.RowCol[0][1] - m.RowCol[1][0]) * root;
-		}
-	else {
-        int i, j, k, nxt[3] = {1,2,0};
-
-        i = 0;
-        if (m.RowCol[1][1] > m.RowCol[0][0])	i = 1;
-        if (m.RowCol[2][2] > m.RowCol[i][i])	i = 2;
-        j = nxt[i];
-        k = nxt[j];
-        
-		root = sqrt((m.RowCol[i][i] - (m.RowCol[j][j] + m.RowCol[k][k])) + 1.0);
-        assign_index(i, root * 0.5); 
-        root = 0.5 / root;
-        w = (m.RowCol[j][k] - m.RowCol[k][j]) * root;
-        assign_index(j, (m.RowCol[i][j] + m.RowCol[j][i]) * root);	
-        assign_index(k, (m.RowCol[i][k] + m.RowCol[k][i]) * root);
-		}
-}
-*/
 
 void Quaternion::FromRotationMatrix (const Matrix3& kRot)
 {
@@ -262,6 +62,32 @@ void Quaternion::FromRotationMatrix (const Matrix3& kRot)
         *apkQuat[j] = (kRot.m_aafRowCol[j][i]+kRot.m_aafRowCol[i][j])*fRoot;
         *apkQuat[k] = (kRot.m_aafRowCol[k][i]+kRot.m_aafRowCol[i][k])*fRoot;
     }
+}
+
+void Quaternion::ToRotationMatrix (Matrix3& kRot) const
+{
+    float fTx  = 2.0f*x;
+    float fTy  = 2.0f*y;
+    float fTz  = 2.0f*z;
+    float fTwx = fTx*w;
+    float fTwy = fTy*w;
+    float fTwz = fTz*w;
+    float fTxx = fTx*x;
+    float fTxy = fTy*x;
+    float fTxz = fTz*x;
+    float fTyy = fTy*y;
+    float fTyz = fTz*y;
+    float fTzz = fTz*z;
+
+	kRot.m_aafRowCol[0][0] = 1.0f-(fTyy+fTzz);
+    kRot.m_aafRowCol[0][1] = fTxy-fTwz;
+    kRot.m_aafRowCol[0][2] = fTxz+fTwy;
+    kRot.m_aafRowCol[1][0] = fTxy+fTwz;
+    kRot.m_aafRowCol[1][1] = 1.0f-(fTxx+fTzz);
+    kRot.m_aafRowCol[1][2] = fTyz-fTwx;
+    kRot.m_aafRowCol[2][0] = fTxz-fTwy;
+    kRot.m_aafRowCol[2][1] = fTyz+fTwx;
+    kRot.m_aafRowCol[2][2] = 1.0f-(fTxx+fTyy);
 }
 
 void Quaternion::FromRotationMatrix (const Matrix4& kRot)
@@ -301,34 +127,6 @@ void Quaternion::FromRotationMatrix (const Matrix4& kRot)
     }
 }
 
-//----------------------------------------------------------------------------
-void Quaternion::ToRotationMatrix (Matrix3& kRot) const
-{
-    float fTx  = 2.0f*x;
-    float fTy  = 2.0f*y;
-    float fTz  = 2.0f*z;
-    float fTwx = fTx*w;
-    float fTwy = fTy*w;
-    float fTwz = fTz*w;
-    float fTxx = fTx*x;
-    float fTxy = fTy*x;
-    float fTxz = fTz*x;
-    float fTyy = fTy*y;
-    float fTyz = fTz*y;
-    float fTzz = fTz*z;
-
-	kRot.m_aafRowCol[0][0] = 1.0f-(fTyy+fTzz);
-    kRot.m_aafRowCol[0][1] = fTxy-fTwz;
-    kRot.m_aafRowCol[0][2] = fTxz+fTwy;
-    kRot.m_aafRowCol[1][0] = fTxy+fTwz;
-    kRot.m_aafRowCol[1][1] = 1.0f-(fTxx+fTzz);
-    kRot.m_aafRowCol[1][2] = fTyz-fTwx;
-    kRot.m_aafRowCol[2][0] = fTxz-fTwy;
-    kRot.m_aafRowCol[2][1] = fTyz+fTwx;
-    kRot.m_aafRowCol[2][2] = 1.0f-(fTxx+fTyy);
-	
-}
-
 void Quaternion::ToRotationMatrix (Matrix4& kRot) const
 {
     float fTx  = 2.0f*x;
@@ -355,8 +153,6 @@ void Quaternion::ToRotationMatrix (Matrix4& kRot) const
     kRot.RowCol[2][2] = 1.0f-(fTxx+fTyy);
 }
 
-
-//----------------------------------------------------------------------------
 void Quaternion::FromAngleAxis (const float& rfAngle, const Vector3& rkAxis)
 {
     // assert:  axis[] is unit length
@@ -372,7 +168,6 @@ void Quaternion::FromAngleAxis (const float& rfAngle, const Vector3& rkAxis)
     z = fSin*rkAxis.z;
 }
 
-//----------------------------------------------------------------------------
 void Quaternion::ToAngleAxis (float& rfAngle, Vector3& rkAxis) const
 {
 	// The quaternion representing the rotation is
@@ -396,7 +191,7 @@ void Quaternion::ToAngleAxis (float& rfAngle, Vector3& rkAxis) const
         rkAxis.z = 0.0f;
     }*/
 }
-//----------------------------------------------------------------------------
+
 void Quaternion::FromAxes (const Vector3* akAxis)
 {
     Matrix3 kRot;
@@ -410,7 +205,7 @@ void Quaternion::FromAxes (const Vector3* akAxis)
 
     FromRotationMatrix(kRot);
 }
-//----------------------------------------------------------------------------
+
 void Quaternion::ToAxes (Vector3* akAxis) const
 {
     Matrix3 kRot;
@@ -424,22 +219,6 @@ void Quaternion::ToAxes (Vector3* akAxis) const
         akAxis[iCol].z = kRot.m_aafRowCol[2][iCol];
     }
 }
-
-
-
-
-
-float& Quaternion::operator[] (int i) 
-{
-	if(i==0)	return x;
-	if(i==1)	return y;
-	if(i==2)	return z;
-	if(i==3)	return w;
-	return x;
-}
-
-
-
 
 void Quaternion::AngleQuaternion( const Vector3 angles )
 {
@@ -520,51 +299,6 @@ void Quaternion::QuaternionSlerp( Quaternion* from, Quaternion* to, float t)
 	w = scale0 * from->w + scale1 * to1[3];
 }
 
-
-
-Quaternion Quaternion::conjugate(void)
-{
-	return Quaternion(
-		-x,
-		-y,
-		-z,
-		w);
-}
-
-
-void Quaternion::Set( float fW, float fX, float fY , float fZ)
-{
-	w = fW;
-	x = fX;
-	y = fY;
-	z = fZ;
-}
-
-Quaternion Quaternion::operator/=(float s)
-{
-	w /= s;
-	x /= s;
-	y /= s;
-	z /= s;
-	
-	return *this;
-}
-
-Vector3 Quaternion::RotateVector3(Vector3 v)
-{
-	Quaternion t,bla;
-	
-	t = (*this) * v * conjugate();
-	
-	return t.GetVector3();
-}
-
-Vector3 Quaternion::GetVector3()
-{
-	return Vector3(x,y,z);
-
-}
-
 //globals--
 Quaternion operator*(Quaternion q,Vector3 v)
 {
@@ -586,3 +320,53 @@ Quaternion operator*(Vector3 v,Quaternion q)
   
   
 
+
+
+
+
+
+
+/*
+Quaternion& Quaternion::operator= (Quaternion& rkQ )
+{
+    w = rkQ.w;
+    x = rkQ.x;
+    y = rkQ.y;
+    z = rkQ.z;
+	return *this;
+}
+*/
+
+// conversion between quaternions, matrices, and angle-axes
+/*void Quaternion::operator = ( Matrix4& m )
+{
+    float root;
+	float trace = m.RowCol[0][0] + m.RowCol[1][1] + m.RowCol[2][2];
+
+	if(trace > 0.0) {
+        root = sqrt (trace + 1.0);
+        w = root * 0.5;
+        root = 0.5 / root;
+
+        vector.x = (m.RowCol[1][2] - m.RowCol[2][1]) * root;
+        vector.y = (m.RowCol[2][0] - m.RowCol[0][2]) * root;
+        vector.z = (m.RowCol[0][1] - m.RowCol[1][0]) * root;
+		}
+	else {
+        int i, j, k, nxt[3] = {1,2,0};
+
+        i = 0;
+        if (m.RowCol[1][1] > m.RowCol[0][0])	i = 1;
+        if (m.RowCol[2][2] > m.RowCol[i][i])	i = 2;
+        j = nxt[i];
+        k = nxt[j];
+        
+		root = sqrt((m.RowCol[i][i] - (m.RowCol[j][j] + m.RowCol[k][k])) + 1.0);
+        assign_index(i, root * 0.5); 
+        root = 0.5 / root;
+        w = (m.RowCol[j][k] - m.RowCol[k][j]) * root;
+        assign_index(j, (m.RowCol[i][j] + m.RowCol[j][i]) * root);	
+        assign_index(k, (m.RowCol[i][k] + m.RowCol[k][i]) * root);
+		}
+}
+*/

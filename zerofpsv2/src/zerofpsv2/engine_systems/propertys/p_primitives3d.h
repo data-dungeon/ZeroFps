@@ -16,6 +16,7 @@ enum PrimType
 	CONE,
 	PYRAMID,
 	SOLIDBBOX,
+	PLANE,
 };
 
 /// Used to display basic simple 3d objects.
@@ -33,6 +34,7 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 		int		m_iStacks;
 		Vector3	m_kColor;
 		Vector3	m_kMin, m_kMax;
+		Plane		m_kPlane;
 		
 		P_Primitives3D(PrimType eType=SPHERE);
 		void Update();

@@ -1060,6 +1060,51 @@ void ZSSRender::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool b
 	glPopAttrib();
 }
 
+void ZSSRender::DrawPlane(Plane& kPlane)
+{
+	glPushMatrix();
+		
+	glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_FOG_BIT | GL_LIGHTING_BIT | 
+		GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT);	
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+	glDisable(GL_TEXTURE_2D);
+
+	Vector3 kAxisX(1,0,0);
+	Vector3 kAxisY(0,1,0);
+
+	Matrix4 kMat;
+	kMat.Identity();
+	kMat.LookDir(kPlane.m_kNormal, Vector3::AXIS_Y);
+	kMat.SetPos( kPlane.m_kNormal * kPlane.m_fD );
+	glMultMatrixf((float*)&kMat);
+
+	Vector3 kPointOnPlane = kPlane.m_kNormal * kPlane.m_fD;
+
+	Vector3 kVertex;
+	glColor3f(1,1,1);
+
+	glBegin(GL_QUADS);
+		kVertex = (kAxisX * -10) + (kAxisY * 10);
+		glVertex3f(kVertex.x,kVertex.y,kVertex.z);
+
+		kVertex = (kAxisX * 10) + (kAxisY * 10);
+		glVertex3f(kVertex.x,kVertex.y,kVertex.z);
+
+		kVertex = (kAxisX * 10) + (kAxisY * -10);
+		glVertex3f(kVertex.x,kVertex.y,kVertex.z);
+
+		kVertex = (kAxisX * -10) + (kAxisY * -10);
+		glVertex3f(kVertex.x,kVertex.y,kVertex.z);
+
+	glEnd();
+
+	glPopMatrix();
+	glPopAttrib();
+}
+
+
 void ZSSRender::DrawCone(Vector3 kPos, float fRadie, float fHeight, 
 					  Vector3 kColor, bool bSolid, int iSegments)
 {

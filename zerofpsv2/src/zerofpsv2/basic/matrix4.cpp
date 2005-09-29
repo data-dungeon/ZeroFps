@@ -4,8 +4,6 @@
 #include "math.h"
 
 // Methods
-
-
 void Matrix4::Transponse()
 {
 	swap(RowCol[0][1], RowCol[1][0]);
@@ -281,9 +279,6 @@ Matrix4 Matrix4::Inverse( )
 	return inverse;
 }
 
-
-
-
 // Accessors 
 Vector3 Matrix4::GetRotVector()
 {
@@ -313,52 +308,19 @@ Vector3 Matrix4::GetRotVector()
 	
 
 	return Vector3(angle_x,angle_y,angle_z);
-	
 }
 
-
+/*
 Vector3 Matrix4::GetPosVector()
 {
 	return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
 }
-
-float &Matrix4::operator[](const int i)
-{
-	return data[i];
-}
-
-void Matrix4::SetAxis(int iAxisNum, const Vector3& kNewAxis)
-{
-        RowCol[iAxisNum][0] = kNewAxis.x;
-        RowCol[iAxisNum][1] = kNewAxis.y;
-        RowCol[iAxisNum][2] = kNewAxis.z;
-}
-
-Vector3 Matrix4::GetAxis(int iAxisNum)
-{
-	return Vector3(RowCol[iAxisNum][0], RowCol[iAxisNum][1], RowCol[iAxisNum][2]);
-}
-
-
-// Other
-void Matrix4::Print()
-{
-	cout <<" -= The Matrix =-"<<endl;
-	for(int y=0;y<4;y++){
-		for(int x=0;x<4;x++){
-			cout<<data[y*4+x]<<"\t";			
-		}
-		cout<<endl;
-	}
-
-
-}
+*/
 
 string Matrix4::ToString()
 {
 	char szMat[512];
 	szMat[0] = 0;
-
 
 	for(int i=0; i<16; i++)
 	{

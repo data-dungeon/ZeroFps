@@ -15,6 +15,7 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 	m_fRadius = 0.5;
 	m_iSlices = 2;
 	m_iStacks = 2;
+	m_ePrimType = SPHERE;
 	m_kColor.Set(1,1,1);
 
 	m_kMin.Set(-1,-1,-1);
@@ -24,7 +25,6 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 
 void P_Primitives3D::Update() 
 {
-
 //	Vector4 sphere=m_pkObject->GetPos();
 //	sphere.w=m_fRadius;
 	
@@ -57,20 +57,11 @@ void P_Primitives3D::Update()
 	case SOLIDBBOX:
 		m_pkRender->DrawSolidAABB(pos + m_kMin, pos + m_kMax, m_kColor);
 		break;
+	case PLANE:
+		if(m_kPlane.m_kNormal.Length() != 0.0)
+			m_pkRender->DrawPlane(m_kPlane);
+		break;
 	}
-	
-/*
-	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-//	glDisable(GL_LIGHTING);
-	glDisable(GL_COLOR_MATERIAL);	
-	glDisable(GL_TEXTURE_2D);
-	
-	glColor3f(m_kColor.x,m_kColor.y,m_kColor.z);
-	glPushMatrix();
-		glTranslatef(m_pkObject->GetIPos().x,m_pkObject->GetIPos().y,m_pkObject->GetIPos().z);
-		glutSolidSphere(m_fRadius, m_iSlices, m_iStacks);
-	glPopMatrix();
-	glPopAttrib();*/
 }
 
 void P_Primitives3D::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
@@ -111,16 +102,19 @@ void P_Primitives3D::Load(ZFIoInterface* pkPackage,int iVersion)
 
 vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(3);
 
-	kReturn[0].kValueName="Radius";
-	kReturn[0].iValueType=VALUETYPE_FLOAT;
-	kReturn[0].pkValue=(void*)&m_fRadius;
+	kReturn[0].kValueName	= "Radius";
+	kReturn[0].iValueType	= VALUETYPE_FLOAT;
+	kReturn[0].pkValue		= (void*)&m_fRadius;
 
-	kReturn[1].kValueName = "color";
-	kReturn[1].iValueType = VALUETYPE_VECTOR3;
-	kReturn[1].pkValue    = (void*)&m_kColor;
-
+	kReturn[1].kValueName	= "color";
+	kReturn[1].iValueType	= VALUETYPE_VECTOR3;
+	kReturn[1].pkValue		= (void*)&m_kColor;
+	
+	kReturn[2].kValueName	= "type";
+	kReturn[2].iValueType	= VALUETYPE_INT;
+	kReturn[2].pkValue		= (void*)&m_ePrimType;
 
 	return kReturn;
 };

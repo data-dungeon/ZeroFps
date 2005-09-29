@@ -845,7 +845,7 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 		for(i=0; i<m_kSkelleton.size(); i++) {
 
 			if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) {
-				return g_FullBoneTransform[i].GetPosVector();
+				return g_FullBoneTransform[i].GetPos();
 				}
 			}
 		}

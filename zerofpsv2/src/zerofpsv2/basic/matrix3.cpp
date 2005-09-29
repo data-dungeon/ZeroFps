@@ -7,27 +7,6 @@ using namespace std;
 const Matrix3 Matrix3::ZERO(0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f);
 const Matrix3 Matrix3::IDENTITY(1.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,1.0f);
 
-// Constructors
-void Matrix3::SetAxis(int iAxisNum, const Vector3& kNewAxis)
-{
-        m_aafRowCol[iAxisNum][0] = kNewAxis.x;
-        m_aafRowCol[iAxisNum][1] = kNewAxis.y;
-        m_aafRowCol[iAxisNum][2] = kNewAxis.z;
-}
-
-Vector3 Matrix3::GetAxis(int iAxisNum)
-{
-	return Vector3(m_aafRowCol[iAxisNum][0], m_aafRowCol[iAxisNum][1], m_aafRowCol[iAxisNum][2]);
-}
-
-
-// Operators	-	Assignment
-
-
-
-
-// Operators	-	Arithmetic operations
-
 // Methods
 void Matrix3::Transponse()
 {
@@ -182,26 +161,6 @@ Vector3 Matrix3::GetRotVector()
 	angle_z = Math::Clamp( angle_z, 0, 360 );
 
 	return Vector3(angle_x,angle_y,angle_z);
-}
-
-// Accessors 
-Vector3 Matrix3::GetColumn (int iCol) const
-{
-	ZFAssert(0 <= iCol && iCol < 3, "Matrix3::GetColumn: Index out of range");
-		// assert( );
-	return Vector3(m_aafRowCol[0][iCol], m_aafRowCol[1][iCol], m_aafRowCol[2][iCol]);
-}
-
-// Other
-void Matrix3::Print()
-{
-	cout <<" -= The Matrix =-"<<endl;
-	for(int y=0;y<3;y++){
-		for(int x=0;x<3;x++){
-			cout<< m_afData[y*3+x]<<"\t";			
-		}
-		cout<<endl;
-	}
 }
 
 string Matrix3::ToString()
