@@ -861,7 +861,7 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 
 void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax)
 {
-	for(unsigned int i=0; i<m_kControllers.size(); i++) {
+/*	for(unsigned int i=0; i<m_kControllers.size(); i++) {
 		if(strcmp(szName,m_kControllers[i].m_szName) == 0) {
 			return;
 			}
@@ -883,6 +883,7 @@ void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis,
 		}
 
 	m_kControllers.push_back(kNewControll);
+*/
 }
 
 void Mad_Core::SetControll(char* szName, float fValue)

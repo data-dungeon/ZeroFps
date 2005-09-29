@@ -106,7 +106,7 @@ inline void Vector2::Zero()
 // Comparison
 inline bool Vector2::Compare(const Vector2& kOtherV2)		const
 {
-	return (x == kOtherV2.x) && (y && kOtherV2.y);
+	return (x == kOtherV2.x) && (y == kOtherV2.y);
 }
 
 inline bool Vector2::Compare( const Vector2& v, const float e ) const	

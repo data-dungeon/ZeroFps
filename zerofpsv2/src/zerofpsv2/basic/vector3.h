@@ -132,7 +132,7 @@ inline void Vector3::Zero()
 // Comparison
 inline bool Vector3::Compare(const Vector3& kOtherV3)		const
 {
-	return (x == kOtherV3.x) && (y && kOtherV3.y) && (z && kOtherV3.z);
+	return ((x == kOtherV3.x) && (y == kOtherV3.y) && (z == kOtherV3.z));
 }
 
 inline bool Vector3::Compare( const Vector3& v, const float e ) const	

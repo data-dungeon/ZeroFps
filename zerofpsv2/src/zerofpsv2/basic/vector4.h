@@ -138,7 +138,7 @@ inline void Vector4::Zero()
 // Comparison
 inline bool Vector4::Compare(const Vector4& kOtherV4)		const
 {
-	return (x == kOtherV4.x) && (y && kOtherV4.y) && (z && kOtherV4.z) && (w && kOtherV4.w);
+	return (x == kOtherV4.x) && (y == kOtherV4.y) && (z == kOtherV4.z) && (w == kOtherV4.w);
 }
 
 inline bool Vector4::Compare( const Vector4& v, const float e ) const	
