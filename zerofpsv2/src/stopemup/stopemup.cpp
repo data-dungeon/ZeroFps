@@ -547,8 +547,8 @@ void StopEmUp::SetupLevel(int iLevel)
 	{
 		//Vector3 kRandomPos = Vector3(9999999,999999,999999);
 	
-		float r = Randomf(360);
-		r = DegToRad(r);
+		float r = Math::Randomf(360);
+		r = Math::DegToRad(r);
 		Vector3 kRandomPos;
 		kRandomPos.x = sin(r)*7;
 		kRandomPos.z = cos(r)*7;

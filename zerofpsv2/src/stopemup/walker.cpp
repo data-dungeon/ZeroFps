@@ -89,7 +89,7 @@ void P_Walker::Update()
 			{
 				float fRot = pkCC->GetYAngle();
 				
-				fRot += Randomf(10)-5;
+				fRot += Math::Randomf(10)-5;
 				pkCC->SetYAngle(fRot);
 				
 				
@@ -147,7 +147,7 @@ void P_Walker::Update()
 					kDir.y = 0;
 					
 					float fAngle = Vector3(0,0,1).Angle(kDir);
-					fAngle = -RadToDeg(fAngle);
+					fAngle = -Math::RadToDeg(fAngle);
 					
 					if(kDir.x > 0)
 						fAngle = fabs(fAngle);
@@ -303,7 +303,7 @@ void P_Walker::CreateBonus()
 	//if( m_pkStopEmUp->GetLevel() < 4)
 	//	return;
 	
-	int i = Randomi(5);
+	int i = Math::Randomi(5);
 
 	if(i <= 0)
 	{

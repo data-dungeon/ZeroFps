@@ -44,7 +44,7 @@ P_Powerup::P_Powerup()
 	//randomize powerup
 	while(m_iPowerupType == -1)
 	{
-		int iRand = Randomi(10);	
+		int iRand = Math::Randomi(10);	
 		
 		//check if type is level aproved
 		switch(iRand)

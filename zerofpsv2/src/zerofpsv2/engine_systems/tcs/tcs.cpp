@@ -6,13 +6,9 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 {
 	g_Logf("zerofps","Tiny Collission system created");
 
- 	m_fMaxDelay = 		0.04;
-	m_fAlmostZero = 	0.001;
-	m_fMinForce = 		0.2;	
 	m_fSleepLinVel = 	0.5;
 	m_fSleepRotVel = 	0.3;
 	m_fMaxVel = 		15.0;
-	m_fTimeSlice = 	2.0;
 	m_fGravity =		9.84;
 	
 	m_fSleepTime = 	1.0;
@@ -32,8 +28,6 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	
 	RegisterVariable("p_tcshandle",		&m_iHandleCollission,CSYS_INT);
 	RegisterVariable("p_tcsdebug",		&m_iDebugGraph,CSYS_INT);
-	//RegisterVariable("p_tcsdelay",		&m_fMaxDelay,CSYS_FLOAT);
-	//RegisterVariable("p_tcsminforce",	&m_fMinForce,CSYS_FLOAT);
 	//RegisterVariable("p_tcssleeplinvel",&m_fSleepLinVel,CSYS_FLOAT);
 	//RegisterVariable("p_tcssleeprotvel",&m_fSleepRotVel,CSYS_FLOAT);
 // 	RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);

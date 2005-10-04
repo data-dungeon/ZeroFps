@@ -3,7 +3,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
 #include "../zerofpsv2/engine_systems/propertys/p_sound.h"
 #include "walker.h"
-
+#include "../zerofpsv2/basic/math.h"
 
 P_Gun::P_Gun()
 {
@@ -100,7 +100,7 @@ void P_Gun::FireBullet()
 	{
 	
 		Matrix4 kRot = GetEntity()->GetWorldRotM();
-		kRot.Rotate(Randomf(8)-4,Randomf(8)-4,Randomf(8)-4);
+		kRot.Rotate(Math::Randomf(8)-4,Math::Randomf(8)-4,Math::Randomf(8)-4);
 	
 		Vector3 kDir = kRot.VectorTransform(Vector3(0,0,1));			
 		Vector3 kStart = GetEntity()->GetWorldPosV();
@@ -155,7 +155,7 @@ void P_Gun::FireBullet()
 				pkWalk->Damage(m_iDamage,GetEntity()->GetEntityID());
 				float fRadius = pkClosest->GetRadius();
 				
-				Vector3 kHitPos = pkClosest->GetWorldPosV() + Vector3(Randomf(fRadius)-fRadius/2.0,-Randomf(fRadius),Randomf(fRadius)-fRadius/2.0);
+				Vector3 kHitPos = pkClosest->GetWorldPosV() + Vector3(Math::Randomf(fRadius)-fRadius/2.0,-Math::Randomf(fRadius),Math::Randomf(fRadius)-fRadius/2.0);
 				m_pkEntityManager->CreateEntityFromScriptInZone(m_strDirectHitObject.c_str(),kHitPos,GetEntity()->GetCurrentZone());				
 			
 			}

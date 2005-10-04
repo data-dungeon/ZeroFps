@@ -49,12 +49,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		
 		float					m_fSleepLinVel;
 		float					m_fSleepRotVel;
-		float					m_fMaxDelay;
-		float					m_fMinTime;
-		float					m_fMinForce;
 		float					m_fMaxVel;
-		float					m_fAlmostZero;
-		float					m_fTimeSlice;
 		float					m_fGravity;
 		
 		float					m_fSleepTime;
