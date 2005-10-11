@@ -16,8 +16,6 @@
 
 void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZSSScriptSystem* pkScript)
 {
-	cout << "Add SI: GuiApp" << endl;
-
 	g_pkGuiApp = pkGuiApp;
 	g_pkScript = pkScript;
 

@@ -103,6 +103,7 @@ public:
 	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);		
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags = CSYS_FLAG_SRC_ALL);		
  	void Logf(const char* szName, const char* szMessageFmt,...);
+ 	void Printf(const char* szMessageFmt,...);	// Print to console.
 
 	virtual ~ZFSubSystem();
 

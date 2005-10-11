@@ -210,6 +210,9 @@ ZFSoundInfo::~ZFSoundInfo()
 
 ZSSAudioSystem::ZSSAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZSSAudioSystem") 
 {
+	Register_Cmd("audioplay",FID_AUDIOPLAY);
+	Register_Cmd("audiostop",FID_AUDIOSTOP);
+
 	m_kPos = Vector3(0,0,0);
 
 	m_bIsValid = false;
@@ -614,14 +617,11 @@ unsigned int ZSSAudioSystem::GetNumActiveChannels()
 ///////////////////////////////////////////////////////////////////////////////
 bool ZSSAudioSystem::StartUp()
 {
-	Register_Cmd("audioplay",FID_AUDIOPLAY);
-	Register_Cmd("audiostop",FID_AUDIOSTOP);
-
 	//open default device	
 	m_pkAudioDevice = alcOpenDevice(NULL);	
 	if(!m_pkAudioDevice)
 	{
-		cout<<"ERROR: ZSSAudioSystem could not open audio device"<<endl;
+		g_Logf("Error: ZSSAudioSystem could not open audio device.\n");
 		return false;
 	}	
 	
@@ -629,8 +629,8 @@ bool ZSSAudioSystem::StartUp()
 	m_pkAudioContextID = alcCreateContext(m_pkAudioDevice,NULL);	     
 	if(m_pkAudioContextID == NULL)
 	{
-		cout<<"ERROR: ZSSAudioSystem could not create audio context"<<endl;
-   	return false;
+		g_Logf("Error: ZSSAudioSystem could not create audio context.\n");
+	   	return false;
 	}
 
 	//set context

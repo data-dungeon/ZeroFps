@@ -18,8 +18,6 @@ namespace StdLua
 
 void Init(ZSSScriptSystem* pkScript, ZSSVFileSystem* pkVFS,ZSSZeroFps* pkZeroFps)
 {
-	cout << "Add SI: Std" << endl;
-
 	g_pkScript = pkScript;
 	g_pkVFS = pkVFS;
 	g_pkZeroFps = pkZeroFps;

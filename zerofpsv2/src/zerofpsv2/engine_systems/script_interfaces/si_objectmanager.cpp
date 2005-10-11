@@ -44,8 +44,6 @@ Vector3 GetVectorArg(lua_State* pkLua, int iIndex)
 
 void Init(ZSSEntityManager* pkObjMan, ZSSScriptSystem* pkScript)
 {
-	cout << "Add SI: EntityManger" << endl;
-
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	

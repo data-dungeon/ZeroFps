@@ -20,8 +20,6 @@ string						MistLandLua::g_kDefServer;
 
 void MistLandLua::Init(ZSSEntityManager* pkObjMan,ZSSScriptSystem* pkScript)
 {
-	cout << "Add SI: MistLand" << endl;
-
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = -1;

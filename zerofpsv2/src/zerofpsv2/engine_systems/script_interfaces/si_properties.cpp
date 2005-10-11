@@ -16,8 +16,6 @@ ZSSEntityManager*  PropertiesLua::g_pkObjMan;
 
 void PropertiesLua::Init(ZSSScriptSystem* pkScript, ZSSEntityManager* pkObjMan)
 {
-	cout << "Add SI: Properties" << endl;
-
 	g_pkScript = NULL;
 	g_pkObjMan = NULL;
 }

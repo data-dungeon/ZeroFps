@@ -93,9 +93,11 @@ bool ZShaderSystem::StartUp()
 	
 	//check for vertex and fragment program support
 	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
-		cout<<"ZSHADER: No vertex program support"<<endl;
+		Printf("ZSHADER: No vertex program support");
+		//cout<<"ZSHADER: No vertex program support"<<endl;
 	if(!(m_bSupportFragmentProgram = HaveExtension("GL_ARB_fragment_program")))
-		cout<<"ZSHADER: No fragment program support"<<endl;
+		Printf("ZSHADER: No fragment program support");
+		//cout<<"ZSHADER: No fragment program support"<<endl;
 	
 	//check for glsl support
 	m_bSupportGLSLProgram  =HaveExtension("GL_ARB_shader_objects") &&
@@ -104,26 +106,31 @@ bool ZShaderSystem::StartUp()
 									HaveExtension("GL_ARB_fragment_shader") && m_bUseGLSL;
 	
 	if(!m_bSupportGLSLProgram)
-		cout<<"ZSHADER: No GLSL program support"<<endl;
+		Printf("ZSHADER: No GLSL program support");
+		//cout<<"ZSHADER: No GLSL program support"<<endl;
 											
 	//check for framebuffer object support
 	m_bSupportFBO = HaveExtension("GL_EXT_framebuffer_object");
 	if(!m_bSupportFBO)
-		cout<<"ZSHADER: No Framebuffer object support"<<endl;
+		Printf("ZSHADER: No Framebuffer object support");
+		//cout<<"ZSHADER: No Framebuffer object support"<<endl;
 											
 	//check for vertexbuffer support	
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
-		cout<<"ZSHADER: No vertexbuffer support"<<endl;	
+		Printf("ZSHADER: No vertexbuffer support");
+		//cout<<"ZSHADER: No vertexbuffer support"<<endl;	
 		
 	//setup ucculusion
 	if(!(m_bOcclusion = HaveExtension("GL_ARB_occlusion_query")))
-		cout<<"ZSHADER: No Occlusion support"<<endl;
+		Printf("ZSHADER: No Occlusion support");
+		//cout<<"ZSHADER: No Occlusion support"<<endl;
 	else
 		SetupOcculusion();
 	
 	m_bSupportARBTC = HaveExtension("ARB_texture_compression");
 	if(!m_bSupportARBTC)
-		cout<<"ZSHADER: No arb texturecompression support"<<endl;
+		Printf("ZSHADER: No arb texturecompression support");
+		//cout<<"ZSHADER: No arb texturecompression support"<<endl;
 			
 	//hdr requires glsl support
 	m_bSupportHDR = m_bSupportGLSLProgram;

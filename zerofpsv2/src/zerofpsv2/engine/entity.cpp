@@ -2980,8 +2980,6 @@ int GetObjectRotLua(lua_State* pkLua)
 
 void Register_SIEntityProperty(ZSSZeroFps* pkZeroFps)
 {
-	cout << "Add SI: Entity" << endl;
-
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("AddProperty",			SI_Entity::AddPropertyLua);
 	g_pkScript->ExposeFunction("SetParameter",		SI_Entity::SetParameterLua);

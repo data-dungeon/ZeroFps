@@ -134,6 +134,8 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	g_iNumOfFrames				= 0;
 	m_bProfileMode				= 0;
 
+	m_pkDevPageMaterial			= NULL;
+
 	// Register Variables
 	RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
 	
@@ -655,7 +657,7 @@ void ZSSZeroFps::Update_System()
 	//set maximum number of loops, dont know if this is realy that good...but what the hell
 	if(iLoops > 10)
 	{
-		cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
+		// cout << "Engine runs to slow." <<endl;
 		iLoops = 10;
 	}
 	

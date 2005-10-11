@@ -208,7 +208,6 @@ bool ZeroEd::SetCamera(int iNum)
 
 bool ZeroEd::SetViewPort(const char* szVpName)
 {
-	cout << "Setting viewport to " << szVpName << endl;
 	ZGuiWnd* pkWnd = GetWnd(szVpName);	
 	if(!pkWnd)
 		return false;

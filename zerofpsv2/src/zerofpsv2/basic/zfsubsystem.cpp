@@ -63,4 +63,18 @@ void ZFSubSystem::Logf(const char* szName, const char* szMessageFmt,...)
 	GetSystem().Log(szName, g_szFormatText);
 }
 
+void ZFSubSystem::Printf(const char* szMessageFmt,...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (szMessageFmt == NULL)	return;					
+
+	va_start(ap, szMessageFmt);						// Parses The String For Variables
+		vsprintf(g_szFormatText, szMessageFmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	GetSystem().Printf(g_szFormatText);
+}
 

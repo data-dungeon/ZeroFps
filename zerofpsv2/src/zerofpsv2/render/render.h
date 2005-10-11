@@ -201,9 +201,6 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 		void     EditColor_Set(string strName, float f, float g, float b);
 		Vector3	GetEditColor(string strName);
-		//void 		Setup_EditColors();
-
-		
 		
 		//old stuff
 		//void SetClearColor(Vector4 kColor);
