@@ -1823,6 +1823,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			float	fStamina;
 			float fStaminaMax;
+			float	fOxygen;
+			float fOxygenMax;
 			float	fHealth;
 			float fHealthMax;
 			float	fMana;
@@ -1850,9 +1852,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			float fMaxDamage;
 			
 			float fAbsorbTotal;
-			
+	
 			pkNetMessage->Read(fStamina);
 			pkNetMessage->Read(fStaminaMax);
+
+			pkNetMessage->Read(fOxygen);
+			pkNetMessage->Read(fOxygenMax);
+
 			pkNetMessage->Read(fHealth);
 			pkNetMessage->Read(fHealthMax);
 			pkNetMessage->Read(fMana);
@@ -1942,18 +1948,27 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkPB->SetRange(0,int(fManaMax));
 				pkPB->SetPos(int(fMana));				
 			}			
-				
-			//stamina
-			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StaminaProgressbar"))
-			{
-				pkPB->SetRange(0,int(fStaminaMax));
-				pkPB->SetPos(int(fStamina));				
-			}			
-
-			if(fStaminaMax == 100)
+			
+			// Flag if we are in/out of water.
+			if(fOxygenMax == 100)
 				m_bInWater = true;
 			else
 				m_bInWater = false;
+
+			//stamina / Oxygen
+			if(ZGuiProgressbar* pkPB = (ZGuiProgressbar*)GetWnd("StaminaProgressbar"))
+			{
+				if(!m_bInWater)
+				{
+					pkPB->SetRange(0,int(fStaminaMax));
+					pkPB->SetPos(int(fStamina));				
+				}
+				else
+				{
+					pkPB->SetRange(0,int(fOxygenMax));
+					pkPB->SetPos(int(fOxygen));				
+				}
+			}			
 			
 			break;		
 		}

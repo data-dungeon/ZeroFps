@@ -2104,26 +2104,24 @@ void P_CharacterProperty::SendStats()
 	kNp.Write((char) MLNM_SC_CHARACTERSTATS);	
 
 	
-	// Temp, for swimming lessons - when in water we use stamina bar to display oxygen points.
-		/*
-		kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
-		kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
-		*/
+	kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
+	kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
+		
 
-		P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl");
-		if(pkCC)
+	P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl");
+	if(pkCC)
+	{
+		if(pkCC->GetWaterLevel() != WATER_NONE)
 		{
-			if(pkCC->GetWaterLevel() != WATER_NONE)
-			{
-				kNp.Write(m_kCharacterStats.GetTotal("Oxygen"));
-				kNp.Write(float(100));
-			}
-			else
-			{
-				kNp.Write(m_kCharacterStats.GetTotal("Stamina"));
-				kNp.Write(m_kCharacterStats.GetTotal("StaminaMax"));
-			}
+			kNp.Write(m_kCharacterStats.GetTotal("Oxygen"));
+			kNp.Write(float(100));
 		}
+		else
+		{
+			kNp.Write(m_kCharacterStats.GetTotal("Oxygen"));
+			kNp.Write((float)99);
+		}
+	}
 
 	kNp.Write(m_kCharacterStats.GetTotal("Health"));
 	kNp.Write(m_kCharacterStats.GetTotal("HealthMax"));
