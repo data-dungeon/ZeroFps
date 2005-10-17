@@ -103,8 +103,9 @@ class ZeroEd :public Application , public ZGuiApp {
 			HMAP_DRAWSMFLAT,
 			HMAP_DRAWMASK,
 			HMAP_DRAWVISIBLE,
-			HMAP_MAX,
 			HMAP_STITCH,
+			HMAP_SMOOTH, 
+			HMAP_MAX,
 		};
 
 
@@ -265,6 +266,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void  HMDrawTexture(char iTexID);
 		void	Stitch();
 		void	HMSmooth();
+		void	HMFlatten(float fSample);
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);
@@ -335,6 +337,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool ShutDown()	{ return true; }
 		bool IsValid()		{ return true; }
 
+      friend void GuiMsgTerrain( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
+		friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
 		//void SendAppMessage(NetPacket* pkNet);
 

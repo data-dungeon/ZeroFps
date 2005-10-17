@@ -34,6 +34,29 @@ Matrix4	g_kMatrix;
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
+	string strMainWnd;
+	string strController;
+	
+	if(msg == ZGM_COMMAND || msg == ZGM_SCN_SETPOS || 
+		msg == ZGM_CBN_SELENDOK || msg == ZGM_EN_CHANGE ||
+		msg == ZGM_SELECTLISTITEM)
+	{
+		strMainWnd = win->GetName();
+
+		list<ZGuiWnd*> kChilds;
+		win->GetChildrens(kChilds); 
+
+		list<ZGuiWnd*>::iterator it = kChilds.begin();
+		for( ; it!=kChilds.end(); it++)
+			if((*it)->GetID() == ((int*)params)[0])
+			{
+				strController = (*it)->GetName();
+				break;
+			}
+	}
+
+	int* data;
+
 	switch(msg)
 	{
 	case ZGM_COMMAND:
@@ -48,11 +71,17 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
 		break;
 	case ZGM_TCN_SELCHANGE:
-		int* data; data = (int*) params; 
+		data = (int*) params; 
 		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med sl�gan
 		break;
 	case ZGM_KEYPRESS:
 		g_kZeroEd.OnKeyPress(((int*)params)[0], win);
+		break;
+	case ZGM_SCN_SETPOS:
+		data = (int*) params; 
+		cout << "Slider Updates: " << strController << " = " << data[1] << endl;
+		g_kZeroEd.m_fHMOutRadius = data[1];
+
 		break;
 	}
 	return true;
@@ -448,6 +477,20 @@ void ZeroEd::Init()
  	
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
+
+	// Add Terrain Commands.
+	ZGuiCombobox* pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrEditMode"));
+	pkEditMode->AddItem("Paint",			0);	// HMAP_EDITVERTEX
+	pkEditMode->AddItem("Flatten",		1);	// HMAP_DRAWSMFLAT
+	pkEditMode->AddItem("Mask",			2);	// HMAP_DRAWMASK
+	pkEditMode->AddItem("Visibility",	3);	// HMAP_DRAWVISIBLE
+	pkEditMode->AddItem("Smoothing",		4);	// HMAP_SMOOTH
+	pkEditMode->AddItem("Stitch",			5);	// HMAP_STITCH
+	pkEditMode->SetNumVisibleRows( 6 );
+	pkEditMode->GetListbox()->SelItem(0);
+
+	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->SetRange(0,25);
+	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->SetPos((int)5, true);
 
 	//start a clean world
 	m_pkEntityManager->Clear();
@@ -999,6 +1042,27 @@ void ZeroEd::HMModifyCommand(float fSize)
 					hmrp->Modify(&kSelVertex, fSize * m_pkZeroFps->GetFrameTime());
 			}		
 		}		
+	}
+}
+
+void	ZeroEd::HMFlatten(float fSample)
+{
+ 	static vector<HMSelectionData> kSelVertex;
+	kSelVertex.clear();
+
+	//loop all heightmaps
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
+		{
+			//get selected vertexes 
+			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);					
+		}
+	}
+
+	if(kSelVertex.size() > 0) 
+	{
+		P_Heightmap::FlattenSelection(&kSelVertex, fSample);
 	}
 }
 

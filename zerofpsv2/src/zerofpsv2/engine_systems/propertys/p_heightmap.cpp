@@ -588,6 +588,20 @@ void P_Heightmap::Smooth()
 	m_bHaveRebuilt = false;
 }
 
+void P_Heightmap::FlattenSelection(vector<HMSelectionData>* kSelectionData, float fSample)
+{
+	for(int i = 0;i<kSelectionData->size();i++)
+	{
+		//save new height
+		(*kSelectionData)[i].m_pkHeightMap->m_kHeightData[(*kSelectionData)[i].y*(*kSelectionData)[i].m_pkHeightMap->m_iRows 
+			+ (*kSelectionData)[i].x] = fSample;
+				
+		//set heightmap as updated
+		(*kSelectionData)[i].m_pkHeightMap->ResetAllNetUpdateFlags();
+		(*kSelectionData)[i].m_pkHeightMap->m_bHaveRebuilt = false;
+	}
+}
+
 void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 {
 	for(int i = 0;i<kSelectionData->size();i++)

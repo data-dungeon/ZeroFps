@@ -7,6 +7,9 @@
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/engine/zerofps.h"
 
+extern ZeroEd g_kZeroEd;
+
+
 vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 {
 	P_HMRP2* hmrp;
@@ -32,6 +35,9 @@ vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 // Handles input for EditMode Terrain.
 void ZeroEd::Input_EditTerrain()
 {
+	static float fDrawFlat = 0;
+	static bool	 bDrawFlatOn = false;
+
 	// Mofify radius of hmap marker.	
 	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkZeroFps->GetFrameTime();
 	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->GetFrameTime();
@@ -61,6 +67,20 @@ void ZeroEd::Input_EditTerrain()
 			break;
 		
 		case HMAP_DRAWSMFLAT:
+			if(m_pkInputHandle->VKIsDown("hmraise"))	
+			{
+				if(!bDrawFlatOn)
+					fDrawFlat = m_kDrawPos.y;
+				bDrawFlatOn = true;
+				HMFlatten( fDrawFlat );  
+			}
+			else 
+			{
+				bDrawFlatOn = false;
+			}
+			break;
+
+		case HMAP_SMOOTH:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
 				HMSmooth();  
 			break;
@@ -87,7 +107,13 @@ void ZeroEd::Input_EditTerrain()
 // 			break;
 
 		case HMAP_DRAWVISIBLE:
-			for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+			if(m_pkInputHandle->VKIsDown("hmraise"))		
+				HMDrawTexture(-1); 	
+			if(m_pkInputHandle->VKIsDown("hmlower"))		
+				HMDrawTexture(0);			
+
+			
+			/*for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 			{
 				Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 				if(!pkEntity)			continue;
@@ -99,7 +125,7 @@ void ZeroEd::Input_EditTerrain()
 					hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);
 				if(m_pkInputHandle->VKIsDown("hmlower"))		
 					hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
-			}
+			}*/
 			
 			break;
 	}
@@ -690,16 +716,29 @@ void ZeroEd::Input()
 
 	Input_Camera(float(x),float(z));
 
-	if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
+	if(m_pkInputHandle->VKIsDown("modezone"))
+	{
+		m_iEditMode = EDIT_ZONES;
+		GetWnd("wndTerrain")->Hide();
+	}
+	
 	if(m_pkInputHandle->VKIsDown("modeobj"))
 	{
 		m_iEditMode = EDIT_OBJECTS;		
+		GetWnd("wndTerrain")->Hide();
 		m_bLockCreate = false;
 	}
-	if(m_pkInputHandle->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
+
+	if(m_pkInputHandle->VKIsDown("modehmvertex"))
+	{
+		m_iEditMode = EDIT_HMAP;		
+		GetWnd("wndTerrain")->Show();
+	}
+
 	if(m_pkInputHandle->VKIsDown("modecreate"))		
 	{
 		m_iEditMode = EDIT_CREATEOBJECT;		
+		GetWnd("wndTerrain")->Hide();
 		m_bLockCreate = true;
 	}
 
@@ -735,9 +774,6 @@ Vector3 ZeroEd::Get3DMouseDir(bool bMouse)
 	
 	return m_pkActiveCamera->Get3DCursorDir(x,y,bMouse);
 }
-
-
-
 
 
 

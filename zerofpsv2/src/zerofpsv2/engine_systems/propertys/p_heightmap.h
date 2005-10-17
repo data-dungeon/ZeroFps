@@ -99,7 +99,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void Smooth();
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
 		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
-	
+
 		void SetSize(int iWidth,int iHeight);
 		void SetMaxValue(float fMax);
 		
@@ -112,6 +112,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 
 		static void Stitch(vector<HMSelectionData>* pkSelectionData);
 		static void SmoothSelection(vector<HMSelectionData>* pkSelectionData);
+		static void FlattenSelection(vector<HMSelectionData>* kSelectionData, float fSample);
 };
 
 Property* Create_HeightmapProperty();

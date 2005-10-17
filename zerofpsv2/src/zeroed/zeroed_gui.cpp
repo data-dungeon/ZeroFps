@@ -15,6 +15,12 @@ void ZeroEd::SetupGuiEnviroment()
 		return;
 	}
 
+   if(!LoadGuiFromScript("data/script/gui/terrain.lua"))
+	{
+		printf("Error loading gui script!\n");
+		return;
+	}
+
 	GetWnd("worktab")->Hide();
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("gui/blue_cursor.bmp", 0),
 		m_pkTexMan->Load("gui/blue_cursor_a.bmp", 0), 32, 32);
@@ -586,6 +592,8 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 {
+	cout << "ZeroEd::OnClickListbox: iListBoxID=" << iListBoxID << ", iListboxIndex=" << iListboxIndex << endl;
+
 	if(pkMain == NULL)
 		return;
 
@@ -631,6 +639,17 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 				}
 			}
 		}
+	}
+
+	
+	if(strMainWndName == "TerrEditMode")
+	{
+		if(iListboxIndex == 0)		 m_iHMapEditMode = HMAP_EDITVERTEX;	
+		if(iListboxIndex == 1)		 m_iHMapEditMode = HMAP_DRAWSMFLAT;	
+		if(iListboxIndex == 2)		 m_iHMapEditMode = HMAP_DRAWMASK;	
+		if(iListboxIndex == 3)		 m_iHMapEditMode = HMAP_DRAWVISIBLE;	
+		if(iListboxIndex == 4)		 m_iHMapEditMode = HMAP_SMOOTH;
+		if(iListboxIndex == 5)		 m_iHMapEditMode = HMAP_STITCH;
 	}
 
 	if(strListBox == "PropertyList")
@@ -820,6 +839,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			m_iEditMode = EDIT_ZONES;
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
+			if(GetWnd("wndTerrain"))	GetWnd("wndTerrain")->Hide();
 			ShowWnd("SelectFileWnd", false);
 			ShowWnd("PreviewWnd", false);
 			break;
@@ -827,6 +847,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			m_iEditMode = EDIT_CREATEOBJECT;	
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
+			if(GetWnd("wndTerrain"))	GetWnd("wndTerrain")->Hide();
 			ShowWnd("SelectFileWnd", false);
          ShowWnd("PreviewWnd", false);
 			BuildFileTree("ObjectTree", "data/script/objects", ".lua");
@@ -835,10 +856,12 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			m_iEditMode = EDIT_OBJECTS;
 			ShowWnd("SelectFileWnd", false);
 			ShowWnd("PreviewWnd", false);
+			if(GetWnd("wndTerrain")) GetWnd("wndTerrain")->Hide();
 			break;
 		case 3:
 			ShowWnd("SelectFileWnd", false);
 			ShowWnd("PreviewWnd", false);
+			if(GetWnd("wndTerrain")) GetWnd("wndTerrain")->Hide();
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			break;
