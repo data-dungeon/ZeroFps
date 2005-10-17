@@ -141,12 +141,14 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
  			m_iShadowTexHeight = (int)Min(iQuality,iMaxHeight);;					
 		}
 			
+		m_pkZShaderSystem->SetShadowMapSize(m_iShadowTexWidth,m_iShadowTexHeight);
 		g_Logf("CAMERA: Using shadow texture size: %dx%d.\n", m_iShadowTexWidth, m_iShadowTexHeight);
 		//cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 		
+		//are the shadowmap shuld cover
 		m_fShadowArea = 50;
 		
-		m_kShadowTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_DEPTH|T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
+			m_kShadowTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_DEPTH|T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
 		m_kShadowTexture.SetBorderColor(Vector4(1,1,1,1));
  		
 		
@@ -376,7 +378,7 @@ float Camera::GetExposureFactor()
 	//
 	//luminance = 0.3*R + 0.59 * G + 0.11*B
 	//
- 	static const float fTargetBrightness = 0.4;
+ 	static const float fTargetBrightness = 0.45;
 	
 	//avrage	
 	float fExp = fTotal/ (iSamples * (255*0.3 + 255*0.59 + 255*0.11));
@@ -385,7 +387,7 @@ float Camera::GetExposureFactor()
  	float fEF = m_fExposureFactor;
  	
  	//adjust exposure factor
-  	fEF += (fTargetBrightness - fExp)*m_pkZeroFps->GetFrameTime();
+  	fEF += (fTargetBrightness - fExp)*m_pkZeroFps->GetFrameTime()*0.5;
 	
 	//min and max exposure
 	if(fEF < 0.1) fEF = 0.1; 	

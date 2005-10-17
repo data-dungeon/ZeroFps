@@ -195,6 +195,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 
 		//eye position
 		Vector3			m_kEyePosition;
+		int				m_iShadowmapWidth;
+		int				m_iShadowmapHeight;		
 				
 		//empty material, used when pushing 
 		ZMaterial		m_kEmptyMaterial;
@@ -389,7 +391,6 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void BindMaterial(ZMaterial* pkMaterial,bool bForceReload = false);
 		void ReloadMaterial();
 		
-		void SetEyePosition(const Vector3& kEyePos)		{	m_kEyePosition = kEyePos;				}
 		
 		//other stuff
 		void ClearBuffer(const int& iBuffert);
@@ -398,6 +399,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		unsigned int GetDepth(int iX,int iY);
 		
+		void SetShadowMapSize(int iWidth,int iHeight)			{	m_iShadowmapWidth = iWidth; m_iShadowmapHeight = iHeight;	}
+		void SetEyePosition(const Vector3& kEyePos)				{	m_kEyePosition = kEyePos;				}		
 		void SetExposure(float f)										{	m_fExposure = f;					}
 		float GetExposure()												{	return m_fExposure;				}
 		bool SetGamma(float fGamma);

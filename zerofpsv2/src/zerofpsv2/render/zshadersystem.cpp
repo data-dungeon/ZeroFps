@@ -37,6 +37,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_fBlueGamma						= 1.0;
 	
 	m_kEyePosition						=	Vector3(0,0,0);
+	m_iShadowmapWidth					=	1024;
+	m_iShadowmapHeight				=	1024;
 		
 	m_fExposure							= 1.0;
 	m_bUseHDR							= false;
@@ -796,7 +798,6 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 	if(pkSettings->m_kTUs[iTU]->IsValid())
 	{		
 		glEnable(GL_TEXTURE_2D);
-		//m_pkTexMan->BindTexture(((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr())->m_iTextureID);
 		BindTexture((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr());
 		
 		switch(pkSettings->m_iTUTexEnvMode[iTU])
@@ -1646,6 +1647,10 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
  	//nr of active lights
  	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iActiveLights") , m_pkLight->GetNrOfActiveLights());
  
+ 	//shadowmap quality	
+ 	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fShadowPixelWidth") , 1.0 / float(m_iShadowmapWidth) );
+ 	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fShadowPixelHeight") , 1.0 / float(m_iShadowmapHeight) );
+
  	//HDR exposure
  	if(!UseHDR()) m_fExposure = 1.0;
  	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fExposure") , m_fExposure);

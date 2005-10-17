@@ -32,7 +32,7 @@ Matrix4	g_kMatrix;
 
 
 
-static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
 	string strMainWnd;
 	string strController;

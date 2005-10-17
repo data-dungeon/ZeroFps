@@ -68,7 +68,12 @@ class RENDER_API ResTexture : public ZFResource
 		int  CalculateSize();
 								
 		///return opengl texturehandle	
-		GLuint GetOpenGLTextureID()	{	return m_iOpenGLID;	};
+		GLuint GetOpenGLTextureID() const	{	return m_iOpenGLID;	};
+								
+		///get texture width
+		int GetWidth()	const						{	return m_iWidth;	};
+		///get texture height
+		int GetHeight() const					{	return m_iHeight;	};
 								
 		///create texture from file
 		bool CreateTextureFromFile(string strName,int iOptions = 0);				

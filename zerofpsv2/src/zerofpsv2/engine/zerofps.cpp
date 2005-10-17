@@ -170,7 +170,7 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
 	RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
 	
-	RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL, CSYS_FLAG_SRC_CMDLINE);
+	RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL);
 	
 	
 	// Register Commands
