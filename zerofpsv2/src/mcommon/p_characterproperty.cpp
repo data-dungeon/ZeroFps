@@ -1215,11 +1215,18 @@ void P_CharacterProperty::OnIncap()
 		return;
 	}
 
+	// 40% chance that we drop dead.
+    if(Math::Randomi(100) < 40)
+	{
+		OnDeath();
+		return;
+	}
+
 	m_bIncap	= true;
 	m_bDead	= false;
 	ResetAllNetUpdateFlags();
 
-	SendTextToClient(string("You are incapacitated. Lay down and rest for a while."));
+	SendTextToClient(string("You are incapacitated."));
 
 	m_fDeadTimer = m_pkEntityManager->GetSimTime();
 	m_fDecayTime = m_kCharacterStats.GetTotal("Vitality");
@@ -1337,6 +1344,7 @@ void P_CharacterProperty::OnDeath()
 		//send death info to client
 		SendStats();
 		SendDeathInfo();
+		SendTextToClient(string("You are dead."));
 	}
 }
 
@@ -1842,7 +1850,7 @@ void P_CharacterProperty::Update()
 					else if(m_pkEntityManager->GetSimTime() - m_fDeadTimer > m_fDecayTime)
 					{
 						//send character to the world beyound
-						OnDeath();						
+						MakeAlive();						
 					}			
 				}
 
