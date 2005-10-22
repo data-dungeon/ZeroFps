@@ -72,7 +72,7 @@ void ZeroEd::Input_EditTerrain()
 				if(!bDrawFlatOn)
 					fDrawFlat = m_kDrawPos.y;
 				bDrawFlatOn = true;
-				HMFlatten( fDrawFlat );  
+				HMCommand(HMAP_DRAWSMFLAT, fDrawFlat);		// HMFlatten( fDrawFlat );  
 			}
 			else 
 			{
@@ -82,12 +82,12 @@ void ZeroEd::Input_EditTerrain()
 
 		case HMAP_SMOOTH:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
-				HMSmooth();  
+				HMCommand(HMAP_SMOOTH);  
 			break;
 
 		case HMAP_STITCH:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
-				Stitch();  
+				HMCommand(HMAP_STITCH);  
 			break;
 
 
@@ -130,6 +130,7 @@ void ZeroEd::Input_EditTerrain()
 			break;
 	}
 
+	/*
 	if(m_pkInputHandle->Pressed(KEY_1)) m_iHMapEditMode = HMAP_DRAWMASK;			
 	
 	if(m_pkInputHandle->Pressed(KEY_2) && !DelayCommand() && m_cDrawTexture < 250)
@@ -149,6 +150,7 @@ void ZeroEd::Input_EditTerrain()
 	if(m_pkInputHandle->Pressed(KEY_6)) m_iHMapEditMode = HMAP_STITCH;			
 	if(m_pkInputHandle->Pressed(KEY_7)) m_iHMapEditMode = HMAP_DRAWMASK;			
 	if(m_pkInputHandle->Pressed(KEY_8)) m_iHMapEditMode = HMAP_DRAWVISIBLE;			
+	*/
 
 	// Print Mode as devpage - temporary fix.
 	m_pkZeroFps->DevPrintf("hmap","  m_cDrawTexture: %d", m_cDrawTexture);
@@ -162,10 +164,7 @@ void ZeroEd::Input_EditTerrain()
 		case HMAP_DRAWVISIBLE:		szMode = "HMAP_DRAWVISIBLE";	break;
 	}
 
-
 	m_pkZeroFps->DevPrintf("hmap","  m_iHMapEditMode: %s", szMode);
-
-
 }
 
 

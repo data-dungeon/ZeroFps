@@ -94,7 +94,40 @@ void ZeroEd::SetupGuiEnviroment()
 	AddLoadFoldersToMenu();
 	
 	((ZGuiButton*)GetWnd("OpenWorkTabButton"))->m_bAcceptRightClicks = true;
+}
 
+void ZeroEd::SetupGui_Terrain()
+{
+	// Add Terrain Commands.
+	ZGuiCombobox* pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrEditMode"));
+	pkEditMode->AddItem("Paint",			0);	// HMAP_EDITVERTEX
+	pkEditMode->AddItem("Flatten",		1);	// HMAP_DRAWSMFLAT
+	pkEditMode->AddItem("Mask",			2);	// HMAP_DRAWMASK
+	pkEditMode->AddItem("Visibility",	3);	// HMAP_DRAWVISIBLE
+	pkEditMode->AddItem("Smoothing",		4);	// HMAP_SMOOTH
+	pkEditMode->AddItem("Stitch",			5);	// HMAP_STITCH
+	pkEditMode->SetNumVisibleRows( 6 );
+
+	pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrTexture"));
+	pkEditMode->AddItem("heightmap/grass.zlm",		0);	
+	pkEditMode->AddItem("heightmap/rock.zlm",			1);	
+	pkEditMode->AddItem("heightmap/dirt.zlm",			2);	
+	pkEditMode->AddItem("heightmap/sand.zlm",			3);	
+	pkEditMode->AddItem("heightmap/stone_path.zlm",	4);	
+	pkEditMode->SetNumVisibleRows( 5 );
+
+
+	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->AddBuddyWindow( GetWnd("TerrInnerBox") );
+	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->SetRange(0,25);
+	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->SetPos((int)m_fHMInRadius, true);
+
+	((ZGuiSlider*)GetWnd("TerrOuterSlider"))->AddBuddyWindow( GetWnd("TerrOuterBox") );
+	((ZGuiSlider*)GetWnd("TerrOuterSlider"))->SetRange(0,25);
+	((ZGuiSlider*)GetWnd("TerrOuterSlider"))->SetPos((int)m_fHMOutRadius, true);
+
+	((ZGuiSlider*)GetWnd("TerrStrSlider"))->AddBuddyWindow( GetWnd("TerrStrBox") );
+	((ZGuiSlider*)GetWnd("TerrStrSlider"))->SetRange(0,100);
+	((ZGuiSlider*)GetWnd("TerrStrSlider"))->SetPos((int)100, true);
 }
 
 void ZeroEd::OnKeyPress(int iID, ZGuiWnd* win)
@@ -651,6 +684,14 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 		if(iListboxIndex == 4)		 m_iHMapEditMode = HMAP_SMOOTH;
 		if(iListboxIndex == 5)		 m_iHMapEditMode = HMAP_STITCH;
 	}
+
+	if(strMainWndName == "TerrTexture")
+	{
+		m_cDrawTexture = iListboxIndex;
+		if(m_cDrawTexture < 0)		m_cDrawTexture  = 0;
+		if(m_cDrawTexture > 255)	m_cDrawTexture  = 255;
+	}
+
 
 	if(strListBox == "PropertyList")
 	{

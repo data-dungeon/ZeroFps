@@ -28,7 +28,6 @@
 #include "../zerofpsv2/basic/math.h"
 
 ZeroEd	g_kZeroEd("ZeroEd", 0, 0, 0);
-Matrix4	g_kMatrix;
 
 
 
@@ -79,9 +78,13 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 		break;
 	case ZGM_SCN_SETPOS:
 		data = (int*) params; 
-		cout << "Slider Updates: " << strController << " = " << data[1] << endl;
-		g_kZeroEd.m_fHMOutRadius = data[1];
 
+		if(strController == "TerrInnerSlider")
+			g_kZeroEd.m_fHMInRadius = data[1];
+		if(strController == "TerrOuterSlider")
+			g_kZeroEd.m_fHMOutRadius = data[1];
+		if(strController == "TerrStrSlider")
+			g_kZeroEd.m_fHMStrength = float(data[1]) / 100.0;
 		break;
 	}
 	return true;
@@ -167,12 +170,12 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("findent",		FID_FINDENT);
 	Register_Cmd("transformident",	FID_TRANSIDENT);
 	Register_Cmd("scaleident",			FID_SCALEIDENT);
-	Register_Cmd("ms",			FID_MS);
 
 	m_kDrawPos.Set(0,0,0);
 
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
+	m_fHMStrength  = 1.0;
 	m_cDrawTexture	= 0;
 	m_fDelayTime   = 0.0;
 	m_strWorldDir  = "";
@@ -196,9 +199,6 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kTestGraph.SetMinMax(0,1500);
 
 	m_iAutoSnapZoneCorner = -1;
-
-	g_kMatrix.Zero();
-	g_kMatrix.SetPos(Vector3(1,2,3));
 } 
 
 
@@ -475,22 +475,10 @@ void ZeroEd::Init()
   	ToogleLight();
 
  	
-	// Create startup GUI for the the server from script.
+	// Setup GUI.
 	SetupGuiEnviroment();
+	SetupGui_Terrain();
 
-	// Add Terrain Commands.
-	ZGuiCombobox* pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrEditMode"));
-	pkEditMode->AddItem("Paint",			0);	// HMAP_EDITVERTEX
-	pkEditMode->AddItem("Flatten",		1);	// HMAP_DRAWSMFLAT
-	pkEditMode->AddItem("Mask",			2);	// HMAP_DRAWMASK
-	pkEditMode->AddItem("Visibility",	3);	// HMAP_DRAWVISIBLE
-	pkEditMode->AddItem("Smoothing",		4);	// HMAP_SMOOTH
-	pkEditMode->AddItem("Stitch",			5);	// HMAP_STITCH
-	pkEditMode->SetNumVisibleRows( 6 );
-	pkEditMode->GetListbox()->SelItem(0);
-
-	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->SetRange(0,25);
-	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->SetPos((int)5, true);
 
 	//start a clean world
 	m_pkEntityManager->Clear();
@@ -1012,7 +1000,7 @@ void ZeroEd::HMDrawTexture(char iTexID)
 		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
 			//get selected vertexes 
-			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
+			hmrp->GetSelection(m_kDrawPos, m_fHMStrength, m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
 		
 			if(kSelVertex.size() > 0) 
 				hmrp->SetTexture(&kSelVertex,iTexID);
@@ -1032,7 +1020,7 @@ void ZeroEd::HMModifyCommand(float fSize)
 		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
 			//get selected vertexes 
-			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
+			hmrp->GetSelection(m_kDrawPos, m_fHMStrength, m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
 		
 			if(kSelVertex.size() > 0) 
 			{
@@ -1045,7 +1033,7 @@ void ZeroEd::HMModifyCommand(float fSize)
 	}
 }
 
-void	ZeroEd::HMFlatten(float fSample)
+void ZeroEd::HMCommand(HMapEditMode eHMCmd, float fSample)
 {
  	static vector<HMSelectionData> kSelVertex;
 	kSelVertex.clear();
@@ -1056,60 +1044,20 @@ void	ZeroEd::HMFlatten(float fSample)
 		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
 		{
 			//get selected vertexes 
-			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);					
+			hmrp->GetSelection(m_kDrawPos,m_fHMStrength, m_fHMInRadius,m_fHMOutRadius,&kSelVertex);					
 		}
 	}
 
-	if(kSelVertex.size() > 0) 
-	{
+	if(kSelVertex.size() <= 0)
+		return;
+
+	if(eHMCmd == HMAP_DRAWSMFLAT)
 		P_Heightmap::FlattenSelection(&kSelVertex, fSample);
-	}
-}
-
-void ZeroEd::HMSmooth()
-{
- 	static vector<HMSelectionData> kSelVertex;
-	kSelVertex.clear();
-	
-
-	//loop all heightmaps
-	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-	{
-		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
-		{
-			//get selected vertexes 
-			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);					
-		}
-	}
-	
-	
-	if(kSelVertex.size() > 0) 
-	{
+	else if (eHMCmd == HMAP_SMOOTH)
 		P_Heightmap::SmoothSelection(&kSelVertex);
-	}
-}
-
-void ZeroEd::Stitch()
-{
- 	static vector<HMSelectionData> kSelVertex;
-	kSelVertex.clear();
-	
-
-	//loop all heightmaps
-	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-	{
-		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
-		{
-			//get selected vertexes 
-			hmrp->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius,&kSelVertex);					
-		}
-	}
-	
-	
-	if(kSelVertex.size() > 0) 
-	{
+	else if (eHMCmd == HMAP_STITCH)
 		P_Heightmap::Stitch(&kSelVertex);
-	}
+
 }
 
 void ZeroEd::OnHud(void)
@@ -1129,21 +1077,6 @@ void ZeroEd::OnHud(void)
 			
 		*/
 	}
-
-	string strMat = g_kMatrix.ToString();
-	m_pkZeroFps->DevPrintf("math","Matrix: %s", strMat.c_str());		
-	
-	strMat = g_kMatrix.ToString_Vec(0);
-	m_pkZeroFps->DevPrintf("math","Mat Vec0: %s", strMat.c_str());		
-	strMat = g_kMatrix.ToString_Vec(1);
-	m_pkZeroFps->DevPrintf("math","Mat Vec1: %s", strMat.c_str());		
-	strMat = g_kMatrix.ToString_Vec(2);
-	m_pkZeroFps->DevPrintf("math","Mat Vec2: %s", strMat.c_str());		
-	strMat = g_kMatrix.ToString_Vec(3);
-	m_pkZeroFps->DevPrintf("math","Mat Vec3: %s", strMat.c_str());		
-
-	
-
 }
 
 bool ZeroEd::DelayCommand()
@@ -1482,19 +1415,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			P_Mad* pkMad = (P_Mad*)pkActiveEntity->GetProperty("P_Mad");
 			if(pkMad)
 				pkMad->SetScale(1.0);
-			break;
-		}		
-
-		case FID_MS:
-		{
-			if(kCommand->m_kSplitCommand.size() <= 2)
-				break;
-			
-			int iIndex = atoi(kCommand->m_kSplitCommand[1].c_str());
-			float fValue = atof(kCommand->m_kSplitCommand[2].c_str());
-
-			g_kMatrix.data[iIndex] = fValue;
-			g_kMatrix.SetPos(Vector3(1,2,3));
 			break;
 		}		
 

@@ -63,7 +63,6 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_FINDENT,
 			FID_TRANSIDENT,
 			FID_SCALEIDENT,
-			FID_MS,
 		};
 			
 		enum EditMode_e
@@ -194,6 +193,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		vector<HMSelectionData>	m_kSelectedHMVertex;
 		float 						m_fHMInRadius;
 		float 						m_fHMOutRadius;
+		float 						m_fHMStrength;
 		char							m_cDrawTexture;
 
 		//network
@@ -257,6 +257,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	DrawCrossMarker(Vector3 kPos);
 
 		void	SetupGuiEnviroment();
+		void	SetupGui_Terrain();
 		void	ToogleLight();
 
 		//heightmap
@@ -264,9 +265,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
 		void	HMModifyCommand(float fSize);
 		void  HMDrawTexture(char iTexID);
-		void	Stitch();
-		void	HMSmooth();
-		void	HMFlatten(float fSample);
+		void  HMCommand(HMapEditMode eHMCmd, float fSample = 0);
+
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);

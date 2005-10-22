@@ -756,10 +756,10 @@ float P_Heightmap::GetHeight(float x,float y)
 	return fHeight+ m_pkEntity->GetWorldPosV().y;
 }
 
-void P_Heightmap::GetSelection(const Vector3& kCenter, float fInRadius, float fOutRadius,vector<HMSelectionData>* pkSelectionData)
+void P_Heightmap::GetSelection(const Vector3& kCenter, float fStrength, float fInRadius, float fOutRadius,vector<HMSelectionData>* pkSelectionData)
 {
 	HMSelectionData kSel;
-	kSel.m_fValue = 1.0;
+	kSel.m_fValue = fStrength;
 
 	float fInOutDiff = fOutRadius - fInRadius;
 
@@ -791,7 +791,7 @@ void P_Heightmap::GetSelection(const Vector3& kCenter, float fInRadius, float fO
 			// If inside inner circle set value to max.
 			if(fLen < fInRadius) 
 			{
-				kSel.m_fValue = 1.0;
+				kSel.m_fValue = fStrength;
 				pkSelectionData->push_back(kSel);			
 			}
 			else
@@ -799,7 +799,7 @@ void P_Heightmap::GetSelection(const Vector3& kCenter, float fInRadius, float fO
 			{
 				fLen2 = fLen - fInRadius;
 
-				kSel.m_fValue = 1.0 - (fLen2 / fInOutDiff);
+				kSel.m_fValue = fStrength - ((fLen2 / fInOutDiff) * fStrength);
 				//cout << kSel.m_fValue << ",";
 				
 				pkSelectionData->push_back(kSel);			
