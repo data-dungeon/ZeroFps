@@ -71,6 +71,7 @@ void ZSSScriptSystem::CopyGlobalData(lua_State* pkState)
 	const unsigned int iNumFunctions = m_vkGlobalFunctions.size();
 	const unsigned int iNumVars = m_vkGlobalVariables.size();
 	const unsigned int iNumModules = m_vkGlobalModules.size();
+	const unsigned int iNumConstants = m_vkConstantVariables.size();
 
 	// Add global functions
 	for(i=0; i<iNumFunctions;  i++)
@@ -84,6 +85,14 @@ void ZSSScriptSystem::CopyGlobalData(lua_State* pkState)
 			m_vkGlobalVariables[i]->pvData,
 			m_vkGlobalVariables[i]->eType,
 			pkState);
+
+	// Add Constants
+/*	for(i=0; i<iNumConstants; i++)
+		ExposeVariable(m_vkConstantVariables[i]->szName,
+			&m_vkConstantVariables[i]->m_iConstValue,
+			m_vkConstantVariables[i]->eType,
+			pkState);*/
+
 
 	// Add global modules
 	for(i=0; i<iNumModules; i++)
@@ -107,6 +116,13 @@ void ZSSScriptSystem::Close()
 	{
 		delete[] m_vkGlobalVariables[i]->szName;
 		delete m_vkGlobalVariables[i];
+	}
+
+	for(i=0; i<m_vkConstantVariables.size(); i++)
+	{
+		delete[] m_vkConstantVariables[i]->szName;
+		//delete m_vkConstantVariables[i]->pvData;
+		delete m_vkConstantVariables[i];
 	}
 
 	printf("ZSSScriptSystem::Close\n");
@@ -912,11 +928,17 @@ void ZSSScriptSystem::ExposeVariable (const char* name, void* pVar, ScripVarType
 	}
 }
 
+void ZSSScriptSystem::RegisterConstant(string strConstName, int iValue)
+{
+	ConstantVarInfo* var_info = new ConstantVarInfo;
+	var_info->eType = tINT;
+	var_info->szName = new char[ strlen(strConstName.c_str()) + 1 ];
+	strcpy( var_info->szName, strConstName.c_str() );
+	var_info->m_iConstValue = iValue;
+	m_vkConstantVariables.push_back(var_info);
 
-
-
-
-
+	ExposeVariable(var_info->szName, &var_info->m_iConstValue, var_info->eType);
+}
 
 // get function: g_iExpIntVar
 int ZSSScriptSystem::GetVar(lua_State* L)

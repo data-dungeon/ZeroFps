@@ -50,6 +50,7 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 };
 
 Property* Create_Prim3DProperty();
+void ENGINE_SYSTEMS_API Register_Prim3DProperty(ZSSZeroFps* pkZeroFps);
 
 
 #endif // #ifndef _ENGINE_P_PRIMITIVES3D_H_

@@ -3710,8 +3710,22 @@ void Register_P_CharacterProperty(ZSSZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
 	g_pkScript->ExposeFunction("SetCombatMode",				SI_P_CharacterProperty::SetCombatModeLua);
 	g_pkScript->ExposeFunction("GiveXp",						SI_P_CharacterProperty::GiveXpLua);
-}
 
+	// Register Constants.
+		// Skill Types
+		g_pkScript->RegisterConstant("SKILLTYPE_MISC", eMISC);
+		g_pkScript->RegisterConstant("SKILLTYPE_OFFENSIVE", eOFFENSIVE);
+		g_pkScript->RegisterConstant("SKILLTYPE_DEFENSIVE", eDEFENSIVE);
+		g_pkScript->RegisterConstant("SKILLTYPE_TRADE", eTRADE);
+
+		// Skill Targets
+		g_pkScript->RegisterConstant("SKILLTARGET_PASSIVE", ePASSIVE);
+		g_pkScript->RegisterConstant("SKILLTARGET_CHARACTER",eCHARACTER_TARGET);
+		g_pkScript->RegisterConstant("SKILLTARGET_GROUND",eGROUND_TARGET);
+		g_pkScript->RegisterConstant("SKILLTARGET_DIR",eDIRECTION);
+		g_pkScript->RegisterConstant("SKILLTARGET_ITEM",eITEM_TARGET);
+		g_pkScript->RegisterConstant("SKILLTARGET_SELF",eSELF);
+}
 
 
 

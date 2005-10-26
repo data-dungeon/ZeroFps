@@ -116,12 +116,21 @@ private:
 		char* szName;
 	};
 
+	struct ConstantVarInfo
+	{
+		int			m_iConstValue;
+		//void* pvData;
+		ScripVarType eType;
+		char* szName;
+	};
+
 	lua_State* m_pkLua;
 	ZSSVFileSystem* m_pkFileSys;
 
-	vector<GlobalFuncInfo*> m_vkGlobalFunctions;
-	vector<GlobalVarInfo*> m_vkGlobalVariables;
-	vector<lua_CFunction> m_vkGlobalModules;
+	vector<GlobalFuncInfo*>		m_vkGlobalFunctions;
+	vector<GlobalVarInfo*>		m_vkGlobalVariables;
+	vector<ConstantVarInfo*>	m_vkConstantVariables;
+	vector<lua_CFunction>		m_vkGlobalModules;
 
 	static map<string,pair<void*,ScripVarType> > m_kVarMap;
 
@@ -175,6 +184,9 @@ public:
 	void ExposeVariable(const char* szName, void* pVar, ScripVarType eType, lua_State* L=NULL);
 	void ExposeModule(lua_CFunction o_OpenFunction, lua_State* L=NULL);
 	
+	void RegisterConstant(string strConstName, int iValue);
+	
+
 	string GetCallAdress(lua_State* pkLua);
 	string GetFunctionName(lua_State* pkLua, int iStackPosition);
 	

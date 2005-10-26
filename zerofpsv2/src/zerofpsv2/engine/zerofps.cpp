@@ -1830,7 +1830,7 @@ void ZSSZeroFps::RegisterPropertys()
 	Register_PPSystem(this);
 	Register_PHmrp(this);
 	Register_HeightmapProperty(this);
-
+	Register_Prim3DProperty(this);
 
 	Register_SIEntityProperty(this);
 }

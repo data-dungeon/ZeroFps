@@ -592,9 +592,10 @@ void P_Heightmap::FlattenSelection(vector<HMSelectionData>* kSelectionData, floa
 {
 	for(int i = 0;i<kSelectionData->size();i++)
 	{
+		
 		//save new height
 		(*kSelectionData)[i].m_pkHeightMap->m_kHeightData[(*kSelectionData)[i].y*(*kSelectionData)[i].m_pkHeightMap->m_iRows 
-			+ (*kSelectionData)[i].x] = fSample;
+			+ (*kSelectionData)[i].x] = fSample - (*kSelectionData)[i].m_pkHeightMap->GetEntity()->GetWorldPosV().y;
 				
 		//set heightmap as updated
 		(*kSelectionData)[i].m_pkHeightMap->ResetAllNetUpdateFlags();

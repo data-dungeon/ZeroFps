@@ -1149,6 +1149,13 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZSSZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetLinVelTowards",	SI_PTcs::SetObjectLinVelTowardsLua);	
 	g_pkScript->ExposeFunction("Bounce",				SI_PTcs::BounceLua);					
 	g_pkScript->ExposeFunction("IsTrigging",			SI_PTcs::IsTriggingLua);			
+
+	// Register Constants
+	g_pkScript->RegisterConstant("TCSCM_NONE",		E_NONE);
+	g_pkScript->RegisterConstant("TCSCM_SPHERE",		E_SPHERE);
+	g_pkScript->RegisterConstant("TCSCM_MESH",		E_MESH);
+	g_pkScript->RegisterConstant("TCSCM_BOX",			E_BOX);
+	g_pkScript->RegisterConstant("TCSCM_HMAP",		E_HMAP);
 }
 
 

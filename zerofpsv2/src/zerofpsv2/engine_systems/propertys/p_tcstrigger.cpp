@@ -116,4 +116,8 @@ void ENGINE_SYSTEMS_API Register_PTcsTrigger(ZSSZeroFps* pkZeroFps)
 {
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_TcsTrigger", Create_P_TcsTrigger);	
+
+	// Register Constants
+	pkZeroFps->m_pkScript->RegisterConstant("TRIGGER_SPHERE", eSPHERE);
+	pkZeroFps->m_pkScript->RegisterConstant("TRIGGER_BOX", eBOX);
 }

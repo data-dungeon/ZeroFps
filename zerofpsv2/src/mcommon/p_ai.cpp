@@ -11,10 +11,6 @@
 
 using namespace std;
 
-int	g_iDefineStateGuard	= eAI_STATE_GUARD;
-int	g_iDefineStateWalk   = eAI_STATE_RANDOMWALK;
-int	g_iDefineStateSit		= eAI_STATE_SIT;
-
 #define EVENT_Update			1
 #define EVENT_Enter			2
 #define EVENT_Exit			3
@@ -737,9 +733,14 @@ void Register_P_AI(ZSSZeroFps* pkZeroFps)
  	g_pkScript->ExposeFunction("SetAITarget",	SI_P_AI::SetAITargetLua);
 	g_pkScript->ExposeFunction("SetAIState",	SI_P_AI::SetAIStateLua);
 
-	g_pkScript->ExposeVariable("eAI_STATE_GUARD",			&g_iDefineStateGuard, tINT ,NULL);
-	g_pkScript->ExposeVariable("eAI_STATE_RANDOMWALK",		&g_iDefineStateWalk, tINT ,NULL);
-	g_pkScript->ExposeVariable("eAI_STATE_SIT",				&g_iDefineStateSit, tINT ,NULL);
+	// Register Constants
+	g_pkScript->RegisterConstant("AISTATE_RANDOMWALK",		eAI_STATE_RANDOMWALK);
+	g_pkScript->RegisterConstant("AISTATE_LOOK",				eAI_STATE_LOOKAT);
+	g_pkScript->RegisterConstant("AISTATE_CHASE",			eAI_STATE_CHASE);
+	g_pkScript->RegisterConstant("AISTATE_ATTACK",			eAI_STATE_ATTACK);
+	g_pkScript->RegisterConstant("AISTATE_GUARD",			eAI_STATE_GUARD);
+	g_pkScript->RegisterConstant("AISTATE_DEAD",				eAI_STATE_DEAD);
+	g_pkScript->RegisterConstant("AISTATE_AVOID",			eAI_STATE_AVOIDING);
+	g_pkScript->RegisterConstant("AISTATE_SIT",				eAI_STATE_SIT);
 }
-
 

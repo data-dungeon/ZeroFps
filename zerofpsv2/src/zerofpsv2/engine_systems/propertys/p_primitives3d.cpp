@@ -131,3 +131,17 @@ Property* Create_Prim3DProperty()
 {
 	return new P_Primitives3D;
 }
+
+void ENGINE_SYSTEMS_API Register_Prim3DProperty(ZSSZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_Primitives3D", Create_Prim3DProperty);					
+
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_SPHERE",		SPHERE);
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_BBOX",			BBOX);
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_AABBOX",		AABBOX);
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_CONE",			CONE);
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_PYRAMID",		PYRAMID);
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_SOLIDBBOX",	SOLIDBBOX);
+	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_PLANE",		PLANE);
+}
