@@ -504,7 +504,7 @@ bool ZMaterial::LoadIniMaterial(const string& strFile)
 		open=true;
 	else		//if file didt open, try to load a default texture
 	{
-		cout<<"Error loading shader: "<<strFile<<" using nomaterial"<<endl;
+		cerr<<"Error loading material: "<<strFile<<" using nomaterial"<<endl;
 		if(m_kIni.Open("data/material/nomaterial.zmt",0))
 			open=true;
 	}
