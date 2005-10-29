@@ -645,31 +645,47 @@ void ZShaderSystem::SetupPass(int iPass)
 	}
 		
 	//alphatest setting
-	if(m_iForceAlphaTest == -1)
-	{
-		if(pkSettings->m_bAlphaTest)
-		{
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GEQUAL, 0.1);
-		}
-		else
-			glDisable(GL_ALPHA_TEST);
-		
-	}
-	else if(m_iForceAlphaTest == 0)
-	{
-		glDisable(GL_ALPHA_TEST);		
-	}
-	else if(m_iForceAlphaTest == 1)
+	if(m_iForceAlphaTest == 1 || (m_iForceAlphaTest == -1 && pkSettings->m_bAlphaTest))
 	{
 		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GEQUAL, 0.1);			
+		glAlphaFunc(GL_GEQUAL, pkSettings->m_fAlphaTreshold);	
+	}
+	else if(m_iForceAlphaTest == 0 || (m_iForceAlphaTest == -1 && !pkSettings->m_bAlphaTest))
+	{
+		glDisable(GL_ALPHA_TEST);
+	
 	}
 	else if(m_iForceAlphaTest == 2)
 	{
  		glEnable(GL_ALPHA_TEST);
   		glAlphaFunc(GL_GREATER, 0.1);	
 	}
+	
+// 	if(m_iForceAlphaTest == -1)
+// 	{
+// 		if(pkSettings->m_bAlphaTest)
+// 		{
+// 			glEnable(GL_ALPHA_TEST);
+// 			glAlphaFunc(GL_GEQUAL, 0.05);
+// 		}
+// 		else
+// 			glDisable(GL_ALPHA_TEST);
+// 		
+// 	}
+// 	else if(m_iForceAlphaTest == 0)
+// 	{
+// 		glDisable(GL_ALPHA_TEST);		
+// 	}
+// 	else if(m_iForceAlphaTest == 1)
+// 	{
+// 		glEnable(GL_ALPHA_TEST);
+// 		glAlphaFunc(GL_GEQUAL, 0.1);			
+// 	}
+// 	else if(m_iForceAlphaTest == 2) //used for shadowmap comparison
+// 	{
+//  		glEnable(GL_ALPHA_TEST);
+//   		glAlphaFunc(GL_GREATER, 0.1);	
+// 	}
 	
 		
 	//setup tus

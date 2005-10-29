@@ -42,6 +42,8 @@ ZMaterialSettings::ZMaterialSettings()
 	
 	m_fLineWidth = 	1.0;
 	
+	m_fAlphaTreshold= 0.1;
+	
 	m_bColorMaterial= false;
 	m_bLighting =		true;
 	m_bAlphaTest =		false;
@@ -134,6 +136,7 @@ ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
 	m_bLighting = kOther.m_bLighting;
 	m_iCullFace = kOther.m_iCullFace;
 	m_bAlphaTest = kOther.m_bAlphaTest;
+	m_fAlphaTreshold = kOther.m_fAlphaTreshold;
 	m_bFog = kOther.m_bFog;
 	m_bBlend = kOther.m_bBlend;
 	m_bDepthTest = kOther.m_bDepthTest;
@@ -398,6 +401,9 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 	if(PassGetLuaChar("stencilfuncmask",ctemp))
 		newpass->m_iStencilFuncMask = GetTranslateEnum(ctemp);
 
+	//alphatest treshold
+	if(PassGetLuaDouble("alphatreshold",dtemp))
+		newpass->m_fAlphaTreshold = float(dtemp);
 
 	//line width
 	if(PassGetLuaDouble("linewidth",dtemp))

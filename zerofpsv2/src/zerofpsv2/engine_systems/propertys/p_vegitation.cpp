@@ -100,19 +100,20 @@ void P_Vegitation::Update()
 	if(!m_pkZeroFps->GetVegetation())
 		return;
 
- 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
- 		return;
+//  	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
+//  		return;
 
-// 	if(!( (m_pkZeroFps->GetShadowMapRealtime() || m_bCastShadow) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
-// 		  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
-// 		return;
+	if(!( (m_pkZeroFps->GetShadowMapRealtime() || m_bCastShadow) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
+		  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
+		return;
 
 
 	static Vector3 kObjectPos;
 	kObjectPos = m_pkEntity->GetWorldPosV();
 
 	//Distance culling
-	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kObjectPos) > m_pkZeroFps->GetViewDistance()*0.3)
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED &&
+		m_pkFps->GetCam()->GetRenderPos().DistanceTo(kObjectPos) > m_pkZeroFps->GetViewDistance()*0.3)
 		return;
 
 	//frustum culling sphere
@@ -604,13 +605,13 @@ void P_Vegitation::BuildArrays()
 	
 		m_kColorArray.push_back(Vector4(1,1,1,1));
 		m_kColorArray.push_back(Vector4(1,1,1,1));
-		m_kColorArray.push_back(Vector4(1,1,1,0));
-		m_kColorArray.push_back(Vector4(1,1,1,0));
+		m_kColorArray.push_back(Vector4(1,1,1,0.1));
+		m_kColorArray.push_back(Vector4(1,1,1,0.1));
 		
 		m_kColorArray.push_back(Vector4(1,1,1,1));
 		m_kColorArray.push_back(Vector4(1,1,1,1));
-		m_kColorArray.push_back(Vector4(1,1,1,0));
-		m_kColorArray.push_back(Vector4(1,1,1,0));
+		m_kColorArray.push_back(Vector4(1,1,1,0.1));
+		m_kColorArray.push_back(Vector4(1,1,1,0.1));
 
 	}
 }

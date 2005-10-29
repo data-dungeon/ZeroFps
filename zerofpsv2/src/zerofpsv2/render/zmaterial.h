@@ -50,6 +50,7 @@ class RENDER_API ZMaterialSettings
 		bool				m_bLighting;	
 		int				m_iCullFace;
 		bool				m_bAlphaTest;	
+		float				m_fAlphaTreshold;
 		bool				m_bFog;		
 		bool				m_bBlend;
 		bool				m_bDepthTest;
