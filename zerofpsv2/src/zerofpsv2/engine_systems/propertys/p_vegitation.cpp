@@ -112,8 +112,7 @@ void P_Vegitation::Update()
 	kObjectPos = m_pkEntity->GetWorldPosV();
 
 	//Distance culling
-	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED &&
-		m_pkFps->GetCam()->GetRenderPos().DistanceTo(kObjectPos) > m_pkZeroFps->GetViewDistance()*0.3)
+	if(m_pkFps->GetCam()->GetPos().DistanceTo(kObjectPos) > m_pkZeroFps->GetViewDistance()*0.3)
 		return;
 
 	//frustum culling sphere
