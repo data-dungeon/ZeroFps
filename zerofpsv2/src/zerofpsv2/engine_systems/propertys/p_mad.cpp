@@ -98,7 +98,7 @@ void P_Mad::Update()
 		DoAnimationUpdate();
 		
 		//distance cull
-		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) - GetRadius();
+		float fDistance = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kPos) - GetRadius();
 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW && !m_pkEntity->IsZone())
 		{
 			m_bDistanceCulled = false;		 			

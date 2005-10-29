@@ -650,7 +650,10 @@ Mad_RawMesh* Mad_CoreMesh::GetLODRender(float fDistance)
 		return &m_kLodMesh[i];
 	}
 
-	return NULL;
+	//return max lodlevel
+	return &m_kLodMesh[m_kLodMesh.size()-1];
+
+// 	return NULL;
 }
 
 int Mad_CoreMesh::GetLODRenderIndex(float fDistance)
@@ -669,7 +672,9 @@ int Mad_CoreMesh::GetLODRenderIndex(float fDistance)
 		return i;
 	}
 
-	return -1;
+	//return max lodlevel
+	return m_kLodMesh.size()-1;
+//	return -1;
 }
 
 
