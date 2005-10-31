@@ -28,6 +28,8 @@ Mad_Modell::Mad_Modell()
 
 	m_pkVBO = NULL;
 
+	m_pkRawMesh = NULL;
+
 	for(int i = 0;i<256;i++)
 		m_akReplaceTexturesHandles[i] = NULL;
 
@@ -308,6 +310,8 @@ void Mad_Modell::SelectSubMesh(int iSubMeshID)
 
 int Mad_Modell::GetNumVertices()
 {
+	if(!m_pkRawMesh) return 0;
+
 	return m_pkRawMesh->kHead.iNumOfVertex;
 }
 

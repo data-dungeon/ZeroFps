@@ -81,7 +81,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep = 1);
 		void AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID);
 		void DrawTexturedHeightmap();
-		void DrawOcculusionHeightmap();
+		bool TestOcculusion();
 		
 	public:
 		P_Heightmap();

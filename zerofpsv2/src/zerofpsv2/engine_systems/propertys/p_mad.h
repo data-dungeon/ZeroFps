@@ -69,6 +69,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		
 		void CreateAABB();
 		
+		bool TestOcculusion();
+		
 	public:
 		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.		
 		

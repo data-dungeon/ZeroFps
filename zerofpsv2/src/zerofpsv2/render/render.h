@@ -194,6 +194,7 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		void DrawAABB(const Vector3& kMin,const Vector3& kMax);
 		void DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor );
 		void DrawPlane(Plane& kPlane);
+		void DrawOcculusionAABB( const Vector3& kMin,const Vector3& kMax);
 
 		void Draw_AxisIcon(float scale = 1.0);													///< Draw axis lines.
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.

@@ -152,109 +152,129 @@ void P_Mad::Update()
 		
 		
 		//not culled
-		m_bCulled = false;
 		
 		//always update bones
 		UpdateBones();
 		
 		if(m_bIsVisible)
 		{			
-// 			//update AABB 
-// 			if(!m_bHaveAABB)
-// 			{
-// 				if(m_pkZeroFps->GetEngineTime() - m_fLastAABBTest > 2)
-// 				{
-// 					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
-// 							m_fScale == m_fOldScale &&
-// 							m_kLastRot == kRot)
-// 					{
-// 						//create AABB
-// 						m_bHaveAABB = true;
-// 						
-// 						//cout<<"creating new AABB"<<endl;
-// 						CreateAABB();
-// 					}
-// 					else
-// 					{
-// 						//update test information
-// 						m_fLastAABBTest = m_pkZeroFps->GetEngineTime();
-// 						m_fOldScale = m_fScale;
-// 						m_kLastRot = kRot;
-// 					}
-// 				}
-// 			}
+			//shuld aabb be remade?
+			if(m_bHaveAABB)
+				if(GetCurrentAnimation() != MAD_NOANIMINDEX ||
+					m_fScale == m_fOldScale ||
+					m_kLastRot == kRot)
+					m_bHaveAABB = false;					
 			
-			
-			//update lighting
-			m_pkLight->Update(&m_kLightProfile,kPos);						
-		
-			m_pkZShaderSystem->MatrixPush();
-							
-				m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
-				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
-				m_pkZShaderSystem->MatrixScale(m_fScale);									
-				
-				
-				//occulusion culling
-				if(m_pkZShaderSystem->SupportOcculusion() && 
-					m_pkZeroFps->GetOcculusionCulling() &&
-					m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
-				{												
-					if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.05)
-					{			
-						m_fLastOcculusionTime = m_pkZeroFps->GetEngineTime();
-						m_bHaveOCTested = 		true;
-						
-						m_kOCQuery.Begin();						
-						Draw_All(m_pkZeroFps->m_iMadDraw);												
-						m_kOCQuery.End();						
+			if(!m_bHaveAABB)
+			{
+				if(m_pkZeroFps->GetEngineTime() - m_fLastAABBTest > 2)
+				{
+					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
+							m_fScale == m_fOldScale &&
+							m_kLastRot == kRot)
+					{
+						//create AABB
+						m_bHaveAABB = true;
+						CreateAABB();
 					}
-					else						
-					{					
-						if(m_bHaveOCTested && m_kOCQuery.HaveResult())
-						{
-							m_bHaveOCTested = false;
-							m_bOculled = (m_kOCQuery.GetResult() < 10);							
-						}
-					
-						//draw mad						
-						if(!m_bOculled)
-							Draw_All(m_pkZeroFps->m_iMadDraw);
-					}
-									
-					if(m_bOculled)
-						m_pkZeroFps->m_iOcculedObjects++;		
 					else
-						m_pkZeroFps->m_iNotOcculedObjects++;	
-									
+					{
+						//update test information
+						m_fLastAABBTest = m_pkZeroFps->GetEngineTime();
+						m_fOldScale = m_fScale;
+						m_kLastRot = kRot;
+					}
+				}
+			}
+			
+			
+			if(m_pkZShaderSystem->SupportOcculusion() && 
+				m_pkZeroFps->GetOcculusionCulling() &&
+				m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED )
+			{									
+				//occulusion test
+				if(!TestOcculusion())
+				{
+					//update lighting
+					m_pkLight->Update(&m_kLightProfile,kPos);						
+				
+					m_pkZShaderSystem->MatrixPush();																					
+						m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
+						m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
+						m_pkZShaderSystem->MatrixScale(m_fScale);																	
+						Draw_All(m_pkZeroFps->m_iMadDraw);					
+					m_pkZShaderSystem->MatrixPop();
+					
+		 			m_bCulled = false;
+					m_pkZeroFps->m_iNotOcculedObjects++;								
 				}
 				else
-					Draw_All(m_pkZeroFps->m_iMadDraw);
-				
-			m_pkZShaderSystem->MatrixPop();
+					m_pkZeroFps->m_iOcculedObjects++;		
+			}
+			else		
+			{
+				//update lighting
+				m_pkLight->Update(&m_kLightProfile,kPos);						
 			
+				m_pkZShaderSystem->MatrixPush();																					
+					m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
+					m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
+					m_pkZShaderSystem->MatrixScale(m_fScale);																	
+					Draw_All(m_pkZeroFps->m_iMadDraw);					
+				m_pkZShaderSystem->MatrixPop();
+			
+		 		m_bCulled = false;
+			
+			}
 		}
 
+		
+		//draw bounding volume
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 
 		{
-			m_pkZShaderSystem->MatrixPush();
-				
-				if(m_bHaveAABB)
-				{
-					m_pkRender->DrawAABB(m_AABBMin + kPos,m_AABBMax + kPos,Vector3(1,1,1));				
-				}
-				else
-				{
-					m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);					
-					m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);				
-				}
-				
-			m_pkZShaderSystem->MatrixPop();						
+			if(m_bHaveAABB)
+				m_pkRender->DrawAABB(m_AABBMin + kPos,m_AABBMax + kPos,Vector3(1,1,1));				
+			else
+				m_pkRender->DrawAABB(kPos+m_pkEntity->GetLocalAABBMin(),kPos+m_pkEntity->GetLocalAABBMax(),Vector3(1,1,1));
 		}
 				
 		//increse mad counter
 		m_pkZeroFps->m_iNumOfMadRender++;
 	}	
+}
+
+bool P_Mad::TestOcculusion()
+{
+	//do we have a result?
+	if(m_bHaveOCTested && m_kOCQuery.HaveResult())
+	{
+		m_bHaveOCTested = false;
+		m_bOculled = (m_kOCQuery.GetResult() < 10);				
+	}
+	else
+	{
+		m_bHaveOCTested = 		true;
+		
+		static Vector3 kPos;
+		kPos = m_pkEntity->GetWorldPosV();
+		
+		//disable color writes 
+		m_pkZShaderSystem->ForceColorMask(0);		
+		
+		m_kOCQuery.Begin();
+		
+		//what aabb to use?
+		if(m_bHaveAABB)
+			m_pkRender->DrawOcculusionAABB(kPos+m_AABBMin,kPos+m_AABBMax);
+		else
+			m_pkRender->DrawOcculusionAABB(kPos+m_pkEntity->GetLocalAABBMin(),kPos+m_pkEntity->GetLocalAABBMax());
+		
+		m_kOCQuery.End();			
+		
+		m_pkZShaderSystem->ForceColorMask(-1);
+	}	
+		
+	return m_bOculled;
 }
 
 bool P_Mad::GetBBox(Vector3& kMin, Vector3& kMax, Vector3& kPos)

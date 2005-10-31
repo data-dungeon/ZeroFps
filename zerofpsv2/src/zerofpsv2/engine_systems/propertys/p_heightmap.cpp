@@ -74,6 +74,33 @@ void P_Heightmap::SetMaxValue(float fMax)
 	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,-m_fMaxValue,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fMaxValue,m_iWidth/2.0));
 }
 
+bool P_Heightmap::TestOcculusion()
+{
+	if(m_bHaveOCTested && m_kOCQuery.HaveResult())
+	{
+		m_bHaveOCTested = false;
+		m_bOculled = (m_kOCQuery.GetResult() < 10);				
+	}
+	else
+	{
+		m_bHaveOCTested = 		true;
+		
+		static Vector3 kPos;
+		kPos = m_pkEntity->GetWorldPosV();
+		
+		m_pkZShaderSystem->ForceColorMask(0);		
+		
+		m_kOCQuery.Begin();		
+		m_pkRender->DrawOcculusionAABB(	kPos-Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0),
+													kPos+Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0));		
+		m_kOCQuery.End();			
+		
+		m_pkZShaderSystem->ForceColorMask(-1);
+	}	
+		
+	return m_bOculled;
+}
+
 void P_Heightmap::Update()
 {
 // 	if(!( (m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
@@ -87,43 +114,36 @@ void P_Heightmap::Update()
 																				m_pkEntity->GetWorldPosV() + Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0)))
 		return;
 
-	//update light					
- 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
 
 	
 	if(m_pkZShaderSystem->SupportOcculusion() && 
-		m_pkZeroFps->GetOcculusionCulling() && 
+		m_pkZeroFps->GetOcculusionCulling() &&
 		m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
-	{												
-		if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.05)
-		{	
-			m_fLastOcculusionTime = m_pkZeroFps->GetEngineTime();
-			m_bHaveOCTested = 		true;
-								
-			m_kOCQuery.Begin();
+	{						
+	
+		//occulusion test
+		if(!TestOcculusion())
+		{
+			//update light					
+		 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+			
 			DrawTexturedHeightmap();
-			m_kOCQuery.End();			
+			
+			m_pkZeroFps->m_iNotOcculedObjects++;								
 		}
 		else
 		{
-			if(m_bHaveOCTested && m_kOCQuery.HaveResult())
-			{
-				m_bHaveOCTested = false;
-				m_bOculled = (m_kOCQuery.GetResult() < 10);							
-			}
-					
-			//draw heightmap						
-			if(!m_bOculled)
-				DrawTexturedHeightmap();
-		}
-		
-		if(m_bOculled)
 			m_pkZeroFps->m_iOcculedObjects++;		
-		else
-			m_pkZeroFps->m_iNotOcculedObjects++;		
+		}
 	}
-	else
-		DrawTexturedHeightmap();
+	else		
+	{
+		//update light					
+	 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+	
+		DrawTexturedHeightmap();		
+	}	
+
 }
 
 void P_Heightmap::DrawTexturedHeightmap()

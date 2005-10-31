@@ -67,6 +67,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		void CalculateRadius();
 		void CreateAABB();
 
+		bool TestOcculusion();
 	public:
 		P_Vegitation();
 		~P_Vegitation();

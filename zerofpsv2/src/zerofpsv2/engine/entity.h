@@ -348,6 +348,8 @@ class ENGINE_API Entity
 		//AABB stuff
 		void 			SetLocalAABB(const Vector3& kMin,const Vector3& kMax);
 		void 			SetLocalAABB(float fRadius);
+		const Vector3&	GetLocalAABBMin()					{	return m_kLocalAABBMin;			};
+		const Vector3&	GetLocalAABBMax()					{	return m_kLocalAABBMax;			};
 		
 		//interpolation
 		void			SetInterpolate(bool bInterpolate);

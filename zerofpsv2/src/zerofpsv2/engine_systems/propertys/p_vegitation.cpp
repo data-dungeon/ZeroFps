@@ -183,102 +183,61 @@ void P_Vegitation::Update()
 	
 	
 	
-	//update light					
- 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
-							
-							
-if(m_pkZShaderSystem->SupportOcculusion() && 
-		m_pkZeroFps->GetOcculusionCulling() && 
+	if(m_pkZShaderSystem->SupportOcculusion() && 
+		m_pkZeroFps->GetOcculusionCulling() &&
 		m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
-	{												
-		if(m_pkZeroFps->GetEngineTime() - m_fLastOcculusionTime > 0.1)
-		{	
-			m_fLastOcculusionTime = m_pkZeroFps->GetEngineTime();
-			m_bHaveOCTested = 		true;
-								
-			m_kOCQuery.Begin();
-			DrawArray();
-			m_kOCQuery.End();			
-		}
-		else
+	{						
+	
+		//occulusion test
+		if(!TestOcculusion())
 		{
-			if(m_bHaveOCTested && m_kOCQuery.HaveResult())
-			{
-				m_bHaveOCTested = false;
-				m_bOculled = (m_kOCQuery.GetResult() < 10);							
-			}
-					
-			//draw heightmap						
-			if(!m_bOculled)
-				DrawArray();
-		}
+			//update lighting
+			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());								
 		
-		if(m_bOculled)
-			m_pkZeroFps->m_iOcculedObjects++;		
+			DrawArray();
+			
+			m_pkZeroFps->m_iNotOcculedObjects++;								
+		}
 		else
-			m_pkZeroFps->m_iNotOcculedObjects++;		
+			m_pkZeroFps->m_iOcculedObjects++;		
+	}
+	else		
+	{
+		//update lighting
+		m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());								
+	
+		DrawArray();
+	}	
+	
+	
+}
+
+bool P_Vegitation::TestOcculusion()
+{
+	if(m_bHaveOCTested && m_kOCQuery.HaveResult())
+	{
+		m_bHaveOCTested = false;
+		m_bOculled = (m_kOCQuery.GetResult() < 10);				
 	}
 	else
-		DrawArray();								
-							
-					
-					
-/* 	int iStep = int(fDistance / 3.0);
-  	if(iStep < 1)
-  		iStep = 1;	
-	
- 	iStep = PowerOf2(iStep);
-	
-
+	{
+		m_bHaveOCTested = 		true;
+		
 		static Vector3 kPos;
-		for(unsigned int i=0;i<m_akPositions.size();i += iStep)
-		{
-			kPos = m_akPositions[i].kPos + kObjectPos;
-			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale,fAlpha);			
-		}	*/	
-	
-	
-// 	//setup material	
-// 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
-// 		
-// 	float t=m_pkFps->GetEngineTime();
-// 	float fAlpha = 1 - (fDistance /10);
-// 	
-// 	static Vector3 rot;
-// 	static Vector3 kPos;
-// 	for(unsigned int i=0;i<m_akPositions.size();i++)
-// 	{
-// 		rot = m_akPositions[i].kRot;  
-// 		kPos = m_akPositions[i].kPos + kObjectPos;
-// 		rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
-// 		m_pkRender->DrawCross(kPos,rot,m_kScale,fAlpha);			
-// 	}	
-
-	
-// 	cout<<fAlpha<<endl;
-	
-// 	if(iStep == 1)
-// 	{
-// 		static Vector3 rot;
-// 		static Vector3 kPos;
-// 		for(unsigned int i=0;i<m_akPositions.size();i++)
-// 		{
-// 			rot = m_akPositions[i].kRot;  
-// 			kPos = m_akPositions[i].kPos + kObjectPos;
-// 			rot.x = float(sin(t + ( kPos.x + kPos.z)) * m_fWind);
-// 			m_pkRender->DrawCross(kPos,rot,m_kScale,fAlpha);			
-// 		}
-// 	}
-// 	else
-// 	{
-// 		static Vector3 kPos;
-// 		for(unsigned int i=0;i<m_akPositions.size();i += iStep)
-// 		{
-// 			kPos = m_akPositions[i].kPos + kObjectPos;
-// 			m_pkRender->DrawCross(kPos,m_akPositions[i].kRot,m_kScale,fAlpha);			
-// 		}		
-// 	}
+		kPos = m_pkEntity->GetWorldPosV();
+		
+		m_pkZShaderSystem->ForceColorMask(0);		
+		
+		m_kOCQuery.Begin();	
+		m_pkRender->DrawOcculusionAABB(kPos+m_kAABBMin,kPos+m_kAABBMax);	
+		m_kOCQuery.End();			
+		
+		m_pkZShaderSystem->ForceColorMask(-1);
+	}	
+		
+	return m_bOculled;
 }
+
 
 vector<PropertyValues> P_Vegitation::GetPropertyValues()
 {
