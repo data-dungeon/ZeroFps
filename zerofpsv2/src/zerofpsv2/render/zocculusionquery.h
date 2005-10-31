@@ -20,6 +20,21 @@ class RENDER_API ZOcculusionQuery
 		GLuint GetResult();
 };
 
+class RENDER_API ZOcculusionTest : ZOcculusionQuery
+{
+	private:
+		ZShaderSystem*		m_pkZShaderSystem;
+		bool					m_bHaveTested;
+		bool					m_bVisible;
+
+		void DrawOcculusionBox(const Vector3& kMin,const Vector3& kMax);
+		void Test(const Vector3& kMin,const Vector3& kMax);
+	
+	public:
+		ZOcculusionTest();	
+		bool Visible(const Vector3& kMin,const Vector3& kMax);
+		
+};
 
 #endif
 

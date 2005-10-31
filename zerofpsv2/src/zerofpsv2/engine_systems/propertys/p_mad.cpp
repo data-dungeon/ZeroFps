@@ -191,9 +191,24 @@ void P_Mad::Update()
 			if(m_pkZShaderSystem->SupportOcculusion() && 
 				m_pkZeroFps->GetOcculusionCulling() &&
 				m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED )
-			{									
-				//occulusion test
-				if(!TestOcculusion())
+			{
+			
+				//get AABB
+				static Vector3 kMin;
+				static Vector3 kMax;				
+				if(m_bHaveAABB)
+				{
+					kMin = kPos+m_AABBMin;
+					kMax = kPos+m_AABBMax;
+				}
+				else
+				{
+					kMin = kPos+m_pkEntity->GetLocalAABBMin();
+					kMax = kPos+m_pkEntity->GetLocalAABBMax();				
+				}
+			
+			
+				if(m_kOCTests[m_pkZeroFps->GetCam()].Visible(kMin,kMax))
 				{
 					//update lighting
 					m_pkLight->Update(&m_kLightProfile,kPos);						
@@ -206,10 +221,11 @@ void P_Mad::Update()
 					m_pkZShaderSystem->MatrixPop();
 					
 		 			m_bCulled = false;
-					m_pkZeroFps->m_iNotOcculedObjects++;								
+					m_pkZeroFps->m_iNotOcculedObjects++;																
 				}
 				else
 					m_pkZeroFps->m_iOcculedObjects++;		
+
 			}
 			else		
 			{
@@ -243,39 +259,7 @@ void P_Mad::Update()
 	}	
 }
 
-bool P_Mad::TestOcculusion()
-{
-	//do we have a result?
-	if(m_bHaveOCTested && m_kOCQuery.HaveResult())
-	{
-		m_bHaveOCTested = false;
-		m_bOculled = (m_kOCQuery.GetResult() < 10);				
-	}
-	else
-	{
-		m_bHaveOCTested = 		true;
-		
-		static Vector3 kPos;
-		kPos = m_pkEntity->GetWorldPosV();
-		
-		//disable color writes 
-		m_pkZShaderSystem->ForceColorMask(0);		
-		
-		m_kOCQuery.Begin();
-		
-		//what aabb to use?
-		if(m_bHaveAABB)
-			m_pkRender->DrawOcculusionAABB(kPos+m_AABBMin,kPos+m_AABBMax);
-		else
-			m_pkRender->DrawOcculusionAABB(kPos+m_pkEntity->GetLocalAABBMin(),kPos+m_pkEntity->GetLocalAABBMax());
-		
-		m_kOCQuery.End();			
-		
-		m_pkZShaderSystem->ForceColorMask(-1);
-	}	
-		
-	return m_bOculled;
-}
+
 
 bool P_Mad::GetBBox(Vector3& kMin, Vector3& kMax, Vector3& kPos)
 {

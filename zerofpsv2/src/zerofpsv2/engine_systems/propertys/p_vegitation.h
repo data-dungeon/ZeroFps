@@ -13,6 +13,8 @@
 
 using namespace std;
 
+class Camera;
+
 
 /// Property to create bushes / trees.
 class ENGINE_SYSTEMS_API P_Vegitation : public Property {
@@ -24,7 +26,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 			float fWindStart;
 		};
 
-		ZOcculusionQuery	m_kOCQuery;
+		map< Camera*,ZOcculusionTest>	m_kOCTests;
 		bool					m_bHaveOCTested;
 		float					m_fLastOcculusionTime;
 		bool					m_bOculled;
@@ -66,8 +68,6 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		void CalculateRadius();
 		void CreateAABB();
-
-		bool TestOcculusion();
 	public:
 		P_Vegitation();
 		~P_Vegitation();

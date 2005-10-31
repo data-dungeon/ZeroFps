@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+class Camera;
 class P_Heightmap;
 
 class ENGINE_SYSTEMS_API HMSelectionData
@@ -54,7 +54,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		
 		LightProfile		m_kLightProfile;				//used for lighting				
 		
-		ZOcculusionQuery	m_kOCQuery;
+		map< Camera*,ZOcculusionTest>	m_kOCTests;
 		bool					m_bHaveOCTested;
 		float					m_fLastOcculusionTime;
 		bool					m_bOculled;
@@ -81,7 +81,6 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep = 1);
 		void AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID);
 		void DrawTexturedHeightmap();
-		bool TestOcculusion();
 		
 	public:
 		P_Heightmap();

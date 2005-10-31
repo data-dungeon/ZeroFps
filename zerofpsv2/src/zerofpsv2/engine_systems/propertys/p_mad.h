@@ -8,6 +8,8 @@
 #include "../engine_systems_x.h"
 #include "../../render/zocculusionquery.h"
 
+class Camera;
+
 using namespace std;
 
 //#define NO_ANIMATION_ID	-1	// Index used for non existing anim.
@@ -38,7 +40,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		
 		LightProfile	m_kLightProfile;				//used for lighting
 		
-		ZOcculusionQuery m_kOCQuery;
+		map< Camera*,ZOcculusionTest>	m_kOCTests;
 		bool		m_bHaveOCTested;
 		float		m_fLastOcculusionTime;
 		bool		m_bOculled;
@@ -68,8 +70,6 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void DoAnimationUpdate();
 		
 		void CreateAABB();
-		
-		bool TestOcculusion();
 		
 	public:
 		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.		

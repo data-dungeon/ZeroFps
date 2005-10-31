@@ -187,9 +187,11 @@ void P_Vegitation::Update()
 		m_pkZeroFps->GetOcculusionCulling() &&
 		m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED)
 	{						
-	
+		static Vector3 kPos;
+		kPos = m_pkEntity->GetWorldPosV();
+		
 		//occulusion test
-		if(!TestOcculusion())
+		if(m_kOCTests[m_pkZeroFps->GetCam()].Visible(kPos+m_kAABBMin,kPos+m_kAABBMax))
 		{
 			//update lighting
 			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());								
@@ -212,31 +214,6 @@ void P_Vegitation::Update()
 	
 }
 
-bool P_Vegitation::TestOcculusion()
-{
-	if(m_bHaveOCTested && m_kOCQuery.HaveResult())
-	{
-		m_bHaveOCTested = false;
-		m_bOculled = (m_kOCQuery.GetResult() < 10);				
-	}
-	else
-	{
-		m_bHaveOCTested = 		true;
-		
-		static Vector3 kPos;
-		kPos = m_pkEntity->GetWorldPosV();
-		
-		m_pkZShaderSystem->ForceColorMask(0);		
-		
-		m_kOCQuery.Begin();	
-		m_pkRender->DrawOcculusionAABB(kPos+m_kAABBMin,kPos+m_kAABBMax);	
-		m_kOCQuery.End();			
-		
-		m_pkZShaderSystem->ForceColorMask(-1);
-	}	
-		
-	return m_bOculled;
-}
 
 
 vector<PropertyValues> P_Vegitation::GetPropertyValues()
