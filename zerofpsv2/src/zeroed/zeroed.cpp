@@ -119,7 +119,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
 	m_bPlaneMovement			=	true;	
 	m_CamSpeedScale			=  1.0;
-	m_bLockCreate			= false;	
+	m_bLockCreate				=	false;	
+	m_bRotatingSun				=	false;
 
 	strcpy(szCoolName , "Guldfisk");	
 
@@ -135,6 +136,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
    RegisterVariable("ap_loginpw", 	&m_strLoginPW, CSYS_STRING);
    
    RegisterVariable("ap_planemovement", 	&m_bPlaneMovement, CSYS_BOOL);
+   
+   RegisterVariable("ap_rotatesun", 	&m_bRotatingSun, CSYS_BOOL);
 	
 	// Register Commands
 
@@ -864,6 +867,16 @@ void ZeroEd::OnIdle()
 		m_pkZeroFps->DevPrintf("common","  Cube  : %d",m_pkActiveCamera->GetFrustum()->GetCubeCulls());
 		m_pkZeroFps->DevPrintf("common","  Point : %d",m_pkActiveCamera->GetFrustum()->GetPointCulls());		
  	}
+ 	
+ 	if(m_bRotatingSun)
+ 	{
+ 		Vector3 kRot;
+ 		kRot.Set(sin(m_pkZeroFps->GetEngineTime() *0.5),1,cos(m_pkZeroFps->GetEngineTime() * 0.5));
+ 	
+ 		m_pkLight->GetSunPointer()->kRot = kRot;
+ 	}
+ 	else
+ 		m_pkLight->GetSunPointer()->kRot.Set(2,4,1);
 }
 
 
