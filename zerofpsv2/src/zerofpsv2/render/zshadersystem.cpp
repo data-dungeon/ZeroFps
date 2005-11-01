@@ -1652,16 +1652,16 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture3") , 3);
 
 	//have textures?	
-	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture0") , pkSettings->m_kTUs[0]->IsValid());
-	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture1") , pkSettings->m_kTUs[1]->IsValid());
-	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture2") , pkSettings->m_kTUs[2]->IsValid());
-	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture3") , pkSettings->m_kTUs[3]->IsValid());
+// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture0") , pkSettings->m_kTUs[0]->IsValid());
+// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture1") , pkSettings->m_kTUs[1]->IsValid());
+// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture2") , pkSettings->m_kTUs[2]->IsValid());
+// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture3") , pkSettings->m_kTUs[3]->IsValid());
 	
 	//eye position
  	glUniform3fvARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kEyePosition") ,1, &m_kEyePosition.x);
  	
  	//nr of active lights
- 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iActiveLights") , m_pkLight->GetNrOfActiveLights());
+//  	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_iActiveLights") , m_pkLight->GetNrOfActiveLights());
  
  	//shadowmap quality	
  	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fShadowPixelWidth") , 1.0 / float(m_iShadowmapWidth) );
