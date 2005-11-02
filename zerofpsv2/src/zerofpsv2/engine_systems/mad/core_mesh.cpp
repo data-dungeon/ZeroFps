@@ -20,7 +20,7 @@ void Mad_RawMesh::ShowInfo(void)
 
 	for (unsigned int i=0; i<akSubMeshes.size(); i++) 
 	{
-		cout << " Submesh[" << i << "]: " << akSubMeshes[i].iFirstTriangle << " , " << akSubMeshes[i].iNumOfTriangles << endl; 
+		cout << " Submesh[" << i << "]: " << akSubMeshes[i].iFirstTriangle << " , " << akSubMeshes[i].iNumOfTriangles << "," << akSubMeshes[i].iTextureIndex << endl; 
 	}
 
 	for (unsigned int i=0; i<akAnimation.size(); i++) 
@@ -212,6 +212,7 @@ void Mad_RawMesh::Load(int iVersion,ZFVFile* pkZFile)
 //		aiTextureIndex[i] = pkTextureManger->Load(nisse,0);
 	}*/
 
+	OptimizeSubMeshes();
 }
 
 
@@ -556,6 +557,87 @@ void Mad_RawMesh::CreateVertexNormals()
 
 void Mad_RawMesh::OptimizeSubMeshes()
 {
+	// Verify we need to optimize.
+	if(akTextures.size() == akSubMeshes.size())	
+		return;
+
+
+	vector<Mad_TextureCoo>			akNewTextureCoo;
+	vector<Mad_Face>					akNewFaces;
+	vector<Mad_CoreVertexFrame>	akNewFrames;	
+	vector<Mad_CoreSubMesh>			akNewSubMeshes;
+	vector<int>							akNewBoneConnections;	
+	Mad_CoreVertexFrame				kVertexFrame;
+	int iVIndex;
+	Mad_CoreSubMesh					kSubMesh;
+
+	//ShowInfo();
+	cout << "*** SUBMESH OPTIMIZE ***" << endl;
+
+	for(int iTexture=0; iTexture<akTextures.size(); iTexture++)
+	{
+		for(int iSubMesh=0; iSubMesh<akSubMeshes.size(); iSubMesh++)
+		{
+			if(akSubMeshes[iSubMesh].iTextureIndex == iTexture)
+			{
+				if(akNewSubMeshes.size() == 0)
+				{
+					kSubMesh.iFirstTriangle = 0;
+					kSubMesh.iNumOfTriangles = akSubMeshes[iSubMesh].iNumOfTriangles;
+					kSubMesh.iTextureIndex = iTexture;
+					akNewSubMeshes.push_back(kSubMesh);
+				}
+				else
+				{
+					// If this is the same as last submesh add to it else create a new one.
+					if(akNewSubMeshes.back().iTextureIndex == iTexture)
+					{
+						akNewSubMeshes.back().iNumOfTriangles += akSubMeshes[iSubMesh].iNumOfTriangles;
+					}
+					else
+					{
+						kSubMesh.iFirstTriangle = akNewFaces.size();
+						kSubMesh.iNumOfTriangles = akSubMeshes[iSubMesh].iNumOfTriangles;
+						kSubMesh.iTextureIndex = iTexture;
+						akNewSubMeshes.push_back(kSubMesh);
+					}
+				}
+
+				for(int iFace=akSubMeshes[iSubMesh].iFirstTriangle; iFace<(akSubMeshes[iSubMesh].iFirstTriangle+akSubMeshes[iSubMesh].iNumOfTriangles);iFace++)
+				{
+					Mad_Face kNewFace;
+               
+					for(int i=0; i<3; i++)
+					{
+						int iNewVIndex = akNewTextureCoo.size();
+						int iOldVIndex = akFaces[iFace].iIndex[i];
+						kNewFace.iIndex[i] = iNewVIndex;
+
+						akNewTextureCoo.push_back( akTextureCoo[ iOldVIndex ] );
+						akNewBoneConnections.push_back( akBoneConnections[ iOldVIndex ] );
+						kVertexFrame.PushBack(akFrames[0].akVertex[iOldVIndex],akFrames[0].akNormal[iOldVIndex] );
+					}
+
+					akNewFaces.push_back( kNewFace );
+				}
+			}
+		}
+	}
+	
+	akTextureCoo = akNewTextureCoo;
+	akFaces = akNewFaces;
+	akFrames.clear();
+	akFrames.push_back(kVertexFrame);
+	akBoneConnections = akNewBoneConnections;
+	akSubMeshes = akNewSubMeshes;
+	kHead.iNumOfSubMeshes = akSubMeshes.size();
+
+	//ShowInfo();
+}
+
+/*
+void Mad_RawMesh::OptimizeSubMeshes()
+{
 	if(akSubMeshes.size() < 2)	return;
 
 //	cout << "OptimizeSubMeshes '" << m_acName  << "' " << akSubMeshes.size() << endl;
@@ -595,6 +677,7 @@ void Mad_RawMesh::OptimizeSubMeshes()
 
 		}
 }
+*/
 
 void Mad_RawMesh::SetTextureFlags(void)
 {

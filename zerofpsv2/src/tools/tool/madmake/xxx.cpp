@@ -811,50 +811,6 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 	return true;
 }
 
-void ModellXXX::OptimizeSubMeshes(void)
-{
-/*	if(m_akSubMesh.size() < 2)	return;
-	
-	cout << "Start OptimizeSubMeshes: " << m_akSubMesh.size() << endl;
-
-	vector<Mad_CoreSubMesh>	akOldSubMesh;
-	akOldSubMesh = m_akSubMesh;
-	m_akSubMesh.clear();
-
-	Mad_CoreSubMesh newsub;
-	newsub.iFirstTriangle	= 0;
-	newsub.iNumOfTriangles	= 1;
-	newsub.iTextureIndex	= akOldSubMesh[0].iTextureIndex;
-
-	int i;
-
-	for(i=1; i<akOldSubMesh.size(); i++) {
-		if(newsub.iTextureIndex != akOldSubMesh[i].iTextureIndex) {
-			cout << "/" << endl;
-			m_akSubMesh.push_back(newsub);
-			newsub.iFirstTriangle	= i;
-			newsub.iNumOfTriangles	= 1;
-			newsub.iTextureIndex	= akOldSubMesh[i].iTextureIndex;
-			}
-		else {
-			cout << ".";
-			newsub.iNumOfTriangles++;
-			}
-		}
-
-	m_akSubMesh.push_back(newsub);
-	cout << "End OptimizeSubMeshes: " << m_akSubMesh.size() << endl;
-
-	for(i=0; i<m_akSubMesh.size(); i++) {
-		cout << "SubMesh[" << i << "]:" << m_akSubMesh[i].iFirstTriangle;
-		cout << " / " << m_akSubMesh[i].iNumOfTriangles;
-		cout << " / " << m_akSubMesh[i].iTextureIndex << endl;
-
-		}
-*/
-}
-
-
 Mad_CoreMesh* ModellXXX::GetMesh(const char* ucaName)
 {
 	vector<Mad_CoreMesh>::iterator it;

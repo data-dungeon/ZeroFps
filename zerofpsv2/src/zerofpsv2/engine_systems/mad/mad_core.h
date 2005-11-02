@@ -344,7 +344,6 @@ public:
 	Mad_CoreMeshAnimation*	GetAnimation(char* ucaName);
 	int	AddTexture(char* ucpTextureName);
 	void CreateVertexNormals();
-	void  OptimizeSubMeshes();
 */
 
 

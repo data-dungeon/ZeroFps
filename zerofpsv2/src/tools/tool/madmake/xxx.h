@@ -26,8 +26,6 @@ public:
 private:
 	Mad_CoreMesh* GetMesh(const char* ucaName);
 
-	void OptimizeSubMeshes(void);
-
 	void ReadVertexFrame(FILE* fp,int iNumTriangles);
 
 	void ReadCoreMesh(const char* filename,	const char* szName, float fLodRange);
