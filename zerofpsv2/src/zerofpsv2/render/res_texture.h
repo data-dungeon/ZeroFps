@@ -31,7 +31,7 @@ class RENDER_API ResTexture : public ZFResource
 		
 		GLuint			m_iOpenGLID;					///< actual opengl texture ID
 		string			m_strTextureName;				///< name of texture, usualy the filename	
- //		Image*			m_pkImage;						///< for realtime editing of surface	
+	
 		int				m_iSizeInBytes;				///< Size of texture in bytes.	
 		int				m_iOptions;						///< texture options			
 		int				m_iWidth;						///< texture width
@@ -90,12 +90,7 @@ class RENDER_API ResTexture : public ZFResource
 		///save texture to file, iMipMapLevel : mipmaplevel to save
 		bool SaveTexture(const string& strFile,int iMipMapLevel = 0);	
 				
-				
-		// Edit Textures
-/*		bool EditBegin();								///< downloads texture from opengl to make it available for editing
-		bool EditEnd();								///< removes local copy of texture without commiting the changes
-		bool EditCommit();							///< commits the changes made to the texture
-		Image* GetEditImage();						///< returns pointer to edit image,or NULL if no edit image is available*/
+
 				
 		///downloads a specified mipmap level to an image
 		Image* GetTextureImage(int iMipMapLevel = 0);
@@ -109,10 +104,10 @@ class RENDER_API ResTexture : public ZFResource
 		///make a copy of the source texture, will scale texture if it does not fit 				
 		bool CopyTexture(ResTexture* pkSource);				
 				
+		///regenerate all mipmap levels in the texture
 		bool RegenerateMipmaps();				
-				
-				
-		//texture settings
+								
+		///set boarder color of the texture
 		void SetBorderColor(Vector4 kColor);
 				
 		friend class ZShaderSystem;

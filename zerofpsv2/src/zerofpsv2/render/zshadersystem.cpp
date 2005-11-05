@@ -68,9 +68,8 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	
 	
 	//force settings
-	m_iForceCullFace 	= 	-1;
-	m_iForceColorMask = 	-1;
-	m_iForceAlphaTest =	-1;
+	m_iForceColorMask = 	FORCE_DEFAULT;
+	m_iForceAlphaTest =	FORCE_DEFAULT;
 	m_iForceLighting	=	LIGHT_MATERIAL;
 	m_bDisableTU3 		=	false;
 	m_iForceBlend		=	BLEND_MATERIAL;
@@ -509,9 +508,9 @@ void ZShaderSystem::SetupPass(int iPass)
 	
 	//enable/disable colormask
 	bool bColorMask = pkSettings->m_bColorMask;
-	if(m_iForceColorMask == 0)
+	if(m_iForceColorMask == FORCE_DISABLE)
 		bColorMask = false;
-	else if(m_iForceColorMask == 1)
+	else if(m_iForceColorMask == FORCE_ENABLE)
 		bColorMask = true;		
 	
 	if(bColorMask)
@@ -621,11 +620,7 @@ void ZShaderSystem::SetupPass(int iPass)
 		glDisable(GL_LIGHTING);	
 			
 	//cullface setting
-	int iCull = pkSettings->m_iCullFace;
-	if(m_iForceCullFace != -1)
-		iCull = m_iForceCullFace;
-	
-	switch(iCull)
+	switch(pkSettings->m_iCullFace)
 	{
 		case CULL_FACE_NONE:
 			glDisable(GL_CULL_FACE);
@@ -645,17 +640,17 @@ void ZShaderSystem::SetupPass(int iPass)
 	}
 		
 	//alphatest setting
-	if(m_iForceAlphaTest == 1 || (m_iForceAlphaTest == -1 && pkSettings->m_bAlphaTest))
+	if(m_iForceAlphaTest == FORCE_ENABLE || (m_iForceAlphaTest == FORCE_DEFAULT && pkSettings->m_bAlphaTest))
 	{
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GEQUAL, pkSettings->m_fAlphaTreshold);	
 	}
-	else if(m_iForceAlphaTest == 0 || (m_iForceAlphaTest == -1 && !pkSettings->m_bAlphaTest))
+	else if(m_iForceAlphaTest == FORCE_DISABLE || (m_iForceAlphaTest == FORCE_DEFAULT && !pkSettings->m_bAlphaTest))
 	{
 		glDisable(GL_ALPHA_TEST);
 	
 	}
-	else if(m_iForceAlphaTest == 2)
+	else if(m_iForceAlphaTest == FORCE_OTHER)
 	{
  		glEnable(GL_ALPHA_TEST);
   		glAlphaFunc(GL_GREATER, 0.1);	

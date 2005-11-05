@@ -407,64 +407,6 @@ Image* ResTexture::LoadImage(const string& strFileName)
 	return kImage;
 }
 
-// bool ResTexture::EditBegin()
-// {
-// 	if(!SetupZShader())
-// 		return false;	
-// 	
-// 	if(m_iOpenGLID == 0)
-// 		return false;
-// 
-// 	// If texture already in edit mode return.
-// 	if(m_pkImage)
-// 		return true;
-// 
-// 	m_pkZShaderSystem->PushTexture();
-// 	m_pkZShaderSystem->BindTexture(this);
-// 	
-// 	m_pkImage = GetTexture(0);
-// 
-// 	m_pkZShaderSystem->PopTexture();
-// 
-// 	if(!m_pkImage)
-// 		return false;
-// 	
-// 	return true;
-// }
-// 
-// bool ResTexture::EditEnd()
-// {
-// 	if(!m_pkImage)
-// 		return false;
-// 		
-// 
-// 	delete m_pkImage;
-// 	m_pkImage = NULL;
-// 	
-// 	return true;
-// }
-// 
-// bool ResTexture::EditCommit()
-// {
-// 	if(!SetupZShader())
-// 		return false;	
-// 
-// 	if(!m_pkImage)
-// 		return false;
-// 		
-// 	if(m_iOpenGLID == 0)
-// 		return false;
-// 				
-// 
-// 	m_pkZShaderSystem->PushTexture();
-// 	m_pkZShaderSystem->BindTexture(this);
-// 	
-// 	PutTexture(m_pkImage, !(m_iOptions & T_NOMIPMAPPING) );
-// 	
-// 	m_pkZShaderSystem->PopTexture();
-// 	
-// 	return true;
-// }
 bool ResTexture::RegenerateMipmaps()
 {
 	if(!SetupZShader())
@@ -552,10 +494,6 @@ Image* ResTexture::GetTexture(int iMipMapLevel)
 	return pkImage;
 }
 
-// Image* ResTexture::GetEditImage()
-// {
-// 	return m_pkImage;
-// }
 
 void ResTexture::SetBorderColor(Vector4 kColor)
 {

@@ -173,6 +173,14 @@ enum RENDER_API DRAW_MODE
 	POLYGON_MODE,
 };
 
+enum RENDER_API FORCE_SETTING
+{
+	FORCE_DEFAULT = -1,
+	FORCE_DISABLE = 0,
+	FORCE_ENABLE = 1,
+	FORCE_OTHER = 2,
+};
+
 
 class ZVertexBuffer;
 class ResTexture;
@@ -303,12 +311,12 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iRenderedVBOs;
 		
 		//force settings
-		int			m_iForceCullFace;
-		int			m_iForceColorMask;
-		int			m_iForceAlphaTest;
-		int			m_iForceLighting;
-		bool			m_bDisableTU3;
-		int			m_iForceBlend;
+		int				m_iForceCullFace;
+		FORCE_SETTING	m_iForceColorMask;
+		FORCE_SETTING	m_iForceAlphaTest;
+		int				m_iForceLighting;
+		bool				m_bDisableTU3;
+		int				m_iForceBlend;
 		
 		//texture settings
 		stack<GLuint>	m_kTextureStacks[4];
@@ -417,9 +425,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int  OcculusionEnd();
 
 		//force settings
-		void ForceCullFace(int iCull)							{	m_iForceCullFace = iCull;				}
-		void ForceColorMask(int iMask)						{	m_iForceColorMask = iMask;				}
-		void ForceAlphaTest(int iAlphaTest)					{	m_iForceAlphaTest = iAlphaTest;		}		
+		void ForceColorMask(FORCE_SETTING iMask)			{	m_iForceColorMask = iMask;				}
+		void ForceAlphaTest(FORCE_SETTING iAlphaTest)	{	m_iForceAlphaTest = iAlphaTest;		}		
 		void ForceLighting(int iLight)						{	m_iForceLighting = iLight;				}
 		void ForceBlending(int iBlend)						{	m_iForceBlend = iBlend;					}
 		void ForceTU3Disabled(bool bDisableTU3)			{	m_bDisableTU3 = bDisableTU3;			}

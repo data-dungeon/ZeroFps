@@ -353,11 +353,6 @@ float Camera::GetExposureFactor()
 	
 	Image* pkImage = pkTex->GetTextureImage(4);
 
-// 	if(m_pkZeroFps->m_pkInputHandle->Pressed(KEY_L))
-// 	{
-// 		pkImage->Save("test.tga");
-// 		cout<<pkImage->m_iWidth*fx<<" x "<<pkImage->m_iHeight*fy<<endl;
-// 	}
 
 	color_rgba	kColor;	
 	float fTotal = 0;
@@ -517,7 +512,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, 
 			
 	
 	//Disable color writes, and use flat shading for speed
-  	m_pkZShaderSystem->ForceColorMask(0);
+  	m_pkZShaderSystem->ForceColorMask(FORCE_DISABLE);
 
 //  	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
 
@@ -539,7 +534,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, 
 	m_pkZShaderSystem->SetForceDisableGLSL(true);
 	
 	//update all render propertys that shuld cast a shadow
-	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);	
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
 	
@@ -564,8 +559,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, 
   	m_pkLight->SetLighting(true);
 	m_pkZShaderSystem->ForceLighting(LIGHT_MATERIAL);
  	glShadeModel(GL_SMOOTH);
-	m_pkZShaderSystem->ForceColorMask(-1);
-	m_pkZShaderSystem->ForceCullFace(-1);
+	m_pkZShaderSystem->ForceColorMask(FORCE_DEFAULT);
+//	m_pkZShaderSystem->ForceCullFace(-1);
 
 
 	//reload last material
@@ -1063,6 +1058,7 @@ void Camera::DrawWorld()
 		//init tha damn view
 		InitView();	
 
+
 		//render no shadowed objects 
 		m_iCurrentRenderMode = RENDER_NOSHADOWFIRST;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);				
@@ -1081,6 +1077,8 @@ void Camera::DrawWorld()
 			if(iShadowMode == 2)			
 				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultFastShadowmapShader);
 			
+			
+			//draw shadowed scene
 			m_iCurrentRenderMode = RENDER_SHADOWED;			
 			DrawShadowedScene();
 			
@@ -1215,7 +1213,7 @@ void Camera::DrawShadowedScene()
 	
 	//Set alpha test to discard false comparisons
 	if((!m_pkZeroFps->GetShadowMapMode()) || (!m_pkZShaderSystem->SupportGLSLProgram()))
- 		m_pkZShaderSystem->ForceAlphaTest(2);
+ 		m_pkZShaderSystem->ForceAlphaTest(FORCE_OTHER);
 		
 	
 	//reload last material
@@ -1228,7 +1226,7 @@ void Camera::DrawShadowedScene()
 	
 	glActiveTextureARB(GL_TEXTURE3_ARB);
 	
-	m_pkZShaderSystem->ForceAlphaTest(-1);
+	m_pkZShaderSystem->ForceAlphaTest(FORCE_DEFAULT);
 	
 	//Disable textures and texgen
 	glDisable(GL_TEXTURE_2D);

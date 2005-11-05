@@ -128,9 +128,6 @@ void P_Mad::Update()
 			return;	
 		
 
-		//get entity rotation
-		static Matrix3 kRot;
-		kRot = m_pkEntity->GetWorldRotM();		
 		
 		//passed sphere, do AABB test
 // 		if(m_bHaveAABB)
@@ -158,6 +155,11 @@ void P_Mad::Update()
 		
 		if(m_bIsVisible)
 		{			
+			//get entity rotation
+			static Matrix3 kRot;
+			kRot = m_pkEntity->GetWorldRotM();		
+			
+			
 			//shuld aabb be remade?
 			if(m_bHaveAABB)
 				if(GetCurrentAnimation() != MAD_NOANIMINDEX ||

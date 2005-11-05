@@ -129,7 +129,7 @@ void ZOcculusionTest::DrawOcculusionBox(const Vector3& kMin,const Vector3& kMax)
 
 
 	//disable color writes 
-	m_pkZShaderSystem->ForceColorMask(0);		
+	m_pkZShaderSystem->ForceColorMask(FORCE_DISABLE);		
 
 	//disable all glsl stuff
 	m_pkZShaderSystem->SetForceDisableGLSL(true);	
@@ -147,7 +147,7 @@ void ZOcculusionTest::DrawOcculusionBox(const Vector3& kMin,const Vector3& kMax)
 	m_pkZShaderSystem->SetForceDisableGLSL(false);
 
 	//disable color writes 
-	m_pkZShaderSystem->ForceColorMask(-1);		
+	m_pkZShaderSystem->ForceColorMask(FORCE_DEFAULT);		
 
 }
 

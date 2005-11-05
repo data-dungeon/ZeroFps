@@ -20,7 +20,7 @@ class RENDER_API ZOcculusionQuery
 		GLuint GetResult();
 };
 
-class RENDER_API ZOcculusionTest : ZOcculusionQuery
+class RENDER_API ZOcculusionTest : private ZOcculusionQuery
 {
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
