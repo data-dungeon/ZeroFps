@@ -9,7 +9,7 @@ P_Heightmap::P_Heightmap()
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-	m_iVersion = 2;
+	m_iVersion = 3;
 	m_iSortPlace = 0;
 	m_bSortDistance = true;
 
@@ -26,24 +26,24 @@ P_Heightmap::P_Heightmap()
 	m_iLod = 0;
 	
 	ZFResourceHandle* pkTempMat = new ZFResourceHandle;
-	pkTempMat->SetRes("heightmap/grass.zlm");	
+	pkTempMat->SetRes("heightmap/default.zlm");	
 	m_kMaterials.push_back(pkTempMat);
 		
-	pkTempMat = new ZFResourceHandle;
-	pkTempMat->SetRes("heightmap/rock.zlm");	
-	m_kMaterials.push_back(pkTempMat);
-	
-	pkTempMat = new ZFResourceHandle;
-	pkTempMat->SetRes("heightmap/dirt.zlm");	
-	m_kMaterials.push_back(pkTempMat);
-	
-	pkTempMat = new ZFResourceHandle;
-	pkTempMat->SetRes("heightmap/sand.zlm");	
-	m_kMaterials.push_back(pkTempMat);
-	
-	pkTempMat = new ZFResourceHandle;
-	pkTempMat->SetRes("heightmap/stone_path.zlm");	
-	m_kMaterials.push_back(pkTempMat);	
+// 	pkTempMat = new ZFResourceHandle;
+// 	pkTempMat->SetRes("heightmap/rock.zlm");	
+// 	m_kMaterials.push_back(pkTempMat);
+// 	
+// 	pkTempMat = new ZFResourceHandle;
+// 	pkTempMat->SetRes("heightmap/dirt.zlm");	
+// 	m_kMaterials.push_back(pkTempMat);
+// 	
+// 	pkTempMat = new ZFResourceHandle;
+// 	pkTempMat->SetRes("heightmap/sand.zlm");	
+// 	m_kMaterials.push_back(pkTempMat);
+// 	
+// 	pkTempMat = new ZFResourceHandle;
+// 	pkTempMat->SetRes("heightmap/stone_path.zlm");	
+// 	m_kMaterials.push_back(pkTempMat);	
 	
 }
 
@@ -540,8 +540,8 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 {
 	m_iWidth = iWidth;
 	m_iHeight = iHeight;		
-	m_iRows = (m_iWidth/m_fScale)+1;
-	m_iCols = (m_iHeight/m_fScale)+1;
+	m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
+	m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
 	
 	
 	m_kTextureIDs.clear();
@@ -617,12 +617,94 @@ void P_Heightmap::Modify(vector<HMSelectionData>* kSelectionData,float fMod)
 	m_bHaveRebuilt = false;
 }
 
-void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,char cTexture)
+
+signed char P_Heightmap::GetMaterialID(const string& strMaterial)
 {
+	if(strMaterial.empty())
+		return (signed char)-1;
+
+	for(unsigned int i = 0;i<m_kMaterials.size();i++)
+	{
+		if(m_kMaterials[i]->GetRes() == strMaterial)
+		{
+			return (signed char)i;
+		}	
+	}
+	
+	//if material list is full , return the default material
+	if(m_kMaterials.size() >= 127)
+	{
+		cout<<"WARNING: heightmap "<<m_pkEntity->GetEntityID()<<" has exceeded 127 different materials, this is not good"<<endl;
+		return 0;
+	}
+
+	
+	//material not found, adding
+	ZFResourceHandle* pkTempMat = new ZFResourceHandle;
+	pkTempMat->SetRes(strMaterial);						
+	m_kMaterials.push_back(pkTempMat);
+	
+	cout<<"material "<<strMaterial<<" added to heightmap:"<<m_pkEntity->GetEntityID()<<" as material ID:"<<m_kMaterials.size() - 1<<" , heightmap now has "<<m_kMaterials.size()<<" materials"<<endl;
+	
+	return (signed char)(m_kMaterials.size() - 1);
+}
+
+void P_Heightmap::PurgeUnusedMaterials()
+{
+	unsigned int iSize = m_kTextureIDs.size();
+	int iID = -1;
+
+	for(vector<ZFResourceHandle*>::iterator it= m_kMaterials.begin();it != m_kMaterials.end(); it++)
+	{		
+		iID++;	
+		bool bFound = false;
+	
+		for(unsigned int j = 0;j<iSize;j++)
+		{
+			if( m_kTextureIDs[j] == static_cast<signed char>(iID) )
+			{
+				bFound = true;
+				break;
+			}
+		}
+		
+		if(!bFound)
+		{
+			//unused material
+			cout<<"material "<<iID<<": "<<(*it)->GetRes()<<" is not in use anymore, removing from heightmap "<<m_pkEntity->GetEntityID()<<" now has "<<m_kMaterials.size()-1<<" materials"<<endl;
+		
+			//erate material
+			m_kMaterials.erase(it);	
+		
+			//decrese all above materialIDs with 1
+			for(unsigned int j = 0;j<iSize;j++)
+			{
+				if( m_kTextureIDs[j] > iID )
+					m_kTextureIDs[j]--;
+			}			
+					
+			//if theres no materials left, just return
+			if(m_kMaterials.empty())
+				return;
+					
+			//start from the beginning again
+			it = m_kMaterials.begin();
+			iID = -1;
+		}
+	}	
+}
+
+void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial)
+{
+	signed char cTexture = GetMaterialID(strMaterial);
+
 	for(int i = 0;i<kSelectionData->size();i++)
 	{			
 		m_kTextureIDs[(*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x] = cTexture;	
 	}
+	
+	//purge unused materials
+	PurgeUnusedMaterials();
 	
 	ResetAllNetUpdateFlags();
 	m_bHaveRebuilt = false;
@@ -826,6 +908,15 @@ void P_Heightmap::Save(ZFIoInterface* pkPackage)
 		pkPackage->Write(m_kTextureIDs[i]);
 	}
 
+	//save all materials
+	iSize = m_kMaterials.size();
+	pkPackage->Write(iSize);
+	
+	for(int i = 0;i<m_kMaterials.size();i++)
+	{
+		pkPackage->Write_Str(m_kMaterials[i]->GetRes());
+	
+	}
 }
 
 void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -843,8 +934,8 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 		
-			m_iRows = (m_iWidth/m_fScale)+1;
-			m_iCols = (m_iHeight/m_fScale)+1;
+			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
+			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
 		
 			int 				iSize;
 			float 			fVal;
@@ -876,8 +967,8 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 		
-			m_iRows = (m_iWidth/m_fScale)+1;
-			m_iCols = (m_iHeight/m_fScale)+1;
+			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
+			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
 		
 			int 				iSize;
 			float 			fVal;
@@ -898,6 +989,62 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_bHaveRebuilt = false;
 			break;
 		}		
+		
+		case 3:
+		{
+			pkPackage->Read(m_iWidth);
+			pkPackage->Read(m_iHeight);
+			pkPackage->Read(m_fScale);
+			pkPackage->Read(m_fMaxValue);
+		
+			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
+			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
+		
+			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
+			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
+		
+			int 				iSize;
+			float 			fVal;
+			signed char 	cTex;
+			m_kHeightData.clear();
+			m_kTextureIDs.clear();
+			
+			pkPackage->Read(iSize);	
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read(fVal);
+				m_kHeightData.push_back(fVal);
+			
+				pkPackage->Read(cTex);
+				m_kTextureIDs.push_back(cTex);					
+			}
+		
+		
+			//load all materials
+			
+			//remove all old materials
+			for(int i = 0;i<m_kMaterials.size();i++)
+				delete m_kMaterials[i];			
+			m_kMaterials.clear();
+			
+			
+			string strMaterialName;
+			pkPackage->Read(iSize);									
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read_Str(strMaterialName);
+					
+				ZFResourceHandle* pkTempMat = new ZFResourceHandle;
+				pkTempMat->SetRes(strMaterialName);	
+					
+				m_kMaterials.push_back(pkTempMat);
+			}				
+			
+		
+			m_bHaveRebuilt = false;
+			break;
+		}				
 	}
 	
 }
@@ -937,8 +1084,8 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 	//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 
-	m_iRows = (m_iWidth/m_fScale)+1;
-	m_iCols = (m_iHeight/m_fScale)+1;
+	m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
+	m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
 
 	int 				iSize;
 	float 			fVal;
@@ -954,6 +1101,7 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 		
 		pkNetPacket->Read(cTex);
 		m_kTextureIDs.push_back(cTex);
+		
 	}
 
 
@@ -1138,3 +1286,10 @@ void P_Heightmap::RebuildArrays()
 }
 
 */
+
+
+
+
+
+
+

@@ -195,7 +195,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		float 						m_fHMInRadius;
 		float 						m_fHMOutRadius;
 		float 						m_fHMStrength;
-		char							m_cDrawTexture;
+		string						m_strHeightmapMaterial;
 
 		//network
 		vector<ZoneData>			m_kNetworkZones;
@@ -265,7 +265,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SetPointer();
 		void	DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
 		void	HMModifyCommand(float fSize);
-		void  HMDrawTexture(char iTexID);
+		void  HMDrawTexture(const string& strMaterial);
 		void  HMCommand(HMapEditMode eHMCmd, float fSample = 0);
 
 

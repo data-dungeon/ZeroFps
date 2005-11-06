@@ -55,7 +55,7 @@ void ZeroEd::Input_EditTerrain()
 		
 		case HMAP_DRAWMASK: 
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
-				HMDrawTexture(m_cDrawTexture); 	
+				HMDrawTexture(m_strHeightmapMaterial); 	
 	
 			break;
 			
@@ -108,9 +108,9 @@ void ZeroEd::Input_EditTerrain()
 
 		case HMAP_DRAWVISIBLE:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
-				HMDrawTexture(-1); 	
+				HMDrawTexture(""); 	
 			if(m_pkInputHandle->VKIsDown("hmlower"))		
-				HMDrawTexture(0);			
+				HMDrawTexture("heightmap/default.zlm");			
 
 			
 			/*for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
@@ -153,7 +153,7 @@ void ZeroEd::Input_EditTerrain()
 	*/
 
 	// Print Mode as devpage - temporary fix.
-	m_pkZeroFps->DevPrintf("hmap","  m_cDrawTexture: %d", m_cDrawTexture);
+// 	m_pkZeroFps->DevPrintf("hmap","  m_cDrawTexture: %d", m_cDrawTexture);
 	char* szMode = "Unknown";
 	switch(m_iHMapEditMode)
 	{

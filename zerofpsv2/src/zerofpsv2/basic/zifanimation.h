@@ -44,7 +44,7 @@ enum ZIFAnimationMode
 	 [-] Kostar mycket texturminne .
 	 [-] Dekryptering görs varje frame, vilket kan slöa ner för jpeg och 8bit.*/
 	READ_EVERY_FRAME_TO_VIDEOMEMORY = 2,
-	/*----------------------------------------------------------------------------
+	/*----------------------------------------------------------------------------*/
 
 	/**	\brief ----------------------------------------------------------------------------
 	 Läs in alla bilder till minnet OCH spara ner varje bild som en ny 

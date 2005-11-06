@@ -687,9 +687,13 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 
 	if(strMainWndName == "TerrTexture")
 	{
-		m_cDrawTexture = iListboxIndex;
-		if(m_cDrawTexture < 0)		m_cDrawTexture  = 0;
-		if(m_cDrawTexture > 255)	m_cDrawTexture  = 255;
+		char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
+	
+		m_strHeightmapMaterial = szPreset;
+	
+// 		m_cDrawTexture = iListboxIndex;
+// 		if(m_cDrawTexture < 0)		m_cDrawTexture  = 0;
+// 		if(m_cDrawTexture > 255)	m_cDrawTexture  = 255;
 	}
 
 

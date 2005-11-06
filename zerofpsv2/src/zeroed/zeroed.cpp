@@ -179,7 +179,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
 	m_fHMStrength  = 1.0;
-	m_cDrawTexture	= 0;
+// 	m_cDrawTexture	= 0;
+	m_strHeightmapMaterial = "heightmap/default.zlm";
 	m_fDelayTime   = 0.0;
 	m_strWorldDir  = "";
    
@@ -1001,7 +1002,7 @@ void ZeroEd::SetPointer()
 }
 
 
-void ZeroEd::HMDrawTexture(char iTexID)
+void ZeroEd::HMDrawTexture(const string& strMaterial)
 {
  	static vector<HMSelectionData> kSelVertex;
 
@@ -1016,7 +1017,7 @@ void ZeroEd::HMDrawTexture(char iTexID)
 			hmrp->GetSelection(m_kDrawPos, m_fHMStrength, m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
 		
 			if(kSelVertex.size() > 0) 
-				hmrp->SetTexture(&kSelVertex,iTexID);
+				hmrp->SetTexture(&kSelVertex,strMaterial);
 		}		
 	}
 }

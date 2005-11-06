@@ -71,7 +71,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 	
 		vector<ZFResourceHandle*>		m_kMaterials;		
 		vector<float>						m_kHeightData;
-		vector<char>						m_kTextureIDs;
+		vector<signed char>				m_kTextureIDs;
 			
 			
 		vector<vector<HeightmapArrays*> >	m_kLodLevels;
@@ -81,6 +81,9 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep = 1);
 		void AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID);
 		void DrawTexturedHeightmap();
+		
+		signed char GetMaterialID(const string& strMaterial);
+		void PurgeUnusedMaterials();
 		
 	public:
 		P_Heightmap();
@@ -97,7 +100,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 
 		void Smooth();
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
-		void SetTexture(vector<HMSelectionData>* kSelectionData,char iTexture);
+		void SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial);
 
 		void SetSize(int iWidth,int iHeight);
 		void SetMaxValue(float fMax);
