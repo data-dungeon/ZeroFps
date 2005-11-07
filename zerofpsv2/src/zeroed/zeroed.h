@@ -140,11 +140,10 @@ class ZeroEd :public Application , public ZGuiApp {
 		//edit sun
 		bool 			m_bEditSun;
 		bool			m_bRotatingSun;
-		//LightSource	m_kSun;				
 		
 		//edit stuff
 		int		m_iEditMode;
-		bool	m_bLockCreate;		// Stay in create until user picks another mode.
+		bool		m_bLockCreate;		// Stay in create until user picks another mode.
 		int		m_iHMapEditMode;
 
 		//camera

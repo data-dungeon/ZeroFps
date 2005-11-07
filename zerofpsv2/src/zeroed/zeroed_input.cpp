@@ -478,12 +478,14 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("vp3"))		SetViewPort("vp3");
 	if(m_pkInputHandle->VKIsDown("vp4"))		SetViewPort("vp4");
 
-	if(m_pkInputHandle->VKIsDown("speedup"))		m_CamSpeedScale += 0.1;
-	if(m_pkInputHandle->VKIsDown("speeddown"))	m_CamSpeedScale -= 0.1;
-	if(m_CamSpeedScale <= 0)							m_CamSpeedScale = 0.1;
-	if(m_pkInputHandle->VKIsDown("fast"))			m_CamMoveSpeed = 20;
-
-	float fSpeedScale = m_pkZeroFps->GetFrameTime() * (m_CamMoveSpeed * m_CamSpeedScale);
+	if(m_pkInputHandle->VKIsDown("speedup"))		m_CamSpeedScale += 1.0 * m_pkZeroFps->GetFrameTime();
+	if(m_pkInputHandle->VKIsDown("speeddown"))	m_CamSpeedScale -= 1.0 * m_pkZeroFps->GetFrameTime();
+	if(m_CamSpeedScale <= 0.25)						m_CamSpeedScale = 0.25;
+	
+	
+	float fSpeedScale = m_pkZeroFps->GetFrameTime() * (m_CamMoveSpeed * m_CamSpeedScale);	
+	if(m_pkInputHandle->VKIsDown("fast"))
+		fSpeedScale = m_pkZeroFps->GetFrameTime() * 40;
 
 	Camera::CamMode eCamMode = m_pkActiveCamera->GetViewMode();
 

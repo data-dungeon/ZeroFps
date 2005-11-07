@@ -25,6 +25,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_kRotM.Identity();
 	m_kRenderPos.Set(0,0,0);	
 	m_kLastShadowPos.Set(99999,99999,99999);
+	m_kLastShadowLightPos.Set(99999,99999,99999);
 	
 	m_kOrthoSize.Set(15,15,0);				// Defualt Size is 15 x 15 meters
 	
@@ -1030,14 +1031,8 @@ void Camera::DrawWorld()
  		kCenter = m_kRenderPos;						
 						
 		//setup light
-		LightSource* pkLight = m_pkLight->GetSunPointer();
-		
-		Vector3 kLightPos;
-		if(pkLight)
-			kLightPos = (kCenter + (pkLight->kRot.Unit() * 100));
-		else
-			kLightPos =  kCenter + Vector3(0,100,0);		
-
+		LightSource* pkLight = m_pkLight->GetSunPointer();		
+		Vector3 kLightPos = (kCenter + (pkLight->kRot.Unit() * 100));
 		
 		//create shadow map	realtime or not
 		if(m_pkZeroFps->GetShadowMapRealtime())
@@ -1047,8 +1042,10 @@ void Camera::DrawWorld()
 		}
 		else
 		{
-			if(m_kLastShadowPos.DistanceTo(kCenter) > m_fShadowArea/8.0)
+			if(m_kLastShadowPos.DistanceTo(kCenter) > m_fShadowArea/8.0 ||
+				m_kLastShadowLightPos != pkLight->kRot)
 			{
+				m_kLastShadowLightPos = pkLight->kRot;
 				m_kLastShadowPos = kCenter;
 				m_iCurrentRenderMode = RENDER_CASTSHADOW;
 				MakeShadowTexture(kLightPos,kCenter,&m_kShadowTexture);		

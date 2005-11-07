@@ -124,6 +124,7 @@ class ENGINE_API Camera : public I_Camera
 		bool		m_bShadowMap;
 		
 		Vector3	m_kLastShadowPos;
+		Vector3	m_kLastShadowLightPos;
 		
 		//if theres a p_cam attached to this camera , this is its entity id
 		int			m_iEntity;						// ID Of entity that this camera is connected to (if any).
