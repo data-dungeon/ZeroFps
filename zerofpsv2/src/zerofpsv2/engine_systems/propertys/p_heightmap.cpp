@@ -234,8 +234,8 @@ void P_Heightmap::BuildTextureArrays()
 			pkNewDataArrays->push_back(pkNewArrays);									
 			
 			
-			//draw the first material all over the place
-			if(i == 0)
+			//draw the first material all over the place if we dont have glsl support
+			if(i == 0 && !m_pkZShaderSystem->SupportGLSLProgram())
 			{
 				for(int y = 0;y<m_iCols-iStep;y+=iStep)
 				{	
@@ -411,7 +411,7 @@ void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
 	else
 	{
 		if(m_kTextureIDs[y*m_iRows + x] == iID)
-			kColor.Set(1,1,1,1);
+			kColor.Set(1,1,1,2);
 		else
 			kColor.Set(1,1,1,0);
 	}		

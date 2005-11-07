@@ -102,19 +102,29 @@ void ZeroEd::SetupGui_Terrain()
 	ZGuiCombobox* pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrEditMode"));
 	pkEditMode->AddItem("Paint",			0);	// HMAP_EDITVERTEX
 	pkEditMode->AddItem("Flatten",		1);	// HMAP_DRAWSMFLAT
-	pkEditMode->AddItem("Mask",			2);	// HMAP_DRAWMASK
+	pkEditMode->AddItem("Material",		2);	// HMAP_DRAWMASK
 	pkEditMode->AddItem("Visibility",	3);	// HMAP_DRAWVISIBLE
 	pkEditMode->AddItem("Smoothing",		4);	// HMAP_SMOOTH
 	pkEditMode->AddItem("Stitch",			5);	// HMAP_STITCH
 	pkEditMode->SetNumVisibleRows( 6 );
 
-	pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrTexture"));
-	pkEditMode->AddItem("heightmap/grass.zlm",		0);	
-	pkEditMode->AddItem("heightmap/rock.zlm",			1);	
-	pkEditMode->AddItem("heightmap/dirt.zlm",			2);	
-	pkEditMode->AddItem("heightmap/sand.zlm",			3);	
-	pkEditMode->AddItem("heightmap/stone_path.zlm",	4);	
-	pkEditMode->SetNumVisibleRows( 5 );
+	//add terrain materials
+	
+	
+	//get file list
+	vector<string> kFiles;
+	vector<string> kFilters;
+	kFilters.push_back(".zlm");
+	kFilters.push_back(".zmt");	
+	m_pkZFVFileSystem->ListDirFilter(kFiles,kFilters,"data/material/heightmap/",true);
+			
+	//add files to gui list
+	pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrTexture"));	
+	pkEditMode->SetNumVisibleRows( 6 );	
+	for(int i = 0;i<kFiles.size();i++)
+		pkEditMode->AddItem( (char*)(string("heightmap/")+kFiles[i]).c_str(),i);
+
+	
 
 
 	((ZGuiSlider*)GetWnd("TerrInnerSlider"))->AddBuddyWindow( GetWnd("TerrInnerBox") );

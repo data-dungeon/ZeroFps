@@ -115,8 +115,7 @@ class BASIC_API ZSSVFileSystem : public ZFSubSystem
 		bool CreateDir(string strDir);
 		bool RemoveDir(string strDir);		
 		bool ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps=false);
-		bool ListDirFilter(	vector<string>* pkFiles, vector<string>& pkFilters, 
-									string strName, bool bIgnoreMaps = false);
+		bool ListDirFilter(vector<string>& kFiles, const vector<string>& pkFilters, const string& strName, bool bIgnoreMaps = false);
 		void ListDirRecursive(vector<string>* vkFiles, string strRootPath, 
 									 vector<string>& szExtensions, bool bAlsoFolders=false); ///< Search ALL dirs, starting from root dir.
 		bool DirExist(string strName);

@@ -179,7 +179,6 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
 	m_fHMStrength  = 1.0;
-// 	m_cDrawTexture	= 0;
 	m_strHeightmapMaterial = "heightmap/default.zlm";
 	m_fDelayTime   = 0.0;
 	m_strWorldDir  = "";

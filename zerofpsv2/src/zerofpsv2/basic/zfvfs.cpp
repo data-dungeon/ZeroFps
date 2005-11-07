@@ -488,11 +488,61 @@ bool ZSSVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnly
 	return true;
 }
 
-bool ZSSVFileSystem::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
-	string strName, bool bIgnoreMaps)
+bool ZSSVFileSystem::ListDirFilter(vector<string>& kFiles,const vector<string>& kFilters, const string& strName, bool bIgnoreMaps)
 {
-	return m_pkBasicFS->ListDirFilter(pkFiles, pkFilters, strName.c_str(), bIgnoreMaps);
+// 	return m_pkBasicFS->ListDirFilter(&kFiles, kFilters, strName.c_str(), bIgnoreMaps);
 
+	string	strRootMerge;
+
+	// Try to open from all active RootPaths.
+	for(unsigned int i=0; i <m_kRootPath.size(); i++)
+	{
+		//strRootMerge = m_kRootPath[i].m_strRootPath + strName;
+		if(GetRootMerge(i, strName, strRootMerge)) 
+		{
+			//cout<<"dir:"<<strRootMerge<<endl;
+			m_pkBasicFS->ListDirFilter(&kFiles,kFilters, strRootMerge.c_str(), bIgnoreMaps);
+		}	
+	}
+
+	
+	//add virtual directories
+	for(unsigned int i=0; i <m_kRootPath.size(); i++)
+	{
+		if(m_kRootPath[i].m_strVfsPath.length() >= 2)
+		{
+			string Parent;
+			int pos = m_kRootPath[i].m_strVfsPath.rfind('/');
+			Parent.append(m_kRootPath[i].m_strVfsPath,0,pos);
+			
+			if(Parent == strName)
+			{			
+				string Name;
+				Name.append(m_kRootPath[i].m_strVfsPath,pos+1,m_kRootPath[i].m_strVfsPath.length()-pos-1);
+				kFiles.push_back(Name);
+			}
+		}
+	}
+	
+	// sort All
+	vector<string>::iterator start	=  kFiles.begin();
+	vector<string>::iterator end		=	kFiles.end();
+	sort(start, end);
+
+	//remove duplicates (WARNING, this algoritm only works if the list is sorted by name)
+	for(vector<string>::iterator it = kFiles.begin();it != kFiles.end();it++)
+	{	
+		if( (it+1) == kFiles.end())
+			continue;
+		if( *it == *(it+1))
+		{
+			kFiles.erase(it+1);
+			it--;
+		}
+	}
+	
+		
+	return true;
 }
 
 bool ZSSVFileSystem::DirExist(string strName)

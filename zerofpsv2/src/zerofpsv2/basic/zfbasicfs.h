@@ -36,8 +36,7 @@ class BASIC_API ZSSBasicFS : public ZFSubSystem
 		bool RemoveFile(const char* acName);
 		
 		bool ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps=false);
-		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
-			const char* acName, bool bIgnoreMaps=false);
+		bool ListDirFilter(vector<string>* pkFiles,const vector<string>& pkFilters, const char* acName, bool bIgnoreMaps=false);
 		
 		bool DirExist(const char* acName);
 		bool FileExist(const char* szFile);

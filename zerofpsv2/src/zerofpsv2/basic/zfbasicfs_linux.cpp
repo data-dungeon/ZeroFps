@@ -5,6 +5,7 @@
 #ifndef WIN32
 
 #include <cstdio>
+#include <iostream>
 
 bool ZSSBasicFS::DirExist(const char* acName)
 {
@@ -56,8 +57,7 @@ bool ZSSBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMa
 	return true;
 }
 
-bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
-							  const char* acName, bool bIgnoreMaps)
+bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles,const vector<string>& pkFilters, const char* acName, bool bIgnoreMaps)
 {  
 	DIR* kDir;
 	
@@ -65,11 +65,10 @@ bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilter
 	if(kDir==NULL)
 		return false;
 	
-	
+	string kNamn;
 	dirent* kDirEnt;
 	while( (kDirEnt=readdir(kDir)) != NULL)
 	{
-		string kNamn;
 		kNamn=kDirEnt->d_name;
 		
 		//if ignore maps is aktive..check for map and continue if its a map
@@ -86,7 +85,7 @@ bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilter
 			
 		for(unsigned int i=0; i<pkFilters.size(); i++)
 		{
-			if(strstr(kNamn.c_str(), (char*) pkFilters[i].c_str()) != NULL)
+ 			if(kNamn.find(pkFilters[i]) != -1)
 			{
 				pkFiles->push_back(kNamn);
 				break;
