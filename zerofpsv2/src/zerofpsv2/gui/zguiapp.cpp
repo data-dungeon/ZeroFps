@@ -1518,7 +1518,7 @@ bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExten
 
 		// Hämta filerna i den aktuella katalogen och sortera listan.
 		vector<string> t;
-		pkFileSys->ListDir(&t, currentFolder);
+		pkFileSys->ListDir(t, currentFolder);
 		for(unsigned int i=0; i<t.size(); i++)
 			vkFileNames.push_back(t[i]); 
 		t.clear(); vkFileNames.sort(SortFiles);
@@ -1759,11 +1759,11 @@ void ZGuiApp::FindGuiTextureByResolution()
 
 	ZSSVFileSystem* pkFileSys = reinterpret_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
-	pkFileSys->ListDirRecursive(&kTexMap_640x480, string("data/textures/gui/640x480/"), vkExtension);
-	pkFileSys->ListDirRecursive(&kTexMap_800x600, string("data/textures/gui/800x600/"), vkExtension);
-	pkFileSys->ListDirRecursive(&kTexMap_1024x768, string("data/textures/gui/1024x768/"), vkExtension);
-	pkFileSys->ListDirRecursive(&kTexMap_1280x1024, string("data/textures/gui/1280x1024/"), vkExtension);
-	pkFileSys->ListDirRecursive(&kTexMap_1600x1200, string("data/textures/gui/1600x1200/"), vkExtension);
+	pkFileSys->ListDirRecursive(kTexMap_640x480, string("data/textures/gui/640x480/"), vkExtension);
+	pkFileSys->ListDirRecursive(kTexMap_800x600, string("data/textures/gui/800x600/"), vkExtension);
+	pkFileSys->ListDirRecursive(kTexMap_1024x768, string("data/textures/gui/1024x768/"), vkExtension);
+	pkFileSys->ListDirRecursive(kTexMap_1280x1024, string("data/textures/gui/1280x1024/"), vkExtension);
+	pkFileSys->ListDirRecursive(kTexMap_1600x1200, string("data/textures/gui/1600x1200/"), vkExtension);
 
 	struct TEST
 	{

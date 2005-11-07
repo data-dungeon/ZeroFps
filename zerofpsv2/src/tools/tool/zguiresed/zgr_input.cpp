@@ -674,7 +674,7 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 
 		bool bSave = (strCtrlID == "GuiEd_SaveScript");
 
-		m_pkFileSys->ListDirRecursive(&kFiles, string("../datafiles"), ext, bSave);
+		m_pkFileSys->ListDirRecursive(kFiles, string("../datafiles"), ext, bSave);
 
 		//if(SearchFiles(kFiles, "..\\datafiles", ".lua", (strCtrlID == "GuiEd_SaveScript")))
 		if(1)

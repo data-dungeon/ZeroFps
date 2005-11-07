@@ -1073,7 +1073,7 @@ void ZGuiResEd::OpenSelectFontDlg()
 		g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	vector<string> t;
-	m_pkFileSys->ListDir(&t, "data/textures/gui/fonts/");
+	m_pkFileSys->ListDir(t, "data/textures/gui/fonts/");
 
 	ClearListbox("GuiEd_ScriptList");
 
@@ -1103,7 +1103,7 @@ void ZGuiResEd::UpdateScriptList()
 		g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	vector<string> t;
-	m_pkFileSys->ListDir(&t, "data/script/gui/");
+	m_pkFileSys->ListDir(t, "data/script/gui/");
 
 	for(int i=0; i<t.size(); i++) 
 	{

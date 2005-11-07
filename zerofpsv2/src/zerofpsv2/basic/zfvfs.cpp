@@ -289,24 +289,24 @@ string	ZSSVFileSystem::GetCurrentWorkingDir()
 	return strWorkDir;
 }
 
-bool ZSSVFileSystem::CreateDir(string strDir)
+bool ZSSVFileSystem::CreateDir(const string& strDir)
 {
 	return m_pkBasicFS->CreateDir(strDir.c_str());
 }
 
-bool ZSSVFileSystem::RemoveDir(string strDir)
+bool ZSSVFileSystem::RemoveDir(const string& strDir)
 {
 	return m_pkBasicFS->RemoveDir(strDir.c_str());
 }
 
-bool ZSSVFileSystem::RemoveFile(const char* acName)
+bool ZSSVFileSystem::RemoveFile(const string& strFile)
 {
-	return m_pkBasicFS->RemoveFile(acName);
+	return m_pkBasicFS->RemoveFile(strFile.c_str());
 }
 
 
-void ZSSVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, 
-												 vector<string>& szExtensions, bool bAlsoFolders)
+void ZSSVFileSystem::ListDirRecursive(vector<string>& kFiles, string strRootPath, 
+												 const vector<string>& szExtensions, bool bAlsoFolders)
 {
 	if(strRootPath.size() > 1)
 	{
@@ -327,7 +327,7 @@ void ZSSVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPat
 
 		// Hämta filerna i den aktuella katalogen och sortera listan.
 		vector<string> t;
-		ListDir(&t, currentFolder);
+		ListDir(t, currentFolder);
 		for(unsigned int i=0; i<t.size(); i++)
 			vkFileNames.push_back(t[i]); 
 		t.clear(); vkFileNames.sort(SortFiles);
@@ -397,12 +397,12 @@ void ZSSVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPat
 					{
 						char last_char[] = { currentFolder[currentFolder.size()-1], '\0' };
 						if(!(last_char[0] == '/' || last_char[0] == '\\'))
-							vkFiles->push_back( currentFolder + "/" + strFile );
+							kFiles.push_back( currentFolder + "/" + strFile );
 						else
-							vkFiles->push_back( currentFolder + strFile );
+							kFiles.push_back( currentFolder + strFile );
 
 						// ta bort rotpathen
-						vkFiles->back().erase(0, strRootPath.length());						
+						kFiles.back().erase(0, strRootPath.length());						
 					}
 				}
 
@@ -422,7 +422,7 @@ void ZSSVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPat
 	}
 }
 
-bool ZSSVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
+bool ZSSVFileSystem::ListDir(vector<string>& kFiles, const string& strName, bool bOnlyMaps)
 {
 	string	strRootMerge;
 
@@ -433,7 +433,7 @@ bool ZSSVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnly
 		if(GetRootMerge(i, strName, strRootMerge)) 
 		{
 			//cout<<"dir:"<<strRootMerge<<endl;
-			m_pkBasicFS->ListDir(pkFiles, strRootMerge.c_str(), bOnlyMaps);
+			m_pkBasicFS->ListDir(&kFiles, strRootMerge.c_str(), bOnlyMaps);
 		}	
 	}
 
@@ -462,24 +462,24 @@ bool ZSSVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnly
 			{			
 				string Name;
 				Name.append(m_kRootPath[i].m_strVfsPath,pos+1,m_kRootPath[i].m_strVfsPath.length()-pos-1);
-				pkFiles->push_back(Name);
+				kFiles.push_back(Name);
 			}
 		}
 	}
 	
 	// sort All
-	vector<string>::iterator start	=  pkFiles->begin();
-	vector<string>::iterator end		=	pkFiles->end();
+	vector<string>::iterator start	=  kFiles.begin();
+	vector<string>::iterator end		=	kFiles.end();
 	sort(start, end);
 
 	//remove duplicates (WARNING, this algoritm only works if the list is sorted by name)
-	for(vector<string>::iterator it = pkFiles->begin();it != pkFiles->end();it++)
+	for(vector<string>::iterator it = kFiles.begin();it != kFiles.end();it++)
 	{	
-		if( (it+1) == pkFiles->end())
+		if( (it+1) == kFiles.end())
 			continue;
 		if( *it == *(it+1))
 		{
-			pkFiles->erase(it+1);
+			kFiles.erase(it+1);
 			it--;
 		}
 	}
@@ -545,11 +545,11 @@ bool ZSSVFileSystem::ListDirFilter(vector<string>& kFiles,const vector<string>& 
 	return true;
 }
 
-bool ZSSVFileSystem::DirExist(string strName)
+bool ZSSVFileSystem::DirExist(const string& strName)
 {
 	//try to list directory
 	vector<string> kDirs;
-	ListDir(&kDirs,strName);
+	ListDir(kDirs,strName);
 	
 	//if there was files in it, it exists
 	if(kDirs.size() != 0)
@@ -558,7 +558,7 @@ bool ZSSVFileSystem::DirExist(string strName)
 	return false;
 }
 
-bool ZSSVFileSystem::FileExists(string strName)
+bool ZSSVFileSystem::FileExists(const string& strName)
 {
 	string strDir;
 	string strFile;
@@ -577,7 +577,7 @@ bool ZSSVFileSystem::FileExists(string strName)
 	
 	//try to list directory
 	vector<string> kDirs;
-	ListDir(&kDirs,strDir);
+	ListDir(kDirs,strDir);
 	
 	if(m_bCaseSensitive)
 	for(unsigned int i = 0;i<kDirs.size();i++)
@@ -616,7 +616,7 @@ string ZSSVFileSystem::GetRealName(const string& strName)
 			
 	//try to list directory
 	vector<string> kDirs;
-	ListDir(&kDirs,strDir);
+	ListDir(kDirs,strDir);
 		
 	for(unsigned int i = 0;i<kDirs.size();i++)
 	{
@@ -698,7 +698,7 @@ void ZSSVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 				if(kCommand->m_kSplitCommand[1] == "-d")
 					bDirOnly = true;				
 	
-			ListDir(&kFiles,m_strCurentDir,bDirOnly);			
+			ListDir(kFiles,m_strCurentDir,bDirOnly);			
 			
 			GetSystem().Printf(" ");
 			GetSystem().Printf("DIRECTORY %s",m_strCurentDir.c_str());

@@ -88,46 +88,36 @@ class BASIC_API ZSSVFileSystem : public ZFSubSystem
 	public:
 		ZSSVFileSystem();
 		~ZSSVFileSystem();
-
-		void AddRootPath(string strRootPath, string strVfsPath);		///< Add path to list of active roots
-		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
-		int GetNumOfRootPaths()				{	return int(m_kRootPath.size());}						///< Get num of active rootpaths
-
-		string GetRootPath(int iIndex);				///< Get path with index (0 to NumOfPaths - 1). "" if not found.
-		bool GetCaseSensitive()				{	return m_bCaseSensitive;	}
-		
-		void Flush();										///< Close all unused archives.
-		
-		// Open / Close
-		void ArchiveOpen() 	{ }					
-		void ArchiveClose()  { }
-
-		// Create / Manage
-		void ArchiveUnpack()	{ }
-		void ArchivePack()  	{ }
-	
-		string GetFullPath(string strFileName);
-		bool GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge);
-
-		string GetRealName(const string& strName);
-		
-		string GetCurrentWorkingDir();
-		bool CreateDir(string strDir);
-		bool RemoveDir(string strDir);		
-		bool ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps=false);
-		bool ListDirFilter(vector<string>& kFiles, const vector<string>& pkFilters, const string& strName, bool bIgnoreMaps = false);
-		void ListDirRecursive(vector<string>* vkFiles, string strRootPath, 
-									 vector<string>& szExtensions, bool bAlsoFolders=false); ///< Search ALL dirs, starting from root dir.
-		bool DirExist(string strName);
-		bool FileExists(string strFileName);				///< Returns true if a file was found.
-
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
-		bool RemoveFile(const char* acName);
-
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
+
+		//vfs handling
+		/// Add path to list of active roots
+		void AddRootPath(string strRootPath, string strVfsPath);		
+		/// Remove a rootpath.
+		void RemoveRootPath(string strRootPath);	
+	
+		/// returns full path to a file
+		string GetFullPath(string strFileName);
+		bool GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge);
+
+		string GetRealName(const string& strName);		
+		string GetCurrentWorkingDir();
+		
+		bool CreateDir(const string& strDir);
+		bool RemoveDir(const string& strDir);		
+		bool RemoveFile(const string& strFile);
+		
+		bool ListDir(vector<string>& kFiles, const string& strName, bool bOnlyMaps=false);
+		bool ListDirFilter(vector<string>& kFiles, const vector<string>& pkFilters, const string& strName, bool bIgnoreMaps = false);
+		void ListDirRecursive(vector<string>& kFiles, string strRootPath,const vector<string>& kExtensions, bool bAlsoFolders=false); ///< Search ALL dirs, starting from root dir.
+		
+		bool DirExist(const string& strName);						///< Returns true if a directory was found.
+		bool FileExists(const string& strFileName);				///< Returns true if a file was found.
+
+
 
 
 		friend class ZFVFile;

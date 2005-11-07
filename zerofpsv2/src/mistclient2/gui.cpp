@@ -390,7 +390,7 @@ void MistClient::CloseActiveWindow()
 void MistClient::FindGUIScriptsByResSuffix()
 {
 	vector<string> vkFolders;
-	m_pkZFVFileSystem->ListDir(&vkFolders, "data/script/gui/");
+	m_pkZFVFileSystem->ListDir(vkFolders, "data/script/gui/");
 
 	int w = GetWidth();
 	int h = GetHeight();

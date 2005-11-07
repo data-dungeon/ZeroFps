@@ -3069,7 +3069,7 @@ namespace SI_P_CharacterProperty
 
 		ZSSVFileSystem* pkFs = dynamic_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
 		vector<string>	kFiles;
-		pkFs->ListDir(&kFiles, "data/script/objects/game objects/skills");
+		pkFs->ListDir(kFiles, "data/script/objects/game objects/skills");
 		
 		//add all lua files in the directory
 		for(int i=0; i<kFiles.size(); i++)

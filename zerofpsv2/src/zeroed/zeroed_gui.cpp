@@ -54,7 +54,7 @@ void ZeroEd::SetupGuiEnviroment()
 	
 	// Fill enviroment listbox.
 	vector<string> vkFileNames;
-	m_pkZFVFileSystem->ListDir(&vkFileNames, "/data/enviroments", false);
+	m_pkZFVFileSystem->ListDir(vkFileNames, "/data/enviroments", false);
 	for(unsigned int i=0; i<vkFileNames.size(); i++)
 		AddListItem("EnviromentPresetList", (char*) vkFileNames[i].c_str());
 

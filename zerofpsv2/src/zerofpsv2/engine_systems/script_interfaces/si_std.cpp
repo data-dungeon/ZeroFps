@@ -290,7 +290,7 @@ int GetFilesInFolderLua(lua_State* pkLua)
 	vector<TABLE_DATA> vkData;
 
 	vector<string> vkFileNames;
-	g_pkVFS->ListDir(&vkFileNames, acPath, false);
+	g_pkVFS->ListDir(vkFileNames, acPath, false);
 
 	unsigned int uiNumFiles = vkFileNames.size();
 

@@ -65,7 +65,7 @@ void ZGuiResEd::AddFilesInFolderToListbox(const char* szFolderName)
 		g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
 
 	vector<string> t;
-	m_pkFileSys->ListDir(&t, szFolderName);
+	m_pkFileSys->ListDir(t, szFolderName);
 
 	for(int i=0; i<t.size(); i++) 
 	{

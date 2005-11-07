@@ -437,7 +437,7 @@ vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
 	cout << "***Scaning in" << strPlayerDataFile << endl;
 
 	ZSSVFileSystem* pkVFS	= static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));	
-	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
+	pkVFS->ListDir(kCharNames, strPlayerDataFile, true);
 
 	
  	//dvoids hax för o ta bort ".."	och "."
