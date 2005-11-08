@@ -717,7 +717,7 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 
 		for(it2 = it->m_kLodMesh.begin(); it2 != it->m_kLodMesh.end(); it2++)
 		{
-			//it2->OptimizeSubMeshes();
+			it2->OptimizeSubMeshes();
 		}
 	}
 

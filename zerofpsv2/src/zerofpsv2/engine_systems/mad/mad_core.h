@@ -242,7 +242,7 @@ public:
 	int NumOfVertexPerFrame();
 	int  GetSizeInBytes();
 
-	void ShowInfo(void);
+	string ShowInfo(void);
 
 	friend class Body;
 	friend class Mad_Core;
@@ -252,107 +252,34 @@ public:
 /// A Mesh in a MAD. 
 class ENGINE_SYSTEMS_API Mad_CoreMesh
 { 
-private:
-/*	vector<Mad_CoreTexture>			akTextures;						///< Texturers used in mesh.			
-	vector<Mad_TextureCoo>			akTextureCoo;					///< Texture Coo for mesh.
-	vector<Mad_Face>					akFaces;							///< Faces in mesh.
-	vector<Mad_CoreVertexFrame>	akFrames;						///< Vertex frames for mesh.
-	vector<Mad_CoreSubMesh>			akSubMeshes;					///< Submeshes.
-	vector<Mad_CoreMeshAnimation>	akAnimation;					///< Animations.
-	vector<int>							akBoneConnections;			///< Vertex -> Bone index.
-
-	int									iTextureID[256];				///< Texture ID's Assigned by rendering sys.
-	ZFResourceHandle					akTexturesHandles[256];		// Texture resurs handles
-*/
-
 public:
-	int									m_iMadVersion;
-	vector<Mad_RawMesh>				m_kLodMesh;
+	// Data
+	int									m_iMadVersion;					///< Version num loaded from file.
+	vector<Mad_RawMesh>				m_kLodMesh;						///< All lod levels of this mesh.
+	bool									bNotAnimated;					///< True if this is a static mesh that we could put in a display list.
+	char									m_acName[MAD_MAX_NAME];		///< Name of mesh.
+
+// Constructors
+	Mad_CoreMesh();
+	~Mad_CoreMesh();
+	Mad_CoreMesh(const Mad_CoreMesh& kOther);
+
+// Assignment 
+	void operator=(const Mad_CoreMesh& kOther);
+	void Clear(void);
+
+// Access 
 	Mad_RawMesh* GetLODMesh(int iId);
 	Mad_RawMesh* GetLODRender(float fDistance);
 	int GetLODRenderIndex(float fDistance);
 
-	bool									bNotAnimated;					///< True if this is a static mesh that we could put in a display list.
-
-/*
-	bool									bNotAnimated;					///< True if this is a static mesh that we could put in a display list.
-	int									iDisplayID;						///< Display List ID if any.
-	void									SetDisplayID(int iId) { iDisplayID = iId; }
-	int									GetDisplayID() { return iDisplayID; }
-*/
-	char									m_acName[MAD_MAX_NAME];		///< Name of mesh.
-//	Mad_CoreMeshHeader				kHead;
-
-	Mad_CoreMesh();
-	~Mad_CoreMesh();
-	void Clear(void);
-	Mad_CoreMesh(const Mad_CoreMesh& kOther);
-	void operator=(const Mad_CoreMesh& kOther);
-
-/*	void ResizeTextures(int iNewSize);
-	void ResizeTexturesCoo(int iNewSize);
-	void ResizeFaces(int iNewSize);
-	void ResizeFrames(int iNewSize);
-	void ResizeSubMesh(int iNewSize);
-	void ResizeAnimations(int iNewSize);
-	void ResizeBoneConnections(int iNewSize);
-	
-	int SizeTextures();
-	int SizeTexturesCoo();
-	int SizeFaces();
-	int SizeFrames();
-	int SizeSubMesh();
-	int SizeAnimations();
-	int SizeBoneConnections();
-
-	Mad_CoreSubMesh*		GetSubMeshPointer()	{	return &akSubMeshes[0];		};
-	Mad_Face*				GetFacesPointer2()	{	return &akFaces[0];			};
-	Mad_CoreVertexFrame*	GetFramesPointer2()	{	return &akFrames[0];			};
-	Mad_TextureCoo*		GetTexCooPointer2()	{	return &akTextureCoo[0];			};
-	Mad_CoreTexture*		GetTexture2()			{	return &akTextures[0];			};
-*/
-
-
-/*	
-	void PushBackTexture(Mad_CoreTexture kTexture);
-	void PushBackTextureCoo(Mad_TextureCoo kTextureCoo);
-	void PushBackFaces(Mad_Face kFace);
-	void PushBackFrames(Mad_CoreVertexFrame kFrames);
-	void PushBackSubMeshes(Mad_CoreSubMesh kSubMesh);
-	void PushBackAnimation(Mad_CoreMeshAnimation kAnimation);
-	void PushBackBoneConnection(int iBoneConnection);
-*/
-
-/*
-	Mad_TextureCoo* GetTexCoo();
-	Mad_CoreSubMesh* GetSubMesh(int iSubMesh);
-	Mad_Face* GetFace(int iFace);
-	char* GetTextureName(int iTextureIndex);
-	Mad_CoreTexture* GetTextureInfo(int iTextureIndex);
-	void SetTextureID(int iTextureIndex, int iID);
-	int GetTextureID(int iTextureIndex);
-	void					SetTextureHandle(int iTextureIndex, string strName);
-	ZFResourceHandle*	GetTextureHandle(int iTextureIndex);
-
-	vector<Mad_Face>* GetFacesPointer() {return &akFaces;};
-	vector<Mad_CoreVertexFrame>* GetVertexFramePointer() {return &akFrames;};	
-*/
-
-	void ShowInfo(void);
-
-/*	void CreateRigidBoneConnections(int iBoneId = 0);
-	Mad_CoreMeshAnimation*	GetAnimation(char* ucaName);
-	int	AddTexture(char* ucpTextureName);
-	void CreateVertexNormals();
-*/
-
-
-//	void FlipFaces();
-
-	int  GetSizeInBytes();
-
+// Load/Save
 	void Save(ZFVFile* pkZFile);
 	void Load(ZFVFile* pkZFile);
+
+// Info
+	void ShowInfo(void);
+	int  GetSizeInBytes();
 
 	friend class Mad_Core;
 	friend class Body;
