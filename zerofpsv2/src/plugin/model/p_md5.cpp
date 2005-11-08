@@ -17,7 +17,7 @@ P_Md5::P_Md5()
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 	LoadMesh("md5/mpplayer.md5mesh");
-
+/*
 	ZSSVFileSystem* fs = static_cast<ZSSVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZSSVFileSystem"));
 
 	char* ext;
@@ -38,7 +38,7 @@ P_Md5::P_Md5()
 
 	m_iPlayAnim = 0;
 	m_iRenderFrame = 0;
-	m_fLastFrame = m_fNextFrame = 0;
+	m_fLastFrame = m_fNextFrame = 0;*/
 }
 
 P_Md5::~P_Md5()

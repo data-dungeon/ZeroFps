@@ -66,7 +66,7 @@ bool ZSSBasicFS::IsDirectory(const char* szName)
 	return direxists;
 }
 
-bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+bool ZSSBasicFS::ListDirFilter(vector<string>* pkFiles, const vector<string>& pkFilters, 
 							  const char* acName, bool bIgnoreMaps)
 {  
 	WIN32_FIND_DATA finddata;
