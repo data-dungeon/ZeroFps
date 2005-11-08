@@ -2847,8 +2847,8 @@ bool ZSSEntityManager::LoadWorld(string strLoadDir)
 #include "inputhandle.h"
 void ZSSEntityManager::UpdateZoneSystem()
 {
-	if(m_pkZeroFps->m_pkApp->m_pkInputHandle->Pressed(KEY_P))
-		m_pkSceneAABBTree->RebuildTree();
+// 	if(m_pkZeroFps->m_pkApp->m_pkInputHandle->Pressed(KEY_P))
+// 		m_pkSceneAABBTree->RebuildTree();
 
 
 // 	StartProfileTimer("s__ZoneSystem");	

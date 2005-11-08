@@ -317,6 +317,7 @@ void SceneAABBNode::GetRenderPropertysInFrustum(vector<Property*>* pkPropertys,F
 		if(m_pkChild2)
 			m_pkChild2->GetRenderPropertysInFrustum(pkPropertys,pkFrustum);	
 	}
+
 }
 
 void SceneAABBNode::FrustumCulling(Frustum*	pkFrustum)

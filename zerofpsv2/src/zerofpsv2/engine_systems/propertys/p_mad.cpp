@@ -62,9 +62,11 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 	
+	
 	//if no rendering is done, update animation in normal updates
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
 	{
+	
 		// TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
 		// find lowpoly mesh, if exist
 		if (pkCore->NumOfMeshes() > 1)
@@ -87,6 +89,7 @@ void P_Mad::Update()
 		if(!( (m_pkZeroFps->GetShadowMapRealtime() || m_bCastShadow) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
 			  m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
 			return;
+			
 			
 		m_bReverseSort = m_bBlended;
 			
@@ -120,13 +123,12 @@ void P_Mad::Update()
 
 		if(m_bDistanceCulled)
 			return;
-
+		
 		fRenderDistance = fDistance;
 		
 		//Cull against sphere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(kPos,GetRadius()))
 			return;	
-		
 
 		
 		//passed sphere, do AABB test
@@ -340,7 +342,7 @@ void P_Mad::DoAnimationUpdate()
 
 void P_Mad::SetBase(const char* acName)
 {
-	//dvoid addat, byter inte modell om det redan ï¿½ den modellen
+	//dvoid addat, byter inte modell om det redan är den modellen
 	if(m_kMadFile == acName)
 		return;
 

@@ -7,7 +7,7 @@
 P_LinkToJoint::P_LinkToJoint() 
 {
 	strcpy(m_acName,"P_LinkToJoint");		
-	m_iType = PROPERTY_TYPE_RENDER;
+	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
 	m_iVersion = 2;
@@ -16,6 +16,8 @@ P_LinkToJoint::P_LinkToJoint()
 	
 	m_iLinkEntityID = -1;
 	m_bNetwork = true;
+	
+	m_iLastFrame = 0;
 }
 
 P_LinkToJoint::~P_LinkToJoint()	
@@ -24,12 +26,16 @@ P_LinkToJoint::~P_LinkToJoint()
 }
 void P_LinkToJoint::Init()			
 {	
-	//turn off interpolation of current objects madss
 	
 }
 
 void P_LinkToJoint::Update() 
 {
+	//this makes sure we dont update when not needed
+	if(m_iLastFrame == m_pkZeroFps->GetCurrentFrame())
+		return;
+	m_iLastFrame = m_pkZeroFps->GetCurrentFrame();
+
 	static Vector3 kPos;
 	static Matrix4 kRot;
 
@@ -62,42 +68,6 @@ void P_LinkToJoint::Update()
 				
 		}
 	}		
-		
-/*			if(Mad_Core* pkCore = (Mad_Core*)pkMad->kMadHandle.GetResourcePtr())
-			{
-*/	
-	
-				//pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
-				//pkCore->SetupBonePose();
-				
-				
-
-				
-				
-				/*
-				//dvoid ultra hax deluxe  ..dont mess whit this code
-				Matrix4 kMat;
-				Matrix4 kParentMat;
-				Vector3 kPos;
-				kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
-				kPos = kMat.GetPos() * pkMad->m_fScale;
-				kMat.SetPos(Vector3(0,0,0));
-				kParentMat = pkHost->GetWorldRotM();
-				kMat *= kParentMat;	//add parents rotation , cos where not using realtive orientation anymore
-			
-				Matrix3 kMat3;
-				kMat3 = kMat;
-				m_pkEntity->SetLocalRotM(kMat3);
-				
-				kMat = pkHost->GetWorldRotM();
-				kPos = kMat.VectorRotate(kPos);	//apply object rotation to joint offset
-				kPos += pkHost->GetIWorldPosV();							//apply interpolatet parent position 
-				
-				m_pkEntity->SetLocalPosV(kPos);
-				*/
-//			}
-//		}
-//	}
 }
 
 vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
@@ -124,12 +94,6 @@ bool P_LinkToJoint::HandleSetValue( const string& kValueName ,const string& kVal
 
 void P_LinkToJoint::Save(ZFIoInterface* pkPackage)
 {	
-	/*
-	char temp[50];
-	strcpy(temp,m_strToJoint.c_str());
-	pkPackage->Write((void*)temp,50,1);
-	*/
-	
 	pkPackage->Write_Str(m_strToJoint);
 	pkPackage->Write(m_iLinkEntityID);
 	

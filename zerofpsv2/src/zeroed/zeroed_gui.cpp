@@ -635,7 +635,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 {
-	cout << "ZeroEd::OnClickListbox: iListBoxID=" << iListBoxID << ", iListboxIndex=" << iListboxIndex << endl;
+	//cout << "ZeroEd::OnClickListbox: iListBoxID=" << iListBoxID << ", iListboxIndex=" << iListboxIndex << endl;
 
 	if(pkMain == NULL)
 		return;
