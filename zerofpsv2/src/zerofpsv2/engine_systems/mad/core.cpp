@@ -582,7 +582,8 @@ Vector3*  Mad_Core::GetVerticesPtr()
 Vector3* Mad_Core::GetNormalsPtr()
 {
 	if(g_pkSelectedMesh->bNotAnimated)
-		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
+		//return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
+		return &g_pkSelectedRawMesh->akFrames[0].akNormal[0];
 
 	if(iActiveAnimation == MAD_NOANIMINDEX)
 		return &g_pkSelectedRawMesh->akFrames[0].akNormal[0];
