@@ -288,39 +288,28 @@ void ZSSRender::SubDivide(float *v1, float *v2, float *v3, long depth)
    SubDivide(v12, v23, v31, depth-1);
 }
 
-void ZSSRender::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const int& iTexture)
-{
-	m_pkZShaderSystem->Push("polygon4");
+void ZSSRender::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const ZMaterial* pkMaterial)
+{	
+	static float afUvs[] = {	0,1,
+							 			1,1,
+										1,0,
+										0,0};
+	
+	static Vector3 akVerts[4];
+	
+	akVerts[0] = kP1;
+	akVerts[1] = kP2;
+	akVerts[2] = kP3;
+	akVerts[3] = kP4;
+	
+	m_pkZShaderSystem->BindMaterial(pkMaterial);														 
+	
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,akVerts);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);
 
-	glPushMatrix();
-	glPushAttrib(GL_ENABLE_BIT);
-	
-	
-	//glAlphaFunc(GL_GREATER,0.3);
-	//glEnable(GL_ALPHA_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-	glDisable(GL_LIGHTING);
-		
-	m_pkTexMan->BindTexture(iTexture);  
-	
-	glBegin(GL_QUADS);
-				
-	
-	glNormal3f(0,1,0);
-   glTexCoord2f(0.0,1.0);glVertex3fv(&kP1.x);		 
-   glTexCoord2f(1.0,1.0);glVertex3fv(&kP2.x);		 
- 	glTexCoord2f(1.0,0.0);glVertex3fv(&kP3.x);		 
-	glTexCoord2f(0.0,0.0);glVertex3fv(&kP4.x);		 
-	
-	glEnd();			
-
-		
-	glPopAttrib();
-	glPopMatrix();
-	
-	m_pkZShaderSystem->Pop();
 }
 
 void ZSSRender::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor)

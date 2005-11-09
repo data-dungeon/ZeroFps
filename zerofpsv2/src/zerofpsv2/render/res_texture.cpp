@@ -17,6 +17,13 @@ ResTexture::ResTexture()
 	m_iHeight				=	0;
 }
 
+ResTexture::ResTexture(const string& strName)
+{
+	ResTexture();
+	
+	CreateTextureFromFile(strName);
+}
+
 ResTexture::~ResTexture()
 {
 	Clear();

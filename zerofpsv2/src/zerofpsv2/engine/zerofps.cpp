@@ -815,14 +815,23 @@ void ZSSZeroFps::MainLoop(void)
 			MakeDelay();			
 			
 			//update basic engine systems			
+			StartProfileTimer("Engine_shell");
 			Run_EngineShell();
+			StopProfileTimer("Engine_shell");					
 						
 			//update system , and handle incomming network data from clients
+			StartProfileTimer("System");
 			Update_System();
+			StopProfileTimer("System");						
 						
 			//client/server specifik updates
+			StartProfileTimer("Server");
 			if(m_bServerMode) Run_Server();		
+			StopProfileTimer("Server");
+			
+			StartProfileTimer("Client");
 			if(m_bClientMode) Run_Client();		
+			StopProfileTimer("Client");
 			
 			//Update network:  sends entitydata to clients
 			if(!m_bSyncNetwork)
@@ -830,7 +839,9 @@ void ZSSZeroFps::MainLoop(void)
 			
 			
 			//render stuff			
+			StartProfileTimer("Draw");			
 			Draw_EngineShell();			
+			StopProfileTimer("Draw");
 			
 			//swap buffers n calculate fps
 			Swap();	
@@ -1054,8 +1065,23 @@ void ZSSZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 
 void ZSSZeroFps::DrawDevStrings()
 {
-	static int iGraphTexture = m_pkTexMan->Load("graph.bmp");
-	static int iMaxTexture = m_pkTexMan->Load("notex.bmp");
+	//setup materials
+	static ZMaterial* pkGraphTexture = NULL;
+	static ZMaterial* pkMaxTexture = NULL;	
+	if(!pkGraphTexture)
+	{
+		pkGraphTexture = new ZMaterial;
+		pkGraphTexture->GetPass(0)->m_kTUs[0]->SetRes("graph.bmp");
+		pkGraphTexture->GetPass(0)->m_bLighting = 			false;
+		pkGraphTexture->GetPass(0)->m_bFog = 					false;
+	
+		pkMaxTexture = new ZMaterial;
+		pkMaxTexture->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
+		pkMaxTexture->GetPass(0)->m_bLighting = 			false;
+		pkMaxTexture->GetPass(0)->m_bFog = 					false;	
+	}	
+	
+	
 
 	unsigned int page;
 	if(!m_bDevPagesVisible || m_bMinimized) 
@@ -1094,8 +1120,8 @@ void ZSSZeroFps::DrawDevStrings()
 							iVal = 100;
 											
 						float fPos = -1.1 + (iVal/100.0);
-						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),  iGraphTexture);
-						m_pkRender->Polygon4(Vector3(-0.1,fYOffset,-1),Vector3(-0.09,fYOffset,-1),Vector3(-0.09,fYOffset+fSize,-1),Vector3(-0.1,fYOffset+fSize,-1),iMaxTexture);
+						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),  pkGraphTexture);
+						m_pkRender->Polygon4(Vector3(-0.1,fYOffset,-1),Vector3(-0.09,fYOffset,-1),Vector3(-0.09,fYOffset+fSize,-1),Vector3(-0.1,fYOffset+fSize,-1),pkMaxTexture);
 					
 						m_pkZShaderSystem->BindMaterial(m_pkDevPageMaterial);						
 					}

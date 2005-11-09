@@ -1160,25 +1160,25 @@ int SetMadfileLua(lua_State* pkLua)
 		\brief changes MadFile
 		\relates Property
 */
-int SetDrawingOrderLua(lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-      double dOrder;
-      g_pkScript->GetArgNumber(pkLua, 0, &dOrder);
-
-      Entity* pkEntity = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
-
-  		P_Mad* pkMAD = (P_Mad*)pkEntity->GetProperty("P_Mad");
-
-      if ( pkMAD )
-         pkMAD->m_iSortPlace = (int) dOrder;
-      else
-         cout << "Warning! Tried to set drawing order on a non-MAD object." << endl;
- }
-
-   return 0;
-}
+// int SetDrawingOrderLua(lua_State* pkLua)
+// {
+// 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+// 	{
+//       double dOrder;
+//       g_pkScript->GetArgNumber(pkLua, 0, &dOrder);
+// 
+//       Entity* pkEntity = g_pkObjMan->GetEntityByID(ObjectManagerLua::g_kScriptState.g_iCurrentObjectID);
+// 
+//   		P_Mad* pkMAD = (P_Mad*)pkEntity->GetProperty("P_Mad");
+// 
+//       if ( pkMAD )
+//          pkMAD->m_iSortPlace = (int) dOrder;
+//       else
+//          cout << "Warning! Tried to set drawing order on a non-MAD object." << endl;
+//  }
+// 
+//    return 0;
+// }
 
 /**	\fn GetOffsetValueLua(EntityID)
 		\brief changes MadFile??
@@ -1254,7 +1254,6 @@ void Register_MadProperty(ZSSZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("AddMesh",				SI_PMad::AddMesh);
 	g_pkScript->ExposeFunction("AddMeshName",			SI_PMad::AddMeshName);
 	g_pkScript->ExposeFunction("SetMad",				SI_PMad::SetMadfileLua);
-	g_pkScript->ExposeFunction("SetDrawingOrder",	SI_PMad::SetMadfileLua);
 	g_pkScript->ExposeFunction("GetMadOffset",		SI_PMad::GetMadOffsetLua);
 }
 

@@ -201,7 +201,7 @@ void ZShadow::Update()
 	if( (m_iNrOfShadows == 0) || m_bDisabled)
 		return;
 
-	StartProfileTimer("r___ZShadow");
+// 	StartProfileTimer("r___ZShadow");
 		
 	//setup stencil buffert
 	if(!m_bHaveCheckedBits)
@@ -223,7 +223,7 @@ void ZShadow::Update()
 
 	for(int i = 0;i<kRenderPropertys.size();i++)
 	{
-		if(strcmp(kRenderPropertys[i]->m_acName,"P_Mad") == 0)
+		if(kRenderPropertys[i]->IsType("P_Mad"))
 		{
 			P_Mad* pkMad = (P_Mad*)kRenderPropertys[i];
 
@@ -266,7 +266,7 @@ void ZShadow::Update()
 		DrawShadow(m_fShadowIntensity);
 	}	
 	
-	StopProfileTimer("r___ZShadow");
+// 	StopProfileTimer("r___ZShadow");
 }
 
 bool ZShadow::SetupMesh(P_Mad* pkMad)

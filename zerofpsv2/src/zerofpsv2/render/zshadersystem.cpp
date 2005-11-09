@@ -206,7 +206,7 @@ void ZShaderSystem::Pop()
 
 
 
-void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial,bool bForceReload)
+void ZShaderSystem::BindMaterial(const ZMaterial* pkMaterial,bool bForceReload)
 {
 	if(pkMaterial == NULL)
 	{
@@ -748,7 +748,7 @@ void ZShaderSystem::PopTexture()
 	}
 }
 
-void ZShaderSystem::BindTexture(ResTexture* pkTexture)
+void ZShaderSystem::BindTexture(const ResTexture* pkTexture)
 {
 		
 	//get texture id
@@ -1115,6 +1115,8 @@ void ZShaderSystem::DrawArray()
 		return;
 	}
 
+	StartProfileTimer("ZShader::DrawArray");	
+
 	//do software vertex transformations
 	VertexTransform();
 	
@@ -1174,6 +1176,8 @@ void ZShaderSystem::DrawArray()
 	//if vertextransform has done any vertex copies , delete the copys and restore pointers
  	if(m_bCopyedData)
  		CleanCopyedData();
+ 		
+	StopProfileTimer("ZShader::DrawArray");	 		
 }
 
 void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)

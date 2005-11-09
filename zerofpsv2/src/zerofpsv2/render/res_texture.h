@@ -61,6 +61,7 @@ class RENDER_API ResTexture : public ZFResource
 	public:
 	
 		ResTexture();
+		ResTexture(const string& strName);
 		~ResTexture();
 	
 		bool Create(const string& strName);

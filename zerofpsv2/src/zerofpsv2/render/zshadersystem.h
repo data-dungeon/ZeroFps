@@ -199,7 +199,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		ZSSLight*			m_pkLight;	
 		
 		//current selected material
-		ZMaterial*		m_pkCurrentMaterial;
+		const ZMaterial*	m_pkCurrentMaterial;
 
 		//eye position
 		Vector3			m_kEyePosition;
@@ -389,14 +389,14 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 										
 										
 		//texture management
-		void BindTexture(ResTexture* pkTexture);
+		void BindTexture(const ResTexture* pkTexture);
 		void PushTexture();
 		void PopTexture();
 																										
 		//basic
 		void Push(const char* czNote);
 		void Pop();		
-		void BindMaterial(ZMaterial* pkMaterial,bool bForceReload = false);
+		void BindMaterial(const ZMaterial* pkMaterial,bool bForceReload = false);
 		void ReloadMaterial();
 		
 		
