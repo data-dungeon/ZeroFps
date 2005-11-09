@@ -1136,7 +1136,7 @@ void ZSSEntityManager::DumpActiverPropertysToLog(char* szMsg)
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		g_ZFObjSys.Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetEntity()->m_iEntityID );
+		g_ZFObjSys.Logf("net", "%s (%d)", (*it)->GetName(), (*it)->GetEntity()->m_iEntityID );
 		if((*it)->GetEntity()->m_pkParent)
 			g_ZFObjSys.Logf("net", " Parent Obj: %s\n", (*it)->GetEntity()->m_pkParent->m_strName.c_str() );
 	}

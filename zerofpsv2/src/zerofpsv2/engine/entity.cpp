@@ -133,14 +133,14 @@ Property* Entity::AddProperty(Property* pkNewProperty)
 		return NULL;
 	
 	///EVIL GUBB/////
-	vector<Property*>::iterator kIt = m_akPropertys.begin();
-	while(kIt != m_akPropertys.end())
-	{
-		(*kIt)->PropertyFound(pkNewProperty);
-		++kIt;
-	}
-	/////////////////7
-	//pkNewProperty->SetEntity(this);
+// 	vector<Property*>::iterator kIt = m_akPropertys.begin();
+// 	while(kIt != m_akPropertys.end())
+// 	{
+// 		(*kIt)->PropertyFound(pkNewProperty);
+// 		++kIt;
+// 	}
+	
+	
 	pkNewProperty->m_pkEntity = this;
 	m_akPropertys.push_back(pkNewProperty);
 	pkNewProperty->Init();
@@ -173,23 +173,23 @@ Property* Entity::AddProxyProperty(const char* acName)
 
 /**	\brief	Removes the property from the Entity ( but does not delete it).
 */
-void Entity::RemoveProperty(Property* pkProp) 
-{
-	//m_akPropertys.remove(pkProp);
-	
-	///EVIL GUBB///// ---changed by EVIL ZEROM who didn't like it when it crashed
-   for ( vector<Property*>::iterator kIte = m_akPropertys.begin();
-         kIte != m_akPropertys.end(); kIte++ )
-   {
-		if((*kIte) == pkProp)
-      {
-         m_akPropertys.erase ( kIte );
-         break;
-      }
-   }
-
-	PropertyLost(pkProp);
-}
+// void Entity::RemoveProperty(Property* pkProp) 
+// {
+// 	//m_akPropertys.remove(pkProp);
+// 	
+// 	///EVIL GUBB///// ---changed by EVIL ZEROM who didn't like it when it crashed
+//    for ( vector<Property*>::iterator kIte = m_akPropertys.begin();
+//          kIte != m_akPropertys.end(); kIte++ )
+//    {
+// 		if((*kIte) == pkProp)
+//       {
+//          m_akPropertys.erase ( kIte );
+//          break;
+//       }
+//    }
+// 
+// // 	PropertyLost(pkProp);
+// }
 
 /**	\brief	Removes and deletes the property. 
 	
@@ -222,19 +222,19 @@ bool Entity::DeleteProperty(const char* acName)
 	return false;
 }
 
-void Entity::PropertyLost(Property* pkProp)
-{
-	if(pkProp->m_pkEntity == this)
-	{
-		vector<Property*>::iterator kIt = m_akPropertys.begin();
-		while(kIt != m_akPropertys.end())
-		{
-			(*kIt)->PropertyLost(pkProp);
-			++kIt;
-		}
-		pkProp->m_pkEntity = NULL;
-	}	
-}
+// void Entity::PropertyLost(Property* pkProp)
+// {
+// 	if(pkProp->m_pkEntity == this)
+// 	{
+// 		vector<Property*>::iterator kIt = m_akPropertys.begin();
+// 		while(kIt != m_akPropertys.end())
+// 		{
+// 			(*kIt)->PropertyLost(pkProp);
+// 			++kIt;
+// 		}
+// 		pkProp->m_pkEntity = NULL;
+// 	}	
+// }
 
 
 /**	\brief	Returns a pointer to the choosen property.
@@ -2193,124 +2193,6 @@ void Entity::SetInterpolate(bool bInterpolate)
 
 
 
-/*
-void Entity::AddToDeleteList(int iId)
-{
-	m_aiNetDeleteList.push_back(iId);
-	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
-
-}
-
-
-void Entity::UpdateDeleteList()
-{	
-	if(m_aiNetDeleteList.empty())
-		return;
-	
-	/*	
-	//make sure that all clients have gotten the delete list
-	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
-	{
-		if(m_pkEntityManager->m_pkNetWork->IsConnected(i))
-		{
-			//cout<<"testing con "<<i<<endl;
-			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
-			{	
-				return;
-			}
-		}
-	}
-	/
-	
-	for(int i = 0;i<m_kExistOnClient.size();i++)
-	{
-		if(m_kExistOnClient[i])
-		{
-			if(!m_pkEntityManager->m_pkNetWork->IsConnected(i))
-				cout<<"WARNING: stuff existed on an unconnectet client...bad"<<endl;
-		
-			//if this client has not gotten the delete list , return
-			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
-			{	
-				return;
-			}			
-		}
-	}
-	
-	
-	//clear delete list 
-	m_aiNetDeleteList.clear();
-}
-
-*/
-
-
-bool Entity::SendObjectClickEvent(const char* acType,int iCallerObject )	
-{
-	if(GetEntityScript() && acType != NULL)
-	{
-		//set self id before calling the funktion
-		ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = GetEntityID();
-		
-		//set caller id
-		ObjectManagerLua::g_kScriptState.g_iCurrentPCID = iCallerObject;
-
-
-		vector<ScriptFuncArg> args(1);
-		args[0].m_kType.m_eType = tCSTRING;
-		args[0].m_pData = new char[strlen(acType)+1];
-		strcpy((char*)args[0].m_pData, acType);
-		
-		bool bSuccess = m_pkEntityManager->m_pkScript->Call(GetEntityScript(), "Use", args);
-
-		delete[] args[0].m_pData;
-		
-		return bSuccess;
-	}
-
-   return false;
-
-}
-
-
-bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject)
-{
-	if(GetEntityScript() && acType != NULL)
-	{
-		//set self id before calling the funktion
-		ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = GetEntityID();
-		
-		//set caller id
-		ObjectManagerLua::g_kScriptState.g_iCurrentPCID = iCallerObject;
-
-		vector<ScriptFuncArg> args(4);
-		args[0].m_kType.m_eType = tCSTRING;
-		args[0].m_pData = new char[strlen(acType)+1];
-		strcpy((char*)args[0].m_pData, acType);
-		
-		args[1].m_kType.m_eType = tFLOAT;
-		args[1].m_pData = &kPos.x;
-		args[2].m_kType.m_eType = tFLOAT;
-		args[2].m_pData = &kPos.y;
-		args[3].m_kType.m_eType = tFLOAT;
-		args[3].m_pData = &kPos.z;
-		
-		
-		bool bSuccess = m_pkEntityManager->m_pkScript->Call( GetEntityScript(), "GroundClick", args);
-
-		delete[] args[0].m_pData;
-		
-		return bSuccess;
-	}
-
-	return false;
-
-
-}
-
-
-
-
 /* ********************************** SCRIPT INTERFACE ****************************************/
 /** \class SIEntity 
    \ingroup NewSi
@@ -3023,6 +2905,62 @@ void Register_SIEntityProperty(ZSSZeroFps* pkZeroFps)
 
 
 
+//graveyard
+
+
+
+
+
+/*
+void Entity::AddToDeleteList(int iId)
+{
+	m_aiNetDeleteList.push_back(iId);
+	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
+
+}
+
+
+void Entity::UpdateDeleteList()
+{	
+	if(m_aiNetDeleteList.empty())
+		return;
+	
+	/*	
+	//make sure that all clients have gotten the delete list
+	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
+	{
+		if(m_pkEntityManager->m_pkNetWork->IsConnected(i))
+		{
+			//cout<<"testing con "<<i<<endl;
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
+			{	
+				return;
+			}
+		}
+	}
+	/
+	
+	for(int i = 0;i<m_kExistOnClient.size();i++)
+	{
+		if(m_kExistOnClient[i])
+		{
+			if(!m_pkEntityManager->m_pkNetWork->IsConnected(i))
+				cout<<"WARNING: stuff existed on an unconnectet client...bad"<<endl;
+		
+			//if this client has not gotten the delete list , return
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
+			{	
+				return;
+			}			
+		}
+	}
+	
+	
+	//clear delete list 
+	m_aiNetDeleteList.clear();
+}
+
+*/
 
 
 

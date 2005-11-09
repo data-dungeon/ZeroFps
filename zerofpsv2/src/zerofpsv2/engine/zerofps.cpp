@@ -299,6 +299,7 @@ bool ZSSZeroFps::StartUp()
 	//set captured input as default
 // 	m_pkInput->ToggleGrab(true);
 	
+	
 	return true;
 }
 

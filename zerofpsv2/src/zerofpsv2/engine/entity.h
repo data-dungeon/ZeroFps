@@ -135,6 +135,9 @@ class ENGINE_API Entity
 		float							m_fPriority;
 		SceneAABBNode*				m_pkSceneAABBNode;
 		
+ 		Property* 	AddProperty(Property* pkNewProperty);					// Add a propyrty by ptr.
+		
+		
 	protected:
 		enum HAVE_DATA				//used in m_kGotData
 		{
@@ -236,10 +239,6 @@ class ENGINE_API Entity
 		void			UpdateDeletePropertyList();
 
 		
-		//property handling, or something
-		void 	PropertyLost(Property* pkProp);
-		
-				
 	public:
 
 		ZSSEntityManager*			m_pkEntityManager;				///< Ptr to Entity manger.
@@ -256,9 +255,6 @@ class ENGINE_API Entity
 		~Entity();
 		
 		// Property Mangment
-		Property* 	AddProperty(Property* pkNewProperty);					// Add a propyrty by ptr.
-		void 			RemoveProperty(Property* pkProp);						// Remove property by pointer.
-		
 		Property* 	AddProperty(const char* acName);							// Create/Add a property by name.
 		bool 			DeleteProperty(const char* acName);						// Remove property by name.
 		Property* 	GetProperty(const char* acName);							// Returns property by name (first one only). 
@@ -396,10 +392,7 @@ class ENGINE_API Entity
 		void	 SetVarVector(const string& strName, Vector3 kVec);		
 		void	 AddVarDouble(const string& strName, double fValueToAdd);
 
-		// Temporary Place For this Functions - Vim
-		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
-		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
-	
+
 		unsigned char				m_ucIcon;							// Icon, 0 = None.
 		
 		//friends

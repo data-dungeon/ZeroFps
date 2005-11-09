@@ -27,14 +27,7 @@ Property::Property()
 
 Property::~Property()
 {
-	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
-	while(kIt != this->m_kPointerVector.end())
-	{
-		delete (*kIt);
-		++kIt;
-	}
-	if(m_pkEntity)
-		m_pkEntity->RemoveProperty(this);
+
 }
 
 // Game Messages
@@ -778,37 +771,7 @@ bool Property::Resize(const string& kValueName, unsigned int uiNewSize)
 	return false;
 }
 
-void Property::PropertyFound(Property* pkProperty)
-{
-	
-	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
-	while(kIt != this->m_kPointerVector.end())
-	{
-		if((*kIt)->Set(pkProperty))
-		{
-			this->PointerFound((*kIt)->GetType());
-			kIt = this->m_kPointerVector.end();
-		}
-		else
-			++kIt;
-	}
-}
-void Property::PropertyLost(Property* pkProperty)
-{
-	
-	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
-	while(kIt != this->m_kPointerVector.end())
-	{
-		if((*kIt)->Unset(pkProperty))
-		{
-			this->PointerLost((*kIt)->GetType());
-			kIt = this->m_kPointerVector.end();
-		}
-		else
-			++kIt;
-	}
 
-}
 
 
 void	Property::SetNrOfConnections(int iConNR)
@@ -846,3 +809,47 @@ bool	Property::GetNetUpdateFlag(int iConID)
 
 
 
+// graveyards  R I P
+
+// void Property::PropertyFound(Property* pkProperty)
+// {
+// 	
+// 	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
+// 	while(kIt != this->m_kPointerVector.end())
+// 	{
+// 		if((*kIt)->Set(pkProperty))
+// 		{
+// 			this->PointerFound((*kIt)->GetType());
+// 			kIt = this->m_kPointerVector.end();
+// 		}
+// 		else
+// 			++kIt;
+// 	}
+// }
+// void Property::PropertyLost(Property* pkProperty)
+// {
+// 	
+// 	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
+// 	while(kIt != this->m_kPointerVector.end())
+// 	{
+// 		if((*kIt)->Unset(pkProperty))
+// 		{
+// 			this->PointerLost((*kIt)->GetType());
+// 			kIt = this->m_kPointerVector.end();
+// 		}
+// 		else
+// 			++kIt;
+// 	}
+// 
+// }
+
+
+/*	vector<TPointerBase*>::iterator kIt = this->m_kPointerVector.begin();
+	while(kIt != this->m_kPointerVector.end())
+	{
+		delete (*kIt);
+		++kIt;
+	}*/
+	
+// 	if(m_pkEntity)
+// 		m_pkEntity->RemoveProperty(this);

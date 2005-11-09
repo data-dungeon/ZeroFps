@@ -578,8 +578,8 @@ void Mad_RawMesh::OptimizeSubMeshes()
 	int iVIndex;
 	Mad_CoreSubMesh					kSubMesh;
 
-   cout << ShowInfo();
-	cout << "*** SUBMESH OPTIMIZE ***" << endl;
+//    cout << ShowInfo();
+// 	cout << "*** SUBMESH OPTIMIZE ***" << endl;
 
 	for(int iTexture=0; iTexture<akTextures.size(); iTexture++)
 	{
@@ -639,7 +639,7 @@ void Mad_RawMesh::OptimizeSubMeshes()
 	akSubMeshes = akNewSubMeshes;
 	kHead.iNumOfSubMeshes = akSubMeshes.size();
 
-	cout << ShowInfo();
+// 	cout << ShowInfo();
 }
 
 void Mad_RawMesh::SetTextureFlags(void)
