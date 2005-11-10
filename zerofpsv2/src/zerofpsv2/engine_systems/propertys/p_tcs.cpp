@@ -77,6 +77,31 @@ P_Tcs::P_Tcs()
 	m_kRotForce.Set(0,0,0);
 	m_kNewPos.Set(0,0,0);
 	m_kNewRotation.Identity();
+
+
+	//property variables
+	m_kPropertyValues.push_back(PropertyValues("testtype",VALUETYPE_INT,(void*)&m_iTestType));
+	m_kPropertyValues.push_back(PropertyValues("groupflag",VALUETYPE_INT,NULL));
+	m_kPropertyValues.push_back(PropertyValues("radius",VALUETYPE_FLOAT,(void*)&m_fRadius));
+	m_kPropertyValues.push_back(PropertyValues("modelid",VALUETYPE_INT,(void*)&m_iModelID));
+	m_kPropertyValues.push_back(PropertyValues("gravity",VALUETYPE_BOOL,(void*)&m_bGravity));
+	m_kPropertyValues.push_back(PropertyValues("character",VALUETYPE_BOOL,(void*)&m_bCharacter));
+	m_kPropertyValues.push_back(PropertyValues("group",VALUETYPE_INT,(void*)&m_iGroup));
+	m_kPropertyValues.push_back(PropertyValues("leglength",VALUETYPE_FLOAT,(void*)&m_fLegLength));
+	m_kPropertyValues.push_back(PropertyValues("walkablegroupflag",VALUETYPE_INT,NULL));
+	m_kPropertyValues.push_back(PropertyValues("mass",VALUETYPE_FLOAT,(void*)&m_fMass));
+	m_kPropertyValues.push_back(PropertyValues("static",VALUETYPE_BOOL,(void*)&m_bStatic));
+	m_kPropertyValues.push_back(PropertyValues("airfriction",VALUETYPE_FLOAT,(void*)&m_fAirFriction));
+	m_kPropertyValues.push_back(PropertyValues("inertia",VALUETYPE_FLOAT,(void*)&m_fInertia));
+	m_kPropertyValues.push_back(PropertyValues("activemoment",VALUETYPE_BOOL,(void*)&m_bActiveMoment));
+	m_kPropertyValues.push_back(PropertyValues("bounce",VALUETYPE_FLOAT,(void*)&m_fBounce));
+	m_kPropertyValues.push_back(PropertyValues("friction",VALUETYPE_FLOAT,(void*)&m_fFriction));
+	m_kPropertyValues.push_back(PropertyValues("cantsleep",VALUETYPE_BOOL,(void*)&m_bCantSleep));
+	m_kPropertyValues.push_back(PropertyValues("disableonsleep",VALUETYPE_BOOL,(void*)&m_bDisableOnSleep));
+	m_kPropertyValues.push_back(PropertyValues("removeonsleep",VALUETYPE_BOOL,(void*)&m_bRemoveOnSleep));
+	m_kPropertyValues.push_back(PropertyValues("nocolrespons",VALUETYPE_BOOL,(void*)&m_bNoColRespons));
+	m_kPropertyValues.push_back(PropertyValues("boxsize",VALUETYPE_VECTOR3,(void*)&m_kBoxSize));
+	
 }
 
 P_Tcs::~P_Tcs()
@@ -331,99 +356,7 @@ void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 	}					
 }
 
-vector<PropertyValues> P_Tcs::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(21);
 
-	int dummy;
-	
-	kReturn[0].kValueName="testtype";
-	kReturn[0].iValueType=VALUETYPE_INT;
-	kReturn[0].pkValue=(void*)&m_iTestType;
-
-	kReturn[1].kValueName="groupflag";
-	kReturn[1].iValueType=VALUETYPE_INT;
-	kReturn[1].pkValue=(void*)&dummy;
-
-	kReturn[2].kValueName="radius";
-	kReturn[2].iValueType=VALUETYPE_FLOAT;
-	kReturn[2].pkValue=(void*)&m_fRadius;
-
-	kReturn[3].kValueName="modelid";
-	kReturn[3].iValueType=VALUETYPE_INT;
-	kReturn[3].pkValue=(void*)&m_iModelID;
-	
-	kReturn[4].kValueName="gravity";
-	kReturn[4].iValueType=VALUETYPE_BOOL;
-	kReturn[4].pkValue=(void*)&m_bGravity;
-	
-	kReturn[5].kValueName="character";
-	kReturn[5].iValueType=VALUETYPE_BOOL;
-	kReturn[5].pkValue=(void*)&m_bCharacter;
-		
-	kReturn[6].kValueName="group";
-	kReturn[6].iValueType=VALUETYPE_INT;
-	kReturn[6].pkValue=(void*)&m_iGroup;
-	
-	kReturn[7].kValueName="leglength";
-	kReturn[7].iValueType=VALUETYPE_FLOAT;
-	kReturn[7].pkValue=(void*)&m_fLegLength;
-	
-	kReturn[8].kValueName="walkablegroupflag";
-	kReturn[8].iValueType=VALUETYPE_INT;
-	kReturn[8].pkValue=(void*)&dummy;
-	
-	kReturn[9].kValueName="mass";
-	kReturn[9].iValueType=VALUETYPE_FLOAT;
-	kReturn[9].pkValue=(void*)&m_fMass;	
-	
-	kReturn[10].kValueName="static";
-	kReturn[10].iValueType=VALUETYPE_BOOL;
-	kReturn[10].pkValue=(void*)&m_bStatic;	
-
-	kReturn[11].kValueName="airfriction";
-	kReturn[11].iValueType=VALUETYPE_FLOAT;
-	kReturn[11].pkValue=(void*)&m_fAirFriction;	
-
-	kReturn[12].kValueName="inertia";
-	kReturn[12].iValueType=VALUETYPE_FLOAT;
-	kReturn[12].pkValue=(void*)&m_fInertia;	
-
-	kReturn[13].kValueName="activemoment";
-	kReturn[13].iValueType=VALUETYPE_BOOL;
-	kReturn[13].pkValue=(void*)&m_bActiveMoment;	
-
-	kReturn[14].kValueName="bounce";
-	kReturn[14].iValueType=VALUETYPE_FLOAT;
-	kReturn[14].pkValue=(void*)&m_fBounce;	
-
-	kReturn[15].kValueName="friction";
-	kReturn[15].iValueType=VALUETYPE_FLOAT;
-	kReturn[15].pkValue=(void*)&m_fFriction;	
-
-	kReturn[16].kValueName="cantsleep";
-	kReturn[16].iValueType=VALUETYPE_BOOL;
-	kReturn[16].pkValue=(void*)&m_bCantSleep;	
-	
-	kReturn[17].kValueName="disableonsleep";
-	kReturn[17].iValueType=VALUETYPE_BOOL;
-	kReturn[17].pkValue=(void*)&m_bDisableOnSleep;	
-
-	kReturn[18].kValueName="removeonsleep";
-	kReturn[18].iValueType=VALUETYPE_BOOL;
-	kReturn[18].pkValue=(void*)&m_bRemoveOnSleep;	
-
-	kReturn[19].kValueName="nocolrespons";
-	kReturn[19].iValueType=VALUETYPE_BOOL;
-	kReturn[19].pkValue=(void*)&m_bNoColRespons;	
-
-	kReturn[20].kValueName="boxsize";
-	kReturn[20].iValueType=VALUETYPE_VECTOR3;
-	kReturn[20].pkValue=(void*)&m_kBoxSize;	
-	
-									
-	return kReturn;
-}
 
 bool P_Tcs::HandleSetValue( const string& kValueName, const string& kValue )
 {
@@ -1161,3 +1094,98 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZSSZeroFps* pkZeroFps)
 
 
 
+
+
+// vector<PropertyValues> P_Tcs::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(21);
+// 
+// 	int dummy;
+// 	
+// 	kReturn[0].kValueName="testtype";
+// 	kReturn[0].iValueType=VALUETYPE_INT;
+// 	kReturn[0].pkValue=(void*)&m_iTestType;
+// 
+// 	kReturn[1].kValueName="groupflag";
+// 	kReturn[1].iValueType=VALUETYPE_INT;
+// 	kReturn[1].pkValue=(void*)&dummy;
+// 
+// 	kReturn[2].kValueName="radius";
+// 	kReturn[2].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[2].pkValue=(void*)&m_fRadius;
+// 
+// 	kReturn[3].kValueName="modelid";
+// 	kReturn[3].iValueType=VALUETYPE_INT;
+// 	kReturn[3].pkValue=(void*)&m_iModelID;
+// 	
+// 	kReturn[4].kValueName="gravity";
+// 	kReturn[4].iValueType=VALUETYPE_BOOL;
+// 	kReturn[4].pkValue=(void*)&m_bGravity;
+// 	
+// 	kReturn[5].kValueName="character";
+// 	kReturn[5].iValueType=VALUETYPE_BOOL;
+// 	kReturn[5].pkValue=(void*)&m_bCharacter;
+// 		
+// 	kReturn[6].kValueName="group";
+// 	kReturn[6].iValueType=VALUETYPE_INT;
+// 	kReturn[6].pkValue=(void*)&m_iGroup;
+// 	
+// 	kReturn[7].kValueName="leglength";
+// 	kReturn[7].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[7].pkValue=(void*)&m_fLegLength;
+// 	
+// 	kReturn[8].kValueName="walkablegroupflag";
+// 	kReturn[8].iValueType=VALUETYPE_INT;
+// 	kReturn[8].pkValue=(void*)&dummy;
+// 	
+// 	kReturn[9].kValueName="mass";
+// 	kReturn[9].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[9].pkValue=(void*)&m_fMass;	
+// 	
+// 	kReturn[10].kValueName="static";
+// 	kReturn[10].iValueType=VALUETYPE_BOOL;
+// 	kReturn[10].pkValue=(void*)&m_bStatic;	
+// 
+// 	kReturn[11].kValueName="airfriction";
+// 	kReturn[11].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[11].pkValue=(void*)&m_fAirFriction;	
+// 
+// 	kReturn[12].kValueName="inertia";
+// 	kReturn[12].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[12].pkValue=(void*)&m_fInertia;	
+// 
+// 	kReturn[13].kValueName="activemoment";
+// 	kReturn[13].iValueType=VALUETYPE_BOOL;
+// 	kReturn[13].pkValue=(void*)&m_bActiveMoment;	
+// 
+// 	kReturn[14].kValueName="bounce";
+// 	kReturn[14].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[14].pkValue=(void*)&m_fBounce;	
+// 
+// 	kReturn[15].kValueName="friction";
+// 	kReturn[15].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[15].pkValue=(void*)&m_fFriction;	
+// 
+// 	kReturn[16].kValueName="cantsleep";
+// 	kReturn[16].iValueType=VALUETYPE_BOOL;
+// 	kReturn[16].pkValue=(void*)&m_bCantSleep;	
+// 	
+// 	kReturn[17].kValueName="disableonsleep";
+// 	kReturn[17].iValueType=VALUETYPE_BOOL;
+// 	kReturn[17].pkValue=(void*)&m_bDisableOnSleep;	
+// 
+// 	kReturn[18].kValueName="removeonsleep";
+// 	kReturn[18].iValueType=VALUETYPE_BOOL;
+// 	kReturn[18].pkValue=(void*)&m_bRemoveOnSleep;	
+// 
+// 	kReturn[19].kValueName="nocolrespons";
+// 	kReturn[19].iValueType=VALUETYPE_BOOL;
+// 	kReturn[19].pkValue=(void*)&m_bNoColRespons;	
+// 
+// 	kReturn[20].kValueName="boxsize";
+// 	kReturn[20].iValueType=VALUETYPE_VECTOR3;
+// 	kReturn[20].pkValue=(void*)&m_kBoxSize;	
+// 	
+// 									
+// 	return kReturn;
+// }

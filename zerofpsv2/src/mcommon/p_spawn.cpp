@@ -11,18 +11,14 @@ P_Spawn::P_Spawn()
 	
 	m_iVersion = 1;
 	
-// 	m_pkFps=static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
-// 	m_pkEntityManager=static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
-// 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-
-	
-
 	m_strEntityScript = "";
-	m_fSpawnDelay		=	1;
-	
+	m_fSpawnDelay		=	1;	
 	m_fStartTime 		=	m_pkEntityManager->GetSimTime();
 	
-	//cout<<"spawner created"<<endl;
+	
+	m_kPropertyValues.push_back(PropertyValues("entityscript",VALUETYPE_STRING,(void*)&m_strEntityScript));
+	m_kPropertyValues.push_back(PropertyValues("spawndelay",VALUETYPE_FLOAT,(void*)&m_fSpawnDelay));
+
 }
 
 
@@ -52,20 +48,7 @@ void P_Spawn::Update()
 }
 
 
-vector<PropertyValues> P_Spawn::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
 
-	kReturn[0].kValueName = "entityscript";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strEntityScript;
-	
-	kReturn[1].kValueName = "spawndelay";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fSpawnDelay;
-		
-	return kReturn;
-}
 
 void P_Spawn::Save(ZFIoInterface* pkPackage)
 {	
@@ -97,3 +80,18 @@ Property* Create_P_Spawn()
 
 
 
+
+// vector<PropertyValues> P_Spawn::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(2);
+// 
+// 	kReturn[0].kValueName = "entityscript";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_strEntityScript;
+// 	
+// 	kReturn[1].kValueName = "spawndelay";
+// 	kReturn[1].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[1].pkValue    = (void*)&m_fSpawnDelay;
+// 		
+// 	return kReturn;
+// }

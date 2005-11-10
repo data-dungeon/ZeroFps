@@ -32,7 +32,6 @@ class ENGINE_SYSTEMS_API P_TcsTrigger : public Property
 		Vector3	m_kBoxSize;
 		float		m_fRadius;
 		
-		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 		

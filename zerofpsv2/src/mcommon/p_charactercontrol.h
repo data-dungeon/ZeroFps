@@ -125,7 +125,6 @@ class MCOMMON_API P_CharacterControl: public Property
 		void SetMoveDirection(int iDir);
 		
 		void UpdateAnimation();			
-		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 		P_CharacterControl();

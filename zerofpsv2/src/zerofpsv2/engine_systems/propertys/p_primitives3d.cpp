@@ -20,6 +20,11 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 
 	m_kMin.Set(-1,-1,-1);
 	m_kMax.Set(1,1,1);
+
+	m_kPropertyValues.push_back(PropertyValues("Radius",VALUETYPE_FLOAT,(void*)&m_fRadius));
+	m_kPropertyValues.push_back(PropertyValues("color",VALUETYPE_VECTOR3,(void*)&m_kColor));
+	m_kPropertyValues.push_back(PropertyValues("type",VALUETYPE_INT,(void*)&m_ePrimType));
+
 }
 
 
@@ -100,24 +105,6 @@ void P_Primitives3D::Load(ZFIoInterface* pkPackage,int iVersion)
 	pkPackage->Read((void*)&m_kColor	,12 ,1);	
 }
 
-vector<PropertyValues> P_Primitives3D::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(3);
-
-	kReturn[0].kValueName	= "Radius";
-	kReturn[0].iValueType	= VALUETYPE_FLOAT;
-	kReturn[0].pkValue		= (void*)&m_fRadius;
-
-	kReturn[1].kValueName	= "color";
-	kReturn[1].iValueType	= VALUETYPE_VECTOR3;
-	kReturn[1].pkValue		= (void*)&m_kColor;
-	
-	kReturn[2].kValueName	= "type";
-	kReturn[2].iValueType	= VALUETYPE_INT;
-	kReturn[2].pkValue		= (void*)&m_ePrimType;
-
-	return kReturn;
-};
 
 bool P_Primitives3D::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -145,3 +132,24 @@ void ENGINE_SYSTEMS_API Register_Prim3DProperty(ZSSZeroFps* pkZeroFps)
 	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_SOLIDBBOX",	SOLIDBBOX);
 	pkZeroFps->m_pkScript->RegisterConstant( "PRIM_PLANE",		PLANE);
 }
+
+
+
+// vector<PropertyValues> P_Primitives3D::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(3);
+// 
+// 	kReturn[0].kValueName	= "Radius";
+// 	kReturn[0].iValueType	= VALUETYPE_FLOAT;
+// 	kReturn[0].pkValue		= (void*)&m_fRadius;
+// 
+// 	kReturn[1].kValueName	= "color";
+// 	kReturn[1].iValueType	= VALUETYPE_VECTOR3;
+// 	kReturn[1].pkValue		= (void*)&m_kColor;
+// 	
+// 	kReturn[2].kValueName	= "type";
+// 	kReturn[2].iValueType	= VALUETYPE_INT;
+// 	kReturn[2].pkValue		= (void*)&m_ePrimType;
+// 
+// 	return kReturn;
+// };

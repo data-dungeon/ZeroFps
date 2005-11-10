@@ -22,6 +22,16 @@ P_Buff::P_Buff()
 	m_cType		= 0;
 	m_bShow		= true;	
 	m_fLastTime = 0;				//ticks on last update
+
+
+
+	m_kPropertyValues.push_back(PropertyValues("name",VALUETYPE_STRING,(void*)&m_strName));
+	m_kPropertyValues.push_back(PropertyValues("icon",VALUETYPE_STRING,(void*)&m_strIcon));
+	m_kPropertyValues.push_back(PropertyValues("type",VALUETYPE_INT,(void*)&m_cType));
+	m_kPropertyValues.push_back(PropertyValues("show",VALUETYPE_BOOL,(void*)&m_bShow));
+	m_kPropertyValues.push_back(PropertyValues("timeout",VALUETYPE_FLOAT,(void*)&m_fTimeOut));
+	
+
 }
 
 P_Buff::~P_Buff()
@@ -113,33 +123,7 @@ void P_Buff::Disable()
 	
 }
 
-vector<PropertyValues> P_Buff::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(5);
-	
-	kReturn[0].kValueName = "name";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = &m_strName;	
 
-	kReturn[1].kValueName = "icon";
-	kReturn[1].iValueType = VALUETYPE_STRING;
-	kReturn[1].pkValue    = &m_strIcon;	
-	
-	kReturn[2].kValueName = "type";
-	kReturn[2].iValueType = VALUETYPE_INT;
-	kReturn[2].pkValue    = &m_cType;	
-
-	kReturn[3].kValueName = "show";
-	kReturn[3].iValueType = VALUETYPE_BOOL;
-	kReturn[3].pkValue    = &m_bShow;	
-
-	kReturn[4].kValueName = "timeout";
-	kReturn[4].iValueType = VALUETYPE_FLOAT;
-	kReturn[4].pkValue    = &m_fTimeOut;		
-				
-	
-	return kReturn;
-}
 
 
 
@@ -159,3 +143,30 @@ void Register_P_Buff(ZSSZeroFps* pkZeroFps)
 
 
 
+// vector<PropertyValues> P_Buff::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(5);
+// 	
+// 	kReturn[0].kValueName = "name";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = &m_strName;	
+// 
+// 	kReturn[1].kValueName = "icon";
+// 	kReturn[1].iValueType = VALUETYPE_STRING;
+// 	kReturn[1].pkValue    = &m_strIcon;	
+// 	
+// 	kReturn[2].kValueName = "type";
+// 	kReturn[2].iValueType = VALUETYPE_INT;
+// 	kReturn[2].pkValue    = &m_cType;	
+// 
+// 	kReturn[3].kValueName = "show";
+// 	kReturn[3].iValueType = VALUETYPE_BOOL;
+// 	kReturn[3].pkValue    = &m_bShow;	
+// 
+// 	kReturn[4].kValueName = "timeout";
+// 	kReturn[4].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[4].pkValue    = &m_fTimeOut;		
+// 				
+// 	
+// 	return kReturn;
+// }

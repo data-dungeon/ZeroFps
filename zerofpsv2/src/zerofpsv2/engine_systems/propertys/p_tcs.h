@@ -116,7 +116,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3	m_kOldRotVelocity;
 		
 
-		vector<PropertyValues> GetPropertyValues();
+
 		bool HandleSetValue( const string& kValueName, const string& kValue );
 		float GetBoundingRadius();
 		bool SetupMeshData();

@@ -28,6 +28,15 @@ P_WaterRender::P_WaterRender()
 	
 	m_pkMaterial = new ZFResourceHandle;
 	SetMaterial("water.zmt");	
+
+
+
+
+	m_kPropertyValues.push_back(PropertyValues("size",VALUETYPE_VECTOR3,(void*)&m_kSize));
+	m_kPropertyValues.push_back(PropertyValues("step",VALUETYPE_INT,(void*)&m_iStep));
+	m_kPropertyValues.push_back(PropertyValues("material",VALUETYPE_STRING,(void*)&m_strMaterial));
+	m_kPropertyValues.push_back(PropertyValues("wave",VALUETYPE_FLOAT,(void*)&m_fWave));
+
 }
 
 void P_WaterRender::Init()
@@ -201,29 +210,6 @@ void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 
 }
 
-vector<PropertyValues> P_WaterRender::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(4);
-			
-	kReturn[0].kValueName="size";
-	kReturn[0].iValueType=VALUETYPE_VECTOR3;
-	kReturn[0].pkValue=(void*)&m_kSize;
-	
-	kReturn[1].kValueName="step";
-	kReturn[1].iValueType=VALUETYPE_INT;
-	kReturn[1].pkValue=(void*)&m_iStep;
-	
-	kReturn[2].kValueName="material";
-	kReturn[2].iValueType=VALUETYPE_STRING;
-	kReturn[2].pkValue=(void*)&m_strMaterial;
-
-	kReturn[3].kValueName="wave";
-	kReturn[3].iValueType=VALUETYPE_FLOAT;
-	kReturn[3].pkValue=(void*)&m_fWave;
-	
-	
-	return kReturn;
-}
 
 bool P_WaterRender::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -249,3 +235,30 @@ Property* Create_WaterRenderProperty()
 	return new P_WaterRender;
 }
 
+
+
+
+/*
+vector<PropertyValues> P_WaterRender::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(4);
+			
+	kReturn[0].kValueName="size";
+	kReturn[0].iValueType=VALUETYPE_VECTOR3;
+	kReturn[0].pkValue=(void*)&m_kSize;
+	
+	kReturn[1].kValueName="step";
+	kReturn[1].iValueType=VALUETYPE_INT;
+	kReturn[1].pkValue=(void*)&m_iStep;
+	
+	kReturn[2].kValueName="material";
+	kReturn[2].iValueType=VALUETYPE_STRING;
+	kReturn[2].pkValue=(void*)&m_strMaterial;
+
+	kReturn[3].kValueName="wave";
+	kReturn[3].iValueType=VALUETYPE_FLOAT;
+	kReturn[3].pkValue=(void*)&m_fWave;
+	
+	
+	return kReturn;
+}*/

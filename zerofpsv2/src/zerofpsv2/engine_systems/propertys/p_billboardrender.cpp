@@ -15,6 +15,10 @@ P_BillBoardRender::P_BillBoardRender()
 	m_strMaterial = "";
 	m_fScale=1;	
 		
+		
+	m_kPropertyValues.push_back(PropertyValues("material",VALUETYPE_STRING,&m_strMaterial));
+	m_kPropertyValues.push_back(PropertyValues("scale",VALUETYPE_FLOAT,(void*)&m_fScale));		
+
 }
 
 P_BillBoardRender::~P_BillBoardRender()
@@ -52,20 +56,20 @@ void P_BillBoardRender::SetMaterial(const string& strMaterial)
 	SetNetUpdateFlag(true);
 }
 
-vector<PropertyValues> P_BillBoardRender::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
- 
-	kReturn[0].kValueName = "material";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = &m_strMaterial;
-
-	kReturn[1].kValueName = "scale";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fScale;
-	
-	return kReturn;
-}
+// vector<PropertyValues> P_BillBoardRender::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(2);
+//  
+// 	kReturn[0].kValueName = "material";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = &m_strMaterial;
+// 
+// 	kReturn[1].kValueName = "scale";
+// 	kReturn[1].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[1].pkValue    = (void*)&m_fScale;
+// 	
+// 	return kReturn;
+// }
 
 bool P_BillBoardRender::HandleSetValue( const string& kValueName ,const string& kValue )
 {

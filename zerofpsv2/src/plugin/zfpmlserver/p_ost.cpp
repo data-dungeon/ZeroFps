@@ -31,6 +31,8 @@ P_Ost::P_Ost()
 	m_pkFogMaterial->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
 
 
+	m_kPropertyValues.push_back(PropertyValues("size",VALUETYPE_FLOAT,(void*)&m_fSize));
+
 }
 
 P_Ost::~P_Ost()
@@ -90,16 +92,6 @@ void P_Ost::Update()
 	
 }
 
-vector<PropertyValues> P_Ost::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-		
-	kReturn[0].kValueName = "size";
-	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = (void*)&m_fSize;
-
-	return kReturn;
-}
 
 
 void P_Ost::Save(ZFIoInterface* pkPackage)
@@ -141,3 +133,17 @@ void Register_P_Ost(ZSSZeroFps* pkZeroFps)
 	// Register Property Script Interface
 
 }
+
+
+// vector<PropertyValues> P_Ost::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 		
+// 	kReturn[0].kValueName = "size";
+// 	kReturn[0].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[0].pkValue    = (void*)&m_fSize;
+// 
+// 	return kReturn;
+// }
+
+

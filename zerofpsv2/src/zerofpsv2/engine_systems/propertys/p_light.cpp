@@ -31,6 +31,23 @@ P_Light::P_Light()
 	m_pkMaterial = new ZFResourceHandle;
 	SetMaterial("flare-white.zmt");
 	
+	
+	//register variables
+	m_kPropertyValues.push_back(PropertyValues("Ambient",VALUETYPE_VECTOR4,(void*)&m_pkLightSource->kAmbient));
+	m_kPropertyValues.push_back(PropertyValues("Diffuse",VALUETYPE_VECTOR4,(void*)&m_pkLightSource->kDiffuse));
+	m_kPropertyValues.push_back(PropertyValues("Specular",VALUETYPE_VECTOR4,(void*)&m_pkLightSource->kSpecular));
+	m_kPropertyValues.push_back(PropertyValues("Cutoff",VALUETYPE_FLOAT,(void*)&m_pkLightSource->fCutoff));
+	m_kPropertyValues.push_back(PropertyValues("Exp",VALUETYPE_FLOAT,(void*)&m_pkLightSource->fExp));
+	m_kPropertyValues.push_back(PropertyValues("Const_Atten",VALUETYPE_FLOAT,(void*)&m_pkLightSource->fConst_Atten));
+	m_kPropertyValues.push_back(PropertyValues("Linear_Atten",VALUETYPE_FLOAT,(void*)&m_pkLightSource->fLinear_Atten));
+	m_kPropertyValues.push_back(PropertyValues("Quadratic_Atten",VALUETYPE_FLOAT,(void*)&m_pkLightSource->fQuadratic_Atten));
+	m_kPropertyValues.push_back(PropertyValues("Priority",VALUETYPE_INT,(void*)&m_pkLightSource->iPriority));
+	m_kPropertyValues.push_back(PropertyValues("Type",VALUETYPE_INT,(void*)&m_pkLightSource->iType));
+	m_kPropertyValues.push_back(PropertyValues("Mode",VALUETYPE_INT,(void*)&m_iMode));
+	m_kPropertyValues.push_back(PropertyValues("Offset",VALUETYPE_VECTOR3,(void*)&m_kOffset));
+	m_kPropertyValues.push_back(PropertyValues("FlareSize",VALUETYPE_FLOAT,(void*)&m_fFlareSize));
+	m_kPropertyValues.push_back(PropertyValues("FlareMaterial",VALUETYPE_STRING,(void*)&m_strMaterial));
+		
 }
 
 P_Light::~P_Light()
@@ -214,69 +231,7 @@ void P_Light::SetMaterial(const string& strMaterial)
 }
 
 
-vector<PropertyValues> P_Light::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(14);
 
-	kReturn[0].kValueName = "Ambient";
-	kReturn[0].iValueType = VALUETYPE_VECTOR4;
-	kReturn[0].pkValue    = (void*)&m_pkLightSource->kAmbient;
-	
-	kReturn[1].kValueName = "Diffuse";
-	kReturn[1].iValueType = VALUETYPE_VECTOR4;
-	kReturn[1].pkValue    = (void*)&m_pkLightSource->kDiffuse;
-
-	kReturn[2].kValueName = "Specular";
-	kReturn[2].iValueType = VALUETYPE_VECTOR4;
-	kReturn[2].pkValue    = (void*)&m_pkLightSource->kSpecular;
-	
-	kReturn[3].kValueName = "Cutoff";
-	kReturn[3].iValueType = VALUETYPE_FLOAT;
-	kReturn[3].pkValue    = (void*)&m_pkLightSource->fCutoff;
-
-	kReturn[4].kValueName = "Exp";
-	kReturn[4].iValueType = VALUETYPE_FLOAT;
-	kReturn[4].pkValue    = (void*)&m_pkLightSource->fExp;
-
-	kReturn[5].kValueName = "Const_Atten";
-	kReturn[5].iValueType = VALUETYPE_FLOAT;
-	kReturn[5].pkValue    = (void*)&m_pkLightSource->fConst_Atten;
-
-	kReturn[6].kValueName = "Linear_Atten";
-	kReturn[6].iValueType = VALUETYPE_FLOAT;
-	kReturn[6].pkValue    = (void*)&m_pkLightSource->fLinear_Atten;
-
-	kReturn[7].kValueName = "Quadratic_Atten";
-	kReturn[7].iValueType = VALUETYPE_FLOAT;
-	kReturn[7].pkValue    = (void*)&m_pkLightSource->fQuadratic_Atten;
-	
-	kReturn[8].kValueName = "Priority";
-	kReturn[8].iValueType = VALUETYPE_INT;
-	kReturn[8].pkValue    = (void*)&m_pkLightSource->iPriority;
-	
-	kReturn[9].kValueName = "Type";
-	kReturn[9].iValueType = VALUETYPE_INT;
-	kReturn[9].pkValue    = (void*)&m_pkLightSource->iType;
-	
-	kReturn[10].kValueName = "Mode";
-	kReturn[10].iValueType = VALUETYPE_INT;
-	kReturn[10].pkValue    = (void*)&m_iMode;
-
-	kReturn[11].kValueName = "Offset";
-	kReturn[11].iValueType = VALUETYPE_VECTOR3;
-	kReturn[11].pkValue    = (void*)&m_kOffset;
-	
-	kReturn[12].kValueName = "FlareSize";
-	kReturn[12].iValueType = VALUETYPE_FLOAT;
-	kReturn[12].pkValue    = (void*)&m_fFlareSize;
-				
-	kReturn[13].kValueName = "FlareMaterial";
-	kReturn[13].iValueType = VALUETYPE_STRING;
-	kReturn[13].pkValue    = (void*)&m_strMaterial;
-	
-	
-	return kReturn;
-}
 
 bool P_Light::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -436,3 +391,66 @@ Property* Create_LightProperty()
 
 
 
+// vector<PropertyValues> P_Light::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(14);
+// 
+// 	kReturn[0].kValueName = "Ambient";
+// 	kReturn[0].iValueType = VALUETYPE_VECTOR4;
+// 	kReturn[0].pkValue    = (void*)&m_pkLightSource->kAmbient;
+// 	
+// 	kReturn[1].kValueName = "Diffuse";
+// 	kReturn[1].iValueType = VALUETYPE_VECTOR4;
+// 	kReturn[1].pkValue    = (void*)&m_pkLightSource->kDiffuse;
+// 
+// 	kReturn[2].kValueName = "Specular";
+// 	kReturn[2].iValueType = VALUETYPE_VECTOR4;
+// 	kReturn[2].pkValue    = (void*)&m_pkLightSource->kSpecular;
+// 	
+// 	kReturn[3].kValueName = "Cutoff";
+// 	kReturn[3].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[3].pkValue    = (void*)&m_pkLightSource->fCutoff;
+// 
+// 	kReturn[4].kValueName = "Exp";
+// 	kReturn[4].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[4].pkValue    = (void*)&m_pkLightSource->fExp;
+// 
+// 	kReturn[5].kValueName = "Const_Atten";
+// 	kReturn[5].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[5].pkValue    = (void*)&m_pkLightSource->fConst_Atten;
+// 
+// 	kReturn[6].kValueName = "Linear_Atten";
+// 	kReturn[6].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[6].pkValue    = (void*)&m_pkLightSource->fLinear_Atten;
+// 
+// 	kReturn[7].kValueName = "Quadratic_Atten";
+// 	kReturn[7].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[7].pkValue    = (void*)&m_pkLightSource->fQuadratic_Atten;
+// 	
+// 	kReturn[8].kValueName = "Priority";
+// 	kReturn[8].iValueType = VALUETYPE_INT;
+// 	kReturn[8].pkValue    = (void*)&m_pkLightSource->iPriority;
+// 	
+// 	kReturn[9].kValueName = "Type";
+// 	kReturn[9].iValueType = VALUETYPE_INT;
+// 	kReturn[9].pkValue    = (void*)&m_pkLightSource->iType;
+// 	
+// 	kReturn[10].kValueName = "Mode";
+// 	kReturn[10].iValueType = VALUETYPE_INT;
+// 	kReturn[10].pkValue    = (void*)&m_iMode;
+// 
+// 	kReturn[11].kValueName = "Offset";
+// 	kReturn[11].iValueType = VALUETYPE_VECTOR3;
+// 	kReturn[11].pkValue    = (void*)&m_kOffset;
+// 	
+// 	kReturn[12].kValueName = "FlareSize";
+// 	kReturn[12].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[12].pkValue    = (void*)&m_fFlareSize;
+// 				
+// 	kReturn[13].kValueName = "FlareMaterial";
+// 	kReturn[13].iValueType = VALUETYPE_STRING;
+// 	kReturn[13].pkValue    = (void*)&m_strMaterial;
+// 	
+// 	
+// 	return kReturn;
+// }

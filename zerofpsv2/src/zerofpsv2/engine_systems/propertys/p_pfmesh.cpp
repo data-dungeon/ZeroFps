@@ -656,11 +656,6 @@ bool P_PfMesh::LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, Na
 }
 
 
-vector<PropertyValues> P_PfMesh::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
-	return kReturn;
-}
 
 
 Property* Create_P_PfMesh()

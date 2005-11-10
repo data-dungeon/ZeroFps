@@ -22,7 +22,6 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 		int				m_iLinkEntityID;															///< entity wich to attach to, or -1 if parent is to be used		
 		unsigned int	m_iLastFrame;																///< keeps track of when the object was last updated
 	
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );
 		
 	public:

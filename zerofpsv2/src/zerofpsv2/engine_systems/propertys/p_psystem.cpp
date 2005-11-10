@@ -91,15 +91,20 @@ bool P_PSystem::UpdatePS(int iPS)
 
 // ------------------------------------------------------------------------------------------
 
-vector<PropertyValues> P_PSystem::GetPropertyValues()
+vector<PropertyValues>& P_PSystem::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(m_kPSystems.size());
+// 	vector<PropertyValues> kReturn(m_kPSystems.size());
+	static vector<PropertyValues> kReturn;
+	
+	kReturn.clear();
 		
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
-		kReturn[i].kValueName = "PSType";
+		kReturn.push_back(PropertyValues("PSType",VALUETYPE_STRING,(void*)&m_kPSystems[i].m_strPSName));
+	
+/*		kReturn[i].kValueName = "PSType";
 		kReturn[i].iValueType = VALUETYPE_STRING;
-		kReturn[i].pkValue    = (void*)&m_kPSystems[i].m_strPSName;
+		kReturn[i].pkValue    = (void*)&m_kPSystems[i].m_strPSName;*/
 	}
 
 	return kReturn;

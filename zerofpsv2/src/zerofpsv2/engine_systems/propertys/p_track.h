@@ -19,7 +19,6 @@ using namespace std;
 class ENGINE_SYSTEMS_API P_Track : public Property {
 	private:
 		
-		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 		int				m_iConnectID;		// Client that should recv updates activated by this tracker.

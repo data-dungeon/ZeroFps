@@ -36,14 +36,6 @@ void P_Controller::Update()
 
 // ------------------------------------------------------------------------------------------
 
-vector<PropertyValues> P_Controller::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(0);
-		
-	return kReturn;
-}
-
-// ------------------------------------------------------------------------------------------
 
 P_Controller::P_Controller()
 {

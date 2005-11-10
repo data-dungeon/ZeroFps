@@ -17,7 +17,6 @@ using namespace std;
 /// Property to add a Modell (MAD) to a object.
 class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 	private:
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );
 	
 		ZSSLight*		m_pkLight;

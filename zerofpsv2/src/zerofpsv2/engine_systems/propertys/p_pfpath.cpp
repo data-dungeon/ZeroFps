@@ -30,6 +30,10 @@ P_PfPath::P_PfPath()
 
 	m_kRunAnim = "run";
 	m_kIdleAnim = "idle";
+
+
+	m_kPropertyValues.push_back(PropertyValues("Tilt",VALUETYPE_BOOL,(void*)&m_bTilt));
+
 }
 
 
@@ -220,16 +224,7 @@ void P_PfPath::Load(ZFIoInterface* pkFile,int iVersion)
 }
 
 
-vector<PropertyValues> P_PfPath::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-	
-	kReturn[0].kValueName="Tilt";
-	kReturn[0].iValueType=VALUETYPE_BOOL;
-	kReturn[0].pkValue=(void*)&m_bTilt;
-	
-	return kReturn;
-}
+
 
 
 void P_PfPath::SetPath(vector<Vector3> kPath)
@@ -300,3 +295,15 @@ Property* Create_P_PfPath()
 
 
 
+
+
+// vector<PropertyValues> P_PfPath::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 	
+// 	kReturn[0].kValueName="Tilt";
+// 	kReturn[0].iValueType=VALUETYPE_BOOL;
+// 	kReturn[0].pkValue=(void*)&m_bTilt;
+// 	
+// 	return kReturn;
+// }

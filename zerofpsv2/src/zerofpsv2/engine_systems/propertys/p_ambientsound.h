@@ -54,9 +54,6 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 
 		bool m_bFreeForm; // tillåt areor som inte är fyrkantiga
 
-		vector<PropertyValues> GetPropertyValues();
-
-		
 };
 
 Property* Create_AmbientSound();

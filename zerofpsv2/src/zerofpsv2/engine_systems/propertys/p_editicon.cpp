@@ -20,6 +20,10 @@ P_EditIcon::P_EditIcon()
 	m_kAxis.Set(1,1,1);
 	
 	UpdateSet();
+	
+	m_kPropertyValues.push_back(PropertyValues("texture",VALUETYPE_STRING,(void*)&m_kTexture));
+	m_kPropertyValues.push_back(PropertyValues("scale",VALUETYPE_FLOAT,(void*)&m_fScale));
+	
 }
 
 void P_EditIcon::SetTexture(const char* acTexure)
@@ -55,19 +59,7 @@ void P_EditIcon::Update()
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture, true,true,false);
 }
 
-vector<PropertyValues> P_EditIcon::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
- 
-	kReturn[0].kValueName = "texture";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_kTexture;
 
-	kReturn[1].kValueName = "scale";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fScale;
-	return kReturn;
-}
 
 bool P_EditIcon::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -108,3 +100,18 @@ Property* Create_EditIcon()
 }
 
 
+
+
+// vector<PropertyValues> P_EditIcon::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(2);
+//  
+// 	kReturn[0].kValueName = "texture";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_kTexture;
+// 
+// 	kReturn[1].kValueName = "scale";
+// 	kReturn[1].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[1].pkValue    = (void*)&m_fScale;
+// 	return kReturn;
+// }

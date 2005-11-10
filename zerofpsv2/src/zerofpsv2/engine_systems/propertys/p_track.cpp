@@ -11,6 +11,10 @@ P_Track::P_Track()
 	m_bClosestZone				= true;
 	m_iConnectID				= -1;	// No Client.
 	m_iVersion					=	2;
+
+
+	m_kPropertyValues.push_back(PropertyValues("OneZoneOnly",VALUETYPE_BOOL,(void*)&m_bOneZoneOnly));
+
 }
 
 P_Track::~P_Track() 
@@ -36,16 +40,7 @@ void P_Track::Update()
 }
 
 
-vector<PropertyValues> P_Track::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-	
-	kReturn[0].kValueName = "OneZoneOnly";
-	kReturn[0].iValueType = VALUETYPE_BOOL;
-	kReturn[0].pkValue    = (void*)&m_bOneZoneOnly;
-	
-	return kReturn;
-}
+
 
 void P_Track::Save(ZFIoInterface* pkPackage)
 {	
@@ -69,3 +64,14 @@ Property* Create_TrackProperty()
 
 
 
+
+// vector<PropertyValues> P_Track::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 	
+// 	kReturn[0].kValueName = "OneZoneOnly";
+// 	kReturn[0].iValueType = VALUETYPE_BOOL;
+// 	kReturn[0].pkValue    = (void*)&m_bOneZoneOnly;
+// 	
+// 	return kReturn;
+// }

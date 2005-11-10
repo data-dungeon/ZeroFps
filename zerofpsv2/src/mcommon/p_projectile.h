@@ -14,7 +14,6 @@ class MCOMMON_API P_Projectile: public Property {
 		int	m_iOwnerID;	
 		bool	m_bDidHit;
 	
-		vector<PropertyValues> GetPropertyValues();
 	public:
 
 

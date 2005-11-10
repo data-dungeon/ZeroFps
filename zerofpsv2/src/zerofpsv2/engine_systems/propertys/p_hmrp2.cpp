@@ -17,6 +17,11 @@ P_HMRP2::P_HMRP2()
 	m_bNetwork	=	true;
 	
 	SetHeightMap(NULL,string(""));
+	
+	m_kPropertyValues.push_back(PropertyValues("invert",VALUETYPE_BOOL,(void*)&m_pkHeightMap->m_bInverted));
+	m_kPropertyValues.push_back(PropertyValues("tilesize",VALUETYPE_FLOAT,(void*)&m_pkHeightMap->m_fTileSize));
+	m_kPropertyValues.push_back(PropertyValues("tilesides",VALUETYPE_INT,(void*)&m_pkHeightMap->m_iTilesSide));
+	
 }
 
 P_HMRP2::~P_HMRP2()
@@ -112,24 +117,7 @@ float P_HMRP2::GetRadius()
 	return m_pkHeightMap->GetSize();
 }
 
-vector<PropertyValues> P_HMRP2::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(3);
 
-	kReturn[0].kValueName="invert";
-	kReturn[0].iValueType=VALUETYPE_BOOL;
-	kReturn[0].pkValue=(void*)&m_pkHeightMap->m_bInverted;
-
-	kReturn[1].kValueName="tilesize";
-	kReturn[1].iValueType=VALUETYPE_FLOAT;
-	kReturn[1].pkValue=(void*)&m_pkHeightMap->m_fTileSize;
-
-	kReturn[2].kValueName="tilesides";
-	kReturn[2].iValueType=VALUETYPE_INT;
-	kReturn[2].pkValue=(void*)&m_pkHeightMap->m_iTilesSide;
-
-	return kReturn;
-}
 
 
 /* ********************************** SCRIPT INTERFACE ****************************************/
@@ -144,3 +132,24 @@ void ENGINE_SYSTEMS_API Register_PHmrp(ZSSZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_HMRP2", Create_HMRP2);					
 }
 
+
+
+
+// vector<PropertyValues> P_HMRP2::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(3);
+// 
+// 	kReturn[0].kValueName="invert";
+// 	kReturn[0].iValueType=VALUETYPE_BOOL;
+// 	kReturn[0].pkValue=(void*)&m_pkHeightMap->m_bInverted;
+// 
+// 	kReturn[1].kValueName="tilesize";
+// 	kReturn[1].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[1].pkValue=(void*)&m_pkHeightMap->m_fTileSize;
+// 
+// 	kReturn[2].kValueName="tilesides";
+// 	kReturn[2].iValueType=VALUETYPE_INT;
+// 	kReturn[2].pkValue=(void*)&m_pkHeightMap->m_iTilesSide;
+// 
+// 	return kReturn;
+// }

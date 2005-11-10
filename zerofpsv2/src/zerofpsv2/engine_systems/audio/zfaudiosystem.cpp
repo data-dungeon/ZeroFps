@@ -1889,3 +1889,5 @@ void ZSSAudioSystem::UpdateMusic()
 	if(m_iMusicID != -1)
 		SetGain(m_iMusicID,m_fMusicFade*m_fMusicGain);
 }
+
+

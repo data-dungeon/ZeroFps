@@ -18,6 +18,8 @@ P_LinkToJoint::P_LinkToJoint()
 	m_bNetwork = true;
 	
 	m_iLastFrame = 0;
+	
+	m_kPropertyValues.push_back(PropertyValues("m_strToJoint",VALUETYPE_STRING,(void*)&m_strToJoint));
 }
 
 P_LinkToJoint::~P_LinkToJoint()	
@@ -70,16 +72,6 @@ void P_LinkToJoint::Update()
 	}		
 }
 
-vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-	
-	kReturn[0].kValueName = "m_strToJoint";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strToJoint;
-
-	return kReturn;
-}
 
 bool P_LinkToJoint::HandleSetValue( const string& kValueName ,const string& kValue )
 {

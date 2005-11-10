@@ -87,7 +87,6 @@ class MCOMMON_API P_Container: public Property
 		bool FindFreePos(P_Item* pkItem,int& iX,int& iY);		
 		bool CanStack(P_Item* pkTarget,P_Item* pkItem);
 		
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );
 		
 		bool SetupTwohanded(bool bEnable);

@@ -64,7 +64,6 @@ class MCOMMON_API P_AI: public Property
 		//look at
 		int	m_iTarget;		
 		
-		vector<PropertyValues> GetPropertyValues(); 
  		bool HandleSetValue( const string& kValueName, const string& kValue );
    
 		int FindClosestEnemy(float fMaxRange);

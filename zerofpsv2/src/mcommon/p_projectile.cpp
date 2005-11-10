@@ -17,6 +17,10 @@ P_Projectile::P_Projectile()
 	
 	m_iOwnerID	=	-1;
 	m_bDidHit	=	false;
+
+	
+	m_kPropertyValues.push_back(PropertyValues("ownerid",VALUETYPE_INT,(void*)&m_iOwnerID));
+
 }
 
 void P_Projectile::Init()
@@ -50,16 +54,7 @@ void P_Projectile::Touch(int iId)
 
 }
 
-vector<PropertyValues> P_Projectile::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
 
-	kReturn[0].kValueName = "ownerid";
-	kReturn[0].iValueType = VALUETYPE_INT; 
-	kReturn[0].pkValue    = (void*)&m_iOwnerID;	
-
-	return kReturn;	
-}
 
 // SCRIPT INTERFACE FOR P_Projectile
 using namespace ObjectManagerLua;
@@ -89,3 +84,16 @@ void Register_P_Projectile(ZSSZeroFps* pkZeroFps)
 
 };
 
+
+
+
+// vector<PropertyValues> P_Projectile::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 
+// 	kReturn[0].kValueName = "ownerid";
+// 	kReturn[0].iValueType = VALUETYPE_INT; 
+// 	kReturn[0].pkValue    = (void*)&m_iOwnerID;	
+// 
+// 	return kReturn;	
+// }

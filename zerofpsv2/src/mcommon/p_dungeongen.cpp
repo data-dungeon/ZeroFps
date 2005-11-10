@@ -560,20 +560,7 @@ void P_DungeonGen::Load(ZFIoInterface* pkPackage,int iVersion)
 }
 
 
-vector<PropertyValues> P_DungeonGen::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(0);
-		
-// 	kReturn[0].kValueName = "scale";
-// 	kReturn[0].iValueType = VALUETYPE_FLOAT;
-// 	kReturn[0].pkValue    = (void*)&m_fScale;
-// 
-// 	kReturn[1].kValueName = "offset";
-// 	kReturn[1].iValueType = VALUETYPE_VECTOR3;
-// 	kReturn[1].pkValue    = (void*)&m_kOffset;
-	
-	return kReturn;
-}
+
 
 bool P_DungeonGen::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -677,3 +664,22 @@ void Register_P_DungeonGen(ZSSZeroFps* pkZeroFps)
 // 		
 // 		}
 // 	}
+
+
+
+// vector<PropertyValues> P_DungeonGen::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(0);
+// 		
+// // 	kReturn[0].kValueName = "scale";
+// // 	kReturn[0].iValueType = VALUETYPE_FLOAT;
+// // 	kReturn[0].pkValue    = (void*)&m_fScale;
+// // 
+// // 	kReturn[1].kValueName = "offset";
+// // 	kReturn[1].iValueType = VALUETYPE_VECTOR3;
+// // 	kReturn[1].pkValue    = (void*)&m_kOffset;
+// 	
+// 	return kReturn;
+// }
+
+

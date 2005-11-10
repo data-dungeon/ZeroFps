@@ -26,8 +26,6 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 		ZSSRender*	m_pkRender;
 		PrimType		m_ePrimType;
 		
-		vector<PropertyValues> GetPropertyValues();
-		
 	public:
 		float		m_fRadius;
 		int		m_iSlices;

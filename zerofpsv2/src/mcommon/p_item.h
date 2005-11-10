@@ -81,7 +81,6 @@ class MCOMMON_API P_Item: public Property
 		string	m_strImage;
 		
 		
-		vector<PropertyValues> GetPropertyValues();
 			
 	public:
 		Stats		m_kItemStats;		

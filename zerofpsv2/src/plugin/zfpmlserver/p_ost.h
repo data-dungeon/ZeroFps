@@ -21,7 +21,6 @@ class P_Ost : public Property
 		
 		void DrawFogPlane();
 		
-		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 		P_Ost();

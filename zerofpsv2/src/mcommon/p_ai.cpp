@@ -57,6 +57,10 @@ P_AI::P_AI()
 	m_fCollisionTime = 0;
 	
 	SetState(eAI_STATE_GUARD);
+
+
+	m_kPropertyValues.push_back(PropertyValues("state",VALUETYPE_INT,(void*)&m_iState));
+
 }
 
 P_AI::~P_AI()
@@ -600,21 +604,6 @@ void P_AI::SetState(int iNewState)
 	m_iNextState		= iNewState;
 	m_bStateChanged	= true;
 }
-
-vector<PropertyValues> P_AI::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-
-	
-	kReturn[0].kValueName = "state";
-	kReturn[0].iValueType = VALUETYPE_INT;
-	kReturn[0].pkValue    = (void*)&m_iState;		
-	
-	return kReturn;
-}
-
-
-
 
 
 bool P_AI::HandleSetValue( const string& kValueName, const string& kValue )

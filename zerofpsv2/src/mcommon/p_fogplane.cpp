@@ -20,6 +20,10 @@ P_FogPlane::P_FogPlane()
 	m_pkMaterial = new ZFResourceHandle;
 	SetMaterial("fogplane.zlm");		
 
+
+	m_kPropertyValues.push_back(PropertyValues("size",VALUETYPE_FLOAT,(void*)&m_fSize));
+	m_kPropertyValues.push_back(PropertyValues("material",VALUETYPE_STRING,(void*)&m_strMaterial));
+
 }
 
 P_FogPlane::~P_FogPlane()
@@ -78,20 +82,7 @@ void P_FogPlane::Update()
 	
 }
 
-vector<PropertyValues> P_FogPlane::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
-		
-	kReturn[0].kValueName = "size";
-	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = (void*)&m_fSize;
 
-	kReturn[1].kValueName = "material";
-	kReturn[1].iValueType = VALUETYPE_STRING;
-	kReturn[1].pkValue    = (void*)&m_strMaterial;
-
-	return kReturn;
-}
 
 bool P_FogPlane::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -162,3 +153,20 @@ void Register_P_FogPlane(ZSSZeroFps* pkZeroFps)
 	// Register Property Script Interface
 
 }
+
+
+
+// vector<PropertyValues> P_FogPlane::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(2);
+// 		
+// 	kReturn[0].kValueName = "size";
+// 	kReturn[0].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[0].pkValue    = (void*)&m_fSize;
+// 
+// 	kReturn[1].kValueName = "material";
+// 	kReturn[1].iValueType = VALUETYPE_STRING;
+// 	kReturn[1].pkValue    = (void*)&m_strMaterial;
+// 
+// 	return kReturn;
+// }

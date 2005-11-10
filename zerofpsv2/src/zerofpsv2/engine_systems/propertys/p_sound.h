@@ -45,7 +45,6 @@ public:
 
 	bool HandleSetValue( const string& kValueName ,const string& kValue );
 
-	vector<PropertyValues> GetPropertyValues();
 
 };
 

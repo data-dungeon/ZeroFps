@@ -32,7 +32,6 @@ class ENGINE_SYSTEMS_API P_Controller : public Property {
 		void SpringTrigger (int iAxis, float fValue);
 
 		void Update();
-		vector<PropertyValues> GetPropertyValues();
 
 		P_Controller( string kPSType );
 		P_Controller();

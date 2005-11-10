@@ -22,6 +22,13 @@ P_TcsTrigger::P_TcsTrigger()
 	m_kBoxSize.Set(0.5,0.5,0.5);
 	m_iTriggerID = 1;
 	
+	
+	
+	m_kPropertyValues.push_back(PropertyValues("type",VALUETYPE_INT,(void*)&m_iTriggerType));
+	m_kPropertyValues.push_back(PropertyValues("radius",VALUETYPE_FLOAT,(void*)&m_fRadius));
+	m_kPropertyValues.push_back(PropertyValues("boxsize",VALUETYPE_VECTOR3,(void*)&m_kBoxSize));
+	m_kPropertyValues.push_back(PropertyValues("id",VALUETYPE_INT,(void*)&m_iTriggerID));
+	
 }
 
 P_TcsTrigger::~P_TcsTrigger()
@@ -65,30 +72,6 @@ void P_TcsTrigger::Trigger(P_Tcs* pkTcs)
 }
 
 
-vector<PropertyValues> P_TcsTrigger::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(4);
-	
-	
-	kReturn[0].kValueName="type";
-	kReturn[0].iValueType=VALUETYPE_INT;
-	kReturn[0].pkValue=(void*)&m_iTriggerType;	
-	
-	kReturn[1].kValueName="radius";
-	kReturn[1].iValueType=VALUETYPE_FLOAT;
-	kReturn[1].pkValue=(void*)&m_fRadius;	
-
-	kReturn[2].kValueName="boxsize";
-	kReturn[2].iValueType=VALUETYPE_VECTOR3;
-	kReturn[2].pkValue=(void*)&m_kBoxSize;				
-	
-	kReturn[3].kValueName="id";
-	kReturn[3].iValueType=VALUETYPE_INT;
-	kReturn[3].pkValue=(void*)&m_iTriggerID;				
-	
-	return kReturn;
-	
-}
 
 void P_TcsTrigger::Save(ZFIoInterface* pkPackage)
 {
@@ -121,3 +104,33 @@ void ENGINE_SYSTEMS_API Register_PTcsTrigger(ZSSZeroFps* pkZeroFps)
 	pkZeroFps->m_pkScript->RegisterConstant("TRIGGER_SPHERE", eSPHERE);
 	pkZeroFps->m_pkScript->RegisterConstant("TRIGGER_BOX", eBOX);
 }
+
+
+
+
+
+
+// vector<PropertyValues> P_TcsTrigger::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(4);
+// 	
+// 	
+// 	kReturn[0].kValueName="type";
+// 	kReturn[0].iValueType=VALUETYPE_INT;
+// 	kReturn[0].pkValue=(void*)&m_iTriggerType;	
+// 	
+// 	kReturn[1].kValueName="radius";
+// 	kReturn[1].iValueType=VALUETYPE_FLOAT;
+// 	kReturn[1].pkValue=(void*)&m_fRadius;	
+// 
+// 	kReturn[2].kValueName="boxsize";
+// 	kReturn[2].iValueType=VALUETYPE_VECTOR3;
+// 	kReturn[2].pkValue=(void*)&m_kBoxSize;				
+// 	
+// 	kReturn[3].kValueName="id";
+// 	kReturn[3].iValueType=VALUETYPE_INT;
+// 	kReturn[3].pkValue=(void*)&m_iTriggerID;				
+// 	
+// 	return kReturn;
+// 	
+// }

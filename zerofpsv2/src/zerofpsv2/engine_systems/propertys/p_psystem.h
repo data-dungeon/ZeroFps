@@ -22,7 +22,7 @@ class ENGINE_SYSTEMS_API P_PSystem : public Property
 		
 	public:
 		void Update();
-		vector<PropertyValues> GetPropertyValues();
+		vector<PropertyValues>& GetPropertyValues();
 
 		P_PSystem( string kPSType );
 		P_PSystem();

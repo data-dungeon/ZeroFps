@@ -21,8 +21,6 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 		
 		LightProfile		m_kLightProfile;				//used for lighting
 		
-		vector<PropertyValues> GetPropertyValues();
-
 	public:
 		HeightMap*			m_pkHeightMap;
 		string				m_strMapName;		// Name of file to load/save to.

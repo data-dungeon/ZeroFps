@@ -35,6 +35,15 @@ P_Vegitation::P_Vegitation()
 	
 	m_iAmount = 400;
 	m_iSize = 10;
+	
+	
+	
+	m_kPropertyValues.push_back(PropertyValues("material",VALUETYPE_STRING,(void*)&m_strMaterialFile));
+	m_kPropertyValues.push_back(PropertyValues("m_kScale",VALUETYPE_VECTOR3,(void*)&m_kScale));
+	m_kPropertyValues.push_back(PropertyValues("m_fWind",VALUETYPE_FLOAT,(void*)&m_fWind));
+	m_kPropertyValues.push_back(PropertyValues("amount",VALUETYPE_INT,(void*)&m_iAmount));
+	m_kPropertyValues.push_back(PropertyValues("size",VALUETYPE_INT,(void*)&m_iSize));
+	
 }
 
 P_Vegitation::~P_Vegitation()
@@ -216,33 +225,7 @@ void P_Vegitation::Update()
 
 
 
-vector<PropertyValues> P_Vegitation::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(5);
-		
-	kReturn[0].kValueName = "material";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strMaterialFile;
 
-	kReturn[1].kValueName = "m_kScale";
-	kReturn[1].iValueType = VALUETYPE_VECTOR3;
-	kReturn[1].pkValue    = (void*)&m_kScale;
-
-	kReturn[2].kValueName = "m_fWind";
-	kReturn[2].iValueType = VALUETYPE_FLOAT;
-	kReturn[2].pkValue    = (void*)&m_fWind;
-
-	kReturn[3].kValueName = "amount";
-	kReturn[3].iValueType = VALUETYPE_INT;
-	kReturn[3].pkValue    = (void*)&m_iAmount;
-	
-	kReturn[4].kValueName = "size";
-	kReturn[4].iValueType = VALUETYPE_INT;
-	kReturn[4].pkValue    = (void*)&m_iSize;
-
-
-	return kReturn;
-}
 
 bool P_Vegitation::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -578,3 +561,32 @@ void P_Vegitation::DrawArray()
 
 
 
+
+
+// vector<PropertyValues> P_Vegitation::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(5);
+// 		
+// 	kReturn[0].kValueName = "material";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_strMaterialFile;
+// 
+// 	kReturn[1].kValueName = "m_kScale";
+// 	kReturn[1].iValueType = VALUETYPE_VECTOR3;
+// 	kReturn[1].pkValue    = (void*)&m_kScale;
+// 
+// 	kReturn[2].kValueName = "m_fWind";
+// 	kReturn[2].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[2].pkValue    = (void*)&m_fWind;
+// 
+// 	kReturn[3].kValueName = "amount";
+// 	kReturn[3].iValueType = VALUETYPE_INT;
+// 	kReturn[3].pkValue    = (void*)&m_iAmount;
+// 	
+// 	kReturn[4].kValueName = "size";
+// 	kReturn[4].iValueType = VALUETYPE_INT;
+// 	kReturn[4].pkValue    = (void*)&m_iSize;
+// 
+// 
+// 	return kReturn;
+// }

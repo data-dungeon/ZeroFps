@@ -35,6 +35,10 @@ P_Ml::P_Ml()
 	//seutp font
 	m_pkFont = new ZGuiFont("FontFan");
 	m_pkFont->Create("/data/textures/text/fetfont.fnt",-1);
+
+
+	m_kPropertyValues.push_back(PropertyValues("showtext",VALUETYPE_BOOL,(void*)&m_bShowText));
+
 }
 
 void P_Ml::Init()
@@ -165,16 +169,7 @@ void P_Ml::Load(ZFIoInterface* pkPackage,int iVersion)
 
 
 
-vector<PropertyValues> P_Ml::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-		
-	kReturn[0].kValueName = "showtext";
-	kReturn[0].iValueType = VALUETYPE_BOOL;
-	kReturn[0].pkValue    = (void*)&m_bShowText;
 
-	return kReturn;
-}
 
 
 // SCRIPT INTERFACE FOR P_Ml
@@ -234,3 +229,18 @@ void Register_P_Ml(ZSSZeroFps* pkZeroFps)
 }
 
 
+
+
+
+
+
+// vector<PropertyValues> P_Ml::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 		
+// 	kReturn[0].kValueName = "showtext";
+// 	kReturn[0].iValueType = VALUETYPE_BOOL;
+// 	kReturn[0].pkValue    = (void*)&m_bShowText;
+// 
+// 	return kReturn;
+// }

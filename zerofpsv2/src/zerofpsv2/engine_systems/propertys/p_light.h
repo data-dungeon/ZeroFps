@@ -27,9 +27,7 @@ class ENGINE_SYSTEMS_API P_Light : public Property
 		ZFResourceHandle* m_pkMaterial;
 		string				m_strMaterial;
 		
-		vector<PropertyValues> GetPropertyValues();
-		bool HandleSetValue( const string& kValueName ,const string& kValue );
-		
+		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 	 

@@ -22,6 +22,11 @@ P_Sound::P_Sound()
 	m_kPrevpos = Vector3(-9999,-9999,-9999);
 
 	m_iVersion = 2; // lade till gain
+	
+	m_kPropertyValues.push_back(PropertyValues("filename",VALUETYPE_STRING,(void*)&m_strFileName));
+	m_kPropertyValues.push_back(PropertyValues("loop",VALUETYPE_BOOL,(void*)&m_bLoop));
+	m_kPropertyValues.push_back(PropertyValues("gain",VALUETYPE_FLOAT,(void*)&m_fGain));
+
 }
 
 P_Sound::~P_Sound()
@@ -178,25 +183,7 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 }
 
-vector<PropertyValues> P_Sound::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(3);
 
-	kReturn[0].kValueName = "filename";
-	kReturn[0].iValueType = VALUETYPE_STRING; 
-	kReturn[0].pkValue    = (void*)&m_strFileName;
-	
-	kReturn[1].kValueName = "loop";
-	kReturn[1].iValueType = VALUETYPE_BOOL;
-	kReturn[1].pkValue    = (void*)&m_bLoop;
-
-	kReturn[2].kValueName = "gain";
-	kReturn[2].iValueType = VALUETYPE_FLOAT;
-	kReturn[2].pkValue    = (void*)&m_fGain;
-
-	SetNetUpdateFlag(true);
-	return kReturn;
-}
 
 void P_Sound::Save(ZFIoInterface* pkFile)
 {
@@ -479,3 +466,24 @@ Property* Create_SoundProperty()
 	return new P_Sound();
 }
 */
+
+
+// vector<PropertyValues> P_Sound::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(3);
+// 
+// 	kReturn[0].kValueName = "filename";
+// 	kReturn[0].iValueType = VALUETYPE_STRING; 
+// 	kReturn[0].pkValue    = (void*)&m_strFileName;
+// 	
+// 	kReturn[1].kValueName = "loop";
+// 	kReturn[1].iValueType = VALUETYPE_BOOL;
+// 	kReturn[1].pkValue    = (void*)&m_bLoop;
+// 
+// 	kReturn[2].kValueName = "gain";
+// 	kReturn[2].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[2].pkValue    = (void*)&m_fGain;
+// 
+// 	SetNetUpdateFlag(true);
+// 	return kReturn;
+// }

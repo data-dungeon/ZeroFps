@@ -31,6 +31,16 @@ P_AmbientSound::P_AmbientSound()
 	
 	m_fWidth = 8;
 	m_fHeight = 8;	
+	
+	
+	//register variables
+	m_kPropertyValues.push_back(PropertyValues("filename",VALUETYPE_STRING,(void*)&m_strSound));
+	m_kPropertyValues.push_back(PropertyValues("freeform",VALUETYPE_BOOL,(void*)&m_bFreeForm));
+	m_kPropertyValues.push_back(PropertyValues("width",VALUETYPE_FLOAT,(void*)&m_fWidth));
+	m_kPropertyValues.push_back(PropertyValues("height",VALUETYPE_FLOAT,(void*)&m_fHeight));
+	m_kPropertyValues.push_back(PropertyValues("floor",VALUETYPE_FLOAT,(void*)&m_fFloor));
+	m_kPropertyValues.push_back(PropertyValues("roof",VALUETYPE_FLOAT,(void*)&m_fRoof));
+	
 }
 
 P_AmbientSound::~P_AmbientSound()
@@ -179,7 +189,7 @@ void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 	m_bSoundStarted = false;
 }
-
+/*
 vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(6);
@@ -208,47 +218,47 @@ vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 	kReturn[5].iValueType = VALUETYPE_FLOAT; 
 	kReturn[5].pkValue    = (void*)&m_fRoof;
 
-	Entity* pkEnt = GetEntity();
-	
-	if(m_bFreeForm == false && pkEnt)
-	{
-		ZoneData* pkData = m_pEntityMan->GetZone( pkEnt->GetWorldPosV() ) ;
-	
-		if(pkData && pkData->m_pkZone != NULL)
-		{
-			Vector3 pos = pkData->m_kPos;
-			Vector3 sz;
-			sz.x = m_fWidth;
-			sz.z = m_fHeight;
-
-			pkEnt->SetWorldPosV(pos);
-
-			pos.x += (sz.x)/2;
-			pos.z -= (sz.z)/2;
-
-			Vector2 Left(pos.x, pos.z); 
-			Vector2 Right(pos.x - sz.x, pos.z + sz.z);
-			Vector2 Top(pos.x, pos.z + sz.z);
-			Vector2 Bottom(pos.x - sz.x, pos.z);
-
-			Left -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
-			Right -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
-			Top -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
-			Bottom -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
-
-			m_kPolygon.clear(); 
-			m_kPolygon.push_back(Left); 
-			m_kPolygon.push_back(Top);
-			m_kPolygon.push_back(Right);
-			m_kPolygon.push_back(Bottom);
-			m_kPolygon.push_back(Left); 
-			
-	//		SetNetUpdateFlag(true);
-		}
-	}
+// 	Entity* pkEnt = GetEntity();
+// 	
+// 	if(m_bFreeForm == false && pkEnt)
+// 	{
+// 		ZoneData* pkData = m_pEntityMan->GetZone( pkEnt->GetWorldPosV() ) ;
+// 	
+// 		if(pkData && pkData->m_pkZone != NULL)
+// 		{
+// 			Vector3 pos = pkData->m_kPos;
+// 			Vector3 sz;
+// 			sz.x = m_fWidth;
+// 			sz.z = m_fHeight;
+// 
+// 			pkEnt->SetWorldPosV(pos);
+// 
+// 			pos.x += (sz.x)/2;
+// 			pos.z -= (sz.z)/2;
+// 
+// 			Vector2 Left(pos.x, pos.z); 
+// 			Vector2 Right(pos.x - sz.x, pos.z + sz.z);
+// 			Vector2 Top(pos.x, pos.z + sz.z);
+// 			Vector2 Bottom(pos.x - sz.x, pos.z);
+// 
+// 			Left -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+// 			Right -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+// 			Top -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+// 			Bottom -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+// 
+// 			m_kPolygon.clear(); 
+// 			m_kPolygon.push_back(Left); 
+// 			m_kPolygon.push_back(Top);
+// 			m_kPolygon.push_back(Right);
+// 			m_kPolygon.push_back(Bottom);
+// 			m_kPolygon.push_back(Left); 
+// 			
+// 	//		SetNetUpdateFlag(true);
+// 		}
+// 	}
 	
 	return kReturn;
-}
+}*/
 
 void P_AmbientSound::Save(ZFIoInterface* pkFile)
 {

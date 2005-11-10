@@ -237,7 +237,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 
 		void PlayCharacterMovementSounds();
 		void SetupContainers();		
-		vector<PropertyValues> GetPropertyValues();				
 		void SendBuffList();
 		void SendStats();
 		void SendDeathInfo();

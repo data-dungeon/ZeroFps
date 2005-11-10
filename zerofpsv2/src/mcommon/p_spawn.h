@@ -27,7 +27,6 @@ class MCOMMON_API P_Spawn: public Property
 		
 		float				m_fStartTime;
 		
-		vector<PropertyValues> GetPropertyValues();
 		
 	public:
 		P_Spawn();

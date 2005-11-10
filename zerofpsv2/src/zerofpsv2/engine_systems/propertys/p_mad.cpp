@@ -54,6 +54,15 @@ P_Mad::P_Mad()
 	m_fLastAABBTest=0;	
 	m_kLastRot.Zero();
 	
+	
+	m_kPropertyValues.push_back(PropertyValues("m_fScale",VALUETYPE_FLOAT,(void*)&m_fScale));
+	m_kPropertyValues.push_back(PropertyValues("m_kMadFile",VALUETYPE_STRING,(void*)&m_kMadFile));
+	m_kPropertyValues.push_back(PropertyValues("m_bCanBeInvisible",VALUETYPE_BOOL,(void*)&m_bCanBeInvisible));
+	m_kPropertyValues.push_back(PropertyValues("m_iShadowGroup",VALUETYPE_INT,(void*)&m_iShadowGroup));
+	m_kPropertyValues.push_back(PropertyValues("m_iSortPlace",VALUETYPE_INT,(void*)&m_iSortPlace));
+	m_kPropertyValues.push_back(PropertyValues("m_kOffset",VALUETYPE_VECTOR3,(void*)&m_kOffset));
+	m_kPropertyValues.push_back(PropertyValues("m_bCastShadow",VALUETYPE_BOOL,(void*)&m_bCastShadow));
+
 }
 
 void P_Mad::Update()
@@ -600,51 +609,7 @@ bool P_Mad::AddMeshName(char* szName)
 }
 
 
-/** \var float m_fScale
-	\brief Scale of model.
-	\relates Mad
 
-	Use this to change the size of a MAD. Std is 1.0. 
-*/
-
-/** \var string m_kMadFile
-	\brief MAD file to use.
-	\relates Mad
-*/
-vector<PropertyValues> P_Mad::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(7);
-	
-	kReturn[0].kValueName = "m_fScale";
-	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = (void*)&m_fScale;
-
-	kReturn[1].kValueName = "m_kMadFile";
-	kReturn[1].iValueType = VALUETYPE_STRING;
-	kReturn[1].pkValue    = (void*)&m_kMadFile;
-
-	kReturn[2].kValueName = "m_bCanBeInvisible";
-	kReturn[2].iValueType = VALUETYPE_BOOL;
-	kReturn[2].pkValue    = (void*)&m_bCanBeInvisible;
-
-	kReturn[3].kValueName = "m_iShadowGroup";
-	kReturn[3].iValueType = VALUETYPE_INT;
-	kReturn[3].pkValue    = (void*)&m_iShadowGroup;
-
-	kReturn[4].kValueName = "m_iSortPlace";
-	kReturn[4].iValueType = VALUETYPE_INT;
-	kReturn[4].pkValue    = (void*)&m_iSortPlace;
-
-	kReturn[5].kValueName = "m_kOffset";
-	kReturn[5].iValueType = VALUETYPE_VECTOR3;
-	kReturn[5].pkValue    = (void*)&m_kOffset;
-		
-	kReturn[6].kValueName = "m_bCastShadow";
-	kReturn[6].iValueType = VALUETYPE_BOOL;
-	kReturn[6].pkValue    = (void*)&m_bCastShadow;	
-	
-	return kReturn;
-}
 
 bool P_Mad::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -1257,3 +1222,54 @@ void Register_MadProperty(ZSSZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("GetMadOffset",		SI_PMad::GetMadOffsetLua);
 }
 
+
+
+
+
+
+
+/** \var float m_fScale
+	\brief Scale of model.
+	\relates Mad
+
+	Use this to change the size of a MAD. Std is 1.0. 
+*/
+
+/** \var string m_kMadFile
+	\brief MAD file to use.
+	\relates Mad
+*/
+// vector<PropertyValues> P_Mad::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(7);
+// 	
+// 	kReturn[0].kValueName = "m_fScale";
+// 	kReturn[0].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[0].pkValue    = (void*)&m_fScale;
+// 
+// 	kReturn[1].kValueName = "m_kMadFile";
+// 	kReturn[1].iValueType = VALUETYPE_STRING;
+// 	kReturn[1].pkValue    = (void*)&m_kMadFile;
+// 
+// 	kReturn[2].kValueName = "m_bCanBeInvisible";
+// 	kReturn[2].iValueType = VALUETYPE_BOOL;
+// 	kReturn[2].pkValue    = (void*)&m_bCanBeInvisible;
+// 
+// 	kReturn[3].kValueName = "m_iShadowGroup";
+// 	kReturn[3].iValueType = VALUETYPE_INT;
+// 	kReturn[3].pkValue    = (void*)&m_iShadowGroup;
+// 
+// 	kReturn[4].kValueName = "m_iSortPlace";
+// 	kReturn[4].iValueType = VALUETYPE_INT;
+// 	kReturn[4].pkValue    = (void*)&m_iSortPlace;
+// 
+// 	kReturn[5].kValueName = "m_kOffset";
+// 	kReturn[5].iValueType = VALUETYPE_VECTOR3;
+// 	kReturn[5].pkValue    = (void*)&m_kOffset;
+// 		
+// 	kReturn[6].kValueName = "m_bCastShadow";
+// 	kReturn[6].iValueType = VALUETYPE_BOOL;
+// 	kReturn[6].pkValue    = (void*)&m_bCastShadow;	
+// 	
+// 	return kReturn;
+// }

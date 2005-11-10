@@ -61,8 +61,6 @@ class ENGINE_API P_PfPath : public Property
 		void SetRunAnim (string kAnim)		{ m_kRunAnim = kAnim; }
 		void SetIdleAnim (string kAnim)		{ m_kIdleAnim = kAnim; }
 
-	protected:
-		vector<PropertyValues> GetPropertyValues();
 };
 
 Property* Create_P_PfPath();

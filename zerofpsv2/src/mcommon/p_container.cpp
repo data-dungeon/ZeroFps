@@ -34,6 +34,12 @@ P_Container::P_Container()
 	m_kItemTypes.clear();
 	
 	SetSize(4,4);		
+
+
+
+	m_kPropertyValues.push_back(PropertyValues("sizex",VALUETYPE_INT,(void*)&m_iSizeX));
+	m_kPropertyValues.push_back(PropertyValues("sizey",VALUETYPE_INT,(void*)&m_iSizeY));
+
 }
 
 P_Container::~P_Container()
@@ -103,21 +109,7 @@ void P_Container::CloseContainer()
 	m_iOwnerID = -1;
 }
 
-vector<PropertyValues> P_Container::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(0);
-			
-	kReturn[0].kValueName = "sizex";
-	kReturn[0].iValueType = VALUETYPE_INT;
-	kReturn[0].pkValue    = &m_iSizeX;		
-	
-	kReturn[1].kValueName = "sizey";
-	kReturn[1].iValueType = VALUETYPE_INT;
-	kReturn[1].pkValue    = &m_iSizeY;		
-	
-	
-	return kReturn;	
-}
+
 
 
 bool P_Container::HandleSetValue( const string& kValueName ,const string& kValue )
@@ -1102,3 +1094,25 @@ void Register_P_Container(ZSSZeroFps* pkZeroFps)
 	//g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
 
 }
+
+
+
+
+
+
+// vector<PropertyValues> P_Container::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(0);
+// 			
+// 	kReturn[0].kValueName = "sizex";
+// 	kReturn[0].iValueType = VALUETYPE_INT;
+// 	kReturn[0].pkValue    = &m_iSizeX;		
+// 	
+// 	kReturn[1].kValueName = "sizey";
+// 	kReturn[1].iValueType = VALUETYPE_INT;
+// 	kReturn[1].pkValue    = &m_iSizeY;		
+// 	
+// 	
+// 	return kReturn;	
+// }
+

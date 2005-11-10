@@ -80,6 +80,9 @@ P_CharacterControl::P_CharacterControl()
 	kCombatMode.m_strIdleStanding = "combat_idle";
 	m_kAnimationSets.push_back(kCombatMode);
 	
+	
+	m_kPropertyValues.push_back(PropertyValues("speed",VALUETYPE_FLOAT,(void*)&m_fSpeed));
+
 }
 
 P_CharacterControl::~P_CharacterControl()
@@ -93,26 +96,7 @@ void P_CharacterControl::Init()
 	m_kControls.reset();
 }
 
-vector<PropertyValues> P_CharacterControl::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
-	
-// 	kReturn[2].kValueName = "WalkForwardAnim";
-// 	kReturn[2].iValueType = VALUETYPE_STRING;
-// 	kReturn[2].pkValue    = (void*)&m_strWalkForward;		
-// 	
-	kReturn[0].kValueName = "speed";
-	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = &m_fSpeed;	
-	
-// 	kReturn[0].kValueName = "RunForwardAnim";
-// 	kReturn[0].iValueType = VALUETYPE_STRING;
-// 	kReturn[0].pkValue    = (void*)&m_strRunForward;	
 
-	
-		
-	return kReturn;
-}
 
 void P_CharacterControl::Update()
 {	
@@ -1038,3 +1022,24 @@ void Register_P_CharacterControl(ZSSZeroFps* pkZeroFps)
 }
 
 
+
+// vector<PropertyValues> P_CharacterControl::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 	
+// // 	kReturn[2].kValueName = "WalkForwardAnim";
+// // 	kReturn[2].iValueType = VALUETYPE_STRING;
+// // 	kReturn[2].pkValue    = (void*)&m_strWalkForward;		
+// // 	
+// 	kReturn[0].kValueName = "speed";
+// 	kReturn[0].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[0].pkValue    = &m_fSpeed;	
+// 	
+// // 	kReturn[0].kValueName = "RunForwardAnim";
+// // 	kReturn[0].iValueType = VALUETYPE_STRING;
+// // 	kReturn[0].pkValue    = (void*)&m_strRunForward;	
+// 
+// 	
+// 		
+// 	return kReturn;
+// }

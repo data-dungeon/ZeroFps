@@ -40,7 +40,6 @@ class MCOMMON_API TileInfo
 class MCOMMON_API P_DungeonGen: public Property 
 {
 	private:
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );			
 		
 		ZSSRender*			m_pkRender;

@@ -23,7 +23,6 @@ class MCOMMON_API P_FogPlane: public Property
 		
 		void DrawFogPlane();		
 		
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		
 	public:

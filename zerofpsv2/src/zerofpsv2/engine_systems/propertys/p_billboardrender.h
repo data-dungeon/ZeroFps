@@ -20,9 +20,7 @@ class ENGINE_SYSTEMS_API P_BillBoardRender : public Property
 		float m_fScale;
 		
 		
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
-	
 		void DrawBillboard();
 	
 	public:

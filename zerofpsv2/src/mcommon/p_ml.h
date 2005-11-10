@@ -29,7 +29,6 @@ class MCOMMON_API P_Ml: public Property {
 		ZMaterial*			m_pkTextMaterial;
 		ZGuiFont*			m_pkFont;
 		
-		vector<PropertyValues> GetPropertyValues();
 	public:
 
 		void GetActions(vector<string>& actions) {	actions = m_kActions; }

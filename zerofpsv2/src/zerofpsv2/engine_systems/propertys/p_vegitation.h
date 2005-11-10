@@ -60,7 +60,6 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		bool					m_CheckedForHM;
 		
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 	
 		void BuildArrays();

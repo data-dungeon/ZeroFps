@@ -45,22 +45,18 @@ enum ValueTypes
 
 class ENGINE_API PropertyValues
 {
-public:
-	string	kValueName;
-	void*		pkValue;
-	int		iValueType;
-	float		fUpperBound;
-	float		fLowerBound;
-	int		iNumberOfValues;
-	bool		bResize;
-	bool		bVector;
+	public:
+		string			m_strValueName;
+		void*				m_pkValue;
+		ValueTypes		m_eValueType;
+		float				m_fUpperBound;
+		float				m_fLowerBound;
+		unsigned int	m_iNumberOfValues;
+		bool				m_bResize;
+		bool				m_bVector;
+	
+		PropertyValues(const string& strName,ValueTypes eValueType,void* pkValue);
 
-	inline PropertyValues() : 
-			fLowerBound(FLT_MIN),
-			fUpperBound(FLT_MAX),
-			iNumberOfValues(1),
-			bResize(false),
-			bVector(false) {} 
 };
 
 
@@ -83,6 +79,9 @@ class ENGINE_API Property
 		Entity*				m_pkEntity;
 		ZSSEntityManager* m_pkEntityManager;
 	
+		//vector containing information on all property variables
+		vector<PropertyValues>	m_kPropertyValues;
+	
 		//settings
 		int		m_iSortPlace;			//	place in update queue (for rendering)
 		bool		m_bSortDistance;		// do we want to sort propertys by dystance from camera (for rendering)		
@@ -100,7 +99,7 @@ class ENGINE_API Property
 		//netflags		
 		void	SetNrOfConnections(int iConNR);
 	
-		virtual vector<PropertyValues> GetPropertyValues();
+// 		virtual vector<PropertyValues> GetPropertyValues();
 		virtual bool HandleSetValue( const string& kValueName ,const string& kValue )			{	return false;	};
 		virtual void HaveSetValue( const string& kValueName )											{};
 				
@@ -121,7 +120,10 @@ class ENGINE_API Property
 		float GetLowerBound(const string& kValueName);
 		bool Resize(const string& kValueName, unsigned int uiNewSize);
 		bool CheckIfVector(const string& kValueName);		
-		/////////////////////////////////////////////////////////
+		
+		virtual vector<PropertyValues>& GetPropertyValues()												{	return m_kPropertyValues;	};
+		
+		/////////////////////////////////////////////////////////		
 		
 		//handle netupdate flags		
 		void	SetNetUpdateFlag(int iConID,bool bValue);

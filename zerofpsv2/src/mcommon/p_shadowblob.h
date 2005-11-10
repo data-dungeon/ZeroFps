@@ -20,7 +20,6 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		ZShaderSystem*	m_pkZShaderSystem;
 		Tcs*				m_pkTcs;
 		
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );			
 		
 		//ZFResourceHandle* m_pkTexture;

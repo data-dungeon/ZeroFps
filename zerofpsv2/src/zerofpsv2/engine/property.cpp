@@ -5,6 +5,26 @@
  
 #include <bitset>
  
+ 
+ 
+
+PropertyValues::PropertyValues(const string& strName,ValueTypes eValueType,void* pkValue)
+{	
+	m_strValueName = 	strName;
+	m_eValueType = 	eValueType;
+	m_pkValue = 		pkValue;		
+	
+	m_fLowerBound = 		FLT_MIN;
+	m_fUpperBound = 		FLT_MAX;
+	m_iNumberOfValues = 	1;
+	m_bResize = 			false;
+	m_bVector = 			false;
+	
+}
+
+ 
+ 
+ 
 Property::Property()
 {
 	m_pkZeroFps				= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		
@@ -63,23 +83,20 @@ bool Property::operator<(const Property& kOther) const
 	return false;
 }
 
-vector<PropertyValues> Property::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn;
-	return kReturn;
-};
+
 
 // Property Edit Interface
 vector<string> Property::GetValueNames()
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp = GetPropertyValues();
+	
 	vector<string> kReturnVector;
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			kReturnVector.push_back(kItor->kValueName);
+			kReturnVector.push_back(kItor->m_strValueName);
 			kItor++;
 		}
 	}
@@ -89,42 +106,43 @@ vector<string> Property::GetValueNames()
 
 string Property::GetValue(const string& kValueName)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				return ValueToString(kItor->pkValue, &(*kItor));
+				return ValueToString(kItor->m_pkValue, &(*kItor));
 			}	
 			kItor++;
 		};
 	};
+	
 	string kStrTemp="invalid ValueName";
 	return kStrTemp;
 }
 
 string Property::GetValue(const string& kValueName, unsigned int iIndex)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	string kStrTemp = "invalid value";
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				if(kItor->iNumberOfValues ==-1)
-					return ValueToString(kItor->pkValue, &(*kItor));
+				if(kItor->m_iNumberOfValues ==1)
+					return ValueToString(kItor->m_pkValue, &(*kItor));
 				else
-					switch(kItor->iValueType)
+					switch(kItor->m_eValueType)
 				{	
 					case VALUETYPE_INT:	
 						{	
-							vector<int> kTempVector = *((vector<int>*)kItor->pkValue);
+							vector<int> kTempVector = *((vector<int>*)kItor->m_pkValue);
 							if(iIndex < kTempVector.size())
 								return ValueToString(((void*)&kTempVector[iIndex]), &(*kItor));
 							else 
@@ -132,7 +150,7 @@ string Property::GetValue(const string& kValueName, unsigned int iIndex)
 						}
 					case VALUETYPE_STRING:
 						{
-							vector<string> kTempVector = *((vector<string>*)kItor->pkValue);
+							vector<string> kTempVector = *((vector<string>*)kItor->m_pkValue);
 							if(iIndex < kTempVector.size())
 								return ValueToString(((void*)&kTempVector[iIndex]), &(*kItor));
 							else 
@@ -140,7 +158,7 @@ string Property::GetValue(const string& kValueName, unsigned int iIndex)
 						}
 					case VALUETYPE_BOOL:
 						{
-							vector<bool> kTempVector = *((vector<bool>*)kItor->pkValue);
+							vector<bool> kTempVector = *((vector<bool>*)kItor->m_pkValue);
 							if(iIndex < kTempVector.size())
 								return ValueToString(((void*)&kTempVector[iIndex]), &(*kItor));
 							else 
@@ -148,7 +166,7 @@ string Property::GetValue(const string& kValueName, unsigned int iIndex)
 						}
 					case VALUETYPE_FLOAT:
 						{
-							vector<float> kTempVector = *((vector<float>*)kItor->pkValue);
+							vector<float> kTempVector = *((vector<float>*)kItor->m_pkValue);
 							if(iIndex < kTempVector.size())
 								return ValueToString(((void*)&kTempVector[iIndex]), &(*kItor));
 							else 
@@ -156,7 +174,7 @@ string Property::GetValue(const string& kValueName, unsigned int iIndex)
 						}
 					case VALUETYPE_VECTOR3:	
 						{
-							vector<Vector3> kTempVector = *((vector<Vector3>*)kItor->pkValue);
+							vector<Vector3> kTempVector = *((vector<Vector3>*)kItor->m_pkValue);
 							if(iIndex < kTempVector.size())
 								return ValueToString(((void*)&kTempVector[iIndex]), &(*kItor));
 							else 
@@ -164,7 +182,7 @@ string Property::GetValue(const string& kValueName, unsigned int iIndex)
 						}
 					case VALUETYPE_VECTOR4:	
 						{
-							vector<Vector4> kTempVector = *((vector<Vector4>*)kItor->pkValue);
+							vector<Vector4> kTempVector = *((vector<Vector4>*)kItor->m_pkValue);
 							if(iIndex < kTempVector.size())
 								return ValueToString(((void*)&kTempVector[iIndex]), &(*kItor));
 							else 
@@ -186,24 +204,32 @@ bool Property::SetValue(const string& kValueName, const string& kValue)
 		HaveSetValue(kValueName);
 		return true;
 	}
+	
 		
 	//get possible values
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	
 	//do we have any values
 	if(!kTemp.empty())
 	{
 		for(vector<PropertyValues>::iterator kItor = kTemp.begin();kItor != kTemp.end();kItor++)
 		{
-			if( kValueName == (*kItor).kValueName)
+			if( kValueName == (*kItor).m_strValueName)
 			{
-				if(StringToValue(kValue, kItor->pkValue, &(*kItor)))
+				if(kItor->m_pkValue == NULL)
+				{
+					cerr<<"Warning: tried to set value "<<kValueName<<" on property "<<GetName()<<" but value is a NULL value"<<endl;
+					return false;
+				}
+
+				
+				if(StringToValue(kValue, kItor->m_pkValue, &(*kItor)))
 				{
 					HaveSetValue(kValueName);
 					return true;
 				}
-				else
-					return false;
+				
+				return false;
 			}	
 		};
 	};
@@ -217,31 +243,42 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 {
 	if(HandleSetValue(kValueName, kValue))
 		return true;
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	
+	
+	
+	vector<PropertyValues>& kTemp= GetPropertyValues();
+	
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				if( kItor->iNumberOfValues < 0)
+				if(kItor->m_pkValue == NULL)
 				{
-					return StringToValue(kValue, kItor->pkValue, &(*kItor));
+					cerr<<"Warning: tried to set value "<<kValueName<<" on property "<<GetName()<<" but value is a NULL value"<<endl;
+					return false;
+				}			
+			
+			
+				if( kItor->m_iNumberOfValues = 1)
+				{
+					return StringToValue(kValue, kItor->m_pkValue, &(*kItor));
 				}
 				else  
 				{
-					switch(kItor->iValueType)
+					switch(kItor->m_eValueType)
 					{	
 					case VALUETYPE_INT:	
 						{	
-							vector<int>* kTempVector = ((vector<int>*)kItor->pkValue);;
+							vector<int>* kTempVector = ((vector<int>*)kItor->m_pkValue);;
 							if(iIndex < kTempVector->size())
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
-							else if(kItor->bResize)
+							else if(kItor->m_bResize)
 							{
 								kTempVector->resize(iIndex);
-								kItor->iNumberOfValues = iIndex+1;
+								kItor->m_iNumberOfValues = iIndex+1;
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
 							}
 							else 
@@ -249,13 +286,13 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 						}
 					case VALUETYPE_STRING:	
 						{	
-							vector<string>* kTempVector = ((vector<string>*)kItor->pkValue);;
+							vector<string>* kTempVector = ((vector<string>*)kItor->m_pkValue);;
 							if(iIndex < kTempVector->size())
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
-							else if(kItor->bResize)
+							else if(kItor->m_bResize)
 							{
 								kTempVector->resize(iIndex);
-								kItor->iNumberOfValues = iIndex+1;
+								kItor->m_iNumberOfValues = iIndex+1;
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
 							}
 							else 
@@ -264,13 +301,13 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 						
 					case VALUETYPE_BOOL:	
 						{	
-							vector<bool>* kTempVector = ((vector<bool>*)kItor->pkValue);;
+							vector<bool>* kTempVector = ((vector<bool>*)kItor->m_pkValue);;
 							if(iIndex < kTempVector->size())
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
-							else if(kItor->bResize)
+							else if(kItor->m_bResize)
 							{
 								kTempVector->resize(iIndex);
-								kItor->iNumberOfValues = iIndex+1;
+								kItor->m_iNumberOfValues = iIndex+1;
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
 							}
 							else 
@@ -279,13 +316,13 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 						
 					case VALUETYPE_FLOAT:	
 						{	
-							vector<float>* kTempVector = ((vector<float>*)kItor->pkValue);;
+							vector<float>* kTempVector = ((vector<float>*)kItor->m_pkValue);;
 							if(iIndex < kTempVector->size())
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
-							else if(kItor->bResize)
+							else if(kItor->m_bResize)
 							{
 								kTempVector->resize(iIndex);
-								kItor->iNumberOfValues = iIndex+1;
+								kItor->m_iNumberOfValues = iIndex+1;
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
 							}
 							else 
@@ -294,13 +331,13 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 						
 					case VALUETYPE_VECTOR3:	
 						{	
-							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->pkValue);;
+							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->m_pkValue);;
 							if(iIndex < kTempVector->size())
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
-							else if(kItor->bResize)
+							else if(kItor->m_bResize)
 							{
 								kTempVector->resize(iIndex);
-								kItor->iNumberOfValues = iIndex+1;
+								kItor->m_iNumberOfValues = iIndex+1;
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
 							}
 							else 
@@ -309,13 +346,13 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 						
 					case VALUETYPE_VECTOR4:	
 						{	
-							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->pkValue);;
+							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->m_pkValue);;
 							if(iIndex < kTempVector->size())
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
-							else if(kItor->bResize)
+							else if(kItor->m_bResize)
 							{
 								kTempVector->resize(iIndex);
-								kItor->iNumberOfValues = iIndex+1;
+								kItor->m_iNumberOfValues = iIndex+1;
 								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), &(*kItor));
 							}
 							else 
@@ -340,41 +377,41 @@ int Property::GetNumberOfValues(const string& kValueName)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				if(kItor->bVector)
+				if(kItor->m_bVector)
 				{
-					switch(kItor->iValueType)
+					switch(kItor->m_eValueType)
 					{	
 					case VALUETYPE_INT:	
 						{	
-							vector<int>* kTempVector = ((vector<int>*)kItor->pkValue);
+							vector<int>* kTempVector = ((vector<int>*)kItor->m_pkValue);
 							return kTempVector->size();
 						}
 						
 					case VALUETYPE_FLOAT:
 						{	
-							vector<float>* kTempVector = ((vector<float>*)kItor->pkValue);
+							vector<float>* kTempVector = ((vector<float>*)kItor->m_pkValue);
 							return kTempVector->size();
 						}
 					case VALUETYPE_BOOL:
 						{	
-							vector<bool>* kTempVector = ((vector<bool>*)kItor->pkValue);
+							vector<bool>* kTempVector = ((vector<bool>*)kItor->m_pkValue);
 							return kTempVector->size();
 						}
 					case VALUETYPE_STRING:
 						{	
-							vector<string>* kTempVector = ((vector<string>*)kItor->pkValue);
+							vector<string>* kTempVector = ((vector<string>*)kItor->m_pkValue);
 							return kTempVector->size();
 						}
 					case VALUETYPE_VECTOR3:
 						{	
-							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->pkValue);
+							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->m_pkValue);
 							return kTempVector->size();
 						}
 					case VALUETYPE_VECTOR4:
 						{	
-							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->pkValue);
+							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->m_pkValue);
 							return kTempVector->size();
 						}
 					}
@@ -388,12 +425,18 @@ int Property::GetNumberOfValues(const string& kValueName)
 
 string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 {
+	if(pkValue == NULL)
+	{
+		return "WriteOnly";
+	}
+
+
 	char pk_chBuffer[50];
 	
 	string kBuffer1,kBuffer2;
 	string kBuffer;			
 	
-	switch(pkPropertyValue->iValueType)
+	switch(pkPropertyValue->m_eValueType)
 	{	
 	case VALUETYPE_INT:
 		//itoa(*((int*)pkValue),pk_chsBuffer,10); 
@@ -471,36 +514,37 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 	string kTemp1, kTemp2, kTemp3;
 	char *cStop;
 	
-	switch(pkPropertyValue->iValueType)
+	switch(pkPropertyValue->m_eValueType)
 	{
 		case VALUETYPE_INT:
 			iTemp1=atoi(kValue.c_str());
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-				if(iTemp1>(pkPropertyValue->fUpperBound))
+			if(pkPropertyValue->m_fUpperBound != FLT_MAX)
+				if(iTemp1 > pkPropertyValue->m_fUpperBound )
+					return false;					
+			if(pkPropertyValue->m_fLowerBound !=FLT_MIN)
+				if(iTemp1 < pkPropertyValue->m_fLowerBound )
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
-				if(iTemp1<(pkPropertyValue->fLowerBound))
-					return false;
+			
 			*((int*)pkValue)=iTemp1;
 			return true;
 					
 		case VALUETYPE_CHARVAL:
 			iTemp1 = atoi(kValue.c_str());
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-				if(iTemp1>(pkPropertyValue->fUpperBound))
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)
+				if(iTemp1>(pkPropertyValue->m_fUpperBound))
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
-				if(iTemp1<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)
+				if(iTemp1<(pkPropertyValue->m_fLowerBound))
 					return false;
 			*((char*)pkValue)=(char)iTemp1;
 			return true;		
 					
 		case VALUETYPE_STRING:
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-				if(kValue.size()>(pkPropertyValue->fUpperBound))
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)
+				if(kValue.size()>(pkPropertyValue->m_fUpperBound))
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
-				if(kValue.size()<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)
+				if(kValue.size()<(pkPropertyValue->m_fLowerBound))
 					return false;
 			*(reinterpret_cast<string*>(pkValue))=kValue;
 			return true;
@@ -515,11 +559,11 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 			
 		case VALUETYPE_FLOAT:
 			fTemp1= (float) strtod( kValue.c_str(), &cStop );
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-				if(fTemp1>(pkPropertyValue->fUpperBound))
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)
+				if(fTemp1>(pkPropertyValue->m_fUpperBound))
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
-				if(fTemp1<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)
+				if(fTemp1<(pkPropertyValue->m_fLowerBound))
 					return false;
 			*((float*)pkValue)=fTemp1; 
 			return true;
@@ -529,31 +573,31 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 				return false;		
 			kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
 			fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
-				if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+				if(fTemp1>(pkPropertyValue->m_fUpperBound))	   // kollar om talet är högre än upperbound
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	//kollar lowerbound
-				if(fTemp1<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	//kollar lowerbound
+				if(fTemp1<(pkPropertyValue->m_fLowerBound))
 					return false;
 					
 			if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
 				return false;
 			kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
 			fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-				if(fTemp2>(pkPropertyValue->fUpperBound))	   
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      
+				if(fTemp2>(pkPropertyValue->m_fUpperBound))	   
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-				if(fTemp2<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	
+				if(fTemp2<(pkPropertyValue->m_fLowerBound))
 					return false;
 							
 			kTemp1=kValue.substr(iTemp2,kValue.length());
 			fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-				if(fTemp3>(pkPropertyValue->fUpperBound))	   
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      
+				if(fTemp3>(pkPropertyValue->m_fUpperBound))	   
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-				if(fTemp3<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	
+				if(fTemp3<(pkPropertyValue->m_fLowerBound))
 					return false;
 					
 			((Vector3*)pkValue)->Set(fTemp1,fTemp2,fTemp3); 
@@ -564,12 +608,12 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 				return false;		
 			kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
 			fTemp1= (float) strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
-				if(fTemp1>(pkPropertyValue->fUpperBound))	   // kollar om talet är högre än upperbound
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+				if(fTemp1>(pkPropertyValue->m_fUpperBound))	   // kollar om talet är högre än upperbound
 					return false;
 			
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	//kollar lowerbound
-				if(fTemp1<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	//kollar lowerbound
+				if(fTemp1<(pkPropertyValue->m_fLowerBound))
 					return false;
 					
 			if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
@@ -578,12 +622,12 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 			kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
 			fTemp2= (float) strtod( kTemp1.c_str(), &cStop ); 
 			
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-				if(fTemp2>(pkPropertyValue->fUpperBound))	   
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      
+				if(fTemp2>(pkPropertyValue->m_fUpperBound))	   
 					return false;
 			
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-				if(fTemp2<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	
+				if(fTemp2<(pkPropertyValue->m_fLowerBound))
 					return false;
 							
 			if((iTemp1=kValue.find(" ",iTemp2+1)) == -1) //kollar efter andra mellanslaget
@@ -592,32 +636,32 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 			kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
 			fTemp3= (float) strtod( kTemp1.c_str(), &cStop ); 
 			
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-				if(fTemp2>(pkPropertyValue->fUpperBound))	   
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      
+				if(fTemp2>(pkPropertyValue->m_fUpperBound))	   
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-				if(fTemp2<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	
+				if(fTemp2<(pkPropertyValue->m_fLowerBound))
 					return false;
 									
 			kTemp1=kValue.substr(iTemp1,kValue.length());
 			fTemp4= (float) strtod( kTemp1.c_str(), &cStop ); 
 									
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)      
-				if(fTemp3>(pkPropertyValue->fUpperBound))	   
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)      
+				if(fTemp3>(pkPropertyValue->m_fUpperBound))	   
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)	
-				if(fTemp3<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)	
+				if(fTemp3<(pkPropertyValue->m_fLowerBound))
 					return false;
 											
 			((Vector4*)pkValue)->Set(fTemp1,fTemp2,fTemp3,fTemp4); 
 			return true;
 			
 		case VALUETYPE_CHARS:
-			if((pkPropertyValue->fUpperBound)!=FLT_MAX)
-				if(kValue.size()>(pkPropertyValue->fUpperBound))
+			if((pkPropertyValue->m_fUpperBound)!=FLT_MAX)
+				if(kValue.size()>(pkPropertyValue->m_fUpperBound))
 					return false;
-			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
-				if(kValue.size()<(pkPropertyValue->fLowerBound))
+			if((pkPropertyValue->m_fLowerBound)!=FLT_MIN)
+				if(kValue.size()<(pkPropertyValue->m_fLowerBound))
 					return false;
 					
 			strcpy(reinterpret_cast<char*>(pkValue),kValue.c_str());
@@ -638,10 +682,10 @@ float Property::GetUpperBound(const string& kValueName)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
 				
-				return kItor->fUpperBound;
+				return kItor->m_fUpperBound;
 			}	
 			kItor++;
 		};
@@ -657,10 +701,10 @@ float Property::GetLowerBound(const string& kValueName)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
 				
-				return kItor->fLowerBound;
+				return kItor->m_fLowerBound;
 			}	
 			kItor++;
 		};
@@ -676,9 +720,9 @@ bool Property::CheckIfResize(const string& kValueName)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				return kItor->bResize;
+				return kItor->m_bResize;
 			}	
 			kItor++;
 		};
@@ -694,9 +738,9 @@ bool Property::CheckIfVector(const string& kValueName)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				return kItor->bVector;
+				return kItor->m_bVector;
 			}	
 			kItor++;
 		};
@@ -712,53 +756,53 @@ bool Property::Resize(const string& kValueName, unsigned int uiNewSize)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			if( kValueName == kItor->kValueName)
+			if( kValueName == kItor->m_strValueName)
 			{
-				if(kItor->bResize)
+				if(kItor->m_bResize)
 				{
-					switch(kItor->iValueType)
+					switch(kItor->m_eValueType)
 					{	
 					case VALUETYPE_INT:	
 						{	
-							vector<int>* kTempVector = ((vector<int>*)kItor->pkValue);
+							vector<int>* kTempVector = ((vector<int>*)kItor->m_pkValue);
 							kTempVector->resize(uiNewSize);
-							kItor->iNumberOfValues=uiNewSize;
+							kItor->m_iNumberOfValues=uiNewSize;
 							return true;
 						}
 						
 					case VALUETYPE_FLOAT:
 						{	
-							vector<float>* kTempVector = ((vector<float>*)kItor->pkValue);
+							vector<float>* kTempVector = ((vector<float>*)kItor->m_pkValue);
 							kTempVector->resize(uiNewSize);
-							kItor->iNumberOfValues=uiNewSize;
+							kItor->m_iNumberOfValues=uiNewSize;
 							return true;
 						}
 					case VALUETYPE_BOOL:
 						{	
-							vector<bool>* kTempVector = ((vector<bool>*)kItor->pkValue);
+							vector<bool>* kTempVector = ((vector<bool>*)kItor->m_pkValue);
 							kTempVector->resize(uiNewSize);
-							kItor->iNumberOfValues=uiNewSize;
+							kItor->m_iNumberOfValues=uiNewSize;
 							return true;
 						}
 					case VALUETYPE_STRING:
 						{	
-							vector<string>* kTempVector = ((vector<string>*)kItor->pkValue);
+							vector<string>* kTempVector = ((vector<string>*)kItor->m_pkValue);
 							kTempVector->resize(uiNewSize);
-							kItor->iNumberOfValues=uiNewSize;
+							kItor->m_iNumberOfValues=uiNewSize;
 							return true;
 						}
 					case VALUETYPE_VECTOR3:
 						{	
-							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->pkValue);
+							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->m_pkValue);
 							kTempVector->resize(uiNewSize);
-							kItor->iNumberOfValues=uiNewSize;
+							kItor->m_iNumberOfValues=uiNewSize;
 							return true;
 						}
 					case VALUETYPE_VECTOR4:
 						{	
-							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->pkValue);
+							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->m_pkValue);
 							kTempVector->resize(uiNewSize);
-							kItor->iNumberOfValues=uiNewSize;
+							kItor->m_iNumberOfValues=uiNewSize;
 							return true;
 						}
 					}
@@ -853,3 +897,9 @@ bool	Property::GetNetUpdateFlag(int iConID)
 	
 // 	if(m_pkEntity)
 // 		m_pkEntity->RemoveProperty(this);
+
+// vector<PropertyValues> Property::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn;
+// 	return kReturn;
+// };

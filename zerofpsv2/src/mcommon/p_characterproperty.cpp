@@ -639,6 +639,14 @@ P_CharacterProperty::P_CharacterProperty()
 	//setup font
 	m_pkFont = new ZGuiFont("CharacterFont");
 	m_pkFont->Create("/data/textures/text/fetfont.fnt",-1);	
+
+
+
+	m_kPropertyValues.push_back(PropertyValues("walksound",VALUETYPE_BOOL,(void*)&m_bWalkSound));
+	m_kPropertyValues.push_back(PropertyValues("markersize",VALUETYPE_FLOAT,(void*)&m_fMarkerSize));
+	m_kPropertyValues.push_back(PropertyValues("name",VALUETYPE_STRING,(void*)&m_strName));
+	m_kPropertyValues.push_back(PropertyValues("faction",VALUETYPE_INT,(void*)&m_iFaction));
+	m_kPropertyValues.push_back(PropertyValues("respawntime",VALUETYPE_FLOAT,(void*)&m_fRespawnTime));
 }
 
 void P_CharacterProperty::Init()
@@ -647,33 +655,7 @@ void P_CharacterProperty::Init()
 }
 
 
-vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(5);
 
-	kReturn[0].kValueName = "walksound";
-	kReturn[0].iValueType = VALUETYPE_BOOL; 
-	kReturn[0].pkValue    = (void*)&m_bWalkSound;	
-
-	kReturn[1].kValueName = "markersize";
-	kReturn[1].iValueType = VALUETYPE_FLOAT; 
-	kReturn[1].pkValue    = (void*)&m_fMarkerSize;	
-
-	kReturn[2].kValueName = "name";
-	kReturn[2].iValueType = VALUETYPE_STRING; 
-	kReturn[2].pkValue    = (void*)&m_strName;		
-	
-	kReturn[3].kValueName = "faction";
-	kReturn[3].iValueType = VALUETYPE_INT; 
-	kReturn[3].pkValue    = (void*)&m_iFaction;		
-			
-	kReturn[4].kValueName = "respawntime";
-	kReturn[4].iValueType = VALUETYPE_FLOAT; 
-	kReturn[4].pkValue    = (void*)&m_fRespawnTime;		
-	
-	
-	return kReturn;	
-}
 
 void P_CharacterProperty::SetupCharacterStats()
 {
@@ -3834,3 +3816,30 @@ void Register_P_CharacterProperty(ZSSZeroFps* pkZeroFps)
 
 
 
+// vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(5);
+// 
+// 	kReturn[0].kValueName = "walksound";
+// 	kReturn[0].iValueType = VALUETYPE_BOOL; 
+// 	kReturn[0].pkValue    = (void*)&m_bWalkSound;	
+// 
+// 	kReturn[1].kValueName = "markersize";
+// 	kReturn[1].iValueType = VALUETYPE_FLOAT; 
+// 	kReturn[1].pkValue    = (void*)&m_fMarkerSize;	
+// 
+// 	kReturn[2].kValueName = "name";
+// 	kReturn[2].iValueType = VALUETYPE_STRING; 
+// 	kReturn[2].pkValue    = (void*)&m_strName;		
+// 	
+// 	kReturn[3].kValueName = "faction";
+// 	kReturn[3].iValueType = VALUETYPE_INT; 
+// 	kReturn[3].pkValue    = (void*)&m_iFaction;		
+// 			
+// 	kReturn[4].kValueName = "respawntime";
+// 	kReturn[4].iValueType = VALUETYPE_FLOAT; 
+// 	kReturn[4].pkValue    = (void*)&m_fRespawnTime;		
+// 	
+// 	
+// 	return kReturn;	
+// }

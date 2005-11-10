@@ -19,6 +19,12 @@ P_ShadowBlob::P_ShadowBlob()
 	m_kOffset.Set(0,0,0);
 	m_fScale 		=		1;
 	m_bHaveSet 		= 	false;
+
+
+	m_kPropertyValues.push_back(PropertyValues("scale",VALUETYPE_FLOAT,(void*)&m_fScale));
+	m_kPropertyValues.push_back(PropertyValues("offset",VALUETYPE_VECTOR3,(void*)&m_kOffset));
+
+
 }
 
 P_ShadowBlob::~P_ShadowBlob()
@@ -218,20 +224,7 @@ void P_ShadowBlob::Load(ZFIoInterface* pkPackage,int iVersion)
 }
 
 
-vector<PropertyValues> P_ShadowBlob::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
-		
-	kReturn[0].kValueName = "scale";
-	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = (void*)&m_fScale;
 
-	kReturn[1].kValueName = "offset";
-	kReturn[1].iValueType = VALUETYPE_VECTOR3;
-	kReturn[1].pkValue    = (void*)&m_kOffset;
-	
-	return kReturn;
-}
 
 bool P_ShadowBlob::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -256,4 +249,20 @@ Property* Create_P_ShadowBlob()
 
 
 
+
+
+// vector<PropertyValues> P_ShadowBlob::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(2);
+// 		
+// 	kReturn[0].kValueName = "scale";
+// 	kReturn[0].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[0].pkValue    = (void*)&m_fScale;
+// 
+// 	kReturn[1].kValueName = "offset";
+// 	kReturn[1].iValueType = VALUETYPE_VECTOR3;
+// 	kReturn[1].pkValue    = (void*)&m_kOffset;
+// 	
+// 	return kReturn;
+// }
 

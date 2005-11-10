@@ -32,8 +32,7 @@ class MCOMMON_API P_Buff: public Property
 		void Enable(P_CharacterProperty* pkCP);
 		void Disable();
 		
-		vector<PropertyValues> GetPropertyValues();
-			
+		
 	public:
 	
 			

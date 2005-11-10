@@ -34,7 +34,6 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 		float		m_fBlendValue;
 		bool		m_bBlendDirUp;
 		
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		void HaveSetValue( const string& kValueName);		
 		
