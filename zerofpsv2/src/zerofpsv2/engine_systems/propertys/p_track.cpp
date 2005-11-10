@@ -1,8 +1,7 @@
 #include "p_track.h"
 
-P_Track::P_Track() 
-{
-	strcpy(m_acName,"P_Track");		
+P_Track::P_Track()  : Property("P_Track")
+{	
 	m_iType = 0;
 	m_iSide = 0;
 

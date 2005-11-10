@@ -2,12 +2,11 @@
 #include "../../engine/entity.h"
 #include "../../basic/zfsystem.h"
  
-P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
+P_Primitives3D::P_Primitives3D() : Property("P_Primitives3D")
 {
 	m_pkRender	=	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
 	m_pkFps		=	static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));	
 
-	strcpy(m_acName,"P_Primitives3D");
 	m_bNetwork = true;
 
 	m_iType=PROPERTY_TYPE_RENDER;

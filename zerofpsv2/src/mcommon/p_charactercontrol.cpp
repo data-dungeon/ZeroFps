@@ -31,9 +31,8 @@ AnimationSet::AnimationSet()
 
 }
 
-P_CharacterControl::P_CharacterControl()
+P_CharacterControl::P_CharacterControl() : Property("P_CharacterControl")
 {
-	strcpy(m_acName,"P_CharacterControl");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = 			true;

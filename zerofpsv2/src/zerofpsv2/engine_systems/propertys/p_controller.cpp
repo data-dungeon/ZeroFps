@@ -37,7 +37,7 @@ void P_Controller::Update()
 // ------------------------------------------------------------------------------------------
 
 
-P_Controller::P_Controller()
+P_Controller::P_Controller()  : Property("P_Controller")
 {
 	m_bNetwork = true;
 
@@ -45,7 +45,6 @@ P_Controller::P_Controller()
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	m_iSortPlace =	9;
 
-	strcpy(m_acName,"P_Controller");
 
     m_pkInputHandle = m_pkZeroFps->m_pkApp->m_pkInputHandle;
 

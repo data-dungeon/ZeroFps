@@ -2,13 +2,12 @@
 #include "../../engine/entity.h"
 #include "../script_interfaces/si_objectmanager.h" 
 
-P_Sound::P_Sound()
+P_Sound::P_Sound() : Property("P_Sound")
 {
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
-	strcpy(m_acName,"P_Sound");
 	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 

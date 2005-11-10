@@ -4,11 +4,10 @@
 #include "walker.h"
 
 
-P_Goal::P_Goal()
+P_Goal::P_Goal()  : Property("P_Goal")
 {
 	m_pkStopEmUp = (StopEmUp*)(g_ZFObjSys.GetObjectPtr("Application"));
 
-	strcpy(m_acName,"P_Goal");
 	m_iType=0;
 	m_iSide=0;
 	m_bNetwork = false;

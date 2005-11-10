@@ -2,9 +2,8 @@
 #include "../tcs/tcs.h"
 
 
-P_TcsTrigger::P_TcsTrigger()
+P_TcsTrigger::P_TcsTrigger() : Property("P_TcsTrigger")
 {
-	strcpy(m_acName,"P_TcsTrigger");
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;	

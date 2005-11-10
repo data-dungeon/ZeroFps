@@ -4,9 +4,8 @@
 #include "../../engine/entity.h"
 #include "../../engine/zerofps.h"
 
-P_AmbientSound::P_AmbientSound()
+P_AmbientSound::P_AmbientSound() : Property("P_AmbientSound")
 {
-	strcpy(m_acName,"P_AmbientSound");
 
 	m_pkAudioSystem = static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));
 	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));

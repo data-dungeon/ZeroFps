@@ -3,9 +3,8 @@
 #include "p_characterproperty.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
-P_Ml::P_Ml()
+P_Ml::P_Ml() : Property("P_Ml")
 {
-	strcpy(m_acName,"P_Ml");		
 	m_iType=0;//PROPERTY_TYPE_NORMAL;
 	m_iSide=0;//PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	

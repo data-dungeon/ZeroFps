@@ -112,7 +112,7 @@ vector<PropertyValues>& P_PSystem::GetPropertyValues()
 
 // ------------------------------------------------------------------------------------------
 
-P_PSystem::P_PSystem()
+P_PSystem::P_PSystem() : Property("P_PSystem")
 {
    m_bNetwork = true;
 
@@ -121,14 +121,13 @@ P_PSystem::P_PSystem()
 	m_iSortPlace =	4;
 	m_iVersion = 3;
 	
-	strcpy(m_acName,"P_PSystem");
 	
 	m_pkZShaderSystem =  static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 }
 
 // ------------------------------------------------------------------------------------------
 
-P_PSystem::P_PSystem( string kPSType )
+P_PSystem::P_PSystem( string kPSType ) : Property("P_PSystem")
 {
    m_bNetwork = true;
 
@@ -136,7 +135,6 @@ P_PSystem::P_PSystem( string kPSType )
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;	
 	m_iSortPlace =	4;
 
-	strcpy(m_acName,"P_PSystem");
 	SetPSType ( kPSType );
 }
 

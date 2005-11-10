@@ -1,10 +1,8 @@
 #include "p_billboardrender.h"
 #include "../../engine/zerofps.h"
  
-P_BillBoardRender::P_BillBoardRender()
+P_BillBoardRender::P_BillBoardRender() : Property("P_BillBoardRender")
 {
-	strcpy(m_acName,"P_BillBoardRender");		
-
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		
 	

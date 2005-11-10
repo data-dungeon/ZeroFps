@@ -4,10 +4,8 @@
 #include "../../engine/camera.h"
 #include "../../basic/math.h"
 
-P_Vegitation::P_Vegitation()
+P_Vegitation::P_Vegitation() : Property("P_Vegitation")
 {
-	strcpy(m_acName,"P_Vegitation");
-	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	

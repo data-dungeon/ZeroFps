@@ -3,9 +3,8 @@
 #include "p_ml.h"
 
 
-P_Spawn::P_Spawn()
+P_Spawn::P_Spawn(): Property("P_Spawn")
 {
-	strcpy(m_acName,"P_Spawn");		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

@@ -6,9 +6,8 @@
 #include "p_tcs.h"
 
 
-P_PfPath::P_PfPath()
+P_PfPath::P_PfPath()  : Property("P_PfPath")
 {
-	strcpy(m_acName,"P_PfPath");
 
 //	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
 //	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;

@@ -9,10 +9,8 @@
 #define CHASE_CAM_DISTANCE	5 
 
  
-P_Camera::P_Camera() 
+P_Camera::P_Camera()  : Property("P_Camera")
 {
-	strcpy(m_acName,"P_Camera");	
-
 	//no sides no nothing, this property is always updated manualy by the camera
 	m_iType=0;
 	m_iSide=0;

@@ -2,9 +2,8 @@
 #include "p_characterproperty.h"
 
 
-P_Buff::P_Buff()
+P_Buff::P_Buff() : Property("P_Buff")
 {
-	strcpy(m_acName,"P_Buff");		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

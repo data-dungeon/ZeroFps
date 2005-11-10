@@ -5,9 +5,8 @@
 #include "walker.h"
 #include "../zerofpsv2/basic/math.h"
 
-P_Gun::P_Gun()
+P_Gun::P_Gun(): Property("P_Gun")
 {
-	strcpy(m_acName,"P_Gun");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = false;

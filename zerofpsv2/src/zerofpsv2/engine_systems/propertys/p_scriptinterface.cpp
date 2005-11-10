@@ -3,9 +3,9 @@
 
 using namespace ObjectManagerLua;
 
-P_ScriptInterface::P_ScriptInterface()
+P_ScriptInterface::P_ScriptInterface() : Property("P_ScriptInterface")
 {
-	strcpy(m_acName,"P_ScriptInterface");		
+
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

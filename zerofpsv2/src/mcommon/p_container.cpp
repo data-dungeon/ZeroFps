@@ -10,11 +10,10 @@
 
 // -----------------------------------------------------------------------------------------------
 
-P_Container::P_Container()
+P_Container::P_Container() : Property("P_Container")
 {
 	m_pkEntMan=			static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
-	
-	strcpy(m_acName,"P_Container");
+		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 

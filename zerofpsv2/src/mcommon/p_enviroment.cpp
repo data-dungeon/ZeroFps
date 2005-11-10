@@ -9,9 +9,8 @@ Property* Create_P_Enviroment()
 	return new P_Enviroment;
 }
 
-P_Enviroment::P_Enviroment()
+P_Enviroment::P_Enviroment() : Property("P_Enviroment")
 {
-	strcpy(m_acName,"P_Enviroment");		
 	
 	m_iType=			PROPERTY_TYPE_RENDER;
 	m_iSide=			PROPERTY_SIDE_CLIENT;

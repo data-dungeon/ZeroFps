@@ -10,7 +10,7 @@
 using namespace std;
 
 struct Collision;
-//class Entity;
+
 class ZSSPropertyFactory;
 class ZSSEntityManager;
 class GameMessage;
@@ -68,6 +68,7 @@ class ENGINE_API PropertyValues
 class ENGINE_API Property
 {
 	private:
+		char				m_acName[50];			// Name of Property. Set when property is created.			
 		vector<bool>	m_kNetUpdateFlags;
 				
 		///beware of the the code /Gubb  //////////////
@@ -91,15 +92,13 @@ class ENGINE_API Property
 		int		m_iSide;					// server or client property		
 		bool		m_bNetwork;				// True if property needs to be sent o network.
 		bool		m_bSave;					// True if propertys should be saved with entity.
-		char		m_acName[50];			// Name of Property. Set when property is created.	
 		
 		
-		Property();		
+		Property(const char* czName);		
 		
 		//netflags		
 		void	SetNrOfConnections(int iConNR);
 	
-// 		virtual vector<PropertyValues> GetPropertyValues();
 		virtual bool HandleSetValue( const string& kValueName ,const string& kValue )			{	return false;	};
 		virtual void HaveSetValue( const string& kValueName )											{};
 				
@@ -108,7 +107,6 @@ class ENGINE_API Property
 		virtual ~Property();
 
 		// Property Edit Interface
-		//evil gubb code! haha/////////////////////////////////////////
 		bool SetValue(const string& kValueName ,const string& kValue);
 		bool SetValue(const string& kValueName, unsigned int iIndex ,const string& kValue);
 		bool CheckIfResize(const string& kValueName);

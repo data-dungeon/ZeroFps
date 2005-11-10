@@ -4,9 +4,8 @@
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
-P_Projectile::P_Projectile()
-{
-	strcpy(m_acName,"P_Projectile");
+P_Projectile::P_Projectile() : Property("P_Projectile")
+{	
 // 	m_iSide		= PROPERTY_SIDE_SERVER;
 // 	m_iType		= PROPERTY_TYPE_NORMAL;
  	m_iSide		= 0;

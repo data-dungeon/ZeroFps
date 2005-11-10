@@ -25,7 +25,7 @@ PropertyValues::PropertyValues(const string& strName,ValueTypes eValueType,void*
  
  
  
-Property::Property()
+Property::Property(const char* czName)
 {
 	m_pkZeroFps				= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		
 	m_pkEntityManager   	= static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
@@ -40,7 +40,7 @@ Property::Property()
 	m_bReverseSort=	false;
 	m_iVersion =		1;
 	
-	strcpy(m_acName,"NoName");		 
+	strcpy(m_acName,czName);		 
 
 	SetNrOfConnections(m_pkZeroFps->GetMaxPlayers());	
 }
@@ -371,7 +371,7 @@ bool Property::SetValue(const string& kValueName, unsigned int iIndex, const str
 
 int Property::GetNumberOfValues(const string& kValueName)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
@@ -676,7 +676,7 @@ bool Property::StringToValue(const string& kValue, void *pkValue, PropertyValues
 
 float Property::GetUpperBound(const string& kValueName)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
@@ -695,7 +695,7 @@ float Property::GetUpperBound(const string& kValueName)
 
 float Property::GetLowerBound(const string& kValueName)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
@@ -714,7 +714,7 @@ float Property::GetLowerBound(const string& kValueName)
 
 bool Property::CheckIfResize(const string& kValueName)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
@@ -732,7 +732,7 @@ bool Property::CheckIfResize(const string& kValueName)
 
 bool Property::CheckIfVector(const string& kValueName)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
@@ -750,7 +750,7 @@ bool Property::CheckIfVector(const string& kValueName)
 
 bool Property::Resize(const string& kValueName, unsigned int uiNewSize)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+	vector<PropertyValues>& kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
@@ -903,3 +903,5 @@ bool	Property::GetNetUpdateFlag(int iConID)
 // 	vector<PropertyValues> kReturn;
 // 	return kReturn;
 // };
+
+

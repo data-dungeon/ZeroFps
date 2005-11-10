@@ -3,9 +3,8 @@
 #include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
 #include "p_characterproperty.h"
 
-P_ShadowBlob::P_ShadowBlob()
+P_ShadowBlob::P_ShadowBlob() : Property("P_ShadowBlob")
 {
-	strcpy(m_acName,"P_ShadowBlob");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	

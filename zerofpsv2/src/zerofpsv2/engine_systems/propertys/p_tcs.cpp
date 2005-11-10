@@ -9,9 +9,8 @@
 using namespace ObjectManagerLua;
 
 
-P_Tcs::P_Tcs()
+P_Tcs::P_Tcs() : Property("P_Tcs")
 {
-	strcpy(m_acName,"P_Tcs");
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	//m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;

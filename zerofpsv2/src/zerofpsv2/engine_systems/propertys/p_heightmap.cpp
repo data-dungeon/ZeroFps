@@ -3,9 +3,8 @@
 
 
 
-P_Heightmap::P_Heightmap()
+P_Heightmap::P_Heightmap() : Property("P_Heightmap")
 {
-	strcpy(m_acName,"P_Heightmap");
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;

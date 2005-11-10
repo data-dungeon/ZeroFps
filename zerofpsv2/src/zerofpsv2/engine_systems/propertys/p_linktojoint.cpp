@@ -4,9 +4,8 @@
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
 
-P_LinkToJoint::P_LinkToJoint() 
-{
-	strcpy(m_acName,"P_LinkToJoint");		
+P_LinkToJoint::P_LinkToJoint() : Property("P_LinkToJoint")
+{	
 	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 

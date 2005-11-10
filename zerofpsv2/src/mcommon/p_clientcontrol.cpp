@@ -5,9 +5,8 @@
 queue<ClientOrder> P_ClientControl::m_kServerOrders;
 
 
-P_ClientControl::P_ClientControl()
+P_ClientControl::P_ClientControl()  : Property("P_ClientControl")
 {
-	strcpy(m_acName,"P_ClientControl");		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

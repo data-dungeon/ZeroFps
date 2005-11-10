@@ -34,7 +34,7 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 		Vector3	m_kMin, m_kMax;
 		Plane		m_kPlane;
 		
-		P_Primitives3D(PrimType eType=SPHERE);
+		P_Primitives3D();
 		void Update();
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;

@@ -7,9 +7,8 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
 
-P_Item::P_Item()
+P_Item::P_Item(): Property("P_Item")
 {
-	strcpy(m_acName,"P_Item");		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

@@ -1,11 +1,8 @@
 #include "p_serverinfo.h" 
 
-P_ServerInfo::P_ServerInfo()
+P_ServerInfo::P_ServerInfo() : Property("P_ServerInfo")
 {
 	//cout<<"Created p_serverinfo"<<endl;
-
-
-	strcpy(m_acName,"P_ServerInfo");		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

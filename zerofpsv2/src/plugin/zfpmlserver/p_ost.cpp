@@ -1,9 +1,8 @@
 #include "p_ost.h"
 
 
-P_Ost::P_Ost()
+P_Ost::P_Ost() : Property("P_Ost")
 {
-	strcpy(m_acName,"P_Ost");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 

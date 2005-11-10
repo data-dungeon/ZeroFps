@@ -2,9 +2,8 @@
 #include "../../engine/zerofps.h"
 #include "../common/heightmap.h"
 
-P_HMRP2::P_HMRP2() 
+P_HMRP2::P_HMRP2()   : Property("P_HMRP2")
 {
-	strcpy(m_acName,"P_HMRP2");		
 
 	m_pkTexMan	=	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps	=	static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		

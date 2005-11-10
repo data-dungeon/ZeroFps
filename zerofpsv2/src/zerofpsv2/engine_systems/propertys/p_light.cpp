@@ -6,14 +6,13 @@
 #include "../../basic/math.h"
 
  
-P_Light::P_Light()
+P_Light::P_Light() : Property("P_Light")
 {
 	m_pkLight	= 			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 	m_pkZeroFps = 			static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	
-	strcpy(m_acName,"P_Light");
 	m_bNetwork = true;
 	m_iVersion = 5;
 	m_iSortPlace=9;

@@ -1,9 +1,7 @@
 #include "p_waterrender.h"
  
-P_WaterRender::P_WaterRender()
+P_WaterRender::P_WaterRender() : Property("P_WaterRender")
 {
-	strcpy(m_acName,"P_WaterRender");		
-
 	m_pkTexMan=				static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps=			static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		

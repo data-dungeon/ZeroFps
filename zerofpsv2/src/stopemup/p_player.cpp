@@ -4,11 +4,10 @@
 #include "../zerofpsv2/engine_systems/propertys/p_sound.h"
 #include "stopemup.h"
 
-P_Player::P_Player()
+P_Player::P_Player() : Property("P_Player")
 {
 	m_pkStopEmUp = (StopEmUp*)(g_ZFObjSys.GetObjectPtr("Application"));
 
-	strcpy(m_acName,"P_Player");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = true;

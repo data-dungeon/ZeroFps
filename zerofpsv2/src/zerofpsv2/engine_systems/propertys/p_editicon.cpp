@@ -1,9 +1,8 @@
 #include "p_editicon.h"
 #include "../../engine/zerofps.h"
  
-P_EditIcon::P_EditIcon()
+P_EditIcon::P_EditIcon() : Property("P_EditIcon")
 {
-	strcpy(m_acName,"P_EditIcon");		
 
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));		

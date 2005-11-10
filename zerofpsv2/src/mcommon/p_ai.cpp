@@ -25,11 +25,12 @@ using namespace std;
 #define OnExit					OnEvent(EVENT_Exit)
 
 
-P_AI::P_AI()
+P_AI::P_AI(): Property("P_AI")
 {
+
+
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
 
-	strcpy(m_acName,"P_AI");
 	m_iSide		= PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	m_iType		= PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_bNetwork 	= false;

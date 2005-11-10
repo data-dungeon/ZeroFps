@@ -1,8 +1,7 @@
 #include "p_skyboxrender.h"
 
-P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop)
+P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop) : Property("P_SkyBoxRender")
 {
-	strcpy(m_acName,"P_SkyBoxRender");		
 	
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps=static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));		

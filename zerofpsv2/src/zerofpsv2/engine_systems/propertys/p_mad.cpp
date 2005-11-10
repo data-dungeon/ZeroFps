@@ -9,7 +9,7 @@ using namespace ObjectManagerLua;
 
 extern float	g_fMadLODScale;
  
-P_Mad::P_Mad()
+P_Mad::P_Mad() : Property("P_Mad")
 {
 
 	m_pkZeroFps =		static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
@@ -17,7 +17,6 @@ P_Mad::P_Mad()
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
 	m_pkLight=		static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight")); 
 		
-	strcpy(m_acName,"P_Mad");
 	m_bNetwork	 = true;
 	m_iVersion = 5;
 	

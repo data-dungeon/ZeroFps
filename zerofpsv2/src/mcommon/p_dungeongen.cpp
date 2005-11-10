@@ -2,9 +2,8 @@
 #include "../zerofpsv2/engine_systems/propertys/p_pfmesh.h"
 #include "../zerofpsv2/basic/math.h"
 
-P_DungeonGen::P_DungeonGen()
+P_DungeonGen::P_DungeonGen() : Property("P_DungeonGen")
 {
-	strcpy(m_acName,"P_DungeonGen");		
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	

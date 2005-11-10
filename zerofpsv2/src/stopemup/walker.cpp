@@ -3,11 +3,10 @@
 #include "stopemup.h"
 #include "p_player.h"
 
-P_Walker::P_Walker()
+P_Walker::P_Walker(): Property("P_Walker")
 {
 	m_pkStopEmUp = (StopEmUp*)(g_ZFObjSys.GetObjectPtr("Application"));
 
-	strcpy(m_acName,"P_Walker");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = false;

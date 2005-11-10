@@ -186,9 +186,8 @@ int  NaviMeshCell::GetConnectedCellInStep(int iFromCell)
 
 
 
-P_PfMesh::P_PfMesh()
+P_PfMesh::P_PfMesh() : Property("P_PfMesh")
 {
-	strcpy(m_acName,"P_PfMesh");
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 	m_bNetwork = false;

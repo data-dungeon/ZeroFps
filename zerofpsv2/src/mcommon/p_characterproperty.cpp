@@ -534,7 +534,7 @@ float Stats::GetTotal(const string& strName)
 
 
 //-------P_CharacterProperty---------
-P_CharacterProperty::P_CharacterProperty()
+P_CharacterProperty::P_CharacterProperty() : Property("P_CharacterProperty")
 {
 	m_pkAudioSystem = 	static_cast<ZSSAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZSSAudioSystem"));			
 	m_pkRender=				static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));			
@@ -542,7 +542,6 @@ P_CharacterProperty::P_CharacterProperty()
 	m_pkEntityMan=			static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
 	m_pkApp=					static_cast<Application*>(g_ZFObjSys.GetObjectPtr("Application"));			
 	
-	strcpy(m_acName,"P_CharacterProperty");
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 

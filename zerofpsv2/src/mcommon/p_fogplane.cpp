@@ -1,9 +1,8 @@
 #include "p_fogplane.h"
 
 
-P_FogPlane::P_FogPlane()
+P_FogPlane::P_FogPlane() : Property("P_FogPlane")
 {
-	strcpy(m_acName,"P_FogPlane");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
