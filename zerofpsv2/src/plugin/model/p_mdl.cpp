@@ -175,9 +175,8 @@ float MdlNormals[] = {
 color_rgb quake_palette[768];
 
 
-P_Mdl::P_Mdl()
-{
-	strcpy(m_acName,"P_Mdl");		
+P_Mdl::P_Mdl() : Property("P_Mdl")
+{	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
@@ -193,6 +192,9 @@ P_Mdl::P_Mdl()
 	m_iRenderFrame		=	0;
 	m_fNextFrame		=	0;
 	m_pkVertex			=	NULL;
+
+	m_kPropertyValues.push_back(PropertyValues("filename",VALUETYPE_STRING,(void*)&m_strFileName));
+
 }
 
 P_Mdl::~P_Mdl()
@@ -313,8 +315,11 @@ int P_Mdl::GetQuakeModellVersion(PAKFileFp *mdlfp, const char* filename)
 	// First get version from file name. 
 	char* strpre = strchr( filename, '.');
 
+ 	if(IsSameIgnoreCase(strpre,".mdl"))	name_version = 1;	
+ 	if(IsSameIgnoreCase(strpre,".md2"))	name_version = 2;	
+/*	
 	if(_stricmp(strpre,".mdl") == 0)	name_version = 1;	
-	if(_stricmp(strpre,".md2") == 0)	name_version = 2;	
+	if(_stricmp(strpre,".md2") == 0)	name_version = 2;	*/
 
 	// Now chek file head.
 	int		ident;
@@ -507,16 +512,7 @@ void P_Mdl::LoadModel(string strFileName)
 }
 
 
-vector<PropertyValues> P_Mdl::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
 
-	kReturn[0].kValueName = "filename";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strFileName;
-		
-	return kReturn;
-}
 
 bool P_Mdl::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -539,3 +535,16 @@ void Register_P_Mdl(ZSSZeroFps* pkZeroFps)
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Mdl", Create_P_Mdl);					
 }
+
+
+// vector<PropertyValues> P_Mdl::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 
+// 	kReturn[0].kValueName = "filename";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_strFileName;
+// 		
+// 	return kReturn;
+// }
+

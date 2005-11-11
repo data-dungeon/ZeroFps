@@ -91,7 +91,6 @@ class P_Mdl : public Property
 		ZSSRender*			m_pkRender;
 		TextureManager*	m_pkTextureManger;
 
-		vector<PropertyValues> GetPropertyValues();
 
 		PAKFileFp			md1fp;
 		mdlhead_s			head;				

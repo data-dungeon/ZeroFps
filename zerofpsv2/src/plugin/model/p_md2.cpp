@@ -174,9 +174,8 @@ md2_dtrivertx_t max_xyz[4096];
 char g_skins[MD2_MAX_SKINS][MD2_MAX_SKINNAME];
 char NewSkinName[256];
 
-P_Md2::P_Md2()
+P_Md2::P_Md2() : Property("P_Md2")
 {
-	strcpy(m_acName,"P_Md2");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
@@ -191,6 +190,11 @@ P_Md2::P_Md2()
 	m_kHead.num_xyz = 0;
 	m_iRenderFrame = 33;
 	m_fLastFrame = m_fNextFrame = 0;
+	
+	//register variables
+	m_kPropertyValues.push_back(PropertyValues("m_kMadFile",VALUETYPE_STRING,(void*)&m_strFileName));
+	m_kPropertyValues.push_back(PropertyValues("scale",VALUETYPE_FLOAT,(void*)&m_fScale));
+
 }
 
 P_Md2::~P_Md2()
@@ -333,19 +337,7 @@ void P_Md2::Update()
 	m_pkZShaderSystem->MatrixPop();
 }
 
-vector<PropertyValues> P_Md2::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
-	kReturn[0].kValueName = "m_kMadFile";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strFileName;
 
-	kReturn[1].kValueName = "scale";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fScale;
-		
-	return kReturn;
-}
 
 bool P_Md2::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -384,8 +376,11 @@ int P_Md2::GetQuakeModellVersion(PAKFileFp *mdlfp, const char* filename)
 	// First get version from file name. 
 	char* strpre = strchr( filename, '.');
 
-	if(_stricmp(strpre,".mdl") == 0)	name_version = 1;	
-	if(_stricmp(strpre,".md2") == 0)	name_version = 2;	
+ 	if(IsSameIgnoreCase(strpre,".mdl"))	name_version = 1;	
+ 	if(IsSameIgnoreCase(strpre,".md2"))	name_version = 2;	
+
+// 	if(_stricmp(strpre,".mdl") == 0)	name_version = 1;	
+// 	if(_stricmp(strpre,".md2") == 0)	name_version = 2;	
 
 	// Now chek file head.
 	int		ident;
@@ -469,3 +464,21 @@ void Register_P_Md2(ZSSZeroFps* pkZeroFps)
 
 	// Register Property Script Interface
 }
+
+
+
+
+// vector<PropertyValues> P_Md2::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(2);
+// 	kReturn[0].kValueName = "m_kMadFile";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_strFileName;
+// 
+// 	kReturn[1].kValueName = "scale";
+// 	kReturn[1].iValueType = VALUETYPE_FLOAT;
+// 	kReturn[1].pkValue    = (void*)&m_fScale;
+// 		
+// 	return kReturn;
+// }
+

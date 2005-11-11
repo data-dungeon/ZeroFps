@@ -86,7 +86,6 @@ class P_Md2 : public Property
 		TextureManager*	m_pkTextureManger;
 		ZSSRender*			m_pkRender;
 
-		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( const string& kValueName ,const string& kValue );
 
 		PAKFileFp			m_kFile;

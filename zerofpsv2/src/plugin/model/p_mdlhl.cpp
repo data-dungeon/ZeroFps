@@ -2,9 +2,8 @@
 #include "p_mdlhl.h"
 
 
-P_MdlHL::P_MdlHL()
+P_MdlHL::P_MdlHL() : Property("P_MdlHL")
 {
-	strcpy(m_acName,"P_MdlHL");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
@@ -28,19 +27,6 @@ void P_MdlHL::Update()
 
 }
 
-vector<PropertyValues> P_MdlHL::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
-/*	kReturn[0].kValueName = "m_kMadFile";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strFileName;
-
-	kReturn[1].kValueName = "scale";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fScale;*/
-		
-	return kReturn;
-}
 
 bool P_MdlHL::HandleSetValue( const string& kValueName ,const string& kValue )
 {

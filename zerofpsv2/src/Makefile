@@ -18,6 +18,7 @@ all:
 	cd tools/tool/madmake/; $(MAKE) $@
 
 	cd plugin/zfpmlserver/; $(MAKE) $@
+	cd plugin/model/; $(MAKE) $@
 	
 	
 	./gengdbinit.sh
@@ -41,6 +42,7 @@ clean:
 	cd tools/tool/madmake/; $(MAKE) $@
 	
 	cd plugin/zfpmlserver/; $(MAKE) $@
+	cd plugin/model/; $(MAKE) $@
 	
 clean_engine:
 	cd zerofpsv2/; $(MAKE) clean	

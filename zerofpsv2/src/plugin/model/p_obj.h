@@ -32,7 +32,6 @@ class P_Obj : public Property
 		ZSSRender*			m_pkRender;
 		TextureManager*		m_pkTextureManger;
 
-		vector<PropertyValues> GetPropertyValues();
 
 		string				m_strFileName;
 

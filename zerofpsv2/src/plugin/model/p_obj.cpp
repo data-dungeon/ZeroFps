@@ -1,8 +1,8 @@
 #include "p_obj.h"
 
-P_Obj::P_Obj()
+P_Obj::P_Obj() : Property("P_Obj")
 {
-	strcpy(m_acName,"P_Obj");		
+	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
@@ -18,6 +18,10 @@ P_Obj::P_Obj()
 	m_bNonTriangles = false;
 
 	LoadModel("town.obj");
+	
+	
+	m_kPropertyValues.push_back(PropertyValues("filename",VALUETYPE_STRING,(void*)&m_strFileName));
+
 }
 
 P_Obj::~P_Obj()
@@ -84,16 +88,7 @@ void P_Obj::Update()
 
 
 
-vector<PropertyValues> P_Obj::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(1);
 
-	kReturn[0].kValueName = "filename";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strFileName;
-		
-	return kReturn;
-}
 
 bool P_Obj::HandleSetValue( const string& kValueName ,const string& kValue )
 {
@@ -440,3 +435,15 @@ void Register_P_Obj(ZSSZeroFps* pkZeroFps)
 	// Register Property
 	pkZeroFps->m_pkPropertyFactory->Register("P_Obj", Create_P_Obj);					
 }
+
+
+// vector<PropertyValues> P_Obj::GetPropertyValues()
+// {
+// 	vector<PropertyValues> kReturn(1);
+// 
+// 	kReturn[0].kValueName = "filename";
+// 	kReturn[0].iValueType = VALUETYPE_STRING;
+// 	kReturn[0].pkValue    = (void*)&m_strFileName;
+// 		
+// 	return kReturn;
+// }

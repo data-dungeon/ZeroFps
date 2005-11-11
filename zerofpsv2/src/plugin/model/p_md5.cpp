@@ -3,9 +3,8 @@
 
 #define MD2TOMAD_SCALE 1
 
-P_Md5::P_Md5()
+P_Md5::P_Md5() : Property("P_Md5")
 {
-	strcpy(m_acName,"P_Md5");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
@@ -344,19 +343,7 @@ void P_Md5::Update()
 	m_pkZShaderSystem->MatrixPop();
 }
 
-vector<PropertyValues> P_Md5::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(2);
-/*	kReturn[0].kValueName = "m_kMadFile";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strFileName;
 
-	kReturn[1].kValueName = "scale";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fScale;*/
-		
-	return kReturn;
-}
 
 bool P_Md5::HandleSetValue( const string& kValueName ,const string& kValue )
 {
