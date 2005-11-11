@@ -27,15 +27,23 @@ void ZFSystem::PrintVariables()
 
 	m_pkCon->Printf("### variable list ###");
 
-	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+	/*for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
 		if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't print none valid data.
 		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't print functions.
 
 		strValue = GetVarValue(&m_kCmdDataList[i]);
 		m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
+	}*/
+
+	m_pkCon->Printf("### NEW: variable list ###");
+	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
+	{
+		ConCommand *pkConCommand = m_kConCommands[i];
+		if(!pkConCommand->IsCommand())
+			m_pkCon->Printf(" %s.%s = - ( %s )",pkConCommand->GetSubSystemName().c_str(),
+				pkConCommand->GetName().c_str(), pkConCommand->GetHelp().c_str());
 	}
 }
-
 
 void ZFSystem::PrintCommands()
 {
@@ -45,11 +53,18 @@ void ZFSystem::PrintCommands()
 
 	m_pkCon->Printf("### variable list ###");
 
-	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+	/*for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
 		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION) {
 			strValue = GetVarValue(&m_kCmdDataList[i]);
 			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
 			}
+	}*/
+	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
+	{
+		ConCommand *pkConCommand = m_kConCommands[i];
+		if(pkConCommand->IsCommand())
+			m_pkCon->Printf(" %s.%s = - ( %s )",pkConCommand->GetSubSystemName().c_str(),
+				pkConCommand->GetName().c_str(), pkConCommand->GetHelp().c_str());
 	}
 }
 
@@ -354,6 +369,39 @@ ZFCmdData* ZFSystem::FindArea(const char* szName)
 	return NULL;
 }
 
+ConCommand* ZFSystem::FindConCommand(const char* szName)
+{
+	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
+	{
+		if(m_kConCommands[i]->GetName() == szName)
+			return m_kConCommands[i];
+	}
+
+	return NULL;
+}
+
+ConVar* ZFSystem::GetConVar(const char* szName)
+{
+	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
+	{
+		if(m_kConCommands[i]->GetName() == szName && !m_kConCommands[i]->IsCommand())
+			return dynamic_cast<ConVar*>(m_kConCommands[i]);
+	}
+
+	return NULL;
+
+}
+
+
+void ZFSystem::RegisterConCommand(ConCommand* pkConCommand)
+{
+	if(FindConCommand(pkConCommand->GetName().c_str())) 
+		return;
+	
+	m_kConCommands.push_back( pkConCommand );
+}
+
+
 /**	\brief	Registers a Command.
 
   Registers a new command and the SubSystem that will handle the commands. Also
@@ -366,7 +414,11 @@ ZFCmdData* ZFSystem::FindArea(const char* szName)
 */
 bool ZFSystem::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int iFlags, char* szHelp, int iNumOfArg)
 {
-	// Validate parameters
+	ConFunction* pkConFunc = new ConFunction();
+	pkConFunc->Register(kObject, szName,iCmdID);
+	return true;
+
+/*	// Validate parameters
 	if(szName == NULL)	return false;
 	if(kObject == NULL)	return false;
 
@@ -396,6 +448,7 @@ bool ZFSystem::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int i
 	g_Logf("Command '%s' registred to be handled by '%s'\n", szName, kObject->m_strZFpsName.c_str());
 #endif
 	return true;
+*/
 }
 
 /**	\brief	Unregisters Commands.
@@ -422,13 +475,16 @@ bool ZFSystem::UnRegister_Cmd(ZFSubSystem* kObject)
 
 bool ZFSystem::AutoComplete(const char* szCmdArg, vector<string>* pkCmds, int iMaxFinds)
 {
-	ZFCmdData* kCmdData = FindArea( szCmdArg );
-	if(kCmdData)
+	ConCommand *pkConCommand = FindConCommand( szCmdArg );
+
+	//ZFCmdData* kCmdData = FindArea( szCmdArg );
+	if(pkConCommand)
 	{
 		// This is already a complete command. Simply return.
 		return false;
 	}
 
+	/*
 	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
 	{
 		// If this command fits so far add it.
@@ -437,9 +493,20 @@ bool ZFSystem::AutoComplete(const char* szCmdArg, vector<string>* pkCmds, int iM
 			pkCmds->push_back(m_kCmdDataList[i].m_strName);
 		}
 	}
+	*/
+	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
+	{
+		ConCommand *pkConCommand = m_kConCommands[i];
+		if(strncmp(szCmdArg, pkConCommand->GetName().c_str() ,strlen(szCmdArg)) == 0)
+		{
+			pkCmds->push_back(pkConCommand->GetName());
+		}
+	}
 
 	return true;
 }
+
+
 
 /**	\brief	Runs a Cmd into the ZFSystem.
 	
@@ -447,7 +514,7 @@ bool ZFSystem::AutoComplete(const char* szCmdArg, vector<string>* pkCmds, int iM
 */
 bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 {
-	CmdArgument kcmdargs;
+	ConCommandLine kcmdargs;
 	kcmdargs.Set(szCmdArg);
 	kcmdargs.m_eSource = iCmdSource;
 	string strValue;
@@ -457,7 +524,42 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 
 	ZFCmdData* kCmdData = FindArea(kcmdargs.m_kSplitCommand[0].c_str());
 
-	if(!kCmdData)	return false;
+	if(!kCmdData)
+	{
+		ConCommand* pkConCom = FindConCommand(kcmdargs.m_kSplitCommand[0].c_str());
+		if(!pkConCom)
+			return false;
+
+		if(pkConCom->IsCommand())
+		{
+			ConFunction* pkConFunc = dynamic_cast<ConFunction*>(pkConCom);
+			ConCommandLine kLine;
+			kLine.Set( kcmdargs.m_strFullCommand.c_str() );
+			pkConFunc->Run(&kLine);
+			return true;
+		}
+		else
+		{
+				ConVar* pkConVar = dynamic_cast<ConVar*>(pkConCom);
+				int iHora = kcmdargs.m_kSplitCommand.size();
+				if(iHora == 1)
+				{
+					Printf("Show");
+					Printf(" %s.%s = %s",pkConVar->GetSubSystemName().c_str(),kcmdargs.m_kSplitCommand[0].c_str(),pkConVar->GetString().c_str());
+				}
+				if(iHora == 2)
+				{
+					Printf("Set");
+					string strConCommand = kcmdargs.m_kSplitCommand[0].c_str();
+					strValue = kcmdargs.m_kSplitCommand[1].c_str();
+					pkConVar = dynamic_cast<ConVar*>(FindConCommand(strConCommand.c_str()));
+					pkConVar->SetString( strValue );
+					Printf(" %s.%s = %s", pkConVar->GetSubSystemName().c_str(), strConCommand.c_str(),pkConVar->GetString().c_str());
+				}
+		}
+
+		return true;
+	}
 
 	// Check so we have the rights to run this command.
 	if( (iCmdSource & kCmdData->m_iFlags) == 0)
@@ -819,7 +921,8 @@ void ZFSystem::Config_Save(string strFileName)
 		// Write Header to config
 		fprintf(fp,"\n\n[%s]\n", it->second.m_strName.c_str());
 
-		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
+		// Save OLD
+		/*for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
 		{
 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
@@ -829,6 +932,20 @@ void ZFSystem::Config_Save(string strFileName)
 			{
 				strVar = GetVarValue(&m_kCmdDataList[i]);
 				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
+			}
+		}*/
+
+		for(unsigned int i=0; i<m_kConCommands.size(); i++)
+		{	
+			if(!m_kConCommands[i]->IsCommand())
+			{
+				ConVar* pkConVar = dynamic_cast<ConVar*>(m_kConCommands[i]);
+				if(pkConVar->GetSubsystem() == it->second.pkObject) 
+				{
+					string strVarName  = pkConVar->GetName();
+					string strVarValue = pkConVar->GetString();
+					fprintf(fp,"%s=%s\n",strVarName.c_str(), strVarValue.c_str());
+				}
 			}
 		}
 	}
@@ -852,6 +969,7 @@ void ZFSystem::Config_Load(string strFileName)
 	{
 		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
 
+		/*
 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
 		{
 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
@@ -863,6 +981,18 @@ void ZFSystem::Config_Load(string strFileName)
 				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
 				//cout << " " << pkVal << endl;
 				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
+			}
+		}
+		*/
+		for(unsigned int i=0; i<m_kConCommands.size(); i++)
+		{	
+			if(!m_kConCommands[i]->IsCommand())
+			{
+				ConVar* pkConVar = dynamic_cast<ConVar*>(m_kConCommands[i]);
+				string strVarName  = pkConVar->GetName();
+				pkVal = m_kIni.GetValue(it->second.m_strName.c_str(), strVarName.c_str());
+				if(pkVal) 
+					pkConVar->SetString(pkVal);
 			}
 		}
 	}	

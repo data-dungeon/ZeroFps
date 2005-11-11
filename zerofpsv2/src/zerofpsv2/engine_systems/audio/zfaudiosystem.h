@@ -11,6 +11,7 @@
 #include "../../basic/zfresource.h"
 #include "../../basic/zfsubsystem.h"
 #include "../../basic/math.h"
+#include "../../basic/concommand.h"
 #include "oggstream.h"
 
 #define DUMMY_SOUND "/data/audio/dummy.wav"
@@ -85,12 +86,12 @@ public:
 
 	ALuint GetNewSource();
 
-	float GetMainVolume() { return m_fMainVolume; }
+	float GetMainVolume() { return m_kfMainVolume.GetFloat(); }
 	bool SetMainVolume(float fVolume) 
 	{ 
 		if(fVolume >= 0 && fVolume <= 1) 
 		{
-			m_fMainVolume = fVolume; 
+			m_kfMainVolume.SetFloat(fVolume); 
 			return true;
 		}
 		return false;
@@ -146,7 +147,7 @@ public:
 		FID_AUDIOSTOP,
 	};
 
-	void RunCommand(int cmdid, const CmdArgument* kCommand);
+	void RunCommand(int cmdid, const ConCommandLine* kCommand);
 
 	//
 	// Common
@@ -168,7 +169,8 @@ private:
 	ALCdevice*	m_pkAudioDevice;
 	ALCcontext*	m_pkAudioContextID;
 
-	float m_fMainVolume; // 0-1
+	ConVar m_kfMainVolume; // 0-1
+	
 
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
@@ -183,7 +185,7 @@ private:
 	string	m_strCurrentMusic;
 	string	m_strNextMusic;
 	bool		m_bMusicChange;
-	float		m_fMusicGain;
+	ConVar	m_kfMusicGain;
 	
 	static Vector3 m_kPos;
 	Vector3 m_kHead;

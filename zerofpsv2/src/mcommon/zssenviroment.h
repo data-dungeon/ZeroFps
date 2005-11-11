@@ -126,7 +126,7 @@ class MCOMMON_API ZSSEnviroment : public ZFSubSystem
 		bool StartUp();
 		bool ShutDown()		{return true;};
 		bool IsValid()			{return true;};
-		void RunCommand(int cmdid, const CmdArgument* kCommand);		
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);		
 		
 		void Update();
 		

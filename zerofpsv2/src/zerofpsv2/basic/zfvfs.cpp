@@ -93,7 +93,7 @@ ZSSVFileSystem::ZSSVFileSystem()
 	m_pkBasicFS = static_cast<ZSSBasicFS*>(GetSystem().GetObjectPtr("ZSSBasicFS"));		
 	
 	m_strCurentDir = "";
-	m_bCaseSensitive = false;
+	//m_bCaseSensitive = false;
 	
 	Register_Cmd("cd",			FID_CD);
 	Register_Cmd("root",	 		FID_LISTROOT);
@@ -102,8 +102,9 @@ ZSSVFileSystem::ZSSVFileSystem()
 	Register_Cmd("vfspath",		FID_VFSPATH);
 	Register_Cmd("addrootpath",FID_ADDROOTPATH); 
 	
-	RegisterVariable("f_casesensitive",		&m_bCaseSensitive,	CSYS_BOOL);
-	
+//	RegisterVariable("f_casesensitive",		&m_bCaseSensitive,	CSYS_BOOL);
+	m_kCaseSensitive.Register(this, "f_casesensitive", "0","");
+
 //	AddRootPath("/","/"); 
 	AddRootPath("./","/"); 
 	AddRootPath("../datafiles/sysdata" ,"/data");
@@ -194,7 +195,7 @@ FILE* ZSSVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 		if(GetRootMerge(i, strFileName, strRootMerge)) 
 		{
 			//if not case sensetive, try to find the real filename
-			if(!m_bCaseSensitive)
+			if(!m_kCaseSensitive.GetBool())
 				strRootMerge = GetRealName(strRootMerge);
 			
 			pkFp = fopen(strRootMerge.c_str(), szOptions);
@@ -579,10 +580,10 @@ bool ZSSVFileSystem::FileExists(const string& strName)
 	vector<string> kDirs;
 	ListDir(kDirs,strDir);
 	
-	if(m_bCaseSensitive)
+	if(m_kCaseSensitive.GetBool())
 	for(unsigned int i = 0;i<kDirs.size();i++)
 	{
-		if(m_bCaseSensitive)
+		if(m_kCaseSensitive.GetBool())
 		{
 			if(kDirs[i] == strName)
 				return true;
@@ -635,7 +636,7 @@ public:
 	virtual string GetName() = 0;
 };
 
-void ZSSVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSVFileSystem::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 //	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));		
 	unsigned int i;

@@ -25,11 +25,11 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-float		g_fMadLODScale;
-int		g_iLogRenderPropertys;
+//float		g_fMadLODScale;
+ConVar		g_kiLogRenderPropertys;
 //char 		g_szIpPort[256];
-bool		g_fMadTrans;
-extern	bool	g_iMadLOD;
+//bool		g_fMadTrans;
+//extern	bool	g_iMadLOD;
 
 
 static char Devformat_text[4096];	//
@@ -86,50 +86,52 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_iCurrentFrame			= 0;
 	m_fEngineTime				= 0;
 	
-	m_fSystemUpdateFps		= 30;
+	//m_fSystemUpdateFps		= 30;
 	m_fSystemUpdateTime		= 0;
 	m_fSystemUpdateFpsDelta = 0;
-	m_fNetworkUpdateFps		= 20;
+	//m_fNetworkUpdateFps		= 20;
 	m_fNetworkUpdateTime		= 0;
 	m_fNetworkUpdateFpsDelta= 0;	
-	m_bSyncNetwork				= true;
-	m_iConnectionSpeed		= 10000;
+	//m_bSyncNetwork				= true;
+	//m_iConnectionSpeed		= 10000;
 		
 	m_bEditMode					= false;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
 	m_bGuiMode					= false;
-	m_iMadDraw					= 1;
-	g_fMadLODScale				= 1.0;
-	g_fMadTrans					= false;
+	//m_iMadDraw					= 1;
+	//g_fMadLODScale				= 1.0;
+	//g_fMadTrans					= false;
 	m_pkCamera					= NULL;
-	m_bRunWorldSim				= true;
-	g_iLogRenderPropertys	= 0;
+	//m_bRunWorldSim				= true;
+	//g_iLogRenderPropertys	= 0;
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount		= 0;
-	m_bRenderOn					= true;
+	//m_bRenderOn					= true;
 	m_bMinimized 				= false;
 	m_iServerConnection		= -1;
-	m_iMaxPlayers				= ZF_DEF_PLAYERS;
-	m_bLockFps					= false;
-	m_bDrawAxisIcon			= false;
-	m_bDebugGraph				= false;
+	//m_iMaxPlayers				= ZF_DEF_PLAYERS;
+	//m_bLockFps					= false;
+	//m_bDrawAxisIcon			= false;
+	//m_bDebugGraph				= false;
 	m_iClientEntityID			= -1;
 	m_bAlwaysWork				= true;
-	m_bTcsFullframe			= false;
+	//m_bTcsFullframe			= false;
 	m_iProfileTotalTime		= 0;
-	m_bVegetation				= true;
-	m_fViewDistance			= 100;
-	m_bOcculusionCulling		= true;
+	//m_bVegetation				= true;
+	//m_fViewDistance			= 100;
+	//m_bOcculusionCulling		= true;
 	
+/*
 	m_bShadowMapRealtime		= false;
 	m_iShadowMapMode			= 1;
 	m_bShadowMap				= true;
 	m_iShadowMapQuality		= 1024;
 	m_bSpecMap					= true;
-	
-	m_bAiShowInfo				= false;
-	g_iMadLOD					= true;
+*/
+
+	//m_bAiShowInfo				= false;
+	//g_iMadLOD					= true;
 
 	g_iNumOfFrames				= 0;
 	m_bProfileMode				= 0;
@@ -137,41 +139,66 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_pkDevPageMaterial			= NULL;
 
 	// Register Variables
-	RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
-	
-	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
+	//RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
+	m_kAI_ShowInfo.Register(this, "ai_showinfo", "0", "Display debug info for ai's." );
+
+	m_kbTcsFullframe.Register(this,		"p_tcsfullframe", "0");
+	m_kbLockFps.Register(this,				"e_lockfps",		"0");
+	m_kfSystemUpdateFps.Register(this,	"e_systemfps",		"30");
+	m_kbRunWorldSim.Register(this,		"e_runsim",			"1");
+
+	/*	FIXME
 	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),		CSYS_BOOL);	
 	RegisterVariable("e_log",				g_ZFObjSys.GetLogEnabledPointer(),			CSYS_BOOL);		
-	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);		
-	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
-	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
+	*/
+	//RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
+	//RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);		
+	//RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
+	//RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
+	//RegisterVariable("n_networkfps",		&m_fNetworkUpdateFps,	CSYS_FLOAT);	
+	//RegisterVariable("n_syncnetwork",	&m_bSyncNetwork,			CSYS_BOOL);	
+	//RegisterVariable("n_netspeed",		&m_iConnectionSpeed,		CSYS_INT);
+	//RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);			
 	
-	RegisterVariable("n_networkfps",		&m_fNetworkUpdateFps,	CSYS_FLOAT);	
-	RegisterVariable("n_syncnetwork",	&m_bSyncNetwork,			CSYS_BOOL);	
-	RegisterVariable("n_netspeed",		&m_iConnectionSpeed,		CSYS_INT);
-	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);			
+	m_kfNetworkUpdateFps.Register(this, "n_networkfps", "20");
+	m_kbSyncNetwork.Register(this, "n_syncnetwork", "1");
+	m_kiConnectionSpeed.Register(this, "n_netspeed", "10000");
+	m_kiMaxPlayers.Register(this, "n_maxplayers", "8");
+	m_kbRenderOn.Register(this, "r_render","1");
+	m_kbDebugGraph.Register(this, "r_debuggraph","0");
+	g_kiLogRenderPropertys.Register(this, "r_logrp","0");
 	
-	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
-	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
-	RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
+	//RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
+	//RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
+	//RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
 
-	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
-	RegisterVariable("r_madlodscale",	&g_fMadLODScale,			CSYS_FLOAT);
-	RegisterVariable("r_madtrans",		&g_fMadTrans,				CSYS_BOOL);
-	RegisterVariable("r_madlod",			&g_iMadLOD,					CSYS_BOOL);
+	m_kAxisIcon.Register(this, "r_axis","1", "if we should display the axis icon or not.");
+	m_kVegetation.Register(this, "r_vegetation", "1");
+	m_kViewDistance.Register(this, "r_viewdistance", "100");
 
-	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
-	RegisterVariable("r_vegetation",		&m_bVegetation,			CSYS_BOOL);	
-	RegisterVariable("r_viewdistance",	&m_fViewDistance,			CSYS_FLOAT);	
-	RegisterVariable("r_specmap",			&m_bSpecMap,				CSYS_BOOL);		
+	m_kbShadowMap.Register(this, "r_shadowmap", "1", "");
+	m_kbShadowMapRealtime.Register(this, "r_shadowmaprealtime", "0", "");
+	m_kiShadowMapMode.Register(this, "r_shadowmapmode", "1", "");
+	m_kiShadowMapQuality.Register(this, "r_shadowmapquality", "1024", "");
+	m_kbSpecMap.Register(this, "r_specmap", "1", "");
+
+
+	//RegisterVariable("r_madlodscale",	&g_fMadLODScale,			CSYS_FLOAT);
+	//RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
+	//m_kMadDraw.Register(this, "r_maddraw", "1", "Display mode to use for mads.");
+	//RegisterVariable("r_madtrans",		&g_fMadTrans,				CSYS_BOOL);
+	//RegisterVariable("r_madlod",			&g_iMadLOD,					CSYS_BOOL);
+	//RegisterVariable("r_vegetation",		&m_bVegetation,			CSYS_BOOL);	
+	//RegisterVariable("r_viewdistance",	&m_fViewDistance,			CSYS_FLOAT);	
+	//RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
+	//RegisterVariable("r_specmap",			&m_bSpecMap,				CSYS_BOOL);		
+	//RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
+	//RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);
+	//RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
+	//RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
 	
-	RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
-	RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);
-	RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
-	RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
-	
-	RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL);
-	
+	m_kbOcculusionCulling.Register(this,"r_occulusionculling","1");
+	//RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL);
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -263,16 +290,16 @@ bool ZSSZeroFps::StartUp()
 	RegisterResources();
  
 	// Valid Console variables.
-	if(m_iMaxPlayers < ZF_MIN_PLAYERS)	m_iMaxPlayers =	ZF_MIN_PLAYERS;
-	if(m_iMaxPlayers > ZF_MAX_PLAYERS)	m_iMaxPlayers =	ZF_MAX_PLAYERS;
+	if(m_kiMaxPlayers.GetInt() < ZF_MIN_PLAYERS)	m_kiMaxPlayers.SetInt(ZF_MIN_PLAYERS);
+	if(m_kiMaxPlayers.GetInt() > ZF_MAX_PLAYERS)	m_kiMaxPlayers.SetInt(ZF_MAX_PLAYERS);
 
-	m_kClient.resize( m_iMaxPlayers );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
-	for(int i=0; i<m_iMaxPlayers; i++)
+	m_kClient.resize( m_kiMaxPlayers.GetInt() );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
+	for(int i=0; i<m_kiMaxPlayers.GetInt(); i++)
 	{
 		m_kClient[i].m_bLogin = m_bClientLoginState;
 		m_kClient[i].m_pkObject = NULL;
 	}
-	m_pkNetWork->SetMaxNodes( m_iMaxPlayers );
+	m_pkNetWork->SetMaxNodes( m_kiMaxPlayers.GetInt() );
 	
 
 	//m_iClientEntityID = -1;
@@ -449,7 +476,7 @@ void ZSSZeroFps::UpdateDevPages()
 	DevPrintf("time","SimDelta: %f",						m_pkEntityManager->GetSimDelta());
 	DevPrintf("time","LastGameUpdateTime: %f",		GetLastGameUpdateTime());
 	DevPrintf("time","EngineTime: %f",					GetEngineTime());
-	DevPrintf("time","Run: %i", m_bRunWorldSim);
+	DevPrintf("time","Run: %i", m_kbRunWorldSim.GetBool());
 
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
@@ -594,7 +621,7 @@ void ZSSZeroFps::Run_Server()
 	//Update_System();
 	
 
-	if(m_bTcsFullframe)
+	if(m_kbTcsFullframe.GetBool())
 		m_pkTcs->Update(GetFrameTime());	
 	
 }
@@ -617,7 +644,7 @@ void ZSSZeroFps::Run_Client()
 void ZSSZeroFps::Update_Network()
 {	
 	//calculate new system delta time
-	m_fNetworkUpdateFpsDelta = float(1.0) / m_fNetworkUpdateFps;	
+	m_fNetworkUpdateFpsDelta = float(1.0) / m_kfNetworkUpdateFps.GetFloat();	
 	
 	//shuld we run a network update
 	if( (GetEngineTime() - m_fNetworkUpdateTime) > m_fNetworkUpdateFpsDelta)
@@ -640,7 +667,7 @@ void ZSSZeroFps::Update_System()
 	float fATime		= 0;
 
 	//calculate new system delta time
-	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;	
+	m_fSystemUpdateFpsDelta = float(1.0) / m_kfSystemUpdateFps.GetFloat();	
 		
 	//time since last update
 	fATime = GetEngineTime() - m_fSystemUpdateTime; 	
@@ -702,13 +729,13 @@ void ZSSZeroFps::Update_System()
 			//update zones
 			m_pkEntityManager->UpdateZoneSystem();
 		
-			if(m_bRunWorldSim)
+			if(m_kbRunWorldSim.GetBool())
 			{						
 				//update all normal propertys
 				m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 				
 				//update Tiny Collission system
-				if(!m_bTcsFullframe)
+				if(!m_kbTcsFullframe.GetBool())
 					m_pkTcs->Update(m_pkEntityManager->GetSimDelta());	
 			}	
 		}
@@ -745,7 +772,7 @@ void ZSSZeroFps::Update_System()
 	
 	
 	//update network only when a systemupdate has been done, to keep things in sync
-	if(m_bSyncNetwork)
+	if(m_kbSyncNetwork.GetBool())
 		m_pkEntityManager->PackToClients();		
 
 }
@@ -802,7 +829,7 @@ void ZSSZeroFps::MainLoop(void)
 			//current time
 			if(m_bProfileMode)
 			{
-				m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;	
+				m_fSystemUpdateFpsDelta = float(1.0) / m_kfSystemUpdateFps.GetFloat();	
 				m_fEngineTime += m_fSystemUpdateFpsDelta;
 			}
 			else
@@ -834,7 +861,7 @@ void ZSSZeroFps::MainLoop(void)
 			StopProfileTimer("Client");
 			
 			//Update network:  sends entitydata to clients
-			if(!m_bSyncNetwork)
+			if(!m_kbSyncNetwork.GetBool())
 				Update_Network();			
 			
 			
@@ -853,7 +880,7 @@ void ZSSZeroFps::MainLoop(void)
 void ZSSZeroFps::MakeDelay()
 {
 	//make a delay if locked fps or minimized
-	if(m_bLockFps || m_bMinimized  )
+	if(m_kbLockFps.GetBool() || m_bMinimized  )
 	{
 		float fDelay = m_pkEntityManager->GetSimDelta() - (GetEngineTime() - m_fLockFrameTime);
 	
@@ -1143,7 +1170,7 @@ void ZSSZeroFps::DevPrint_Show(bool bVisible)
 	m_bDevPagesVisible = bVisible;
 }
 
-void ZSSZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	unsigned int i;
 
@@ -1331,7 +1358,7 @@ void ZSSZeroFps::StartClient(string strLogin,string strPassword,string strServer
 	}
 
 	
-	m_pkNetWork->ClientStart(strServerIP.c_str(),iPort,strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor,m_iConnectionSpeed);
+	m_pkNetWork->ClientStart(strServerIP.c_str(),iPort,strLogin.c_str(), strPassword.c_str(), m_pkApp->m_bIsEditor,m_kiConnectionSpeed.GetInt());
 	m_bClientMode = true;
 
 	m_pkApp->OnClientStart();

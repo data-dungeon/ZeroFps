@@ -163,6 +163,9 @@
 				RelativePath=".\cmdsystem.cpp">
 			</File>
 			<File
+				RelativePath=".\concommand.cpp">
+			</File>
+			<File
 				RelativePath=".\globals.cpp">
 			</File>
 			<File
@@ -258,6 +261,9 @@
 			</File>
 			<File
 				RelativePath=".\cmdsystem.h">
+			</File>
+			<File
+				RelativePath=".\concommand.h">
 			</File>
 			<File
 				RelativePath=".\globals.h">

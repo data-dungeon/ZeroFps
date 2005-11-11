@@ -220,7 +220,7 @@ void P_PfMesh::Update()
 				SetHmap(pkHmap);
 		}
 		
-		if(m_pkAStar->m_bDrawNaviMesh)
+		if(m_pkAStar->m_kbDrawNaviMesh.GetBool())
 			m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 		else
 			m_iType = PROPERTY_TYPE_NORMAL;

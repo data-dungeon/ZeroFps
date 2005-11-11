@@ -3,8 +3,8 @@
 
 using namespace std;
 
-bool	g_iMadLOD;
-
+//bool	g_iMadLOD;
+ConVar g_kMadLOD("r_madlod","0");
 
 Mad_RawMesh::Mad_RawMesh()
 {
@@ -713,7 +713,7 @@ Mad_RawMesh* Mad_CoreMesh::GetLODMesh(int iId)
 
 Mad_RawMesh* Mad_CoreMesh::GetLODRender(float fDistance)
 {
-	if(!g_iMadLOD)
+	if(!g_kMadLOD.GetBool())
 		return &m_kLodMesh[0];
 
 	Mad_RawMesh* pkRawMesh = NULL;
@@ -735,7 +735,7 @@ Mad_RawMesh* Mad_CoreMesh::GetLODRender(float fDistance)
 
 int Mad_CoreMesh::GetLODRenderIndex(float fDistance)
 {
-	if(!g_iMadLOD)
+	if(!g_kMadLOD.GetBool())
 		return 0;
 
 	Mad_RawMesh* pkRawMesh = NULL;

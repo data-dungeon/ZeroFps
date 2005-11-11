@@ -129,27 +129,27 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		vector<ZoneData>		m_kZones;
 		
 		//debug
-		bool						m_bDrawAABBTree;
-		bool						m_bDrawZones;						//shuld zones be drawed
-		bool						m_bDrawEnviroments;
-		bool						m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
+		ConVar					m_kbDrawAABBTree;
+		ConVar					m_kbDrawEnviroments;
+		ConVar					m_kbDrawZones;						//shuld zones be drawed
+		ConVar					m_kbDrawZoneConnections;			//shuld connection betwen zones be drawed
 		
 		// sim time system
 		float		m_fSimTime;				// Time in the virtual world.
-		float		m_fSimTimeScale;		// How fast does the time in the sim run with respect to the real world time. 		
+		ConVar	m_kfSimTimeScale;		// How fast does the time in the sim run with respect to the real world time. 		
 		float		m_fSimTimeDelta;
 		
 				
 		// Trackers
 		list<P_Track*>				m_kTrackedObjects;	
-		int							m_iTrackerLOS;												//tracker line of sight
-		float							m_iObjectDistance;											//tracker line of sight		
-		float							m_fZoneUnloadTime;
-		int							m_iMaxZoneIO;
+		ConVar						m_kiTrackerLOS;												//tracker line of sight
+		ConVar						m_kfZoneUnloadTime;
+		ConVar						m_kiMaxZoneIO;
+		ConVar						m_kiObjectDistance;											//tracker line of sight		
 			
 
 		
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 
 		//network
 		void ClearClientDeleteQueue(int iClient);
@@ -199,8 +199,8 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		//system time
 		float		GetSimTime()						{	return m_fSimTime; 			};
 		float		GetSimDelta()						{	return m_fSimTimeDelta;		};
-		void		SetTimeScale(float fScale)		{	m_fSimTimeScale = fScale;	};
-		float		GetTimeScale()						{	return m_fSimTimeScale;		};
+		void		SetTimeScale(float fScale)		{	m_kfSimTimeScale.SetFloat(fScale);	};
+		float		GetTimeScale()						{	return m_kfSimTimeScale.GetFloat();		};
 		
 		// Add/Remove Entitys
 		void Link(Entity* pkNewEntity,int iId = -1);					///< Link this to the Entity manager
@@ -319,9 +319,9 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		int 			GetNumOfZones();
 		int 			GetUnusedZoneID();		
 		Vector3 		GetZoneCenter(int iZoneNum);
-		void 			SetTrackerLos(int iLos) 							{	m_iTrackerLOS = iLos;			};		
+		void 			SetTrackerLos(int iLos) 							{	m_kiTrackerLOS.SetInt(iLos);			};		
 		ZoneData* 	GetZone(Entity* PkEntity);
-		void			SetMaxZoneIO(int iMaxIO)							{	m_iMaxZoneIO = iMaxIO;			};
+		void			SetMaxZoneIO(int iMaxIO)							{	m_kiMaxZoneIO.SetInt(iMaxIO);			};
 		
 		void			RecreateEntitys(const string& strType);
 

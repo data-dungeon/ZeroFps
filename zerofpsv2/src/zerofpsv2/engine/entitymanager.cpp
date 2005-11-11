@@ -70,14 +70,14 @@ ZSSEntityManager::ZSSEntityManager()
 	m_iNextEntityID			= 0;
 	m_iTotalNetEntityData	= 0;
 	m_iNumOfNetEntitys		= 0;
-	m_bDrawZones				= false;
-	m_bDrawAABBTree			= false;
-	m_bDrawZoneConnections	= false;
-	m_bDrawEnviroments		= false;
-	m_iTrackerLOS				= 100;	
-	m_iObjectDistance			= 50;
-	m_fZoneUnloadTime			= 30;	
-	m_iMaxZoneIO 				= 4;	
+	//m_bDrawZones				= false;
+	//m_bDrawAABBTree			= false;
+	//m_bDrawZoneConnections	= false;
+	//m_bDrawEnviroments		= false;
+	//m_iTrackerLOS				= 100;	
+	//m_iObjectDistance			= 50;
+	//m_fZoneUnloadTime			= 30;	
+	//m_iMaxZoneIO 				= 4;	
 	m_bAllowHide				= true;
 
 	m_pkWorldEntity			= NULL;
@@ -86,22 +86,32 @@ ZSSEntityManager::ZSSEntityManager()
 	m_pkGlobalEntity			= NULL;
 
 	m_fSimTime					= 0;			
-	m_fSimTimeScale			= 1.0;	
+	//m_fSimTimeScale			= 1.0;	
 
 	m_iSendType					= ZF_NETTYPE_REL;			// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
 
 	m_pkSceneAABBTree			= new SceneAABBTree(this);
 
 	// Register Variables		
-	RegisterVariable("l_showenvs",			&m_bDrawEnviroments,			CSYS_BOOL);
-	RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);
-	RegisterVariable("l_showconn",			&m_bDrawZoneConnections,	CSYS_BOOL);
-	RegisterVariable("e_simspeed",			&m_fSimTimeScale,				CSYS_FLOAT);
-	RegisterVariable("l_trackerlos",			&m_iTrackerLOS,				CSYS_INT);	
-	RegisterVariable("l_zoneunloadtime",	&m_fZoneUnloadTime,			CSYS_FLOAT);	
-	RegisterVariable("l_maxzoneio",			&m_iMaxZoneIO,					CSYS_INT);	
-	RegisterVariable("l_objectdistance",	&m_iObjectDistance,			CSYS_FLOAT);		
-	RegisterVariable("l_showaabbtree",		&m_bDrawAABBTree,				CSYS_BOOL);		
+	m_kbDrawEnviroments.Register(this, "l_showenvs",		"0");
+	m_kbDrawZones.Register(this, "l_showzones",				"0");
+	m_kbDrawZoneConnections.Register(this, "l_showconn",	"0");
+	m_kfSimTimeScale.Register(this, "e_simspeed",			"1.0");
+	m_kiTrackerLOS.Register(this,		"l_trackerlos",		"100");
+	m_kfZoneUnloadTime.Register(this,	"l_zoneunloadtime",	"30");
+	m_kiMaxZoneIO.Register(this,		"l_maxzoneio",			"4");
+	m_kiObjectDistance.Register(this,	"l_objectdistance",	"50");
+	m_kbDrawAABBTree.Register(this,	"l_showaabbtree",		"0");
+	
+	//RegisterVariable("l_showenvs",			&m_bDrawEnviroments,			CSYS_BOOL);
+	//RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);
+	//RegisterVariable("l_showconn",			&m_bDrawZoneConnections,	CSYS_BOOL);
+	//RegisterVariable("e_simspeed",			&m_fSimTimeScale,				CSYS_FLOAT);
+	//RegisterVariable("l_trackerlos",			&m_iTrackerLOS,				CSYS_INT);	
+	//RegisterVariable("l_zoneunloadtime",	&m_fZoneUnloadTime,			CSYS_FLOAT);	
+	//RegisterVariable("l_maxzoneio",			&m_iMaxZoneIO,					CSYS_INT);	
+	//RegisterVariable("l_objectdistance",	&m_iObjectDistance,			CSYS_FLOAT);		
+	//RegisterVariable("l_showaabbtree",		&m_bDrawAABBTree,				CSYS_BOOL);		
 
 	// Register Commands
 	Register_Cmd("o_logtree",		FID_LOGOHTREE);	
@@ -171,7 +181,7 @@ ZSSEntityManager::~ZSSEntityManager()
 void ZSSEntityManager::UpdateSimTime()
 {
 	//calculate new scaled sim time delta
-	m_fSimTimeDelta = m_fSimTimeScale * m_pkZeroFps->GetSystemUpdateFpsDelta();
+	m_fSimTimeDelta = m_kfSimTimeScale.GetFloat() * m_pkZeroFps->GetSystemUpdateFpsDelta();
 	
 	//add sim time delta to current sim time
 	m_fSimTime += m_fSimTimeDelta;
@@ -893,7 +903,7 @@ void ZSSEntityManager::UpdatePriority(vector<Entity*>& kObjects,Entity* pkRefere
  		
  		if(pkReferens)
  		{
- 			kObjects[i]->m_fPriority += Max(m_iTrackerLOS - pkReferens->GetWorldPosV().DistanceTo(kObjects[i]->GetWorldPosV()),0.0) / 2.0;
+ 			kObjects[i]->m_fPriority += Max(m_kiTrackerLOS.GetInt() - pkReferens->GetWorldPosV().DistanceTo(kObjects[i]->GetWorldPosV()),0.0) / 2.0;
  		}
 	}
 }
@@ -1252,7 +1262,7 @@ bool ZSSEntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 k
 }
 
 
-void ZSSEntityManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
+void ZSSEntityManager::RunCommand(int cmdid, const ConCommandLine* kCommand) 
 { 
 	string strName;
 	string strParam;
@@ -1443,7 +1453,7 @@ Entity* ZSSEntityManager::CloneEntity(int iNetID)
 
 void ZSSEntityManager::DrawSceneAABBTree()
 {
-	if(!m_bDrawAABBTree)
+	if(!m_kbDrawAABBTree.GetBool())
 		return;
 
 	static Vector3 kLeaf(1,0.5,0);
@@ -1484,7 +1494,7 @@ void ZSSEntityManager::DrawZones()
 
 void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 {
-	if(!m_bDrawZones)
+	if(!m_kbDrawZones.GetBool())
 		return;
 
 	static ZMaterial* pkLine = NULL;
@@ -1584,7 +1594,7 @@ void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 				m_pkRender->DrawAABB(kMin,kMax);
 				
 				//print enviroment
-				if(m_bDrawEnviroments)
+				if(m_kbDrawEnviroments.GetBool())
 					if(!((*pkZoneList)[i].m_strEnviroment.empty()))
 						m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),(*pkZoneList)[i].m_kPos,1,(*pkZoneList)[i].m_strEnviroment,pkMatText,m_pkFont,true);
 				
@@ -1602,7 +1612,7 @@ void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 		}
 	}
 	
-	if(m_bDrawZoneConnections) 
+	if(m_kbDrawZoneConnections.GetBool()) 
 	{
 		m_pkZShaderSystem->BindMaterial(pkLine);		
 		m_pkZShaderSystem->ClearGeometry();
@@ -2934,7 +2944,7 @@ void ZSSEntityManager::UpdateTrackers()
 				pkZone->m_bTracked = true;
 				int iRange = pkZone->m_iRange + 1;
 	
-				if(kTrackerPos.DistanceTo(pkZone->m_kPos) <= float(m_iTrackerLOS))
+				if(kTrackerPos.DistanceTo(pkZone->m_kPos) <= float(m_kiTrackerLOS.GetInt()))
 				{
 					pkZone->m_bActive = true;
 				
@@ -3006,7 +3016,7 @@ void ZSSEntityManager::UpdateZoneStatus()
 				//zone is unloaded , lests load it
 				if(pkZone->m_iStatus == EZS_UNLOADED)
 				{
-					if(iIoOps >= m_iMaxZoneIO)
+					if(iIoOps >= m_kiMaxZoneIO.GetInt())
 						continue;
 					iIoOps++;
 					
@@ -3039,9 +3049,9 @@ void ZSSEntityManager::UpdateZoneStatus()
 				//zone is cached, wait for timeout
 				if(pkZone->m_iStatus == EZS_CACHED)
 				{
-					if( (fCurrentTime - pkZone->m_fInactiveTime) > m_fZoneUnloadTime)
+					if( (fCurrentTime - pkZone->m_fInactiveTime) > m_kfZoneUnloadTime.GetFloat())
 					{						
-						if(iIoOps >= m_iMaxZoneIO)
+						if(iIoOps >= m_kiMaxZoneIO.GetInt())
 							continue;
 
 						iIoOps++;

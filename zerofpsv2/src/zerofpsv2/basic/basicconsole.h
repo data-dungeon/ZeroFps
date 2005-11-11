@@ -31,7 +31,7 @@ public:
 		// Print output to console.
 		virtual void Printf(const char *fmt, ...);						///< Print text with formation commands to console.
 		
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void RunCommand(int cmdid, const ConCommandLine* kCommand) { }
 };
 
 #endif

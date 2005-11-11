@@ -392,7 +392,7 @@ void ZFIni::GetCommandStrings(vector<string>* pkCommands)
 }
 
 /*
-void ZFIni::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZFIni::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{

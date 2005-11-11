@@ -16,7 +16,7 @@ TextureManager::TextureManager()
 
 	m_bSupportS3TC 		= false;
 	m_bSupportARBTC 		= false;
-	m_bUseTC					= true;
+	//m_bUseTC					= true;
 	
 	Register_Cmd("t_list",		FID_LISTTEXTURES);
 	Register_Cmd("t_reload",	FID_FORCERELOAD);
@@ -24,7 +24,8 @@ TextureManager::TextureManager()
 	Register_Cmd("t_unload",	FID_UNLOAD);
 	
 	
-	RegisterVariable("r_usetc",	&m_bUseTC,	CSYS_BOOL);	
+	//RegisterVariable("r_usetc",	&m_bUseTC,	CSYS_BOOL);	
+	m_kbUseTC.Register(this, "r_usetc","1");
 }	
 
 bool TextureManager::StartUp()	
@@ -864,7 +865,7 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	return true;
 }
 
-void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
+void TextureManager::RunCommand(int cmdid, const ConCommandLine* kCommand)
 { 
 	switch(cmdid) {
 		case FID_LISTTEXTURES:	ListTextures();					break;

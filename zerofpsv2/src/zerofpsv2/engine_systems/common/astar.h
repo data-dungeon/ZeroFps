@@ -78,8 +78,8 @@ private:
 	vector<AStarCellNode*>	kOpenList;
 	vector<AStarCellNode*>	kClosedList;
 	
-	bool				m_bDrawNaviMesh;
-	bool				m_bDrawPaths;
+	ConVar				m_kbDrawNaviMesh;
+	ConVar				m_kbDrawPaths;
 
 public:
 	ZSSAStar();

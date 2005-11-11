@@ -8,6 +8,7 @@
 #include "guiserverinfo.h"
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine_systems/propertys/p_heightmap.h"
+#include "../zerofpsv2/basic/concommand.h"
 
 class Camera;
 class Entity;
@@ -110,7 +111,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		//wierd stuff
 		char		szCoolName[256];
-		string	strMasterSmiley;
+		//string	strMasterSmiley;
 
 		// zone and object edit
 		bool		m_bPlaceObjectsOnGround;
@@ -139,8 +140,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		//edit sun
 		bool 			m_bEditSun;
-		bool			m_bRotatingSun;
-		
+		//bool			m_bRotatingSun;
+		ConVar	m_kbRotatingSun;
+
 		//edit stuff
 		int		m_iEditMode;
 		bool		m_bLockCreate;		// Stay in create until user picks another mode.
@@ -155,7 +157,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		float 	m_CamMoveSpeed;					// Std speed for edit cam, depends on edit mode.				
 		float 	m_CamSpeedScale;					// Scales the speed of the edit cam cnd can be changed by the user.
 		string	m_strActiveViewPort;				// Name of active view port
-		bool		m_bPlaneMovement;
+		//bool		m_bPlaneMovement;
+		ConVar	m_kbPlaneMovement;
 
 		//zone data
 		string	m_strActiveZoneName;		
@@ -198,8 +201,11 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		//network
 		vector<ZoneData>			m_kNetworkZones;
-		string		m_strLoginName, m_strLoginPW;
+		//string		m_strLoginName, m_strLoginPW;
 								
+		ConVar m_kstrLoginName;
+		ConVar m_kstrLoginPW;
+
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
 		
@@ -292,6 +298,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		vector<HMSelectVertex> GetAllSelectedHMVertex();
 
 	public:
+		ConVar		k_LoginName;
+		ConFunction g_kFuncJiddra;
+
 		bool SetViewPort(const char* szVpName);
 
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
@@ -309,7 +318,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnHud();
 		void OnSystem();
 				
-		void RunCommand(int cmdid, const CmdArgument* kCommand);		
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);		
 		void Init();
 		void RegisterPropertys();
 		void RegisterResources();		

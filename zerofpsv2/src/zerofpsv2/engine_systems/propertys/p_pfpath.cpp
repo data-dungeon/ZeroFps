@@ -45,7 +45,7 @@ void P_PfPath::Init()		{	}
 */
 void P_PfPath::RenderPath()
 {
-	if(!m_pkAStar->m_bDrawPaths) 
+	if(!m_pkAStar->m_kbDrawPaths.GetBool()) 
 		return;
 
 	unsigned int i;
@@ -136,7 +136,7 @@ void P_PfPath::Update()
 		m_iNextGoal++;
 		if(m_iNextGoal == (int) m_kPath.size()) 
 		{
-			if(!m_pkAStar->m_bDrawPaths)
+			if(!m_pkAStar->m_kbDrawPaths.GetBool())
 			{
 				m_kPath.clear(); // added again by zerom, havepath didn't work else
 				m_kRawPath.clear();

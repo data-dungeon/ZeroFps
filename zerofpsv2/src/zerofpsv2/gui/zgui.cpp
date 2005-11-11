@@ -47,14 +47,16 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_pkFpsLabel = NULL;
 	m_pkFpsWnd = NULL;
 
-	m_iShowFPSCounter = 1;
-	m_bRenderEnabled = true;
-
-	m_iScaleMode = 0;
+	//m_iShowFPSCounter = 1;
+	//m_bRenderEnabled = true;
+	//m_iScaleMode = 0;
 	
-	RegisterVariable("g_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
-   RegisterVariable("g_drawgui",			&m_bRenderEnabled, CSYS_BOOL);
-	RegisterVariable("g_scalemode",		&m_iScaleMode, CSYS_INT);
+	//RegisterVariable("g_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
+	m_kiShowFPSCounter.Register(this, "g_showfpscounter", "1");
+   //RegisterVariable("g_drawgui",			&m_bRenderEnabled, CSYS_BOOL);
+	m_kbRenderEnabled.Register(this, "g_drawgui", "1");
+	//RegisterVariable("g_scalemode",		&m_iScaleMode, CSYS_INT);
+	m_kiScaleMode.Register(this, "g_scalemode", "0");
 }
 
 bool ZGui::StartUp()	
@@ -317,7 +319,7 @@ int ZGui::GetMainWindowID(char* strWindow)
 // Rendera det aktiva f�stret (och alla dess childs)
 bool ZGui::Render(int fps)
 {
-	if(!m_bRenderEnabled)
+	if(!m_kbRenderEnabled.GetBool())
 		return true;
 
 // 	StartProfileTimer("r__Gui");		
@@ -373,7 +375,7 @@ bool ZGui::Render(int fps)
 
 	// Render fps label (also fix for strange bug with rendering cursor last 
 	// (can't do that, this fuck up the shadowblob)).
-	if(m_iShowFPSCounter)
+	if(m_kiShowFPSCounter.GetBool())
 	{
 		if(m_pkFpsWnd != NULL)
 		{
@@ -397,12 +399,12 @@ bool ZGui::Render(int fps)
 
 void ZGui::ShowFPSCounter(bool bShow)
 {
-	m_iShowFPSCounter = bShow;
+	m_kiShowFPSCounter.SetBool( bShow );
 
 	if(m_pkFpsWnd == NULL)
 		return;
 
-	if(m_iShowFPSCounter)
+	if(m_kiShowFPSCounter.GetBool())
 	{
 		m_pkFpsWnd->SetPos(800-60,5);
 		//m_pkFpsWnd->Show();

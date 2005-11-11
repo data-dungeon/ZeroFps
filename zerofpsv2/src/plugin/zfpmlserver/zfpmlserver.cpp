@@ -23,7 +23,7 @@ public:
 		NameGenerator();
 		virtual ~NameGenerator();
 			
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void RunCommand(int cmdid, const ConCommandLine* kCommand) { }
 		bool StartUp() { return true; }
 		bool ShutDown() {  return true;  }
 		bool IsValid() { return true; } 

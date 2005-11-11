@@ -441,23 +441,23 @@ void ZSSRender::DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3
 void ZSSRender::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
 	// Check if we should draw this at all.
-	if(!m_iDrawLandscape)					return;
+	if(!m_kiDrawLandscape.GetBool())		return;
 	if(kMap->m_iNumOfHMVertex == 0)		return;
 
 	
-  if(m_iAutoLod>0)
+  if(m_kiAutoLod.GetInt() > 0)
   {
 		if((int)SDL_GetTicks()>(m_iLodUpdate+500))
 		{
 			m_iLodUpdate=SDL_GetTicks();
 			
-			if(iFps<(m_iFpsLock-5) && m_iDetail>20)
+			if(iFps<(m_kiFpsLock.GetInt()-5) && m_kiDetail.GetInt()>20)
 			{
-				m_iDetail--;	
+				m_kiDetail.SetInt(m_kiDetail.GetInt() - 1);	
 			} 
-			else if(iFps>(m_iFpsLock+5) && m_iDetail<100)
+			else if(iFps>(m_kiFpsLock.GetInt()+5) && m_kiDetail.GetInt()<100)
 			{
-				m_iDetail++;		
+				m_kiDetail.SetInt(m_kiDetail.GetInt() + 1);		
 			}
 		}
 	}
@@ -507,7 +507,7 @@ void ZSSRender::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		
 	for(unsigned int i=1;i<kMap->m_kLayer.size();i++)
 	{	
-		if(i >= m_iMaxLandscapeLayers)
+		if(i >= m_kiMaxLandscapeLayers.GetInt())
 			break;
 
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
@@ -543,7 +543,7 @@ void ZSSRender::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 // 	glPopAttrib();
 // 	glPopMatrix();
 
-	if(m_iDrawLandNormal)
+	if(m_kiDrawLandNormal.GetBool())
 		DrawNormals(kMap,kMap->m_kPosition,0);
 
 		
@@ -661,7 +661,7 @@ void ZSSRender::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize
 		(iSize/2)*HEIGHTMAP_SCALE,15*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return; */
 	
-	iStep=Math::PowerOf2(int(fDistance / m_iDetail));
+	iStep=Math::PowerOf2(int(fDistance / m_kiDetail.GetInt()));
 	iStep = 1;
 
 	// Draw the Terrain Patch.

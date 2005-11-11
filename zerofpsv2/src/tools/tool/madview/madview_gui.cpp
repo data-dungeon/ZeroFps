@@ -31,10 +31,15 @@ void MadView::SetupGuiEnviroment()
 	GetWnd("MaterialFileTree")->Hide();
 	GetWnd("AnimationFileTree")->Hide();
 
-	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Mesh", m_pkZeroFps->m_iMadDraw & MAD_DRAW_MESH);
-	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Normals", m_pkZeroFps->m_iMadDraw & MAD_DRAW_NORMAL);
-	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Bones", m_pkZeroFps->m_iMadDraw & MAD_DRAW_BONES);
-	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Sphere", m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE);
+	ConVar* pkMadDraw = GetSystem().GetConVar("r_maddraw");
+	if(pkMadDraw)
+	{
+		int iMadDraw = pkMadDraw->GetInt();
+		((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Mesh", iMadDraw & MAD_DRAW_MESH);
+		((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Normals", iMadDraw & MAD_DRAW_NORMAL);
+		((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Bones", iMadDraw & MAD_DRAW_BONES);
+		((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Sphere", iMadDraw & MAD_DRAW_SPHERE);
+	}
 }
 
 void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)

@@ -101,7 +101,7 @@ ZSSPakFile::ZSSPakFile() : ZFSubSystem("ZSSPakFile")
 	Register_Cmd("pak_def",		FID_DEFPATHS);		
 }
 
-void ZSSPakFile::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSPakFile::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{

@@ -75,7 +75,7 @@ class BASIC_API ZSSResourceDB : public ZFSubSystem {
 
 		ResourceCreateLink*	FindResourceTypeFromFullName(string strResName);
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 
 		// Creating Resources.
 		ZFResource*				CreateResource(const string& strName);

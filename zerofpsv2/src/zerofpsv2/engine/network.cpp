@@ -19,24 +19,31 @@ ZSSNetWork::ZSSNetWork()
 	m_fStatsUpdate					= 0;
 
 	// Set Default values
-	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
+	//m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
 	m_iMaxNumberOfNodes	= 0;
 	m_iDefPort				= 4242;
-	m_strMasterServer    = "dvoid.no-ip.com";
-	m_bPublishServer		= true;
+	//m_strMasterServer    = "dvoid.no-ip.com";
+	//m_bPublishServer		= true;
 	m_fMSNextPing			= 0;
-	m_strServerName		= "Mistlands_Server";
-	m_strPublishIp			= "none";
+	//m_strServerName		= "Mistlands_Server";
+	//m_strPublishIp			= "none";
 	m_iBadPackages			= 0;
-	m_iMaxOutput 			= 50000;
+	//m_iMaxOutput 			= 50000;
 
-	// Register Variables
-	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
-	RegisterVariable("n_mslink",				&m_strMasterServer,		CSYS_STRING);	
-	RegisterVariable("n_mspublish",			&m_bPublishServer,		CSYS_BOOL);	
-   RegisterVariable("n_servername",			&m_strServerName,			CSYS_STRING);
-   RegisterVariable("n_publiship",			&m_strPublishIp,			CSYS_STRING);
-   RegisterVariable("n_maxoutput",			&m_iMaxOutput,				CSYS_INT);
+	// Register Variables	
+	m_kfConnectTimeOut.Register(this, "n_connecttimeout",	"10");
+	m_kstrMasterServer.Register(this, "n_mslink",			"dvoid.no-ip.com");
+	m_kbPublishServer.Register(this, "n_mspublish",			"1");
+	m_kstrServerName.Register(this, "n_servername", "Mistlands_Server");
+	m_kstrPublishIp.Register(this, "n_publiship", "none");
+	m_kiMaxOutput.Register(this, "n_maxoutput", "50000");
+
+	//RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
+	//RegisterVariable("n_mslink",				&m_strMasterServer,		CSYS_STRING);	
+	//RegisterVariable("n_mspublish",			&m_bPublishServer,		CSYS_BOOL);	
+   //RegisterVariable("n_servername",			&m_strServerName,			CSYS_STRING);
+   //RegisterVariable("n_publiship",			&m_strPublishIp,			CSYS_STRING);
+   //RegisterVariable("n_maxoutput",			&m_iMaxOutput,				CSYS_INT);
 	
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);
@@ -71,9 +78,9 @@ bool ZSSNetWork::StartUp()
 
 	int iMasterPort = 4343;
 
-	if(!IsValidIPAddress( m_strMasterServer.c_str() ))
+	if(!IsValidIPAddress( m_kstrMasterServer.GetString().c_str() ))
 	{
-		if(DnsLookUp( m_strMasterServer.c_str(), m_kMasterServerIP ))
+		if(DnsLookUp( m_kstrMasterServer.GetString().c_str(), m_kMasterServerIP ))
 		{
 			m_kMasterServerIP.port = 0;
 			m_kMasterServerIP.port = m_kMasterServerIP.port | ((iMasterPort >> 8) & 0xff);  
@@ -87,7 +94,7 @@ bool ZSSNetWork::StartUp()
 	else
 	{
 		char szFinalTarget[256];
-		sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), iMasterPort);
+		sprintf(szFinalTarget, "%s:%d", m_kstrMasterServer.GetString().c_str(), iMasterPort);
 		StrToAddress(szFinalTarget,&m_kMasterServerIP); 		
 	}
 
@@ -359,7 +366,7 @@ int ZSSNetWork::GetClientNetSpeed(int iId)
 		return 0;
 
 	int iNetSpeed = m_RemoteNodes[iId]->m_iNetSpeed;
-	int iMaxSpeed = m_iMaxOutput / GetNumOfClients();
+	int iMaxSpeed = m_kiMaxOutput.GetInt() / GetNumOfClients();
 
 	return Min(iNetSpeed,iMaxSpeed);
 }
@@ -513,7 +520,7 @@ void ZSSNetWork::SendServerInfo(IPaddress kIp)
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((char) ZF_NETCONTROL_SERVERINFO2);
 	NetP.Write_Version(m_pkZeroFps->GetVersion());
-	NetP.Write_Str(m_strServerName.c_str());
+	NetP.Write_Str(m_kstrServerName.GetString().c_str());
 	NetP.Write(GetNumOfClients());
 	NetP.Write(m_iMaxNumberOfNodes);
 
@@ -555,7 +562,7 @@ void ZSSNetWork::GotServerInfo(NetPacket* pkNetPacket)
 
 void ZSSNetWork::MS_ServerIsActive()
 {
-	if(!m_bPublishServer)
+	if(!m_kbPublishServer.GetBool())
 		return;
 
 /*	IPaddress kTargetIP;
@@ -572,10 +579,10 @@ void ZSSNetWork::MS_ServerIsActive()
 	NetP.Write((int) 0);
 	NetP.Write_Str(m_szGameName);
 
-	if(m_strPublishIp != "none")
+	if(m_kstrPublishIp.GetString() != "none")
 	{
 		IPaddress kTargetIP;
-		StrToAddress(m_strPublishIp.c_str(),&kTargetIP); 	
+		StrToAddress(m_kstrPublishIp.GetString().c_str(),&kTargetIP); 	
 		NetP.Write((int) 1);
 		NetP.Write(kTargetIP);
 	}
@@ -960,7 +967,7 @@ void ZSSNetWork::HandleControlMessage(NetPacket* pkNetPacket)
 						
 			if(iNetSpeed > 1000000)
 			{
-				m_pkConsole->Printf("Client joined with to hi netspeed (%d), setting netspeed %d",iNetSpeed,m_iMaxOutput);
+				m_pkConsole->Printf("Client joined with to hi netspeed (%d), setting netspeed %d",iNetSpeed,m_kiMaxOutput.GetInt());
 				iNetSpeed = 1000000;
 			}			
 			
@@ -1279,7 +1286,7 @@ void ZSSNetWork::Run()
 	// Ping MasterServer
 	if(m_eNetStatus == NET_SERVER)
 	{
-		if(m_bPublishServer && fEngineTime > m_fMSNextPing)
+		if(m_kbPublishServer.GetInt() && fEngineTime > m_fMSNextPing)
 		{
 			m_fMSNextPing = fEngineTime + 60;
 			MS_ServerIsActive();
@@ -1592,7 +1599,7 @@ void ZSSNetWork::DisconnectAll()
 	}
 }
 
-void ZSSNetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSNetWork::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	float fMax;
 

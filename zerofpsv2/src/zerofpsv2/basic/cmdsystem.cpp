@@ -3,6 +3,7 @@
 #include "zfsystem.h"
 #include "globals.h"
 #include "zfini.h"
+#include "concommand.h"
 
 #if defined(WIN32) 
 #include <windows.h> 
@@ -17,7 +18,7 @@ ZSSCmdSystem::ZSSCmdSystem()
 {
 //	m_pkCon = NULL;
 
-	Register_Cmd("set",			FID_SET,						CSYS_FLAG_SRC_ALL,	"set name value", 2);
+	Register_Cmd("set",			FID_SET,						CSYS_FLAG_SRC_ALL,	"set name value", 0);
 	Register_Cmd("varlist",		FID_VARLIST,				CSYS_FLAG_SRC_ALL);
 	Register_Cmd("commands",	FID_COMMANDS,				CSYS_FLAG_SRC_ALL);
 	Register_Cmd("sys",			FID_SYS,						CSYS_FLAG_SRC_ALL);
@@ -48,21 +49,57 @@ bool ZSSCmdSystem::Set(const char* acName,const char* acData)
 	return GetSystem().SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
 }
 
-void ZSSCmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSCmdSystem::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
+	ConCommand* pkConCommand;
+	string strValue;
+
 	switch(cmdid) 
 	{
 		case FID_SET:
-			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
+			{
+			string strConCommand = kCommand->m_kSplitCommand[1].c_str();
+			pkConCommand = GetSystem().FindConCommand(strConCommand.c_str());
+			if(!pkConCommand)
+				return;
+
+			if(pkConCommand->IsCommand())
+			{
+				ConFunction* pkConFunc = dynamic_cast<ConFunction*>(pkConCommand);
+				ConCommandLine kLine;
+				kLine.Set( kCommand->m_strFullCommand.c_str() );
+				pkConFunc->Run(&kLine);
+			}
+			else
+			{
+				ConVar* pkConVar = dynamic_cast<ConVar*>(pkConCommand);
+				int iHora = kCommand->m_kSplitCommand.size();
+				if(iHora == 2)
+				{
+					GetSystem().Printf("Show");
+					GetSystem().Printf(" %s.%s = %s",pkConVar->GetSubSystemName().c_str(),strConCommand.c_str(),pkConVar->GetString().c_str());
+				}
+				if(iHora == 3)
+				{
+					GetSystem().Printf("Set");
+					strConCommand = kCommand->m_kSplitCommand[1].c_str();
+					strValue = kCommand->m_kSplitCommand[2].c_str();
+					pkConVar = dynamic_cast<ConVar*>(GetSystem().FindConCommand(strConCommand.c_str()));
+					pkConVar->SetString( strValue );
+					GetSystem().Printf(" %s - %s = %s", pkConVar->GetSubSystemName().c_str(), strConCommand.c_str(),pkConVar->GetString().c_str());
+				}
+			}
+
+			/*if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
 				//if(m_pkCon)
 					GetSystem().Printf("Variable not found");
 				return;
 			} else {
 				//if(m_pkCon)
 					GetSystem().Printf("Setting %s = %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
+			}*/
+			
 			}
-			
-			
 			break;
 
 		case FID_VARLIST:		GetSystem().PrintVariables();	break;

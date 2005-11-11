@@ -15,41 +15,55 @@ ZSSRender::ZSSRender()
 	m_pkScreen = NULL;
 
 	// Set Our own local variables.
-	m_iDetail					= 30;						//height meens greater detail att longer range	
-	m_iFpsLock					= 60;
-	m_iAutoLod					= 1;
+	//m_iDetail					= 30;						//height meens greater detail att longer range	
+	//m_iFpsLock					= 60;
+	//m_iAutoLod					= 1;
 	m_iLodUpdate				= 0;	
 
-	m_iMaxLandscapeLayers	= 4;
-	m_iDrawLandscape			= 1;
+	//m_iMaxLandscapeLayers	= 4;
+	//m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
 	m_eLandscapePolygonMode = FILL;
-	m_iDrawLandNormal       = 0;
+	//m_iDrawLandNormal       = 0;
 
 	m_kConsoleColor.Set(1,1,1);
 	m_bCapture					= false;
 
 	// The default graphics mode.
-	m_iWidth						= 800;
+	/*m_iWidth						= 800;
 	m_iHeight					= 600;
 	m_iDepth						= 16;
-	m_iFullScreen				= 0;
+	m_iFullScreen				= 0;*/
 	
 	// Register Our Own variables.
-	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers, CSYS_INT);
-	RegisterVariable("r_drawland",		&m_iDrawLandscape, CSYS_INT);
-	RegisterVariable("r_terrfill",		&m_eLandscapePolygonMode, CSYS_INT);
-	RegisterVariable("r_terrnorm",		&m_iDrawLandNormal, CSYS_BOOL);
+	m_kiMaxLandscapeLayers.Register(this, "r_maxlayers", "4");
+	m_kiDrawLandscape.Register(this, "r_drawland", "1");
+	m_kiDrawLandNormal.Register(this, "r_terrnorm", "0");
+	
+	//RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers, CSYS_INT);
+	//RegisterVariable("r_drawland",		&m_iDrawLandscape, CSYS_INT);
+	//RegisterVariable("r_terrnorm",		&m_iDrawLandNormal, CSYS_BOOL);
+	// ********** RegisterVariable("r_terrfill",		&m_eLandscapePolygonMode, CSYS_INT);
 
-	RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
-	RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
-	RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
+	m_kiDetail.Register(this, "r_landlod", "30");
+	m_kiAutoLod.Register(this, "r_autolod", "1");
+	m_kiFpsLock.Register(this, "r_fpslock", "60");
+	
+	//RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
+	//RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
+	//RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
+	
 
 	// Register Commands
-	RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
-	RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
-	RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
-	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_BOOL);
+	//RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
+	//RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
+	//RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
+	//RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_BOOL);
+
+	m_kiWidth.Register(this, "r_width", "800");
+	m_kiHeight.Register(this, "r_height", "600");
+	m_kiDepth.Register(this, "r_depth", "16");
+	m_kiFullScreen.Register(this, "r_fullscreen", "0");
 
 	// Register Our Own commands.
 	Register_Cmd("r_glinfo",	FID_GLINFO);	
@@ -73,7 +87,7 @@ bool ZSSRender::StartUp()
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
-	InitDisplay(m_iWidth,m_iHeight,m_iDepth);
+	InitDisplay(m_kiWidth.GetInt(),m_kiHeight.GetInt(),m_kiDepth.GetInt());
 //	SetDisplay();
 
 	return true;
@@ -83,9 +97,9 @@ void ZSSRender::InitDisplay(int iWidth,int iHeight,int iDepth)
 {
 	// Anything sent from app overrides default and ini files.
 	if(iWidth || iHeight || iDepth) {
-		m_iWidth	= iWidth;
-		m_iHeight= iHeight;
-		m_iDepth	= iDepth;
+		m_kiWidth.SetInt(iWidth)	;
+		m_kiHeight.SetInt(iHeight)	;
+		m_kiDepth.SetInt(iDepth)	;
 		}
 
 	//reinitialize opengl
@@ -111,16 +125,16 @@ void ZSSRender::InitDisplay(int iWidth,int iHeight,int iDepth)
 
 void ZSSRender::ToggleFullScreen(void)
 {
-	m_iFullScreen = !m_iFullScreen;
+	m_kiFullScreen.SetBool( !m_kiFullScreen.GetBool());
 	SDL_WM_ToggleFullScreen(m_pkScreen);
 }
 
 void ZSSRender::SetDisplay(int iWidth,int iHeight,int iDepth, bool bFullscreen)
 {
-	m_iWidth=iWidth;
-	m_iHeight=iHeight;
-	m_iDepth=iDepth;
-	m_iFullScreen=bFullscreen;
+	m_kiWidth.SetInt(iWidth);
+	m_kiHeight.SetInt(iHeight);
+	m_kiDepth.SetInt(iDepth);
+	m_kiFullScreen.SetInt(bFullscreen);
 
 //	SetDisplay(); // comment out by zeb 9 nov 2004 - krashar
 }
@@ -133,7 +147,7 @@ void ZSSRender::SetDisplay()
 
 	m_iSDLVideoModeFlags = 0;
 
-	if(m_iFullScreen == true)
+	if(m_kiFullScreen.GetBool() == true)
 		m_iSDLVideoModeFlags = SDL_OPENGL|SDL_FULLSCREEN;
 	else
 		m_iSDLVideoModeFlags = SDL_OPENGL;
@@ -143,10 +157,10 @@ void ZSSRender::SetDisplay()
 
 
 
-	printf("SDL_SetVideoMode(%i,%i,%i,%i)\n", m_iWidth, m_iHeight, m_iDepth, m_iSDLVideoModeFlags);
+	printf("SDL_SetVideoMode(%i,%i,%i,%i)\n", m_kiWidth.GetInt(), m_kiHeight.GetInt(), m_kiDepth.GetInt(), m_iSDLVideoModeFlags);
 
 
-	if( (m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags)) == NULL)
+	if( (m_pkScreen= SDL_SetVideoMode(m_kiWidth.GetInt(),m_kiHeight.GetInt(),m_kiDepth.GetInt(), m_iSDLVideoModeFlags)) == NULL)
 	{
 		cout<<"ERROR: Creating sdl video surface"<<endl;
 		return;
@@ -154,7 +168,7 @@ void ZSSRender::SetDisplay()
 
 	printf("SDL_SetVideoMode OK!\n");
 
-	glViewport(0, 0,m_iWidth,m_iHeight);
+	glViewport(0, 0,m_kiWidth.GetInt(),m_kiHeight.GetInt());
 
 	m_pkLight->SetStartUpValues();
 }
@@ -166,7 +180,7 @@ void ZSSRender::Swap(void)
 	if(m_bCapture) 
 	{
 		m_bCapture = false;
-		CaptureScreenShoot(m_iWidth, m_iHeight);
+		CaptureScreenShoot(m_kiWidth.GetInt(), m_kiHeight.GetInt());
 	}
 
 	glLoadIdentity();	
@@ -2229,7 +2243,7 @@ void ZSSRender::GlInfo()
 		}
 }
 
-void ZSSRender::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSRender::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	float r,g,b;
 

@@ -32,7 +32,7 @@ class BASIC_API ZSSCmdSystem : public ZFSubSystem
 			FID_PLUGINLIST,
 			};
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 
 		ZSSCmdSystem(void);
 		

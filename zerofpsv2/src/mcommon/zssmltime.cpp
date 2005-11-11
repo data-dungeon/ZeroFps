@@ -13,10 +13,10 @@ ZSSMLTime::ZSSMLTime() : ZFSubSystem("ZSSMLTime")
 	
 	m_dTotalTimeMT	=	0;
 	m_dTotalTimeRT =	0;
-	m_fScale 		=	12.0;	
+	//m_fScale 		=	12.0;	
 
-	
-	RegisterVariable("ap_timescale",&m_fScale,CSYS_FLOAT);			
+	m_kfScale.Register(this, "ap_timescale", "12.0");
+	//RegisterVariable("ap_timescale",&m_fScale,CSYS_FLOAT);			
 }
 
 bool ZSSMLTime::StartUp()
@@ -66,7 +66,7 @@ void ZSSMLTime::AddTime(double dNewSeconds)
 	m_dTotalTimeRT += dNewSeconds;
 
 	//scale time
-	dNewSeconds *= m_fScale;
+	dNewSeconds *= m_kfScale.GetFloat();
 	
 	//save total time
 	m_dTotalTimeMT += dNewSeconds;

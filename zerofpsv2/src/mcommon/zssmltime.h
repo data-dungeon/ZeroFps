@@ -4,6 +4,7 @@
 #include <string>
 #include "../zerofpsv2/basic/globals.h"
 #include "../zerofpsv2/basic/zfsubsystem.h"
+#include "../zerofpsv2/basic/concommand.h"
 #include "mcommon_x.h"
 
 using namespace std;
@@ -27,8 +28,9 @@ class MCOMMON_API ZSSMLTime : public ZFSubSystem
 		
 		double	m_dTotalTimeMT;		// total time in seconds GT				
 		double	m_dTotalTimeRT;
-		float 	m_fScale;
+//		float 	m_fScale;
 		
+		ConVar	m_kfScale;
 
 	public:
 		ZSSMLTime();
@@ -50,7 +52,7 @@ class MCOMMON_API ZSSMLTime : public ZFSubSystem
 		int	GetHour()			{	return m_iHour;			};
 		int	GetMinute()			{	return m_iMinute;			};
 		int	GetSecond()			{	return m_iSecond;			};
-		float GetScale()			{	return m_fScale;			};		
+		float GetScale()			{	return m_kfScale.GetFloat();			};		
 		double GetTotalMLTime()	{	return m_dTotalTimeMT;	};
 };
 

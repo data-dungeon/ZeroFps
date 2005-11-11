@@ -123,7 +123,7 @@ class ENGINE_API ZSSInput : public ZFSubSystem {
 		
 		
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 		void Reset(void);		
 		void SetupMapToKeyState();
 		

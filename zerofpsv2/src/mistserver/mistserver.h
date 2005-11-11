@@ -62,9 +62,9 @@ class MistServer :public Application , public ZGuiApp
 
 		vector<pair<string,Vector3> >	m_kLocations;
 		
-		bool									m_AcceptNewLogins;
-		bool									m_bStartMinimized;
-		int									m_iServerPort;
+		ConVar								m_kAcceptNewLogins;
+		ConVar								m_kbStartMinimized;
+		ConVar								m_kiServerPort;
 		
 		
 		//edit stuff
@@ -117,7 +117,7 @@ class MistServer :public Application , public ZGuiApp
 		bool ShutDown();
 		bool IsValid();
 				
-		void RunCommand(int cmdid, const CmdArgument* kCommand);		
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);		
 		void Init();
 		void Input();
 		void OnServerStart(void);

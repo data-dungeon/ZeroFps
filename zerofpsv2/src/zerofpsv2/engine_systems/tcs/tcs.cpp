@@ -11,13 +11,12 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fMaxVel = 		15.0;
 	m_fGravity =		9.84;
 	
-	m_fSleepTime = 	1.0;
+	//m_fSleepTime = 	1.0;
+	//m_iCollisionIterations	= 4;
+	//m_iContactIterations		= 4;
 	
-	m_iCollisionIterations	= 4;
-	m_iContactIterations		= 4;
-	
-	m_iHandleCollission =1;
-	m_iDebugGraph = 		0;
+	//m_iHandleCollission =1;
+	//m_iDebugGraph = 		0;
 	
 	m_iNrOfCollissions = 0;
 	m_iNrOfTests = 		0;
@@ -26,15 +25,22 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_pkBodyCopy1 	=	NULL;
 	m_pkBodyCopy2	=	NULL;
 	
-	RegisterVariable("p_tcshandle",		&m_iHandleCollission,CSYS_INT);
-	RegisterVariable("p_tcsdebug",		&m_iDebugGraph,CSYS_INT);
+	//RegisterVariable("p_tcshandle",		&m_iHandleCollission,CSYS_INT);
+	//RegisterVariable("p_tcsdebug",		&m_iDebugGraph,CSYS_INT);
+
+	m_kiHandleCollission.Register(this, "p_tcshandle", "1");
+	m_kiDebugGraph.Register(this, "p_tcsdebug", "0");
+
 	//RegisterVariable("p_tcssleeplinvel",&m_fSleepLinVel,CSYS_FLOAT);
 	//RegisterVariable("p_tcssleeprotvel",&m_fSleepRotVel,CSYS_FLOAT);
-// 	RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);
+	//RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);
 	
-	RegisterVariable("p_tcssleeptime",	&m_fSleepTime,CSYS_FLOAT);
-	RegisterVariable("p_tcscolit",		&m_iCollisionIterations,CSYS_INT);
-	RegisterVariable("p_tcsconit",		&m_iContactIterations,CSYS_INT);
+	//RegisterVariable("p_tcssleeptime",	&m_fSleepTime,CSYS_FLOAT);
+	//RegisterVariable("p_tcscolit",		&m_iCollisionIterations,CSYS_INT);
+	//RegisterVariable("p_tcsconit",		&m_iContactIterations,CSYS_INT);
+	m_kfSleepTime.Register(this, "p_tcssleeptime", "1.0");
+	m_kiCollisionIterations.Register(this, "p_tcscolit", "4");
+	m_kiContactIterations.Register(this, "p_tcsconit", "4");
 }
 
 Tcs::~Tcs()
@@ -166,7 +172,7 @@ void Tcs::Update(float fAlphaTime)
 	
 		
 	//handle collisions
-	for(int i = 0;i< m_iCollisionIterations;i++)
+	for(int i = 0;i< m_kiCollisionIterations.GetInt();i++)
 	{
 		//save old positions and velocitys		
 		PushVelPos();
@@ -201,7 +207,7 @@ void Tcs::Update(float fAlphaTime)
 	UpdateLineTests(fStepSize);				
 	
 	//handle contacts
-	for(int i = 0;i< m_iContactIterations;i++)
+	for(int i = 0;i< m_kiContactIterations.GetInt();i++)
 	{
 		//save old positions and velocitys
 		PushVelPos();
@@ -555,11 +561,11 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 	//handle all collision points
 	for(int i = 0;i<	iNrOfPos;i++)
 	{	
-		if(m_iDebugGraph)
+		if(m_kiDebugGraph.GetInt())
 			m_pkRender->Line(pkCol->kPositions[i],pkCol->kPositions[i] + pkCol->kNormals[i]);		
 		
 		//collission handling is disabled
-		if(!m_iHandleCollission)
+		if(!m_kiHandleCollission.GetInt())
 			continue;			
 			
 		//calculate the relative velocity betwen collission points
@@ -657,7 +663,7 @@ void Tcs::FindRestingBodys()
 	
 	//check for resting bodys
 	static float fLastRestFind = 0;	
-	if(m_pkZeroFps->GetEngineTime() - fLastRestFind > m_fSleepTime)
+	if(m_pkZeroFps->GetEngineTime() - fLastRestFind > m_kfSleepTime.GetFloat())
 	{
 		fLastRestFind = m_pkZeroFps->GetEngineTime();
 	
@@ -1652,7 +1658,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 		verts[1] = kModelMatrix.VectorTransform( (*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
 		verts[2] = kModelMatrix.VectorTransform( (*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
 		
-		if(m_iDebugGraph == 2)
+		if(m_kiDebugGraph.GetInt() == 2)
 		{
 			//debug stuff
 			m_pkRender->Line(verts[0],verts[1]);
@@ -1953,7 +1959,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 		Normal= ((verts1[1] - verts1[0]).Cross(verts1[2] - verts1[0])).Unit();				
 		P.Set(Normal,verts1[0]);
 		
-		if(m_iDebugGraph == 2)
+		if(m_kiDebugGraph.GetInt() == 2)
 		{
 			//debug stuff
 			m_pkRender->Line(verts1[0],verts1[1]);
@@ -1978,7 +1984,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 			if(verts2[1] == verts2[2])
 				continue;					
 							
-			if(m_iDebugGraph == 2)
+			if(m_kiDebugGraph.GetInt() == 2)
 			{
 				//debug stuff
 				m_pkRender->Line(verts2[0],verts2[1]);
@@ -2549,7 +2555,7 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 		if(verts1[1] == verts1[2])
 			continue;
 			
-		if(m_iDebugGraph == 2)
+		if(m_kiDebugGraph.GetInt() == 2)
 		{
 			//debug stuff
 			m_pkRender->Line(verts1[0],verts1[1]);
@@ -2588,7 +2594,7 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 				continue;
 
 								
-			if(m_iDebugGraph == 2)
+			if(m_kiDebugGraph.GetInt() == 2)
 			{
 				//debug stuff
 				m_pkRender->Line(verts1[0],verts1[1]);

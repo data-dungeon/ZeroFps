@@ -103,7 +103,8 @@ class RENDER_API ZSSLight : public ZFSubSystem
 		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
-		int		m_iNrOfLights;		//max number of lights used at the same time
+		ConVar	m_kiNrOfLights;
+		//int		m_iNrOfLights;		//max number of lights used at the same time
 		bool		m_bAmbientOnly;	//enables use of only ambient light
 		bool		m_bEnabled;			//lighting enabled?
 		
@@ -124,7 +125,7 @@ class RENDER_API ZSSLight : public ZFSubSystem
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update(LightProfile* pkLightProfile,const Vector3& kRefPos);
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { } 
+		void RunCommand(int cmdid, const ConCommandLine* kCommand) { } 
 
 		void SetLighting(bool bOn);
 		void SetStartUpValues();

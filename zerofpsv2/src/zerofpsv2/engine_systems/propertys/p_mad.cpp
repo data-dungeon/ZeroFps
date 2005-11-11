@@ -5,10 +5,9 @@
 #include "../script_interfaces/si_objectmanager.h" 
 
 using namespace ObjectManagerLua;
-
-
-extern float	g_fMadLODScale;
  
+ConVar	m_kMadDraw("r_maddraw","1","Display mode to use for mads.");
+
 P_Mad::P_Mad() : Property("P_Mad")
 {
 
@@ -229,7 +228,7 @@ void P_Mad::Update()
 						m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
 						m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 						m_pkZShaderSystem->MatrixScale(m_fScale);																	
-						Draw_All(m_pkZeroFps->m_iMadDraw);					
+						Draw_All( m_kMadDraw.GetInt() );	// m_iMadDraw					
 					m_pkZShaderSystem->MatrixPop();
 					
 		 			m_bCulled = false;
@@ -248,7 +247,7 @@ void P_Mad::Update()
 					m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
 					m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 					m_pkZShaderSystem->MatrixScale(m_fScale);																	
-					Draw_All(m_pkZeroFps->m_iMadDraw);					
+					Draw_All( m_kMadDraw.GetInt());					
 				m_pkZShaderSystem->MatrixPop();
 			
 		 		m_bCulled = false;
@@ -258,7 +257,7 @@ void P_Mad::Update()
 
 		
 		//draw bounding volume
-		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 
+		if(m_kMadDraw.GetInt() & MAD_DRAW_SPHERE) 
 		{
 			if(m_bHaveAABB)
 				m_pkRender->DrawAABB(m_AABBMin + kPos,m_AABBMax + kPos,Vector3(1,1,1));				

@@ -38,13 +38,14 @@ LightSource::LightSource()
 ZSSLight::ZSSLight()
 : ZFSubSystem("ZSSLight") 
 {
-	m_iNrOfLights=		8;							//this shuld never be greater than 8
+	//m_iNrOfLights=		8;							//this shuld never be greater than 8
 	m_bAmbientOnly =	false;
 	m_bEnabled = 		true;
 	m_iVersion = 		0;
 	m_iCurrentActiveLights = 0;
 	
-	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
+	//RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
+	m_kiNrOfLights.Register(this, "r_maxlights", "8", "max number of lights used at the same time");
 	
 	m_kSun.kRot = Vector3(2,4,1);
 	m_kSun.kSpecular=Vector4(0.8,0.8,0.8,0);
@@ -214,8 +215,8 @@ void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 		
 		//how many lights do we use?
 		int max = kSorted.size();
-		if(max>m_iNrOfLights)
-			max=m_iNrOfLights;			
+		if(max>m_kiNrOfLights.GetInt())
+			max=m_kiNrOfLights.GetInt();			
 			
 		//add new lights in light list
 		for(int i=0;i<max;i++)

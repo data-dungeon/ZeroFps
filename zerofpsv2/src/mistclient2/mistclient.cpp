@@ -43,37 +43,44 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iPickedEntityID 	= 	-1;
 	m_fDelayTime  			=	0;
 
-	m_bBloom					=	false;
+	//m_bBloom					=	false;
 	m_iCharacterID 		=	-1;
 	m_iTargetID 			=	-1;
 	m_bFrontView 			=	false;
-	m_bShowMenulevel 		= 	false;
-	m_bQuickStart 			=	false;
-	m_bTargetRotate		=	false;
+	//m_bShowMenulevel 		= 	false;
+	//m_bQuickStart 			=	false;
+	//m_bTargetRotate		=	false;
 	m_bLoginKeepAlive    =  false;
-	m_bShowLagMeeter		=	true;
+	//m_bShowLagMeeter		=	true;
 	m_fPingDelay			=  2;
-	m_strQuickStartAddress = "127.0.0.1:4242";
+	//m_strQuickStartAddress = "127.0.0.1:4242";
 	m_pkMakerEntity		= NULL;
 
 	m_strMenuMusic			=	"music/menu_music.ogg";
 
-	m_strLoginName			= "player";
-   m_strLoginPW 			= "topsecret";
+	//m_strLoginName			= "player";
+   //m_strLoginPW 			= "topsecret";
 
 	Register_Cmd("msref", FID_MSREFRESH);
 	Register_Cmd("skill", FID_SETSKILLBAR);
 
-   RegisterVariable("ap_loginname", 		 	&m_strLoginName,				CSYS_STRING);
-   RegisterVariable("ap_loginpw", 			 	&m_strLoginPW,					CSYS_STRING);
-	RegisterVariable("ap_showmenulevel", 	 	&m_bShowMenulevel,			CSYS_BOOL);
-	RegisterVariable("ap_quickstart",		 	&m_bQuickStart,				CSYS_BOOL);
-	RegisterVariable("ap_quickstartadress",	&m_strQuickStartAddress,	CSYS_STRING);
-	RegisterVariable("ap_targetrotate",			&m_bTargetRotate,				CSYS_BOOL);
-	RegisterVariable("ap_lagmeeter",				&m_bShowLagMeeter,			CSYS_BOOL);
+	m_kstrLoginName.Register(this, "ap_loginname", "player");
+	m_kstrLoginPW.Register(this, "ap_loginpw", "topsecret");
+	m_kbShowMenulevel.Register(this, "ap_showmenulevel", "0");
+	m_kbQuickStart.Register(this, "ap_quickstart", "0");
+	m_kstrQuickStartAddress.Register(this, "ap_quickstartadress", "127.0.0.1:4242");
+	m_kbTargetRotate.Register(this, "ap_targetrotate", "0");
+	m_kbShowLagMeeter.Register(this, "ap_lagmeeter", "1");
+	m_kbBloom.Register(this, "ap_bloom", "0");
 
-
-	RegisterVariable("ap_bloom",					&m_bBloom,				CSYS_BOOL);
+	//RegisterVariable("ap_loginname", 		 	&m_strLoginName,				CSYS_STRING);
+   //RegisterVariable("ap_loginpw", 			 	&m_strLoginPW,					CSYS_STRING);
+	//RegisterVariable("ap_showmenulevel", 	 	&m_bShowMenulevel,			CSYS_BOOL);
+	//RegisterVariable("ap_quickstart",		 	&m_bQuickStart,				CSYS_BOOL);
+	//RegisterVariable("ap_quickstartadress",	&m_strQuickStartAddress,	CSYS_STRING);
+	//RegisterVariable("ap_targetrotate",			&m_bTargetRotate,				CSYS_BOOL);
+	//RegisterVariable("ap_lagmeeter",				&m_bShowLagMeeter,			CSYS_BOOL);
+	//RegisterVariable("ap_bloom",					&m_bBloom,				CSYS_BOOL);
 	
 	
 	m_bGuiCapture = false;
@@ -173,16 +180,16 @@ void MistClient::OnInit()
 	//set menu music
 	m_pkAudioSys->SetMusic(m_strMenuMusic);
 	
-	if(m_bQuickStart)
+	if(m_kbQuickStart.GetBool())
 	{
-		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
+		g_kMistClient.m_pkZeroFps->StartClient(m_kstrLoginName.GetString(), m_kstrLoginPW.GetString(), m_kstrQuickStartAddress.GetString());		
 	}
 	m_pkNetwork->ClientStart();
 
 
 }
 
-void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
+void MistClient::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid)
 	{
@@ -614,7 +621,7 @@ void MistClient::OnHud(void)
 			{
 				m_pkCamera->SetFSSEnabled(false);	
 			
-			 	if(m_bBloom)
+			 	if(m_kbBloom.GetBool())
  					m_pkCamera->SetBloomEnabled(true); 					
 			}
 		}
@@ -1273,7 +1280,7 @@ void MistClient::Input()
 			
 			
 			//rotate towards target
-			if(m_bTargetRotate && m_iTargetID != -1)
+			if(m_kbTargetRotate.GetBool() && m_iTargetID != -1)
 			{
 				if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(m_iTargetID))
 				{
@@ -1396,7 +1403,7 @@ void MistClient::OnSystem()
 
 void MistClient::ShowLag()
 {
-	if(m_bShowLagMeeter)
+	if(m_kbShowLagMeeter.GetBool())
 	{
 		if(ZGuiWnd* pkLagWnd = (ZGuiLabel*)GetWnd("LagWnd"))
 			pkLagWnd->Show();
@@ -1479,7 +1486,7 @@ void MistClient::UpdateCharacter()
 				pkCam->SetAttachToBone(true);
 				pkCam->SetBone("headjoint1");
 				
- 				if(m_bBloom)
+ 				if(m_kbBloom.GetBool())
  					m_pkCamera->SetBloomEnabled(true);
 			}			
 		}

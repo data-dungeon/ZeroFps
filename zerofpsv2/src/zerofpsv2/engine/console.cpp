@@ -13,7 +13,7 @@ ZSSConsole::ZSSConsole()
 
 	
 	// Register Variables
-	RegisterVariable("conlog",			&m_bLog,			CSYS_BOOL);	
+	//RegisterVariable("conlog",			&m_bLog,			CSYS_BOOL);	
 }
 
 bool ZSSConsole::StartUp()	

@@ -64,7 +64,7 @@ class MistClient :public Application, public ZGuiApp {
 		//music
 		string		m_strMenuMusic;
 		
-		bool			m_bBloom;
+		ConVar		m_kbBloom;
 		
 		//point text handler
 		PointText*	m_pkPointText;
@@ -89,13 +89,14 @@ class MistClient :public Application, public ZGuiApp {
 		Entity*		m_pkMakerEntity;
 		
 		//states
-		bool			m_bShowLagMeeter;
-		bool			m_bTargetRotate;
-		bool			m_bShowMenulevel;
-		bool			m_bQuickStart; 
-		string		m_strQuickStartAddress;	
+		ConVar		m_kbShowLagMeeter;
+		ConVar		m_kbTargetRotate;
+		ConVar		m_kbShowMenulevel;
+		ConVar		m_kbQuickStart; 
+		ConVar		m_kstrQuickStartAddress;	
 		bool			m_bGuiCapture;
-		string		m_strLoginName, m_strLoginPW;
+		ConVar		m_kstrLoginName;
+		ConVar		m_kstrLoginPW;
 		bool			m_bLoginKeepAlive;			// If we are in login menu we send to keep connection open.
 		float			m_fPingDelay;
 
@@ -230,7 +231,7 @@ class MistClient :public Application, public ZGuiApp {
 		void OnSystem();
 		void RenderInterface(void);
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 				
 		void OnClientStart(void);			
 		void OnClientConnected();

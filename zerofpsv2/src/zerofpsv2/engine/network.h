@@ -179,7 +179,7 @@ class ENGINE_API ZSSNetWork : public ZFSubSystem
 private:
 	UDPsocket				m_pkSocket;								// Socket we use for all our messages.
 
-	string					m_strServerName;	
+	ConVar					m_kstrServerName;	
 	bool						m_bAcceptClientConnections;		// If false all connect attemts are ignored.
 	ZSSConsole*				m_pkConsole;							// Ptr to console.
 	ZSSZeroFps*				m_pkZeroFps;							// Ptr to zerofps engine.
@@ -191,7 +191,7 @@ private:
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
 	float						m_fStatsUpdate;
-	int						m_iMaxOutput;
+	ConVar					m_kiMaxOutput;
 	int						m_iDefPort;
 
 	int						m_iMaxIncomingFrame;					// Max incoming networkpackages we handle each frame.
@@ -199,16 +199,16 @@ private:
    int						m_iBadPackages;
    
 	// Console Variables
-	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
+	ConVar					m_kfConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
 	int						m_iMaxClients;							// Num of max connected clients.
 
 	// Master Server 
-	string					m_strMasterServer;					// DNS/Ip to master server.
+	ConVar					m_kstrMasterServer;					// DNS/Ip to master server.
 	IPaddress				m_kMasterServerIP;					// Ip to master server.
-	bool						m_bPublishServer;						// True if we should publish ourselfs to MS.
+	ConVar					m_kbPublishServer;						// True if we should publish ourselfs to MS.
 	char						m_szGameName[ZF_MAX_GAMENAME];	// Gamename for this server.
 	float						m_fMSNextPing;							// Next engine time we ping the MS that we are still online.
-	string					m_strPublishIp;						// IP to publish to master server.
+	ConVar					m_kstrPublishIp;						// IP to publish to master server.
 
 	// Server List
 	//vector<IPaddress>		m_kServers;								// List of servers recv from master list.
@@ -293,7 +293,7 @@ public:
 	void HandleControlMessage(NetPacket* pkNetPacket);		// Handle controll messages used by network layer. ***
 	void Run(); 
 
-	void RunCommand(int cmdid, const CmdArgument* kCommand);
+	void RunCommand(int cmdid, const ConCommandLine* kCommand);
 
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
 	bool StrToAddress(const char* szString, IPaddress* pkAddress);

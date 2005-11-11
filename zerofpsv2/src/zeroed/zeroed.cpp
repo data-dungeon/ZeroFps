@@ -27,9 +27,15 @@
 #include <time.h>
 #include "../zerofpsv2/basic/math.h"
 
-ZeroEd	g_kZeroEd("ZeroEd", 0, 0, 0);
+ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
+ConVar g_kPurgeTime("purgetimer", "64");
 
+void SayHello(const ConCommandLine* pkCmd)
+{
+	g_kZeroEd.Printf("HELLLLLOOOOOOO =)");	
+}
 
+ConFunction g_kFuncHello("sayhello", SayHello, "Use this to say hello");
 
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -110,34 +116,39 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bSoloMode					=	true;
 	m_bPlaceObjectsOnGround	=	false;
 	m_bIsEditor					=	true;
-   strMasterSmiley			=	"Vim";
+   //strMasterSmiley			=	"Vim";
 	m_iSelectFileState		= 	NONE;
 	m_pkPreviewEntity			= 	NULL;
 	m_bRemoteEditing			=	false;
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
-	m_bPlaneMovement			=	true;	
+	//m_bPlaneMovement			=	true;	
 	m_CamSpeedScale			=  1.0;
 	m_bLockCreate				=	false;	
-	m_bRotatingSun				=	false;
+	//m_bRotatingSun				=	false;
 
 	strcpy(szCoolName , "Guldfisk");	
 
 	int olle = 2;
 
 	// Register Variables
-	RegisterVariable("ap_coolname",				&strMasterSmiley,			CSYS_STRING);	
+	k_LoginName.Register(this, "mynajsloginname", "ostlins", "set defualt name used to login");
 
-	m_strLoginName = "madviewclient";
-   m_strLoginPW = "topsecret";
+	//RegisterVariable("ap_coolname",				&strMasterSmiley,			CSYS_STRING);	
 
-   RegisterVariable("ap_loginname", 	&m_strLoginName, CSYS_STRING);
-   RegisterVariable("ap_loginpw", 	&m_strLoginPW, CSYS_STRING);
-   
-   RegisterVariable("ap_planemovement", 	&m_bPlaneMovement, CSYS_BOOL);
-   
-   RegisterVariable("ap_rotatesun", 	&m_bRotatingSun, CSYS_BOOL);
+	//m_strLoginName = "madviewclient";
+   //m_strLoginPW = "topsecret";
+
+	m_kstrLoginName.Register(this, "ap_loginname","madviewclient");
+	m_kstrLoginPW.Register(this, "ap_loginpw","topsecret");
+	m_kbPlaneMovement.Register(this, "ap_planemovement","1");
+	m_kbRotatingSun.Register(this, "ap_rotatesun","0");
+
+   //RegisterVariable("ap_loginname", 		&m_strLoginName, CSYS_STRING);
+   //RegisterVariable("ap_loginpw", 			&m_strLoginPW, CSYS_STRING);
+   //RegisterVariable("ap_planemovement", 	&m_bPlaneMovement, CSYS_BOOL);
+   //RegisterVariable("ap_rotatesun", 		&m_bRotatingSun, CSYS_BOOL);
 	
 	// Register Commands
 
@@ -173,6 +184,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("findent",		FID_FINDENT);
 	Register_Cmd("transformident",	FID_TRANSIDENT);
 	Register_Cmd("scaleident",			FID_SCALEIDENT);
+
+	g_kFuncJiddra.Register(this, "jiddra", FID_TEST_JIDDRA);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -868,7 +881,7 @@ void ZeroEd::OnIdle()
 		m_pkZeroFps->DevPrintf("common","  Point : %d",m_pkActiveCamera->GetFrustum()->GetPointCulls());		
  	}
  	
- 	if(m_bRotatingSun)
+ 	if(m_kbRotatingSun.GetBool())
  	{
  		Vector3 kRot;
  		kRot.Set(sin(m_pkZeroFps->GetEngineTime() *0.5),1,cos(m_pkZeroFps->GetEngineTime() * 0.5));
@@ -1146,7 +1159,7 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 }
 
 
-void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZeroEd::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	NetPacket kNp;
 //	ClientOrder kOrder;

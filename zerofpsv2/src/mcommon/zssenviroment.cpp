@@ -267,7 +267,7 @@ bool ZSSEnviroment::StartUp()
 	return true;
 }
 
-void ZSSEnviroment::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSEnviroment::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{

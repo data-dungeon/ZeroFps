@@ -1020,7 +1020,7 @@ void ZeroEd::InitMainMenu()
 	pkMenu->SetCheckMark("Menu_PageServer", m_pkZeroFps->DevPrintPageVisible("server"));
 	pkMenu->SetCheckMark("Menu_PageTime", m_pkZeroFps->DevPrintPageVisible("time"));	
 	pkMenu->SetCheckMark("Menu_PageEditor", m_pkZeroFps->DevPrintPageVisible("editor"));	
-	pkMenu->SetCheckMark("Menu_SysSimToggle", m_pkZeroFps->m_bRunWorldSim);
+	pkMenu->SetCheckMark("Menu_SysSimToggle", m_pkZeroFps->m_kbRunWorldSim.GetBool());
 	
 	vector<string> akSections;
 	if(m_pkIni->Open("ZeroEd.ini", false))

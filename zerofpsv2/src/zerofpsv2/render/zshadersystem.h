@@ -220,9 +220,13 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		bool				m_bSupportGLSLProgram;
 		GLenum			m_iCurrentGLSLProgramID;				
-		bool				m_bUseGLSL;
+		//bool				m_bUseGLSL;
 		bool				m_bForceDisableGLSL;
-		
+
+		ConVar			m_kbUseGLSL;
+		ConVar			m_kbUseHDR;
+
+
 		ZFResourceHandle* m_pkDefaultGLSLProgram;
 		bool					m_bUseDefaultGLSLProgram;
 		
@@ -234,10 +238,16 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int	m_iOcQuery;
 		
 		//other stuff
+		/*
 		float				m_fRedGamma;
 		float				m_fGreenGamma;
 		float				m_fBlueGamma;
+		*/
+		ConVar			m_kfRedGamma;
+		ConVar			m_kfGreenGamma;
+		ConVar			m_kfBlueGamma;
 		
+
 		//vertex buffers
 		bool				m_bSupportVertexBuffers;
 		
@@ -283,7 +293,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//HDR
 		float			m_fExposure;										///< exposure factor sent to shaders
-		bool			m_bUseHDR;
+		//bool			m_bUseHDR;
 		bool			m_bSupportHDR;
 		
 		//current fog default setting
@@ -363,7 +373,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid() 	{return true;};
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 		
 		//statistics
 		int GetRenderedVBOs()		{return m_iRenderedVBOs;};
@@ -413,9 +423,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		float GetExposure()												{	return m_fExposure;				}
 		bool SetGamma(float fGamma);
 		bool SetGamma(float fRed,float fGreen,float fBlue);
-		void GetGamma(float& fRed,float& fGreen,float& fBlue)	{	fRed =   m_fRedGamma;
-																					fGreen = m_fGreenGamma;
-																					fBlue =  m_fBlueGamma;	}
+		void GetGamma(float& fRed,float& fGreen,float& fBlue)	{	fRed =   m_kfRedGamma.GetFloat();
+																					fGreen = m_kfGreenGamma.GetFloat();
+																					fBlue =  m_kfBlueGamma.GetFloat();	}
 		
 		void SetNormal(const Vector3& kNormal)				{	glNormal3fv(&kNormal.x);				}
 		void SetColor(const Vector4& kColor)				{	glColor4fv(&kColor.x);					}
@@ -434,14 +444,14 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//information
 		bool HaveExtension(const string& strExt);
 		int GetStencilBits();
-		bool GetUseGLSL()											{	return m_bUseGLSL;						}
+		bool GetUseGLSL()											{	return m_kbUseGLSL.GetBool();						}
 		bool SupportVertexProgram() 							{	return m_bSupportVertexProgram;		}
 		bool SupportFragmentProgram() 						{	return m_bSupportFragmentProgram;	}
 		bool SupportOcculusion()								{	return m_bOcclusion;						}
 		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}		
 		bool SupportFBO()											{	return m_bSupportFBO;					}
 		bool SupportARBTC()										{	return m_bSupportARBTC;					}
-		bool UseHDR()												{	return m_bUseHDR && m_bSupportHDR;	}
+		bool UseHDR()												{	return m_kbUseHDR.GetBool() && m_bSupportHDR;	}
 		
 		//arrays
 		void ResetPointers();

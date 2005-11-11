@@ -193,7 +193,7 @@ void MadView::CreateViewObject()
 	m_pkViewObject->SetWorldPosV(Vector3(0,0,0));
 }
 
-void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
+void MadView::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{
@@ -229,13 +229,22 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_MAD_DRAW_MODE:
+			{
 			int mode;
 			mode = atoi(kCommand->m_kSplitCommand[1].c_str());		
 
-			if(m_pkZeroFps->m_iMadDraw & mode)
-				m_pkZeroFps->m_iMadDraw ^= mode;
-			else
-				m_pkZeroFps->m_iMadDraw |= mode;
+			ConVar* pkMadDraw = GetSystem().GetConVar("r_maddraw");
+			if(pkMadDraw)
+			{
+				int iMadDraw = pkMadDraw->GetInt(); 
+				if(iMadDraw & mode)
+					iMadDraw ^= mode;
+				else
+					iMadDraw |= mode;
+
+				pkMadDraw->SetInt(iMadDraw);
+			}
+			}
 			break;
 
 		case FID_LISTJOINT:

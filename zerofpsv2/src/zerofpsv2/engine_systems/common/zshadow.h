@@ -81,20 +81,21 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		int			m_iCurrentShadows;
 		int			m_iCurrentVerts;
 		int			m_iCurrentActiveShadows;
-		float			m_fShadowIntensity;
 
 		int			m_iStencilBits;
 		bool			m_bHaveCheckedBits;		//have we checked that the stencil buffer is ok
 		bool			m_bDisabled;				//is shadows disabled
 
-		bool			m_bVBO;
-		int			m_iDebug;
-		int			m_iShadowMode;
-		int			m_iNrOfShadows;			//number of shadows calculated per model
+		ConVar		m_kbVBO;
+		ConVar		m_kiNrOfShadows;			//number of shadows calculated per model
+		ConVar		m_kiShadowMode;
+		ConVar		m_kiDebug;
+		ConVar		m_kfShadowIntensity;
+
 		float 		m_fExtrudeDistance;		//distance to extrude the siluet vertices
 		float			m_fFrontCapOffset;
-		vector<bool>	m_kShadowGroups;
-		
+		//vector<bool>	m_kShadowGroups;
+		ConVar		m_kbShadowGroups;
 		
 		void DrawCapings(ShadowMesh* pkShadowMesh);
 		void DrawExtrudedSiluet(ShadowMesh* pkShadowMesh);
@@ -112,7 +113,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource);		
 		void SetupStencilBuffer();
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 
 		//void SetupGL();
 		//void FindCapings(Vector3 kSourcePos);
@@ -125,7 +126,19 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void Update();
 
 		void EnableShadowGroup(int i) ;
-		void DisableShadowGroup(int i);		int GetNumShadowsPerModel() { return m_iNrOfShadows; }		bool IsShadowGroupEnabled(int iGroup) 		{ 			if( iGroup >= 0 && iGroup < m_kShadowGroups.size() ) 				return m_kShadowGroups[iGroup]; 			else				return false;		}
+		void DisableShadowGroup(int i);
+
+		int GetNumShadowsPerModel() { return m_kiNrOfShadows.GetInt(); }
+
+		bool IsShadowGroupEnabled(int iGroup) 
+		{ 
+			vector<bool> kBoolVec;
+			kBoolVec = m_kbShadowGroups.GetBoolVector();
+			if( iGroup >= 0 && iGroup < kBoolVec.size() ) 
+				return kBoolVec[iGroup]; 
+			else
+				return false;
+		}
 		int GetCurrentActiveShadows() {	return m_iCurrentActiveShadows;		}
 		int GetCurrentShadows() 		{	return m_iCurrentShadows;				}
 		int GetCurrentVerts() 			{	return m_iCurrentVerts;					}
@@ -140,11 +153,3 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 
 
 #endif
-
-
-
-
-
-
-
-

@@ -6,8 +6,11 @@
 
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
-extern float g_fMadLODScale;
-extern bool g_fMadTrans;
+//extern float g_fMadLODScale;
+//extern bool g_fMadTrans;
+
+ConVar g_kMadTrans("r_madtrans","0");
+ConVar g_kMadLODScale("r_madlodscale","1.0");
 
 Mad_Modell::Mad_Modell()
 {
@@ -483,7 +486,7 @@ void Mad_Modell::UpdateBones()
 	// Check if there is a prev anim to blend from
 	if(m_kLastAnim.m_iAnimationIndex != MAD_NOANIMINDEX)
 	{
-		if(g_fMadTrans == false)
+		if(g_kMadTrans.GetBool() == false)
 			m_kLastAnim.m_iAnimationIndex = MAD_NOANIMINDEX;
 
 		if(m_fAnimTrans >= 1.0)
@@ -549,8 +552,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	{
 		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
 
-		m_pkRawMesh		= m_pkMesh->GetLODRender(fRenderDistance * g_fMadLODScale);
-		int iLodIndex	= m_pkMesh->GetLODRenderIndex(fRenderDistance * g_fMadLODScale);
+		m_pkRawMesh		= m_pkMesh->GetLODRender(fRenderDistance * g_kMadLODScale.GetFloat());
+		int iLodIndex	= m_pkMesh->GetLODRenderIndex(fRenderDistance * g_kMadLODScale.GetFloat());
 		if(!m_pkRawMesh)
 			continue;
 		if(iLodIndex == -1)

@@ -186,10 +186,10 @@ void OptionsDlg::Open()
 		m_pkMC->GetWnd(szWnds[i])->SetTextColor(255,255,255); 
 	}
 
-	if(g_kMistClient.m_pkGui->m_iScaleMode == AUTO_SCALE)
+	if(g_kMistClient.m_pkGui->m_kiScaleMode.GetInt() == AUTO_SCALE)
 		m_pkMC->CheckButton("ScaleGUICheckbox", true);
 
-	if(g_kMistClient.m_pkGui->m_iScaleMode == MANUALLY_SCALE)
+	if(g_kMistClient.m_pkGui->m_kiScaleMode.GetInt() == MANUALLY_SCALE)
 		m_pkMC->CheckButton("ScaleGUICheckbox", false);
 	
 }
@@ -471,7 +471,7 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 					g_kMistClient.m_pkRender->SetDisplay(1600,1200,d,fullscreen);
 
 				if(g_kMistClient.IsButtonChecked("ScaleGUICheckbox"))
-					g_kMistClient.m_pkGui->m_iScaleMode = 0;
+					g_kMistClient.m_pkGui->m_kiScaleMode.SetInt(0);
 				else
 					//g_kMistClient.m_pkGui->m_iScaleMode = 1;
 

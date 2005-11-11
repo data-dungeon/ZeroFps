@@ -1887,7 +1887,7 @@ void P_CharacterProperty::Update()
 
 void P_CharacterProperty::DrawEditor()
 {
-	if(!m_pkZeroFps->m_bAiShowInfo)
+	if(!m_pkZeroFps->m_kAI_ShowInfo.GetBool())
 		return;
 
 	string strText;

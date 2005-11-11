@@ -508,7 +508,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		xv.y = -xv.y;
 		zv.y = -zv.y;
 		
-		if(m_bPlaneMovement)
+		if(m_kbPlaneMovement.GetBool())
  			zv.y = 0;
 		
 		xv.Normalize();

@@ -228,7 +228,7 @@ ZSSAudioSystem::ZSSAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZSSAudioSystem"
 	m_strCurrentMusic	= "";
 	m_strNextMusic		= "";
 	m_bMusicChange 	= false;
-	m_fMusicGain		= 1;
+	//m_fMusicGain		= 1;
 	
 	//m_bEnableSound = true;
 	//m_bEnableMusic = true;
@@ -237,9 +237,11 @@ ZSSAudioSystem::ZSSAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZSSAudioSystem"
 	//RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
 // 	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
 
-	m_fMainVolume = 1.0f;
-	RegisterVariable("a_mainvolume",&m_fMainVolume,CSYS_FLOAT);
-	RegisterVariable("a_musicvolume",&m_fMusicGain,CSYS_FLOAT);
+	//m_fMainVolume = 1.0f;
+	//RegisterVariable("a_mainvolume",&m_fMainVolume,CSYS_FLOAT);
+	//RegisterVariable("a_musicvolume",&m_fMusicGain,CSYS_FLOAT);
+	m_kfMainVolume.Register(this, "a_mainvolume", "1.0");
+	m_kfMusicGain.Register(this, "a_musicvolume", "1.0");
 
 	m_pEntityMan = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));
 	m_pkZeroFps  = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
@@ -713,7 +715,7 @@ bool ZSSAudioSystem::IsValid()
 ///////////////////////////////////////////////////////////////////////////////
 // Kör kommandon från konsolen.
 ///////////////////////////////////////////////////////////////////////////////
-void ZSSAudioSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSAudioSystem::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{
@@ -769,7 +771,7 @@ void ZSSAudioSystem::Update()
 	if(m_pkZeroFps->GetMinimized())
 		alListenerf(AL_GAIN, 0.0);
 	else	
-		alListenerf(AL_GAIN, m_fMainVolume);
+		alListenerf(AL_GAIN, m_kfMainVolume.GetFloat());
 	
 	UpdateAmbientSound();
 
@@ -821,7 +823,7 @@ void ZSSAudioSystem::Update()
 					alSourcei (pkSound->m_uiSourceBufferName, AL_SOURCE_RELATIVE, AL_TRUE      );
 				}
 
-				float fGain = m_fMainVolume * pkSound->m_fGain;
+				float fGain = m_kfMainVolume.GetFloat() * pkSound->m_fGain;
 				alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, fGain/*pkSound->m_fGain*/);
 			}
 			else
@@ -1186,7 +1188,7 @@ bool ZSSAudioSystem::Play(ZFSoundInfo *pkSound)
 	
 	// Set gain.
 	alGetError();
-	float fGain = m_fMainVolume * pkSound->m_fGain;
+	float fGain = m_kfMainVolume.GetFloat() * pkSound->m_fGain;
 	alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, fGain/*pkSound->m_fGain*/);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
@@ -1887,7 +1889,7 @@ void ZSSAudioSystem::UpdateMusic()
 	}
 
 	if(m_iMusicID != -1)
-		SetGain(m_iMusicID,m_fMusicFade*m_fMusicGain);
+		SetGain(m_iMusicID,m_fMusicFade*m_kfMusicGain.GetFloat());
 }
 
 

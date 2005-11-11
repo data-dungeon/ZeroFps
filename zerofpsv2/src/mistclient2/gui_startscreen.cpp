@@ -109,8 +109,8 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 					string strTitle =	string("Connect to ") +	strName;
 					g_kMistClient.SetText("LoginWndLabel",	(char*)strTitle.c_str());
 
-					g_kMistClient.SetText("LoginNameEB", (char*)	g_kMistClient.m_strLoginName.c_str());
-					g_kMistClient.SetText("LoginPWEb", (char*) g_kMistClient.m_strLoginPW.c_str());
+					g_kMistClient.SetText("LoginNameEB", (char*)	g_kMistClient.m_kstrLoginName.GetString().c_str());
+					g_kMistClient.SetText("LoginPWEb", (char*) g_kMistClient.m_kstrLoginPW.GetString().c_str());
 					g_kMistClient.ShowWnd("LoginWnd", true, true, true);
 				}
 			}
@@ -169,9 +169,9 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 						if(!strLogin.empty()	&&	!strPassword.empty()	&&	!strServerIP.empty())
 						{
 							g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
-							g_kMistClient.m_strLoginName = strLogin;
-							g_kMistClient.m_strLoginPW	= strPassword;
-							g_kMistClient.m_strQuickStartAddress = strServerIP;
+							g_kMistClient.m_kstrLoginName.SetString(strLogin);
+							g_kMistClient.m_kstrLoginPW.SetString(strPassword);
+							g_kMistClient.m_kstrQuickStartAddress.SetString(strServerIP);
 						}
 						else
 							printf("Input error,	failed to connect.");

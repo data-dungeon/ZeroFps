@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "basic_x.h"
+#include "concommand.h"
 //#include "os.h"
 
 using namespace std;
@@ -30,18 +31,6 @@ enum ZFCmdDataType
 	CSYS_BOOLVECTOR,				///< vector<bool>
 };
 
-/**	\brief	The src of a command.
-
-	The src from were the commands comes. 
-*/
-enum ZFCmdSource
-{
-	CSYS_SRC_CMDLINE  = 1,				///< Cmd is from the program cmd line.
-	CSYS_SRC_INITFILE = 2,				///< Cmd is from the ini files that is run at startup
-	CSYS_SRC_CONSOLE  = 4,				///< Cmd is from the console.
-	CSYS_SRC_SUBSYS   = 8,				///< Cmd was sent from a subsystem.
-	CSYS_SRC_UNKNOWN  = 16,				///< Unknown Src. Will be ignored and written to log.
-};
 
 /* Flags changes settings for variables/commands.
 		SRC* flags are used to select from what src's a variable/command can be changed.
@@ -115,7 +104,7 @@ public:
 		This function is called when a command is sent to the subsystem. cmdid is set to
 		the id used when the command was reg. kCommand contains the whole text command.
 	*/
-	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
+	virtual void RunCommand(int cmdid, const ConCommandLine* kCommand) {};
 
 	/**	\brief	Starts up this SubSystem.
 	*/
@@ -132,6 +121,8 @@ public:
 	/**	\brief	Recive a system message.
 	*/	
 	virtual void OnSystemMessage(const string& strType,int iNrOfParam,const void** pkParams)	{};
+
+	string GetName() {	return m_strZFpsName;	}
 };
 
 #endif

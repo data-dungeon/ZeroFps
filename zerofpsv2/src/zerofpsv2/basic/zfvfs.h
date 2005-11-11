@@ -5,8 +5,8 @@
 #include <string>
 #include "basic_x.h"
 #include "zfsubsystem.h"
-//#include "zfbasicfs.h"
 #include "zfio.h"
+#include "concommand.h"
 
 using namespace std;
 
@@ -76,8 +76,8 @@ class BASIC_API ZSSVFileSystem : public ZFSubSystem
 		vector<VfsRootPath>	m_kRootPath;
 		string					m_strCurentDir;
 
-		bool						m_bCaseSensitive;
-		
+		//bool						m_bCaseSensitive;
+		ConVar					m_kCaseSensitive;
 
 		FILE* Open(string strFileName, int iOptions, bool bWrite);	
 
@@ -88,7 +88,7 @@ class BASIC_API ZSSVFileSystem : public ZFSubSystem
 	public:
 		ZSSVFileSystem();
 		~ZSSVFileSystem();
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

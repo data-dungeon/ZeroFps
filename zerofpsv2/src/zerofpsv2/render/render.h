@@ -76,14 +76,25 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 				
 		//heightmap stuff
 		int			m_iLodUpdate;				
+		/*
 		int			m_iMaxLandscapeLayers;
 		int			m_iDrawLandscape;
 		int			m_iDrawLandNormal;
+		*/
 
+		ConVar		m_kiMaxLandscapeLayers;
+		ConVar		m_kiDrawLandscape;
+		ConVar		m_kiDrawLandNormal;
+
+		/*
 		int			m_iDetail;				//	grid size of lod tiles for the terran
 		int			m_iFpsLock;
 		int			m_iAutoLod;
-		
+		*/
+		ConVar		m_kiDetail;
+		ConVar		m_kiFpsLock;
+		ConVar		m_kiAutoLod;
+
 		
 		//screenshot stuff
 		int			m_iScreenShootNum;
@@ -91,8 +102,14 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 		//screen info
 		SDL_Surface* 	m_pkScreen;								//main sdl screen surface
-		int				m_iWidth,m_iHeight,m_iDepth;
-		bool			m_iFullScreen;
+		//int				m_iWidth,m_iHeight,m_iDepth;
+
+		ConVar			m_kiWidth;
+		ConVar			m_kiHeight;
+		ConVar			m_kiDepth;
+		ConVar			m_kiFullScreen;
+
+		//bool			m_iFullScreen;
 		int				m_iSDLVideoModeFlags;
 		
 		//console color
@@ -103,7 +120,7 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 		
 						
-		void 	RunCommand(int cmdid, const CmdArgument* kCommand);
+		void 	RunCommand(int cmdid, const ConCommandLine* kCommand);
 		void	GlInfo();										// Print info about opengl driver to console.
    	void SubDivide(float *v1, float *v2, float *v3, long depth);
    	void Normalize(float v[3]);
@@ -126,10 +143,10 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		void ToggleFullScreen(void);
 		void ScreenShot() 	{	m_bCapture = true;}
 		
-		int GetWidth()			{	return m_iWidth;			}
-		int GetHeight()		{	return m_iHeight;			}		
-		int GetDepth()			{	return m_iDepth;			}		
-		bool GetFullscreen()	{	return m_iFullScreen;	}		
+		int GetWidth()			{	return m_kiWidth.GetInt();			}
+		int GetHeight()		{	return m_kiHeight.GetInt();		}		
+		int GetDepth()			{	return m_kiDepth.GetInt();			}		
+		bool GetFullscreen()	{	return m_kiFullScreen.GetBool();	}		
 
 		void DumpGLState(char* szFileName);
 		

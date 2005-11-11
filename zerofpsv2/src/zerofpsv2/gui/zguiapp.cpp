@@ -744,7 +744,7 @@ void ZGuiApp::InitGui(ZSSScriptSystem* pkScriptSys, char* szFontName,
 	FindGuiTextureByResolution();
 
 	if(iScaleMode == -1)
-		m_iScaleMode = m_pkGuiSys->m_iScaleMode; // Sätt till scale mode i ZGui eftersom den får sin data från INI fil.
+		m_iScaleMode = m_pkGuiSys->m_kiScaleMode.GetInt(); // Sätt till scale mode i ZGui eftersom den får sin data från INI fil.
 	else
 		m_iScaleMode = iScaleMode;
 
@@ -805,7 +805,7 @@ void ZGuiApp::InitGui(ZSSScriptSystem* pkScriptSys, char* szFontName,
 		"zguiapp_fps_wnd", "", 0, 0, 55, 20, 0);
 
 	m_pkGuiSys->m_pkFpsLabel->SetSkin(new ZGuiSkin());
-	m_pkGuiSys->ShowFPSCounter(m_pkGuiSys->m_iShowFPSCounter);
+	m_pkGuiSys->ShowFPSCounter(m_pkGuiSys->m_kiShowFPSCounter.GetBool());
 
 	m_pkGuiSys->Activate(true);
 

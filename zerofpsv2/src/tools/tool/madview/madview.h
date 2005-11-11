@@ -85,7 +85,7 @@ class MadView :public Application , public ZGuiApp
 		bool	DelayCommand();			//make a delay
 
 		// common
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 		void CreateViewObject();
 		void ChangeMad(string strName);
 

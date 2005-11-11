@@ -52,9 +52,9 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		float					m_fMaxVel;
 		float					m_fGravity;
 		
-		float					m_fSleepTime;
-		int					m_iCollisionIterations;
-		int					m_iContactIterations;
+		ConVar				m_kfSleepTime;
+		ConVar				m_kiCollisionIterations;
+		ConVar				m_kiContactIterations;
 		
 		P_Tcs*				m_pkBodyCopy1;
 		P_Tcs*				m_pkBodyCopy2;		
@@ -65,10 +65,12 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		int					m_iNrOfContacts;
 		
 		//settings
-		int 					m_iHandleCollission;
-		int					m_iDebugGraph;
+		//int 					m_iHandleCollission;
+		//int					m_iDebugGraph;
 		
-		
+		ConVar				m_kiHandleCollission;
+		ConVar				m_kiDebugGraph;
+	
 		//main funktions
 		void UpdateForces();
 		void UpdateAllVelnPos(float fAtime);
@@ -175,14 +177,14 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		
 		
 		void SetGravity(float fGravity)	{ m_fGravity=fGravity				;};
-		void SetColIt(int iColIt)			{ m_iCollisionIterations = iColIt;};
-		void SetConIt(int iConIt)			{ m_iContactIterations = iConIt	;};
+		void SetColIt(int iColIt)			{ m_kiCollisionIterations.SetInt(iColIt);};
+		void SetConIt(int iConIt)			{ m_kiContactIterations.SetInt(iConIt)	;};
 		
 		int GetNrOfCollissions() 			{ return m_iNrOfCollissions		;};
 		int GetNrOfTests() 					{ return m_iNrOfTests				;};
 		int GetNrOfActiveBodies() 			{ return m_iNrOfActiveBodies		;};
 		int GetNrOfContacts()				{ return m_iNrOfContacts			;};		
-		int GetDebugGraph()					{ return m_iDebugGraph				;};
+		int GetDebugGraph()					{ return m_kiDebugGraph.GetInt()	;};
 		Vector3 GetLastLineTestPos()		{ return m_kLastLineTestColPos	;};
 		
 		

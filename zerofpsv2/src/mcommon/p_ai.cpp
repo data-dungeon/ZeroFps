@@ -99,7 +99,7 @@ void P_AI::DrawCircle(float fRadius, char* szEditColor)
 
 void P_AI::DrawEditor()
 {
-	if(!m_pkZeroFps->m_bAiShowInfo)
+	if(!m_pkZeroFps->m_kAI_ShowInfo.GetBool())
 		return;
 
 	DrawCircle(m_fStrikeRange,		"ai/rngstrike");

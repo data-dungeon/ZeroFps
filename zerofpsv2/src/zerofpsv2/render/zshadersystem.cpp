@@ -22,7 +22,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_iCurrentVertexProgram = 		-1;
 	m_iCurrentFragmentProgram = 	-1;
 	
-	m_bUseGLSL						=	false;
+	//m_bUseGLSL						=	false;
 	m_bSupportGLSLProgram = 		false;
 	m_iCurrentGLSLProgramID = 		0;
 	m_bForceDisableGLSL	=			false;
@@ -32,16 +32,18 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	
 	m_bFogSetting = 					true;
 	
+	/*
 	m_fRedGamma							= 1.0;
 	m_fGreenGamma						= 1.0;
 	m_fBlueGamma						= 1.0;
-	
+	*/
+
 	m_kEyePosition						=	Vector3(0,0,0);
 	m_iShadowmapWidth					=	1024;
 	m_iShadowmapHeight				=	1024;
 		
 	m_fExposure							= 1.0;
-	m_bUseHDR							= false;
+	//m_bUseHDR							= false;
 	m_bSupportHDR						= false;
 		
 	m_aiCurrentTextures[0]			= 0;
@@ -56,17 +58,22 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_bUseDefaultGLSLProgram = 	false;
 	
 	//register console/ini variables (this will also load the variable if it exist in the ini file
-	RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
-	RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
-	RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
-	RegisterVariable("r_useglsl",	&m_bUseGLSL,		CSYS_BOOL);	
-	RegisterVariable("r_usehdr",	&m_bUseHDR,			CSYS_BOOL);	
+	//RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
+	//RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
+	//RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
+	//RegisterVariable("r_useglsl",	&m_bUseGLSL,		CSYS_BOOL);	
+	//RegisterVariable("r_usehdr",	&m_bUseHDR,			CSYS_BOOL);	
+	
 	
 	//register console commands
 	Register_Cmd("setgamma",FID_SETGAMMA);		
 	
-	
-	
+	m_kbUseGLSL.Register(this, "r_useglsl","0");
+	m_kbUseHDR.Register(this, "r_usehdr",	"0");
+	m_kfRedGamma.Register(this, "r_gammar", "1");
+	m_kfGreenGamma.Register(this, "r_gammag", "1");
+	m_kfBlueGamma.Register(this, "r_gammab", "1");
+
 	//force settings
 	m_iForceColorMask = 	FORCE_DEFAULT;
 	m_iForceAlphaTest =	FORCE_DEFAULT;
@@ -104,7 +111,7 @@ bool ZShaderSystem::StartUp()
 	m_bSupportGLSLProgram  =HaveExtension("GL_ARB_shader_objects") &&
 									HaveExtension("GL_ARB_shading_language_100") &&
 									HaveExtension("GL_ARB_vertex_shader") &&
-									HaveExtension("GL_ARB_fragment_shader") && m_bUseGLSL;
+									HaveExtension("GL_ARB_fragment_shader") && m_kbUseGLSL.GetBool();
 	
 	if(!m_bSupportGLSLProgram)
 		Printf("ZSHADER: No GLSL program support");
@@ -138,7 +145,7 @@ bool ZShaderSystem::StartUp()
 			
 			
 	//set gamma after its been loaded
-	SetGamma(m_fRedGamma,m_fGreenGamma,m_fBlueGamma);				
+	SetGamma(m_kfRedGamma.GetFloat(),m_kfGreenGamma.GetFloat(),m_kfBlueGamma.GetFloat());				
 		
 	return true;
 }
@@ -2109,15 +2116,15 @@ bool ZShaderSystem::SetGamma(float fRed,float fGreen,float fBlue)
 		return false;
 	else
 	{
-		m_fRedGamma		=	fRed;
-		m_fGreenGamma	=	fGreen;
-		m_fBlueGamma	=	fBlue;		
+		m_kfRedGamma.SetFloat(fRed);
+		m_kfGreenGamma.SetFloat(fGreen);
+		m_kfBlueGamma.SetFloat(fBlue);		
 	
 		return true;
 	}
 }
 
-void ZShaderSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZShaderSystem::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{

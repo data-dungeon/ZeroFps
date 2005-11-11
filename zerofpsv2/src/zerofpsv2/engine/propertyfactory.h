@@ -41,7 +41,7 @@ class ENGINE_API ZSSPropertyFactory : public ZFSubSystem
 {
 private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
-	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+	void RunCommand(int cmdid, const ConCommandLine* kCommand) { }
 
 	ZSSNetWork*		m_pkNetWork;
 

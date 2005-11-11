@@ -13,7 +13,7 @@ ZSSInput::ZSSInput()
 	m_bGrabInput = 			false;
 	
 	// Register Variables
-	RegisterVariable("m_sens",			&m_fMouseSensitivity,	CSYS_FLOAT);
+	//RegisterVariable("m_sens",			&m_fMouseSensitivity,	CSYS_FLOAT);
 
 	// Register Commands
 	Register_Cmd("i_togglegrab",		FID_TOGGLEGRAB);
@@ -716,7 +716,7 @@ void ZSSInput::Reset(void) {
 
 
 
-void ZSSInput::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSInput::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	switch(cmdid) 
 	{

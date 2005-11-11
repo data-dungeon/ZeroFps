@@ -5,12 +5,14 @@ ZSSAStar::ZSSAStar()
 : ZFSubSystem("ZSSAStar")
 {
 	// Set Default values
-	m_bDrawNaviMesh	= false;
-	m_bDrawPaths		= false;
+	//m_bDrawNaviMesh	= false;
+	//m_bDrawPaths		= false;
 
 	// Register Variables
-	RegisterVariable("ai_shownavmesh",	&m_bDrawNaviMesh,	CSYS_BOOL);	
-	RegisterVariable("ai_showpath",		&m_bDrawPaths,		CSYS_BOOL);	
+	//RegisterVariable("ai_shownavmesh",	&m_bDrawNaviMesh,	CSYS_BOOL);	
+	//RegisterVariable("ai_showpath",		&m_bDrawPaths,		CSYS_BOOL);	
+	m_kbDrawNaviMesh.Register(this, "ai_shownavmesh", "0");
+	m_kbDrawPaths.Register(this, "ai_showpath", "0");
 }
 
 

@@ -186,8 +186,11 @@ public:
 
 	bool m_bHandledMouse;		//DVOID WAS HERE =D, litet hack för att veta om guit har hanterat inputen
 	bool m_bForceGUICapture; // Anropas av textboxen
-	int m_iShowFPSCounter;
-	int m_iScaleMode;
+	//int m_iShowFPSCounter;
+	//int m_iScaleMode;
+
+	ConVar m_kiShowFPSCounter;
+	ConVar m_kiScaleMode;
 
 	bool m_bClearScreen; // Sätt till true om ingen main kamera finns och guit då måste rensa skärmen själv.
 
@@ -237,7 +240,8 @@ private:
 	ZGuiSkin* m_pkFocusBorderSkin;
 	bool m_bActive;
 
-	bool		m_bRenderEnabled;
+	//bool		m_bRenderEnabled;
+	ConVar	m_kbRenderEnabled;
 	
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
 

@@ -7,6 +7,7 @@
 #include <vector>
 #include "zfsubsystem.h"
 #include "cstdio"
+#include "concommand.h"
 //#include <hash_map> 
 #include <map> 
 
@@ -112,7 +113,8 @@ private:
 	map<string,ProfileTimer>	m_kTimers;
 	int								m_iTotalTime;
 	
-	
+	vector<ConCommand*>	m_kConCommands; 
+
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 	vector<ZFLogFile>		m_kLogFiles;			///< List of all Log files.
 	FILE*						m_pkLogFile;			///< Master Log File (zerofps.txt).
@@ -181,7 +183,9 @@ public:
 
 	bool AutoComplete(const char* szCmdArg, vector<string>* pkCmds, int iMaxFinds);
 
-
+	ConCommand* FindConCommand(const char* szName);	
+	ConVar* GetConVar(const char* szName);	
+	void RegisterConCommand(ConCommand* pkConCommand);
 
 // Variables
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject, int iFlags);

@@ -54,14 +54,17 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkTime = 			new ZSSMLTime;
 	
 	// Set Default values
-	m_AcceptNewLogins = true;
-	m_iServerPort 		= 4242;
-	m_bStartMinimized = false;
+	//m_AcceptNewLogins = true;
+	//m_iServerPort 		= 4242;
+	//m_bStartMinimized = false;
 	
 	// Register Variables
-	RegisterVariable("ap_newlogins",			&m_AcceptNewLogins,	CSYS_BOOL);	
-	RegisterVariable("ap_startminimized", 	&m_bStartMinimized, 	CSYS_BOOL);
-	RegisterVariable("ap_serverport",	 	&m_iServerPort, 		CSYS_INT);
+	m_kAcceptNewLogins.Register(this, "ap_newlogins", "1");
+	m_kAcceptNewLogins.Register(this, "ap_startminimized", "0");
+	m_kAcceptNewLogins.Register(this, "ap_serverport", "4242");
+	//RegisterVariable("ap_newlogins",			&m_AcceptNewLogins,	CSYS_BOOL);	
+	//RegisterVariable("ap_startminimized", 	&m_bStartMinimized, 	CSYS_BOOL);
+	//RegisterVariable("ap_serverport",	 	&m_iServerPort, 		CSYS_INT);
 
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
@@ -225,7 +228,7 @@ void MistServer::Init()
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
 	#ifdef WIN32
-		if(m_bStartMinimized)
+		if(m_kbStartMinimized.GetBool())
 			ShowWindow(GetFocus(), SW_MINIMIZE);
 	#endif 
 }
@@ -438,7 +441,7 @@ void MistServer::OnHud(void)
 
 }
 
-void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
+void MistServer::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	NetPacket kNp;
 	Vector3 kStartPos;
@@ -450,7 +453,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_NEW:
 			m_pkEntityManager->Clear();
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
-			m_pkZeroFps->StartServer(false,true,m_iServerPort);
+			m_pkZeroFps->StartServer(false,true,m_kiServerPort.GetInt());
 			m_strWorldDir = "";
 			SetTitle("MistServer");
 			break;
@@ -479,7 +482,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
- 			m_pkZeroFps->StartServer(false,true,m_iServerPort);
+ 			m_pkZeroFps->StartServer(false,true,m_kiServerPort.GetInt());
 			
 			break;		
 		
@@ -703,7 +706,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 	}
 	else 
 	{
-		if(!m_AcceptNewLogins)
+		if(!m_kAcceptNewLogins.GetBool())
 		{
 			m_pkConsole->Printf("A new player '%s' tried to join but new players are not accepted", strPlayer.c_str());
 			strWhy = "No login with that name found";

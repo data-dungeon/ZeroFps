@@ -76,7 +76,8 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		bool					m_bSupportARBTC;
 		bool					m_bSupportS3TC;
 		
-		bool					m_bUseTC;
+		//bool					m_bUseTC;
+		ConVar				m_kbUseTC;
 		
 		int					m_iCurrentTexture;
 		vector<texture*>	m_iTextures;
@@ -90,7 +91,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		Image* LoadImage(const string& strFileName);	
 		bool LoadTexture(texture *pkTex,const char* acFilename);	
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 		void ListTextures(void);
 		void ReloadAll(void);
 

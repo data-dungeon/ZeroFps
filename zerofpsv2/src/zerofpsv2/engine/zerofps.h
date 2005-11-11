@@ -17,6 +17,7 @@
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
 #include "../basic/zfversion.h"
+#include "../basic/concommand.h"
 
 using namespace std;
 
@@ -139,42 +140,52 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		int				m_iAvrageFrameCount;
 		unsigned int	m_iCurrentFrame;
 		float				m_fEngineTime;						// Time since engine start.
-		bool				m_bLockFps;
+		ConVar			m_kbLockFps;
 		float 			m_fLockFrameTime;
-		float 			m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
+		ConVar 			m_kfSystemUpdateFps;				// Number of GameLogic Updates each second.
 		float				m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 			m_fSystemUpdateTime;				// last system update
 		
 		bool				m_bProfileMode;
 
 		//network
-		bool				m_bSyncNetwork;
-		float				m_fNetworkUpdateFps;				// number of network updates each second
+		ConVar			m_kbSyncNetwork;
+		ConVar			m_kfNetworkUpdateFps;				// number of network updates each second
 		float				m_fNetworkUpdateFpsDelta;		// time between each network update
 		float 			m_fNetworkUpdateTime;			// last system update
-		int				m_iConnectionSpeed;				// speed of outgoing connections
+		ConVar			m_kiConnectionSpeed;				// speed of outgoing connections
 
 		int				m_iServerConnection;				// The Connection num we have on the server.		
 		int				m_iClientEntityID;						
-		int				m_iMaxPlayers;
+		ConVar			m_kiMaxPlayers;
 				
 		bool				m_bClientLoginState;				// True if loginstate is used for clients.
 				
 		//rendering and such
-		bool				m_bRenderOn;
+		ConVar			m_kbRenderOn;
 		bool				m_bMinimized;
-		bool				m_bDrawAxisIcon;
-		bool				m_bDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
-		bool				m_bShadowMap;
+		ConVar			m_kbDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
+		/*bool				m_bShadowMap;
 		bool				m_bShadowMapRealtime;
 		int				m_iShadowMapMode;
 		int				m_iShadowMapQuality;
-		bool				m_bVegetation;
-		bool				m_bSpecMap;
-		float				m_fViewDistance;		
-		
-		
-		bool				m_bTcsFullframe;					//shuld the tcs system run in full or system frame time
+		bool				m_bSpecMap;*/
+		//bool				m_bDrawAxisIcon;
+		//bool				m_bVegetation;
+		//float				m_fViewDistance;		
+
+		ConVar			m_kbShadowMap;
+		ConVar			m_kbShadowMapRealtime;
+		ConVar			m_kiShadowMapMode;
+		ConVar			m_kiShadowMapQuality;
+		ConVar			m_kbSpecMap;
+
+		ConVar			m_kAxisIcon;
+		ConVar			m_kVegetation;
+		ConVar			m_kViewDistance;
+	
+
+		ConVar			m_kbTcsFullframe;					//shuld the tcs system run in full or system frame time
 		
 
 
@@ -193,7 +204,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		Camera *m_pkConsoleCamera;					//camera for console
 
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 		void ConfigFileRun();
 		void ConfigFileSave();
 		void Run_EngineShell();
@@ -265,19 +276,20 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		bool		m_bClientMode;
 		bool		m_bEditMode;
 		bool		m_bGuiMode, m_bGuiTakeControl;
-		bool		m_bRunWorldSim;
+		ConVar	m_kbRunWorldSim;
 
 		bool		m_bAlwaysWork;								///< Paramater that should be set if engine should work (ie. Update) no matter if the application is minimized or not.
-		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
+		//int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 		int		m_iNumOfMadRender;
 		
 		int		m_iOcculedObjects;
 		int		m_iNotOcculedObjects;
-		bool		m_bOcculusionCulling;
+		//bool		m_bOcculusionCulling;
+		ConVar	m_kbOcculusionCulling;
 		
-		bool		m_bAiShowInfo;
-
+		//bool		m_bAiShowInfo;
+		ConVar	m_kAI_ShowInfo;
 		
 		
 		InputHandle*	m_pkInputHandle;
@@ -309,35 +321,35 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		
 		// gets
 		const ZFVersion& GetVersion()	const			{	return m_kVersion;								}
-		bool GetSyncNetwork() const					{	return m_bSyncNetwork;							}
-		float GetNetworkFps() const					{	return m_fNetworkUpdateFps;					}
-		float GetSystemFps()	const						{	return m_fSystemUpdateFps;						}				
+		bool GetSyncNetwork() const					{	return m_kbSyncNetwork.GetBool();			}
+		float GetNetworkFps() const					{	return m_kfNetworkUpdateFps.GetFloat();	}
+		float GetSystemFps()	const						{	return m_kfSystemUpdateFps.GetFloat();		}				
 		float GetRealTime() const						{	return float((SDL_GetTicks()/1000.0));		}
 		float GetFrameTime()	const						{	return float((m_fFrameTime/1000.0));		}
 		float GetLastGameUpdateTime() const			{	return m_fSystemUpdateTime;					}
 		float GetEngineTime() const					{	return m_fEngineTime;							}
 		float GetSystemUpdateFpsDelta() const 		{	return m_fSystemUpdateFpsDelta;				}		
 		unsigned int	GetCurrentFrame() const		{	return m_iCurrentFrame;							}
-		const int GetConnectionSpeed() const		{  return m_iConnectionSpeed;						}
+		const int GetConnectionSpeed() const		{  return m_kiConnectionSpeed.GetFloat();		}
 				
 		bool GetMinimized() const						{	return m_bMinimized;								}
-		bool GetRenderOn() const						{	return m_bRenderOn;								}
-		bool GetDebugGraph() const 					{	return m_bDebugGraph;							}
-		bool GetDrawAxesIcon() const 					{	return m_bDrawAxisIcon;							}		
-		bool GetShadowMap() const						{	return m_bShadowMap;								}
-		bool GetSpecMap() const							{	return m_bSpecMap;								}
-		bool GetShadowMapRealtime() const			{	return m_bShadowMapRealtime;					}
-		int  GetShadowMapMode() const					{	return m_iShadowMapMode;						}
-		int  GetShadowMapQuality() const				{	return m_iShadowMapQuality;					}		
-		bool GetVegetation() const						{	return m_bVegetation;							}
-		float GetViewDistance() const					{	return m_fViewDistance;							}
-		bool GetOcculusionCulling() const			{	return m_bOcculusionCulling;					}		
+		bool GetRenderOn() const						{	return m_kbRenderOn.GetFloat();				}
+		bool GetDebugGraph() const 					{	return m_kbDebugGraph.GetFloat();			}
+		bool GetDrawAxesIcon() const 					{	return m_kAxisIcon.GetBool();							}		
+		bool GetShadowMap() const						{	return m_kbShadowMap.GetBool();								}
+		bool GetSpecMap() const							{	return m_kbSpecMap.GetBool();								}
+		bool GetShadowMapRealtime() const			{	return m_kbShadowMapRealtime.GetBool();					}
+		int  GetShadowMapMode() const					{	return m_kiShadowMapMode.GetInt();						}
+		int  GetShadowMapQuality() const				{	return m_kiShadowMapQuality.GetInt();					}		
+		bool GetVegetation() const						{	return m_kVegetation.GetBool();							}
+		float GetViewDistance() const					{	return m_kViewDistance.GetFloat();							}
+		bool GetOcculusionCulling() const			{	return m_kbOcculusionCulling.GetBool();					}		
 					
 		//sets
-		void	SetDebugGraph(bool bDebug)				{	m_bDebugGraph = bDebug;							}		
-		void  SetSyncNetwork(bool bSync)				{	m_bSyncNetwork = bSync;							}
-		void  SetSystemFps(int iFps) 					{	m_fSystemUpdateFps = float(iFps);			}
-		void  SetNetworkFps(int iFps)					{	m_fNetworkUpdateFps = float(iFps);			}		
+		void	SetDebugGraph(bool bDebug)				{	m_kbDebugGraph.SetBool( bDebug );							}		
+		void  SetSyncNetwork(bool bSync)				{	m_kbSyncNetwork.SetBool(bSync);							}
+		void  SetSystemFps(int iFps) 					{	m_kfSystemUpdateFps.SetFloat(iFps);			}
+		void  SetNetworkFps(int iFps)					{	m_kfNetworkUpdateFps.SetFloat(iFps);			}		
 
 		//render targets
 		void AddRenderCamera(Camera* pkCamera);
@@ -363,7 +375,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		void	Disconnect(int iConnectionID);
 		int	GetClientObjectID();
 		int	GetConnectionID() 			{	return m_iServerConnection;	}		///< Return our Connection Num on the Server.
-		int	GetMaxPlayers() 				{	return m_iMaxPlayers;			}
+		int	GetMaxPlayers() 				{	return m_kiMaxPlayers.GetInt();			}
 		
 		vector<Entity*>	GetClientEntitys();
 

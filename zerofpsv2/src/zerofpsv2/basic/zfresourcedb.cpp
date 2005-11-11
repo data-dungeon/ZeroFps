@@ -4,10 +4,12 @@
 #include "globals.h"
 #include "zfsystem.h"
 #include "assert.h"
+#include "concommand.h"
 
 #define	RES_EXPIRE_TIME	30.0
 
 int	g_iResourceHandleID;
+
 
 ZFResourceInfo::ZFResourceInfo()
 {
@@ -101,7 +103,7 @@ ResourceCreateLink*	ZSSResourceDB::FindResourceTypeFromFullName(string strResNam
 	return FindResourceType(string(pcExt));
 }
 
-void ZSSResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZSSResourceDB::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	vector<ZFResourceInfo*>::iterator it;
 

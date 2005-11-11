@@ -94,35 +94,43 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 {
 	g_Logf("zerofps","ZShadow system created");
 
-	m_iNrOfShadows =		0;
+	//m_iNrOfShadows =		0;
  	m_fExtrudeDistance = 100;
 	m_iCurrentShadows = 	0;
 	m_iCurrentVerts = 	0;
 	m_bHaveCheckedBits = false;
 	m_bDisabled = 			false;
-	m_iDebug = 				0;
-	m_iShadowMode =		ezFail;
+	//m_iDebug = 				0;
+	//m_iShadowMode =		ezFail;
 	m_fFrontCapOffset =	0.05;
-	m_fShadowIntensity = 0.3;
+	//m_fShadowIntensity = 0.3;
 	
-	m_bVBO=					false;
+	//m_bVBO=					false;
 	
 	
 	//setup shadow groups
-	for(int i =0;i<8;i++)
-		m_kShadowGroups.push_back(false);
+	//for(int i =0;i<8;i++)
+	//	m_kShadowGroups.push_back(false);
 	
 	Register_Cmd("enableshadowgroup",FID_ENABLESHADOWGROUP);
 	Register_Cmd("disableshadowgroup",FID_DISABLESHADOWGROUP);
 	Register_Cmd("listshadowgroups",FID_LISTSHADOWGROUPS);
 	
-	RegisterVariable("r_shadowvbo",			&m_bVBO,CSYS_BOOL);
-	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
-	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
-	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
-	RegisterVariable("r_shadowintensity",	&m_fShadowIntensity,CSYS_FLOAT);	
+	m_kbVBO.Register(this, "r_shadowvbo", "0");
+	m_kiNrOfShadows.Register(this, "r_shadows", "0");
+	m_kiShadowMode.Register(this, "r_shadowmode", "0");
+	m_kiDebug.Register(this, "r_shadowdebug", "0");
+	m_kfShadowIntensity.Register(this, "r_shadowintensity", "0.3");
+	m_kbShadowGroups.Register(this, "r_shadowgroups", "00000000");
+
+	//RegisterVariable("r_shadowvbo",			&m_bVBO,CSYS_BOOL);
+	//RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
+	//RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
+	//RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
+	//RegisterVariable("r_shadowintensity",	&m_fShadowIntensity,CSYS_FLOAT);	
+	/*	FIXME
 	RegisterVariable("r_shadowgroups",		&m_kShadowGroups,CSYS_BOOLVECTOR);
-	
+	*/
 	
 }
 
@@ -198,7 +206,7 @@ bool ZShadow::ShutDown()
 void ZShadow::Update()
 {
 	//do a quick return if no shadows shuld be rendered
-	if( (m_iNrOfShadows == 0) || m_bDisabled)
+	if( (m_kiNrOfShadows.GetInt() == 0) || m_bDisabled)
 		return;
 
 // 	StartProfileTimer("r___ZShadow");
@@ -228,7 +236,7 @@ void ZShadow::Update()
 			P_Mad* pkMad = (P_Mad*)kRenderPropertys[i];
 
 			//is this shadow group enabled
-			if(!m_kShadowGroups[pkMad->GetShadowGroup()])
+			if(!m_kbShadowGroups.GetBoolVector()[pkMad->GetShadowGroup()])
 				continue;
 
 			//reset mesh
@@ -236,7 +244,7 @@ void ZShadow::Update()
 
 			//find witch lights to enable
 			vector<LightSource*>	kLights;
-			m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetEntity()->GetIWorldPosV(),false);
+			m_pkLight->GetClosestLights(&kLights,m_kiNrOfShadows.GetInt(), pkMad->GetEntity()->GetIWorldPosV(),false);
 			//m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetObject()->GetIWorldPosV(),true);
 			
 			for(int i = 0;i<kLights.size();i++)
@@ -263,7 +271,7 @@ void ZShadow::Update()
 	//draw shadow
 	if(m_iCurrentShadows != 0)
 	{
-		DrawShadow(m_fShadowIntensity);
+		DrawShadow(m_kfShadowIntensity.GetFloat());
 	}	
 	
 // 	StopProfileTimer("r___ZShadow");
@@ -328,7 +336,7 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 
 void ZShadow::DrawCapings(ShadowMesh* pkShadowMesh)
 {
-	if(m_bVBO)
+	if(m_kbVBO.GetBool())
 	{
 		if(!pkShadowMesh->m_pkFrontCapingVB)
 		{
@@ -357,7 +365,7 @@ void ZShadow::DrawCapings(ShadowMesh* pkShadowMesh)
 
 void ZShadow::DrawExtrudedSiluet(ShadowMesh* pkShadowMesh)
 {
-	if(m_bVBO)
+	if(m_kbVBO.GetBool())
 	{
 		if(!pkShadowMesh->m_pkExtrudedSiluetVB)
 		{
@@ -389,7 +397,7 @@ void ZShadow::MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource)
 	}
 
 	//bind material
-	if(m_iDebug == 0)
+	if(m_kiDebug.GetInt() == 0)
 		m_pkZShaderSystem->BindMaterial(m_pkShadowModel);			
 	else
 		m_pkZShaderSystem->BindMaterial(m_pkDebug);			
@@ -397,7 +405,7 @@ void ZShadow::MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource)
 	//reset all pointers
 	m_pkZShaderSystem->ResetPointers();
 	
-	switch(m_iShadowMode)
+	switch(m_kiShadowMode.GetInt())
 	{
 		case ezFail:
 		{
@@ -581,7 +589,7 @@ ShadowMesh*	ZShadow::GetShadowMesh(P_Mad* pkMad,LightSource* pkLightSource)
 	//try to find the shadow
 	for(int i = 0;i<m_kShadowMeshs.size();i++)
 	{
-		if(m_kShadowMeshs[i]->Equals(pkMad,pkLightSource,m_iShadowMode))
+		if(m_kShadowMeshs[i]->Equals(pkMad,pkLightSource,m_kiShadowMode.GetInt()))
 		{
 			m_kShadowMeshs[i]->m_bUsed = true;
 			return m_kShadowMeshs[i];
@@ -598,7 +606,7 @@ ShadowMesh* ZShadow::AddShadowMesh(P_Mad* pkMad,LightSource* pkLightSource)
 	if(!m_bHaveMesh)
 		SetupMesh(pkMad);
 
-	ShadowMesh* pkNewMesh = new ShadowMesh(pkMad,pkLightSource,m_iShadowMode);
+	ShadowMesh* pkNewMesh = new ShadowMesh(pkMad,pkLightSource,m_kiShadowMode.GetInt());
 	GenerateShadowMesh(pkNewMesh);
 
 	m_kShadowMeshs.push_back(pkNewMesh);
@@ -761,7 +769,7 @@ void ZShadow::GenerateShadowMesh(ShadowMesh* pkShadowMesh)
 	}
 }
 
-void ZShadow::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZShadow::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
 	
 	switch(cmdid) 
@@ -792,7 +800,7 @@ void ZShadow::RunCommand(int cmdid, const CmdArgument* kCommand)
 		
 			for(int i = 0;i<8;i++)
 			{
-				if(m_kShadowGroups[i])				
+				if(m_kbShadowGroups.GetBoolVector()[i])				
 					m_pkZeroFps->m_pkConsole->Printf("Group: %d enabled",i);
 				else
 					m_pkZeroFps->m_pkConsole->Printf("Group: %d disabled",i);
@@ -806,7 +814,10 @@ void ZShadow::EnableShadowGroup(int i)
 	if(i < 0 || i >= 8)
 		return;
 	
-	m_kShadowGroups[i] = true;				
+	vector<bool>	kBoolVec;
+	kBoolVec = m_kbShadowGroups.GetBoolVector();
+	kBoolVec[i] = true;		
+	m_kbShadowGroups.SetBoolVector(kBoolVec);
 }
 
 void ZShadow::DisableShadowGroup(int i) 
@@ -814,7 +825,10 @@ void ZShadow::DisableShadowGroup(int i)
 	if(i < 0 || i >= 8)
 		return;
 	
-	m_kShadowGroups[i] = false;				
+	vector<bool>	kBoolVec;
+	kBoolVec = m_kbShadowGroups.GetBoolVector();
+	kBoolVec[i] = false;				
+	m_kbShadowGroups.SetBoolVector(kBoolVec);
 }
 
 
