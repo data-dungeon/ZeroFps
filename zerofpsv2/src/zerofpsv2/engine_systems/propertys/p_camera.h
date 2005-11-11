@@ -59,6 +59,7 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
 
 		void SetCamera(Camera *pkCamera);
+		Camera* GetCamera()							{	return m_pkCamera;		}
 		
 		float Get3PYAngle()							{	return m_f3PYAngle; 		}
 		float Get3PPAngle()							{	return m_f3PPAngle; 		}
@@ -82,6 +83,7 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 };
 
 Property* Create_CameraProperty();
+void Register_CameraProperty(ZSSZeroFps* pkZeroFps);
 
 #endif
 

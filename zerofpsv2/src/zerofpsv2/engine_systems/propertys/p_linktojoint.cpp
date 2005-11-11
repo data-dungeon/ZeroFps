@@ -52,15 +52,8 @@ void P_LinkToJoint::Update()
 	if(pkHost)
 	{
 		if(P_Mad* pkMad = (P_Mad*)pkHost->GetProperty("P_Mad"))
-		{
-			kPos = pkHost->GetIWorldPosV();
-			if(pkMad->IsCulled())
-			{
-				m_pkEntity->SetWorldPosV(kPos);
-				return;
-			}
-		
-			kPos +=pkMad->GetJointPosition(m_strToJoint);				
+		{	
+			kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint);				
 			kRot = pkMad->GetJointRotation(m_strToJoint);
 			
 			m_pkEntity->SetWorldPosV(kPos);

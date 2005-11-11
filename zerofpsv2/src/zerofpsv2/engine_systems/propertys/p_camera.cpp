@@ -5,6 +5,7 @@
 #include "../../engine/camera.h"
 #include "../../engine/zerofps.h"
 #include "../../basic/math.h"
+#include "../script_interfaces/si_objectmanager.h" 
 
 #define CHASE_CAM_DISTANCE	5 
 
@@ -372,9 +373,62 @@ float P_Camera::LineTest(const Vector3& kStart,const Vector3& kStop)
 }
 
 
+
+using namespace ObjectManagerLua;
+namespace SI_CAMERA
+{
+
+
+	/**	\fn SetShakeAmount( EntityID, szFile)
+			\brief Change the mad used.
+			\relates Mad
+			\param EntityID Id of entity to change model on.
+			\param szFile The path and name of the model. Ex "barrel.mad".
+	*/
+	int SetShakeAmountLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua, 2))
+			return 0;
+	
+		//get entity id
+		double dId;		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+			
+		//get camera property and camera		
+		if(P_Camera* pkCamera = (P_Camera*)g_pkObjMan->GetPropertyFromEntityID((int)dId,"P_Camera" ) )
+		{
+			if(Camera* pkCam = pkCamera->GetCamera())
+			{
+				//set amount
+				double dAmount = 0;
+				g_pkScript->GetArg(pkLua, 1, &dAmount);
+				
+				//set shake amount
+				pkCam->SetShakeAmount(dAmount);
+			}
+		}
+		return 0;
+	}
+
+}
+
+
 Property* Create_CameraProperty()
 {
 	return new P_Camera();
 }
+
+
+
+void Register_CameraProperty(ZSSZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_Camera", Create_CameraProperty);				
+
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("SetShakeAmount",			SI_CAMERA::SetShakeAmountLua);
+}
+
+
 
 

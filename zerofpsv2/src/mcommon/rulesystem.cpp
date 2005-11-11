@@ -69,7 +69,7 @@ void RuleSystem::Damage(int iAttacker,int iDefender,float fDamage)
 			pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
 			SendPointText(IntToString(int(-fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 			
-			CharacterHit(pkDefender,iAttacker);
+			CharacterHit(pkDefender,iAttacker);			
 		}
 	}
 }
@@ -82,6 +82,19 @@ void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker)
 	args[0].m_pData = &iAttacker;			//owner character id
 			
 	m_pkEntityManager->CallFunction(pkCharacter,"Hit",&args);	
+	
+	
+	//send hit info to client
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty") )
+	{
+		if(pkCP->Getclient() != -1)
+		{	
+			int iD = pkCP->Getclient();
+			const void* pkID[1];
+			pkID[0] = &iD;
+			m_pkApplication->OnSystemMessage("PlayerHit",1,pkID);	
+		}
+	}
 }
 
 void RuleSystem::CharacterMiss(Entity* pkCharacter,int iAttacker)

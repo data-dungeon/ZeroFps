@@ -2,6 +2,10 @@
 #include "../render/render.h"
 #include "../ogl/zfpsgl.h"
 #include "inputhandle.h"
+#include "../basic/math.h"
+
+using namespace Math;
+
 
 bool Camera::m_bDrawOrthoGrid(false);
 float	Camera::m_fGridSpace(1.0);
@@ -48,6 +52,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_fFogNear		=		50;
 	m_fFogFar		=		100;
 	m_bFogEnabled	=		false;
+	
+	m_fShakeAmount =		0;
 	
 	m_iForceLighing=		LIGHT_MATERIAL;
 	
@@ -594,10 +600,26 @@ void Camera::InitView()//int iWidth,int iHeight)
 	//reset modelview matrix and setup the newone
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
  	m_pkZShaderSystem->MatrixLoad(&m_kRotM);	
-	m_pkZShaderSystem->MatrixTranslate(-m_kPos);	 	
+	
+	
+	//Set render position to cameras current position
+	m_kRenderPos = m_kPos;
+	
+	//random camera movement
+	if(m_fShakeAmount > 0)
+	{
+		m_kRenderPos += Vector3(Randomf(m_fShakeAmount)-m_fShakeAmount/2,
+										Randomf(m_fShakeAmount)-m_fShakeAmount/2,
+										Randomf(m_fShakeAmount)-m_fShakeAmount/2);
+		
+		m_fShakeAmount -= m_pkZeroFps->GetFrameTime();		
+	}
+	
+	//do camera translation
+	m_pkZShaderSystem->MatrixTranslate(-m_kRenderPos);	 	
 
 	//save render position (camera position may change during renderpass)
-	m_kRenderPos = m_kPos;
+// 	m_kRenderPos = m_kPos;
 	
 	//set eye position in shadersystem
 	m_pkZShaderSystem->SetEyePosition(m_kRenderPos);

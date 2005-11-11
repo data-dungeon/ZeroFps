@@ -15,25 +15,24 @@
 
 using namespace std;
 
-class BASIC_API Math
+namespace BASIC_API Math
 {
-public:
-	static float DegToRad(float fAngle);
-	static float RadToDeg(float fAngle);
-	static int PowerOf2(int iVal);
-	static Vector3 GetYawVector2(float fAngleDeg);
-	static float GetYawAngle(Vector3 kDir);
-	static float round2(float val);
-	static float Randomf(float fInterval);
-	static int Randomi(int iInterval);
+	float DegToRad(float fAngle);
+	float RadToDeg(float fAngle);
+	int PowerOf2(int iVal);
+	Vector3 GetYawVector2(float fAngleDeg);
+	float GetYawAngle(Vector3 kDir);
+	float round2(float val);
+	float Randomf(float fInterval);
+	int Randomi(int iInterval);
 
-	static float Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
-	static bool equal_f(float a, float b);
+	float Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
+	bool equal_f(float a, float b);
 
-	static const float PI;					// pi			180
-	static const float TWO_PI;				// pi * 2	360
-	static const float HALF_PI;			// pi / 2	90
-	static const float EPSILON;
+	const float PI 		= 3.1415926535897932384626433832795f;;					// pi			180
+	const float TWO_PI	= 2.0 * Math::PI;				// pi * 2	360
+	const float HALF_PI	= 0.5 * Math::PI;			// pi / 2	90
+	const float EPSILON	= 1.0e-4f;
 };
 #define epsilon 1.0e-4f
 

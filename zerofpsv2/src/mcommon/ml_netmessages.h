@@ -57,6 +57,7 @@ enum MLNM_ServerToClient
 	MLNM_SC_CLOSECONTAINER,
 	MLNM_SC_SKILLTREE,
 	MLNM_SC_SKILLINFO,
+	MLNM_SC_PLAYERHIT,
 };
 
 //mistlands chatmessages ID's

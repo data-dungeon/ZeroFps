@@ -88,6 +88,7 @@ class MistServer :public Application , public ZGuiApp
 		void SendCharacterEquipment(int iCharacter,int iClientID);				
 		void SendCharacterList(int iClient);
 		void SendClientCharacterID(int iClientID);
+		void SendPlayerHit(int iClientID);
 
 		//player creation
 		Vector3 GetPlayerStartPos();
@@ -104,7 +105,6 @@ class MistServer :public Application , public ZGuiApp
 						
 	public:
 		PlayerDatabase*	m_pkPlayerDB;				
-// 		RuleSystem*			m_pkRuleSystem;
 		
 		
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);	 	
@@ -153,6 +153,7 @@ namespace SI_MistServer
 	int SayToCharacterLua(lua_State* pkLua);
 	int OpenContainerLua(lua_State* pkLua);
 
+	
 };
 
 

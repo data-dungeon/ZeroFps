@@ -310,6 +310,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
 		void SetOverHeadText(bool bOverHead)					{	m_bOverHeadText = bOverHead;	}		
 		void SetClient(int iConID)									{	m_iConID = iConID;				}	
+		int  Getclient()												{	return m_iConID;					}
 		
 		//gets
 		string GetName()												{	return m_strName;					}

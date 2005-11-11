@@ -191,19 +191,25 @@ void ZeroEd::Input_EditZone()
 	
 	if(m_pkInputHandle->VKIsDown("createhmapzone") && !DelayCommand())
 	{
+		//add zone
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
 
+		//find marked zone
 		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
 
- 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
+		//add heightmap if possible 
+ 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone)) 		
  		{
- 			P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
- 			pkHM->SetSize(m_kZoneSize.x,m_kZoneSize.z);
- 			pkHM->SetMaxValue(m_kZoneSize.y / 2.0);
- 			
-			P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");
-			pp->SetTestType(E_HMAP);
-			pp->SetStatic(true);			
+			if(!pkData->m_pkZone->GetProperty("P_Heightmap"))
+			{			
+				P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
+				pkHM->SetSize(m_kZoneSize.x,m_kZoneSize.z);
+				pkHM->SetMaxValue(m_kZoneSize.y / 2.0);
+				
+				P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");
+				pp->SetTestType(E_HMAP);
+				pp->SetStatic(true);			
+			}
 		}
 	} 			
 	

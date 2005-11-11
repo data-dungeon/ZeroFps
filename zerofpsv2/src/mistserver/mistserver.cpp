@@ -991,7 +991,15 @@ void MistServer::DeletePlayerCharacter(int iConID)
 }
 
 
-
+void MistServer::SendPlayerHit(int iClientID)
+{
+	NetPacket kNp;
+	
+	kNp.Clear();
+	kNp.Write((char) MLNM_SC_PLAYERHIT);
+	kNp.TargetSetClient(iClientID);
+	SendAppMessage(&kNp);
+}
 
 void MistServer::SendClientCharacterID(int iClientID)
 {
@@ -1299,6 +1307,18 @@ void MistServer::OnSystemMessage(const string& strType,int iNrOfParam,const void
 		}
 	
 		SendPointText(*(string*)pkParams[0],*(Vector3*)pkParams[1],*(Vector3*)pkParams[2],*(float*)pkParams[3],*(int*)pkParams[4]);
+	}
+	else if(strType == "PlayerHit")
+	{
+		if(iNrOfParam != 1)
+		{
+			cout<<"PointText - Wrong number of parameters"<<endl;
+			return;
+		}
+		
+		cout<<"sending player hit"<<endl;
+		
+		SendPlayerHit(*(int*)pkParams[0]);				
 	}
 	else if(strType == "SayToClients")
 	{

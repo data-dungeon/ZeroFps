@@ -153,6 +153,9 @@ class ENGINE_API Camera : public I_Camera
 		//HDR STUFF
 		float				m_fExposureFactor;
 		
+		//camera shake effect
+		float 			m_fShakeAmount;									///< camera shake magnitude, 0 means no shake at all
+		
 		//shadow hack
 		ResTexture		m_kShadowTexture;
 		int				m_iShadowTexWidth;
@@ -205,12 +208,13 @@ class ENGINE_API Camera : public I_Camera
 		Vector3 	GetOrthoMove(Vector3 kMove);
 		Vector3 	SnapToGrid(Vector3 kPos);
 		
+		void		SetShakeAmount(float fShake)				{	m_fShakeAmount = fShake;	}
 		
 		void		SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
-		void		SetClearColor(const Vector4& kColor)	{	m_kClearColor = kColor;	}
+		void		SetClearColor(const Vector4& kColor)	{	m_kClearColor = kColor;		}
 		
-		void		SetForceLighting(int iForce)				{	m_iForceLighing = iForce;}
-		int		GetForceLighting()							{	return m_iForceLighing;}
+		void		SetForceLighting(int iForce)				{	m_iForceLighing = iForce;	}
+		int		GetForceLighting()							{	return m_iForceLighing;		}
 		
 		void 		SetRotM(const Matrix4& kRotM);
 		void 		RotateV(const Vector3& kRot);

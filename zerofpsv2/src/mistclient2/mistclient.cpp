@@ -826,6 +826,7 @@ void MistClient::DrawTargetMarker()
 		pkEnemyMarker->GetPass(0)->m_bLighting = 	false;
 		pkEnemyMarker->GetPass(0)->m_bFog = 			false;	
 		pkEnemyMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+		pkEnemyMarker->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
 				
 		//blending is much nicer thou =)
 		pkEnemyMarker->GetPass(0)->m_bDepthMask = false;
@@ -842,6 +843,7 @@ void MistClient::DrawTargetMarker()
 		pkFriendMarker->GetPass(0)->m_bLighting = 	false;
 		pkFriendMarker->GetPass(0)->m_bFog = 			false;	
 		pkFriendMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+		pkFriendMarker->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
 				
 		//blending is much nicer thou =)
 		pkFriendMarker->GetPass(0)->m_bDepthMask = false;
@@ -1505,6 +1507,16 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
+		
+		//when player character is hit, this is called
+		case MLNM_SC_PLAYERHIT:
+		{
+			if(m_pkCamera)
+				m_pkCamera->SetShakeAmount(1);
+				
+			break;
+		}
+		
 		case MLNM_SC_SKILLINFO:
 		{
 			string	strScreenName;

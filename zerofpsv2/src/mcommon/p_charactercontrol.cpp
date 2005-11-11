@@ -54,7 +54,7 @@ P_CharacterControl::P_CharacterControl() : Property("P_CharacterControl")
 	m_fJumpDelay =			0;
 	
 	m_fSpeed = 				40.0;
-	m_fJumpForce = 		5.0; 	
+	m_fJumpForce = 		2.5; 	
 	m_bHaveJumped = 		false;	
 	m_bInWater=				false;
 	m_iDirection = 		eMOVE_NONE;

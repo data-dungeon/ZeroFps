@@ -111,46 +111,46 @@ ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
 		m_kTUs[i] = kOther.m_kTUs[i];			
 	}
 
-	*m_pkVP = *(kOther.m_pkVP);
-	*m_pkFP = *(kOther.m_pkFP);
-	*m_pkSLP = *(kOther.m_pkSLP);
+	*m_pkVP = 	*(kOther.m_pkVP);
+	*m_pkFP = 	*(kOther.m_pkFP);
+	*m_pkSLP = 	*(kOther.m_pkSLP);
 		
 	for(int i=0;i<4;i++)
 	{
-		m_iTUTexCords[i] = kOther.m_iTUTexCords[i];
+		m_iTUTexCords[i] = 	kOther.m_iTUTexCords[i];
 		m_iTUTexEnvMode[i] = kOther.m_iTUTexEnvMode[i];
-		m_fTUTexGenScale[i] = kOther.m_fTUTexGenScale[i];
+		m_fTUTexGenScale[i] =kOther.m_fTUTexGenScale[i];
 	}
 		
-	m_kVertexColor = kOther.m_kVertexColor;		
-	m_kMatAmbient = kOther.m_kMatAmbient;
-	m_kMatDiffuse = kOther.m_kMatDiffuse;
-	m_kMatSpecular = kOther.m_kMatSpecular;
-	m_kMatEmission = kOther.m_kMatEmission;
-	m_fShininess = kOther.m_fShininess;		
-	m_bColorMaterial = kOther.m_bColorMaterial;
-	m_fLineWidth = kOther.m_fLineWidth;
-	m_iPolygonModeFront = kOther.m_iPolygonModeFront;
+	m_kVertexColor = 		kOther.m_kVertexColor;		
+	m_kMatAmbient = 		kOther.m_kMatAmbient;
+	m_kMatDiffuse = 		kOther.m_kMatDiffuse;
+	m_kMatSpecular = 		kOther.m_kMatSpecular;
+	m_kMatEmission =		kOther.m_kMatEmission;
+	m_fShininess = 		kOther.m_fShininess;		
+	m_bColorMaterial = 	kOther.m_bColorMaterial;
+	m_fLineWidth = 		kOther.m_fLineWidth;
+	m_iPolygonModeFront =kOther.m_iPolygonModeFront;
 	m_iPolygonModeBack = kOther.m_iPolygonModeBack;
-	m_iDepthFunc = kOther.m_iDepthFunc;
-	m_bLighting = kOther.m_bLighting;
-	m_iCullFace = kOther.m_iCullFace;
-	m_bAlphaTest = kOther.m_bAlphaTest;
-	m_fAlphaTreshold = kOther.m_fAlphaTreshold;
-	m_bFog = kOther.m_bFog;
-	m_bBlend = kOther.m_bBlend;
-	m_bDepthTest = kOther.m_bDepthTest;
-	m_bStencilTest = kOther.m_bStencilTest;
-	m_iStencilOpFail = kOther.m_iStencilOpFail;
-	m_iStencilOpZFail = kOther.m_iStencilOpZFail;
-	m_iStencilOpZPass = kOther.m_iStencilOpZPass;
-	m_iStencilFunc = kOther.m_iStencilFunc;
-	m_iStencilFuncRef = kOther.m_iStencilFuncRef;
+	m_iDepthFunc = 		kOther.m_iDepthFunc;
+	m_bLighting = 			kOther.m_bLighting;
+	m_iCullFace =			kOther.m_iCullFace;
+	m_bAlphaTest = 		kOther.m_bAlphaTest;
+	m_fAlphaTreshold = 	kOther.m_fAlphaTreshold;
+	m_bFog = 				kOther.m_bFog;
+	m_bBlend = 				kOther.m_bBlend;
+	m_bDepthTest = 		kOther.m_bDepthTest;
+	m_bStencilTest = 		kOther.m_bStencilTest;
+	m_iStencilOpFail = 	kOther.m_iStencilOpFail;
+	m_iStencilOpZFail = 	kOther.m_iStencilOpZFail;
+	m_iStencilOpZPass = 	kOther.m_iStencilOpZPass;
+	m_iStencilFunc = 		kOther.m_iStencilFunc;
+	m_iStencilFuncRef = 	kOther.m_iStencilFuncRef;
 	m_iStencilFuncMask = kOther.m_iStencilFuncMask;
-	m_iBlendSrc = kOther.m_iBlendSrc;
-	m_iBlendDst = kOther.m_iBlendDst;
-	m_bColorMask = kOther.m_bColorMask;
-	m_bDepthMask = kOther.m_bDepthMask;
+	m_iBlendSrc = 			kOther.m_iBlendSrc;
+	m_iBlendDst = 			kOther.m_iBlendDst;
+	m_bColorMask = 		kOther.m_bColorMask;
+	m_bDepthMask = 		kOther.m_bDepthMask;
 			
 	return (*this);
 }
@@ -192,6 +192,12 @@ ZMaterial& ZMaterial::operator=(const ZMaterial& kOther)
 		(*pkNew) = *kOther.GetPass(i); 
 	}
 	
+	int iValues = kOther.m_kCustomValues.size();
+	for(int i =0;i<iValues;i++)
+	{
+		m_kCustomValues.push_back(m_kCustomValues[i]);	
+	}
+	
 	m_pkScript = 			NULL;
 	m_pkMaterialScript = NULL;	
 	
@@ -229,6 +235,7 @@ void ZMaterial::Clear()
 	
 	m_strName = "UnNamed";
 	
+	m_kCustomValues.clear();
 	
 	if(m_pkMaterialScript)
 	{
@@ -1079,7 +1086,28 @@ namespace SI_ZMATERIAL
 		
 		g_pkScript->AddReturnValue(pkLua, dRet);				
 		return 1;		
-	}				
+	}	
+				
+				
+/**	\fn CustomValue(string,string )
+		\brief adds a custom value to the material , like surface sounds
+		\relates Material
+*/		
+	int CustomValueLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;		
+
+		string strValueName;
+		string strValue;
+
+		g_pkScript->GetArgString(pkLua,0,strValueName);
+		g_pkScript->GetArgString(pkLua,1,strValue);
+
+		g_pkCurrentMaterial->LuaMaterialAddCustomValue(strValueName,strValue);
+		return 0;		
+	}	
+				
 }
 
 
@@ -1095,6 +1123,7 @@ void RegisterSI_Material()
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("UseShadowMap",			SI_ZMATERIAL::UseShadowMapLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportSpecMap",		SI_ZMATERIAL::SupportSpecMapLua);
 
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("CustomValue",			SI_ZMATERIAL::CustomValueLua);
 };
 
 
