@@ -15,26 +15,30 @@
 
 using namespace std;
 
-namespace Math
+class BASIC_API Math
 {
-	float BASIC_API 	DegToRad(float fAngle);
-	float BASIC_API 	RadToDeg(float fAngle);
-	int BASIC_API 		PowerOf2(int iVal);
-	Vector3 BASIC_API	GetYawVector2(float fAngleDeg);
-	float BASIC_API	GetYawAngle(Vector3 kDir);
-	float BASIC_API	Round2(float val);
-	float BASIC_API	Randomf(float fInterval);
-	int BASIC_API		Randomi(int iInterval);
+public:
+	static float  	DegToRad(float fAngle);
+	static float  	RadToDeg(float fAngle);
+	static int  	PowerOf2(int iVal);
+	static Vector3 GetYawVector2(float fAngleDeg);
+	static float 	GetYawAngle(Vector3 kDir);
+	static float 	Round2(float val);
+	static float 	Randomf(float fInterval);
+	static int 		Randomi(int iInterval);
+	static float 	Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
+	static bool 	Equal_f(float a, float b);
 
-	float BASIC_API	Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
-	bool BASIC_API		Equal_f(float a, float b);
-
-	const float BASIC_API	PI 		= 3.1415926535897932384626433832795f;;					// pi			180
-	const float BASIC_API	TWO_PI	= 2.0 * Math::PI;				// pi * 2	360
-	const float BASIC_API	HALF_PI	= 0.5 * Math::PI;			// pi / 2	90
-	const float BASIC_API	EPSILON	= 1.0e-4f;
+	static const float PI ;					// pi			180
+	static const float TWO_PI;				// pi * 2	360
+	static const float HALF_PI;			// pi / 2	90
+	static const float EPSILON;
+// 	const float PI 		= 3.1415926535897932384626433832795f;;					// pi			180
+// 	const float TWO_PI	= 2.0 * Math::PI;				// pi * 2	360
+// 	const float HALF_PI	= 0.5 * Math::PI;			// pi / 2	90
+// 	const float EPSILON	= 1.0e-4f;
 };
-//#define epsilon 1.0e-4f
+
 
 
 #endif

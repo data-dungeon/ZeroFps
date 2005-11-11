@@ -4,7 +4,6 @@
 #include "inputhandle.h"
 #include "../basic/math.h"
 
-using namespace Math;
 
 
 bool Camera::m_bDrawOrthoGrid(false);
@@ -608,9 +607,9 @@ void Camera::InitView()//int iWidth,int iHeight)
 	//random camera movement
 	if(m_fShakeAmount > 0)
 	{
-		m_kRenderPos += Vector3(Randomf(m_fShakeAmount)-m_fShakeAmount/2,
-										Randomf(m_fShakeAmount)-m_fShakeAmount/2,
-										Randomf(m_fShakeAmount)-m_fShakeAmount/2);
+		m_kRenderPos += Vector3(Math::Randomf(m_fShakeAmount)-m_fShakeAmount/2,
+										Math::Randomf(m_fShakeAmount)-m_fShakeAmount/2,
+										Math::Randomf(m_fShakeAmount)-m_fShakeAmount/2);
 		
 		m_fShakeAmount -= m_pkZeroFps->GetFrameTime();		
 	}
