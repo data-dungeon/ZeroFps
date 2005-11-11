@@ -27,31 +27,12 @@ P_Heightmap::P_Heightmap() : Property("P_Heightmap")
 	ZFResourceHandle* pkTempMat = new ZFResourceHandle;
 	pkTempMat->SetRes("heightmap/default.zlm");	
 	m_kMaterials.push_back(pkTempMat);
-		
-// 	pkTempMat = new ZFResourceHandle;
-// 	pkTempMat->SetRes("heightmap/rock.zlm");	
-// 	m_kMaterials.push_back(pkTempMat);
-// 	
-// 	pkTempMat = new ZFResourceHandle;
-// 	pkTempMat->SetRes("heightmap/dirt.zlm");	
-// 	m_kMaterials.push_back(pkTempMat);
-// 	
-// 	pkTempMat = new ZFResourceHandle;
-// 	pkTempMat->SetRes("heightmap/sand.zlm");	
-// 	m_kMaterials.push_back(pkTempMat);
-// 	
-// 	pkTempMat = new ZFResourceHandle;
-// 	pkTempMat->SetRes("heightmap/stone_path.zlm");	
-// 	m_kMaterials.push_back(pkTempMat);	
 	
 }
 
 void P_Heightmap::Init()
 {
-// 	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-// 	m_pkEntity->SetLocalAABB(GetRadius());
 	SetSize(4,4);
-
 }
 
 P_Heightmap::~P_Heightmap()

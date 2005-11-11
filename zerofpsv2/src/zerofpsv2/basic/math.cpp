@@ -67,7 +67,7 @@ float Math::GetYawAngle(Vector3 kDir)
 	return RadToDeg(fAngle);
 }
 
-float Math::round2(float val)
+float Math::Round2(float val)
 {
 /*	int lower = (int) val;
 	if( (val - lower) > 0.499f)
@@ -101,7 +101,7 @@ int Math::Randomi(int iInterval)
 }
 
 
-bool Math::equal_f(float a, float b)
+bool Math::Equal_f(float a, float b)
 {
 	return( (a > (b - EPSILON) ) && (a < (b + EPSILON)) );
 }

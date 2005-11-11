@@ -1819,9 +1819,9 @@ void ZeroEd::UpdateZoneMarkerPos()
 		
 		if(m_iAutoSnapZoneCorner == -1)
 		{
-			m_kZoneMarkerPos.x = Math::round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x + m_kSnapOffset.x;
-			m_kZoneMarkerPos.y = Math::round2(temp.y/m_kSnapSize.y) * m_kSnapSize.y + m_kSnapOffset.y;
-			m_kZoneMarkerPos.z = Math::round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z + m_kSnapOffset.z;
+			m_kZoneMarkerPos.x = Math::Round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x + m_kSnapOffset.x;
+			m_kZoneMarkerPos.y = Math::Round2(temp.y/m_kSnapSize.y) * m_kSnapSize.y + m_kSnapOffset.y;
+			m_kZoneMarkerPos.z = Math::Round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z + m_kSnapOffset.z;
 			
 			/*
 			m_kZoneMarkerPos.x = (temp.x/m_kSnapSize.x ) * m_kSnapSize.x;
@@ -1879,9 +1879,9 @@ void ZeroEd::UpdateObjectMakerPos()
 	{
 		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMouseDir(false) * 15;
 	
-		m_kObjectMarkerPos.x = Math::round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x;
+		m_kObjectMarkerPos.x = Math::Round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x;
 		m_kObjectMarkerPos.y = 0;
-		m_kObjectMarkerPos.z = Math::round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z;
+		m_kObjectMarkerPos.z = Math::Round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z;
 	}	
 }
 
