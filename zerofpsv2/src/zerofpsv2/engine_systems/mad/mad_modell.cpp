@@ -561,20 +561,21 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]), m_pkRawMesh);
 		
-		m_pkShader->ResetPointers();
 			
-		//setup all texture pointers
-		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
-	
-		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
-		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
-		m_pkShader->SetDrawMode(TRIANGLES_MODE);
-		m_pkShader->SetNrOfVertexs(GetNumVertices());
 	
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
 		
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
 		{
+			//setup all texture pointers
+			m_pkShader->ResetPointers();		
+			m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());	
+			m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
+			m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
+			m_pkShader->SetDrawMode(TRIANGLES_MODE);
+			m_pkShader->SetNrOfVertexs(GetNumVertices());
+			
+			
 			SelectSubMesh(iSubM);
 
 			if(iDrawFlags & MAD_DRAW_MESH || iDrawFlags & MAD_DRAW_LINES) 
@@ -683,65 +684,134 @@ ZMaterial* Mad_Modell::GetMaterial(int iMesh,int iSubMesh)
 	return (ZMaterial*)(pkRes->GetResourcePtr());		
 }
 
+/**
+ * 
+ * @param pkVertex 
+ * @param pkNormals 
+ */
 void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 {
-	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	static ZMaterial* pkLineMaterial = NULL;
+	if(!pkLineMaterial)
+	{
+		pkLineMaterial = new ZMaterial();
+		pkLineMaterial->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkLineMaterial->GetPass(0)->m_bLighting = false;
+		pkLineMaterial->GetPass(0)->m_bFog = true;
+		pkLineMaterial->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLineMaterial->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+	}
+	
+	static ZMaterial* pkPointMaterial = NULL;
+	if(!pkPointMaterial)
+	{
+		pkPointMaterial = new ZMaterial();
+		pkPointMaterial->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkPointMaterial->GetPass(0)->m_bLighting = false;
+		pkPointMaterial->GetPass(0)->m_bFog = true;
+		pkPointMaterial->GetPass(0)->m_iPolygonModeFront = GL_POINT;
+		pkPointMaterial->GetPass(0)->m_iPolygonModeBack = GL_POINT;
+		pkPointMaterial->GetPass(0)->m_fLineWidth = 5;
+		pkPointMaterial->GetPass(0)->m_bColorMaterial = true;
+		pkPointMaterial->GetPass(0)->m_kVertexColor.Set(0,1,0,0);
+	}
 
-	glColor3f(1,1,1);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D );
+	bool bOld = m_pkShader->GetForceDisableGLSL();
+	m_pkShader->SetForceDisableGLSL(true);
 
-	int i;
+	//draw lines
+	m_pkShader->ClearGeometry();	
+	for(int i=0; i<GetNumVertices(); i++) 
+	{	
+		m_pkShader->AddLineV(pkVertex[i],pkVertex[i]+pkNormals[i] * 0.2);
+	}
 
-	// Draw All Normals.
-	glBegin(GL_LINES);
-	for(i=0; i<m_pkMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) {
-		Vector3 Vert = pkVertex[i];
-		Vector3 Norm = pkNormals[i];
-		glVertex3f(Vert.x, Vert.y, Vert.z);
-		Vert += Norm * 0.25;
-		glVertex3f(Vert.x, Vert.y, Vert.z);		
+	m_pkShader->BindMaterial(pkLineMaterial);
+	m_pkShader->DrawGeometry(LINES_MODE);
 
-		}
-	glEnd();
+	
+	//draw points
+	m_pkShader->ClearGeometry();		
+	for(int i=0; i<GetNumVertices(); i++) 
+	{	
+		m_pkShader->AddPointV(pkVertex[i]);
+	}
 
-	// Mark All Vertices.
-	glPointSize (3.0f);
-	glBegin(GL_POINTS);
-	glColor3f (0, 0.8, 0);	
-	for(i=0; i<m_pkMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) {
-		Vector3 Vert = pkVertex[i];
-		glVertex3f(Vert.x, Vert.y, Vert.z);
-		}
-	glEnd();
-	glPointSize (1.0f);
+	m_pkShader->BindMaterial(pkPointMaterial);	
+	m_pkShader->DrawGeometry(POINTS_MODE);
 
+	m_pkShader->SetForceDisableGLSL(bOld);
 
-	glPopAttrib();
 }
 
 
-void DrawBone(Vector3 From, Vector3 To, Vector3 Color)
+void Mad_Modell::DrawBone(const Vector3& From,const Vector3& To, bool bRoot)
 {
-	glDisable (GL_TEXTURE_2D);
-	glDisable (GL_DEPTH_TEST);
+	static ZMaterial* pkLineMaterial = NULL;
+	if(!pkLineMaterial)
+	{
+		pkLineMaterial = new ZMaterial();
+		pkLineMaterial->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkLineMaterial->GetPass(0)->m_bLighting = false;
+		pkLineMaterial->GetPass(0)->m_bFog = true;
+		pkLineMaterial->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLineMaterial->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+	}
 	
-	glPointSize (3.0f);
-	glColor3f (Color.x,Color.y,Color.z);
-	glBegin (GL_LINES);
-		glVertex3f(From.x,From.y,From.z);
-		glVertex3f(To.x,To.y,To.z);
-	glEnd ();
+	static ZMaterial* pkPointMaterial = NULL;
+	if(!pkPointMaterial)
+	{
+		pkPointMaterial = new ZMaterial();
+		pkPointMaterial->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkPointMaterial->GetPass(0)->m_bLighting = false;
+		pkPointMaterial->GetPass(0)->m_bFog = true;
+		pkPointMaterial->GetPass(0)->m_iPolygonModeFront = GL_POINT;
+		pkPointMaterial->GetPass(0)->m_iPolygonModeBack = GL_POINT;
+		pkPointMaterial->GetPass(0)->m_fLineWidth = 5;
+		pkPointMaterial->GetPass(0)->m_bColorMaterial = true;
+		pkPointMaterial->GetPass(0)->m_kVertexColor.Set(1,1,0,0);
+	}	
+	
+	static ZMaterial* pkPointMaterial2 = NULL;
+	if(!pkPointMaterial2)
+	{
+		pkPointMaterial2 = new ZMaterial();
+		pkPointMaterial2->GetPass(0)->m_iCullFace = CULL_FACE_NONE;
+		pkPointMaterial2->GetPass(0)->m_bLighting = false;
+		pkPointMaterial2->GetPass(0)->m_bFog = true;
+		pkPointMaterial2->GetPass(0)->m_iPolygonModeFront = GL_POINT;
+		pkPointMaterial2->GetPass(0)->m_iPolygonModeBack = GL_POINT;
+		pkPointMaterial2->GetPass(0)->m_fLineWidth = 8;
+		pkPointMaterial2->GetPass(0)->m_bColorMaterial = true;
+		pkPointMaterial2->GetPass(0)->m_kVertexColor.Set(1,0,0,0);
+	}		
+	
+	bool bOld = m_pkShader->GetForceDisableGLSL();
+	m_pkShader->SetForceDisableGLSL(true);
+	
+	
+	//draw line,if not root
+	if(!bRoot)
+	{
+		m_pkShader->ClearGeometry();	
+		m_pkShader->AddLineV(From,To);
+		m_pkShader->BindMaterial(pkLineMaterial);
+		m_pkShader->DrawGeometry(LINES_MODE);	
+	}	
+		
+	//draw points,different color depending on bone type
+	if(bRoot)
+		m_pkShader->BindMaterial(pkPointMaterial2);	
+	else
+		m_pkShader->BindMaterial(pkPointMaterial);	
+	
+	
+	m_pkShader->ClearGeometry();		
+	m_pkShader->AddPointV(From);	
+	m_pkShader->DrawGeometry(POINTS_MODE);	
+	
+	m_pkShader->SetForceDisableGLSL(bOld);
 
-	glColor3f (0, 0, 0.8f);	
-	glBegin (GL_POINTS);
-	glVertex3f(From.x,From.y,From.z);
-	glVertex3f(To.x,To.y,To.z);
-	glEnd ();
-
-	glPointSize (1.0f);
-	glEnable (GL_TEXTURE_2D);
-	glEnable (GL_DEPTH_TEST);
 }
 
 extern Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
@@ -750,43 +820,14 @@ extern Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix.
 
 void Mad_Modell::DrawSkelleton()
 {
-	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-	glDisable(GL_LIGHTING);
-	glDisable(GL_COLOR_MATERIAL);	
-	glDisable(GL_TEXTURE_2D);
-	glDisable (GL_DEPTH_TEST);
-	
-	Vector3 Position;
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
-	ZSSRender* pkRender = static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
-
-	glColor3f(1,1,1);
 	for(unsigned int i=0; i<pkCore->GetNumOfBones(); i++) {
-		if (pkCore->GetBoneParent(i) >= 0) {
-			DrawBone(pkCore->GetBonePosition(pkCore->GetBoneParent(i)),
-				pkCore->GetBonePosition(i),Vector3(1, 0.7f, 0));
-			
-			glMatrixMode(GL_MODELVIEW );
-			glPushMatrix();
-				glMultMatrixf( (float*)&g_Madkbonetransform[i] );
-				pkRender->Draw_AxisIcon(0.1 );
-			glPopMatrix();
-			}
-		else {
-			// Draw marker for parent bone.
-			glPointSize (5.0f);
-			glColor3f (0.8f, 0, 0);
-			glBegin (GL_POINTS);
-			Position = pkCore->GetBonePosition(i);
-				glVertex3f(Position.x,Position.y,Position.z);
-			glEnd ();
-
-			}
-		}
- 
-	glEnable(GL_DEPTH_TEST);
-	glPopAttrib();
+		if (pkCore->GetBoneParent(i) >= 0) 
+			DrawBone(pkCore->GetBonePosition(pkCore->GetBoneParent(i)),	pkCore->GetBonePosition(i),false);
+		else
+			DrawBone(pkCore->GetBonePosition(i),pkCore->GetBonePosition(i),true);
+	}
 }
 
 float Mad_Modell::GetSize()

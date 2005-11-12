@@ -43,6 +43,7 @@ private:
 	void LoadTextures();
 	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
 	void DrawSkelleton();
+	void DrawBone(const Vector3& From,const Vector3& To, bool bRoot);
 	
 	void Begin();
 	void End();

@@ -396,7 +396,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetDefaultGLSLProgram(ZFResourceHandle* pkRH)	{	m_pkDefaultGLSLProgram = pkRH;	}
 		ZFResourceHandle* GetDefaultGLSLProgram()				{	return m_pkDefaultGLSLProgram;	}
 		void SetForceDisableGLSL(bool bDisable)				{	m_bForceDisableGLSL = bDisable;	}
-										
+		bool GetForceDisableGLSL()									{	return m_bForceDisableGLSL;		}
 										
 		//texture management
 		void BindTexture(const ResTexture* pkTexture);
@@ -473,6 +473,12 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void DrawGeometry(const int& iDrawMode);
 		
 		//VERTEX 3 STUFF
+		
+		//point
+		void AddPointV(const Vector3& kPos);
+		void AddPointN(const Vector3& kNormal);
+		void AddPointC(const Vector4& kColor);
+		void AddPointUV(const Vector2& kPos,const int& iTU=0);
 		//line 2V
 		void AddLineV(const Vector3& kPos1,const Vector3& kPos2);
 		void AddLineN(const Vector3& kNormal1,const Vector3& kNormal2);
@@ -533,6 +539,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 
 
 #endif
+
 
 
 

@@ -1646,7 +1646,7 @@ Entity*	ZeroEd::GetTargetObject2()
 		//if we have a mad do a per polygontest, otherwise just check distance
 		if(mp && mp->IsValid())
 		{
-			if(mp->TestLine(start,dir))
+			if(mp->TestLine(start,dir,true))
 			{	
 				cp = mp->GetLastColPos();
 				d = start.DistanceTo(cp);

@@ -1037,6 +1037,9 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 	pkNetPacket->Write(m_iHeight);
 	pkNetPacket->Write(m_fScale);
 
+// 	cout<<"size:"<<pkNetPacket->m_iLength<<endl;
+
+
 	int iSize = m_kHeightData.size();
 	pkNetPacket->Write(iSize);	
 	for(int i = 0;i<iSize;i++)
@@ -1045,6 +1048,7 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 		pkNetPacket->Write(m_kTextureIDs[i]);
 	}
 	
+// 	cout<<"size:"<<pkNetPacket->m_iLength<<endl;
 	
 	iSize = m_kMaterials.size();
 	pkNetPacket->Write(iSize);
@@ -1052,6 +1056,8 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 	{		
 		pkNetPacket->Write_Str(m_kMaterials[i]->GetRes());	
 	}
+	
+// 	cout<<"size:"<<pkNetPacket->m_iLength<<endl;
 }
 
 void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)

@@ -12,7 +12,7 @@
 using namespace std;
 
 #define MAX_PACKET_SIZE					1024				// Max Bytes in each packet.
-#define MAX_PACKETDATA_SIZE			5000				// Max Bytes in each packet.
+#define MAX_PACKETDATA_SIZE			10000				// Max Bytes in each packet.
 
 //	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
 #pragma pack( 1 )

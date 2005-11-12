@@ -4,7 +4,7 @@
 using namespace std;
 
 //bool	g_iMadLOD;
-ConVar g_kMadLOD("r_madlod","0");
+ConVar g_kMadLOD("r_madlod","1");
 
 Mad_RawMesh::Mad_RawMesh()
 {

@@ -318,6 +318,7 @@ void ZShaderSystem::SetupPass(int iPass)
 		
 	//line width
 	glLineWidth(pkSettings->m_fLineWidth);
+	glPointSize(pkSettings->m_fLineWidth);
 
 	//polygon mode settings		front
 	switch(pkSettings->m_iPolygonModeFront)
@@ -919,7 +920,7 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 				}
 				else
 				{
-					cout<<"ERROR: trying to use UV array 0 ,but pointer is missing"<<endl;
+					cerr<<"ERROR: trying to use UV array 0 in tu "<<iTU<<" ,but pointer is missing"<<endl;
 					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 				}
 				break;						
@@ -931,7 +932,7 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 				}
 				else
 				{
-					cout<<"ERROR: trying to use UV array 1 ,but pointer is missing"<<endl;
+					cerr<<"ERROR: trying to use UV array 1 in tu "<<iTU<<" ,but pointer is missing"<<endl;
 					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 				}				
 				break;			
@@ -943,7 +944,7 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 				}
 				else
 				{
-					cout<<"ERROR: trying to use UV array 2 ,but pointer is missing"<<endl;
+					cerr<<"ERROR: trying to use UV array 2 in tu "<<iTU<<" ,but pointer is missing"<<endl;
 					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 				}
 				break;			
@@ -955,7 +956,7 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 				}					
 				else
 				{
-					cout<<"ERROR: trying to use UV array 3 ,but pointer is missing"<<endl;
+					cerr<<"ERROR: trying to use UV array 3 in tu "<<iTU<<" ,but pointer is missing"<<endl;				
 					glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 				}
 				break;			
@@ -1469,6 +1470,26 @@ void ZShaderSystem::ClearGeometry()
 	m_kTexture[3].clear();
 }
 
+
+void ZShaderSystem::AddPointV(const Vector3& kPos)
+{
+	m_kVerties.push_back(kPos);
+}
+
+void ZShaderSystem::AddPointN(const Vector3& kNormal)
+{
+	m_kNormals.push_back(kNormal);
+}
+
+void ZShaderSystem::AddPointC(const Vector4& kColor)
+{
+	m_kColors.push_back(kColor);
+}
+
+void ZShaderSystem::AddPointUV(const Vector2& kPos,const int& iTU)
+{
+	m_kTexture[iTU].push_back(kPos);
+}
 
 void ZShaderSystem::AddLineV(const Vector3& kPos1,const Vector3& kPos2)
 {
