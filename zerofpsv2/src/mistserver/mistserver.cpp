@@ -60,8 +60,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	// Register Variables
 	m_kAcceptNewLogins.Register(this, "ap_newlogins", "1");
-	m_kAcceptNewLogins.Register(this, "ap_startminimized", "0");
-	m_kAcceptNewLogins.Register(this, "ap_serverport", "4242");
+	m_kbStartMinimized.Register(this, "ap_startminimized", "0");
+	m_kiServerPort.Register(this, "ap_serverport", "4242");
 	//RegisterVariable("ap_newlogins",			&m_AcceptNewLogins,	CSYS_BOOL);	
 	//RegisterVariable("ap_startminimized", 	&m_bStartMinimized, 	CSYS_BOOL);
 	//RegisterVariable("ap_serverport",	 	&m_iServerPort, 		CSYS_INT);
