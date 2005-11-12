@@ -13,7 +13,7 @@
 #include "res_texture.h"
 #include "zvprogram.h"
 #include "zfprogram.h"
-#include "zvertexbuffer.h"
+// #include "zvertexbuffer.h"
 #include "stack"
 
 
@@ -220,7 +220,6 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		bool				m_bSupportGLSLProgram;
 		GLenum			m_iCurrentGLSLProgramID;				
-		//bool				m_bUseGLSL;
 		bool				m_bForceDisableGLSL;
 
 		ConVar			m_kbUseGLSL;
@@ -238,11 +237,6 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		unsigned int	m_iOcQuery;
 		
 		//other stuff
-		/*
-		float				m_fRedGamma;
-		float				m_fGreenGamma;
-		float				m_fBlueGamma;
-		*/
 		ConVar			m_kfRedGamma;
 		ConVar			m_kfGreenGamma;
 		ConVar			m_kfBlueGamma;
@@ -293,7 +287,6 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//HDR
 		float			m_fExposure;										///< exposure factor sent to shaders
-		//bool			m_bUseHDR;
 		bool			m_bSupportHDR;
 		
 		//current fog default setting
@@ -304,7 +297,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iNrOfIndexes;
 		
 		//polygon mode to use
-		int			m_iDrawMode;		
+		GLenum		m_iGLDrawMode;	//gl mode
+		DRAW_MODE	m_eDrawMode;		
 		
 		//have we done a vertex data copy
 		bool			m_bCopyedData;
@@ -455,14 +449,14 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//arrays
 		void ResetPointers();
-		void SetPointer(int iType,void* pkPointer);
+		void SetPointer(POINTER_TYPE eType,void* pkPointer);
 		void SetNrOfVertexs(const int& iNr)					{	m_iNrOfVertexs = iNr;	};
 		void SetNrOfIndexes(const int& iNr)					{	m_iNrOfIndexes = iNr;	};
-		void SetDrawMode(const int& iDrawMode);
+		void SetDrawMode(DRAW_MODE eDrawMode);
 		void DrawArray();
-		void DrawArray(const int& iDrawMode);
+		void DrawArray(DRAW_MODE eDrawMode);
 	
-		ZVertexBuffer* CreateVertexBuffer(const int& iDrawMode);
+		ZVertexBuffer* CreateVertexBuffer(DRAW_MODE eDrawMode);
 		ZVertexBuffer* CreateVertexBuffer();
 		
 		void DrawVertexBuffer(ZVertexBuffer* pkBuffer);
@@ -470,7 +464,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		//basic draw funktions
 		void ClearGeometry();
 		void DrawGeometry();
-		void DrawGeometry(const int& iDrawMode);
+		void DrawGeometry(DRAW_MODE eDrawMode);
 		
 		//VERTEX 3 STUFF
 		

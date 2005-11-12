@@ -5,7 +5,7 @@ ZVertexBuffer::ZVertexBuffer()
 {
 	m_iBufferID	= 0;
 	m_iIndexBufferID = 0;
-	m_iDrawMode = TRIANGLES_MODE;
+	m_eDrawMode = TRIANGLES_MODE;
 
 	m_b2DVertexPointer =			false;
 	m_bVertexPointer =			false;

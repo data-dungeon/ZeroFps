@@ -1,49 +1,47 @@
 #include "zshadersystem.h"
 #include "glslprogram.h"
 #include "res_texture.h"
+#include "zvertexbuffer.h"
 
 ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 {
-	m_iPushPop = 				0;
+	m_iPushPop 							=	0;	
 	
-	m_iMaterialReloads = 	0;
-	m_iMaterialBinds = 		0;
-	m_iSavedReloads = 		0;
-	m_iGLupdates =				0;
-	m_iTotalVertises = 		0;
-	m_iRenderedVBOs =			0;
+	//statistics
+	m_iMaterialReloads 				=	0;
+	m_iMaterialBinds 					=	0;
+	m_iSavedReloads 					=	0;
+	m_iGLupdates 						=	0;
+	m_iTotalVertises 					=	0;
+	m_iRenderedVBOs 					=	0;
 	
-	m_bCopyedData =			false;
+	m_bCopyedData 						=	false;
 	
-	m_bSupportFBO = 			false;
+	m_bSupportFBO 						=	false;	
+	m_bSupportVertexProgram 		=	false;
+	m_bSupportFragmentProgram 		= 	false;
 	
-	m_bSupportVertexProgram = 		false;
-	m_bSupportFragmentProgram = 	false;
-	m_iCurrentVertexProgram = 		-1;
-	m_iCurrentFragmentProgram = 	-1;
+	m_iCurrentVertexProgram 		=	-1;
+	m_iCurrentFragmentProgram 		= 	-1;	
+	m_bSupportGLSLProgram 			=	false;
+	m_iCurrentGLSLProgramID 		=	0;
+	m_bForceDisableGLSL				=	false;
+	m_bSupportVertexBuffers 		=	false;	
+	m_pkDefaultGLSLProgram			=	NULL;
+	m_bUseDefaultGLSLProgram 		= 	false;
 	
-	//m_bUseGLSL						=	false;
-	m_bSupportGLSLProgram = 		false;
-	m_iCurrentGLSLProgramID = 		0;
-	m_bForceDisableGLSL	=			false;
+	m_bOcclusion 						=	false;
+	m_iOcQuery 							=	0;
 	
-	m_bOcclusion = 					false;
-	m_iOcQuery =						0;
-	
-	m_bFogSetting = 					true;
-	
-	/*
-	m_fRedGamma							= 1.0;
-	m_fGreenGamma						= 1.0;
-	m_fBlueGamma						= 1.0;
-	*/
+	m_bFogSetting 						=	true;	
+	m_eDrawMode							=	TRIANGLES_MODE;
+	m_iGLDrawMode						=	GL_TRIANGLES;
 
 	m_kEyePosition						=	Vector3(0,0,0);
 	m_iShadowmapWidth					=	1024;
 	m_iShadowmapHeight				=	1024;
 		
 	m_fExposure							= 1.0;
-	//m_bUseHDR							= false;
 	m_bSupportHDR						= false;
 		
 	m_aiCurrentTextures[0]			= 0;
@@ -51,35 +49,22 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_aiCurrentTextures[2]			= 0;
 	m_aiCurrentTextures[3]			= 0;
 	
-		
-	m_bSupportVertexBuffers =		false;
-	
-	m_pkDefaultGLSLProgram	=		NULL;
-	m_bUseDefaultGLSLProgram = 	false;
-	
-	//register console/ini variables (this will also load the variable if it exist in the ini file
-	//RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
-	//RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
-	//RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
-	//RegisterVariable("r_useglsl",	&m_bUseGLSL,		CSYS_BOOL);	
-	//RegisterVariable("r_usehdr",	&m_bUseHDR,			CSYS_BOOL);	
-	
-	
-	//register console commands
-	Register_Cmd("setgamma",FID_SETGAMMA);		
-	
-	m_kbUseGLSL.Register(this, "r_useglsl","0");
-	m_kbUseHDR.Register(this, "r_usehdr",	"0");
-	m_kfRedGamma.Register(this, "r_gammar", "1");
-	m_kfGreenGamma.Register(this, "r_gammag", "1");
-	m_kfBlueGamma.Register(this, "r_gammab", "1");
-
 	//force settings
 	m_iForceColorMask = 	FORCE_DEFAULT;
 	m_iForceAlphaTest =	FORCE_DEFAULT;
 	m_iForceLighting	=	LIGHT_MATERIAL;
 	m_bDisableTU3 		=	false;
 	m_iForceBlend		=	BLEND_MATERIAL;
+		
+	
+	//register console commands
+	Register_Cmd("setgamma",FID_SETGAMMA);		
+	
+	m_kbUseGLSL.Register(this, "r_useglsl","1");
+	m_kbUseHDR.Register(this, "r_usehdr",	"1");
+	m_kfRedGamma.Register(this, "r_gammar", "1");
+	m_kfGreenGamma.Register(this, "r_gammag", "1");
+	m_kfBlueGamma.Register(this, "r_gammab", "1");
 	
 	//reset all pointers
 	ResetPointers();
@@ -1026,9 +1011,9 @@ void ZShaderSystem::ResetPointers()
 	m_bColorPointer = 			false;	
 }
 
-void ZShaderSystem::SetPointer(int iType,void* pkPointer)
+void ZShaderSystem::SetPointer(POINTER_TYPE eType,void* pkPointer)
 {
-	switch(iType)
+	switch(eType)
 	{
 		case VERTEX2D_POINTER:
 			m_pk2DVertexPointer = (Vector2*)pkPointer;
@@ -1071,47 +1056,49 @@ void ZShaderSystem::SetPointer(int iType,void* pkPointer)
 }
 
 
-void ZShaderSystem::SetDrawMode(const int& iDrawMode)
+void ZShaderSystem::SetDrawMode(DRAW_MODE eDrawMode)
 {
-	switch(iDrawMode)
+	m_eDrawMode = eDrawMode;
+
+	switch(eDrawMode)
 	{
 		case POINTS_MODE:
-			m_iDrawMode = GL_POINTS;
+			m_iGLDrawMode = GL_POINTS;
 			break;
 		case LINES_MODE:
-			m_iDrawMode = GL_LINES;
+			m_iGLDrawMode = GL_LINES;
 			break;
 		case LINESTRIP_MODE:
-			m_iDrawMode = GL_LINE_STRIP;
+			m_iGLDrawMode = GL_LINE_STRIP;
 			break;		
 		case LINELOOP_MODE:
-			m_iDrawMode = GL_LINE_LOOP;
+			m_iGLDrawMode = GL_LINE_LOOP;
 			break;
 		case TRIANGLES_MODE:
-			m_iDrawMode = GL_TRIANGLES;
+			m_iGLDrawMode = GL_TRIANGLES;
 			break;
 		case TRIANGLESTRIP_MODE:
-			m_iDrawMode = GL_TRIANGLE_STRIP;
+			m_iGLDrawMode = GL_TRIANGLE_STRIP;
 			break;
 		case TRIANGLEFAN_MODE:
-			m_iDrawMode = GL_TRIANGLE_FAN;
+			m_iGLDrawMode = GL_TRIANGLE_FAN;
 			break;
 		case QUADS_MODE:
-			m_iDrawMode = GL_QUADS;
+			m_iGLDrawMode = GL_QUADS;
 			break;
 		case QUADSTRIP_MODE:
-			m_iDrawMode = GL_QUAD_STRIP;
+			m_iGLDrawMode = GL_QUAD_STRIP;
 			break;
 		case POLYGON_MODE:
-			m_iDrawMode = GL_POLYGON;
+			m_iGLDrawMode = GL_POLYGON;
 			break;	
 	}
 
 }
 
-void ZShaderSystem::DrawArray(const int& iDrawMode)
+void ZShaderSystem::DrawArray(DRAW_MODE eDrawMode)
 {	
-	SetDrawMode(iDrawMode);
+	SetDrawMode(eDrawMode);
 	DrawArray();
 }
 
@@ -1147,12 +1134,12 @@ void ZShaderSystem::DrawArray()
 		if(m_bIndexPointer)
 		{
 			m_iTotalVertises += m_iNrOfIndexes;
-			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
+			glDrawElements(m_iGLDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 		}
 		else
 		{			
 			m_iTotalVertises += m_iNrOfVertexs;
-			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
+			glDrawArrays(m_iGLDrawMode,0,m_iNrOfVertexs);
 		}
 	}
 	else
@@ -1171,12 +1158,12 @@ void ZShaderSystem::DrawArray()
 			if(m_bIndexPointer)
 			{
 				m_iTotalVertises += m_iNrOfIndexes;
-				glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
+				glDrawElements(m_iGLDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 			}
 			else
 			{
 				m_iTotalVertises += m_iNrOfVertexs;
-				glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
+				glDrawArrays(m_iGLDrawMode,0,m_iNrOfVertexs);
 			}	
 		}
 	}
@@ -1246,7 +1233,7 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
 	SetNrOfVertexs(pkBuffer->m_iNrOfVertexs);	
 	SetNrOfIndexes(pkBuffer->m_iNrOfIndexes);	
 			
-  	DrawArray(pkBuffer->m_iDrawMode);
+  	DrawArray(pkBuffer->m_eDrawMode);
  	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 	
@@ -1254,9 +1241,9 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
 	m_iRenderedVBOs++;
 }
 
-void ZShaderSystem::DrawGeometry(const int& iDrawMode)
+void ZShaderSystem::DrawGeometry(DRAW_MODE eDrawMode)
 {	
-	SetDrawMode(iDrawMode);
+	SetDrawMode(eDrawMode);
 	DrawGeometry();
 }
 
@@ -1915,9 +1902,9 @@ void ZShaderSystem::MatrixMode(const int& iMode)
 	}
 }
 
-ZVertexBuffer* ZShaderSystem::CreateVertexBuffer(const int& iDrawMode)
+ZVertexBuffer* ZShaderSystem::CreateVertexBuffer(DRAW_MODE eDrawMode)
 {
-	SetDrawMode(iDrawMode);
+	SetDrawMode(eDrawMode);
 	return CreateVertexBuffer();
 }
 
@@ -2050,7 +2037,7 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 			
 		
 	//set drawmode
-	pkNewBuffer->m_iDrawMode = m_iDrawMode;
+	pkNewBuffer->m_eDrawMode = m_eDrawMode;
 	
 	//set nr of vertiess
 	pkNewBuffer->m_iNrOfVertexs = m_iNrOfVertexs;

@@ -9,7 +9,7 @@ class RENDER_API ZVertexBuffer
 	private:
 		unsigned int	m_iBufferID;
 		unsigned int	m_iIndexBufferID;
-		int				m_iDrawMode;		
+		DRAW_MODE		m_eDrawMode;		
 				
 		int				m_iNrOfVertexs;
 		int				m_iNrOfIndexes;		

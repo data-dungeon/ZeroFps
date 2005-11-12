@@ -116,42 +116,25 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bSoloMode					=	true;
 	m_bPlaceObjectsOnGround	=	false;
 	m_bIsEditor					=	true;
-   //strMasterSmiley			=	"Vim";
 	m_iSelectFileState		= 	NONE;
 	m_pkPreviewEntity			= 	NULL;
 	m_bRemoteEditing			=	false;
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
 	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
-	//m_bPlaneMovement			=	true;	
 	m_CamSpeedScale			=  1.0;
 	m_bLockCreate				=	false;	
-	//m_bRotatingSun				=	false;
 
-	strcpy(szCoolName , "Guldfisk");	
-
-	int olle = 2;
 
 	// Register Variables
 	k_LoginName.Register(this, "mynajsloginname", "ostlins", "set defualt name used to login");
-
-	//RegisterVariable("ap_coolname",				&strMasterSmiley,			CSYS_STRING);	
-
-	//m_strLoginName = "madviewclient";
-   //m_strLoginPW = "topsecret";
-
 	m_kstrLoginName.Register(this, "ap_loginname","madviewclient");
 	m_kstrLoginPW.Register(this, "ap_loginpw","topsecret");
 	m_kbPlaneMovement.Register(this, "ap_planemovement","1");
 	m_kbRotatingSun.Register(this, "ap_rotatesun","0");
 
-   //RegisterVariable("ap_loginname", 		&m_strLoginName, CSYS_STRING);
-   //RegisterVariable("ap_loginpw", 			&m_strLoginPW, CSYS_STRING);
-   //RegisterVariable("ap_planemovement", 	&m_bPlaneMovement, CSYS_BOOL);
-   //RegisterVariable("ap_rotatesun", 		&m_bRotatingSun, CSYS_BOOL);
 	
 	// Register Commands
-
 	Register_Cmd("recreate",	FID_RECREATE);		
 	Register_Cmd("new",			FID_NEW);		
 	Register_Cmd("load",			FID_LOAD);		

@@ -723,7 +723,7 @@ void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 	m_pkShader->ClearGeometry();	
 	for(int i=0; i<GetNumVertices(); i++) 
 	{	
-		m_pkShader->AddLineV(pkVertex[i],pkVertex[i]+pkNormals[i] * 0.2);
+		m_pkShader->AddLineV(pkVertex[i],pkVertex[i]+pkNormals[i].Unit() * 0.2);
 	}
 
 	m_pkShader->BindMaterial(pkLineMaterial);

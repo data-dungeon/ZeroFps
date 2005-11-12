@@ -14,13 +14,6 @@ class Camera;
 class Entity;
 
 
-
-
-
-
-
-//const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
-
 /**	\brief	Da ZeroEd
 		\ingroup ZeroEd
 */ 
@@ -109,9 +102,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		};
 
 
-		//wierd stuff
-		char		szCoolName[256];
-		//string	strMasterSmiley;
 
 		// zone and object edit
 		bool		m_bPlaceObjectsOnGround;
@@ -139,8 +129,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		float	m_fObjectMarkerDistance;
 		
 		//edit sun
-		bool 			m_bEditSun;
-		//bool			m_bRotatingSun;
+		bool 		m_bEditSun;
 		ConVar	m_kbRotatingSun;
 
 		//edit stuff
@@ -157,7 +146,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		float 	m_CamMoveSpeed;					// Std speed for edit cam, depends on edit mode.				
 		float 	m_CamSpeedScale;					// Scales the speed of the edit cam cnd can be changed by the user.
 		string	m_strActiveViewPort;				// Name of active view port
-		//bool		m_bPlaneMovement;
 		ConVar	m_kbPlaneMovement;
 
 		//zone data
@@ -201,10 +189,13 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		//network
 		vector<ZoneData>			m_kNetworkZones;
-		//string		m_strLoginName, m_strLoginPW;
 								
 		ConVar m_kstrLoginName;
 		ConVar m_kstrLoginPW;
+
+		ConVar		k_LoginName;
+		ConFunction g_kFuncJiddra;
+
 
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
@@ -298,8 +289,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		vector<HMSelectVertex> GetAllSelectedHMVertex();
 
 	public:
-		ConVar		k_LoginName;
-		ConFunction g_kFuncJiddra;
 
 		bool SetViewPort(const char* szVpName);
 

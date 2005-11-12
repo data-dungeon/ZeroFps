@@ -5,6 +5,7 @@
 #include "../engine_systems_x.h"
 #include "../mad/mad_core.h"
 #include "../../render/zocculusionquery.h"
+#include "../../render/zvertexbuffer.h"
 
 using namespace std;
 

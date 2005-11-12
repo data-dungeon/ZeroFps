@@ -1,5 +1,5 @@
 #include "zshadow.h"
-
+#include "../../render/zvertexbuffer.h"
 
 //------- ShadowMesh
 
