@@ -921,20 +921,6 @@ void ZFSystem::Config_Save(string strFileName)
 		// Write Header to config
 		fprintf(fp,"\n\n[%s]\n", it->second.m_strName.c_str());
 
-		// Save OLD
-		/*for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
-		{
-			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
-			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
-			
-			// Check so this variable is owned by the current section.
-			if(m_kCmdDataList[i].m_pkObject == it->second.pkObject) 
-			{
-				strVar = GetVarValue(&m_kCmdDataList[i]);
-				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
-			}
-		}*/
-
 		for(unsigned int i=0; i<m_kConCommands.size(); i++)
 		{	
 			if(!m_kConCommands[i]->IsCommand())
@@ -950,6 +936,21 @@ void ZFSystem::Config_Save(string strFileName)
 		}
 	}
 
+	// Write Globals
+	fprintf(fp,"\n\n[%s]\n", "Global");
+	for(unsigned int i=0; i<m_kConCommands.size(); i++)
+	{	
+		if(!m_kConCommands[i]->IsCommand())
+		{
+			ConVar* pkConVar = dynamic_cast<ConVar*>(m_kConCommands[i]);
+			if(pkConVar->GetSubsystem() == NULL) 
+			{
+				string strVarName  = pkConVar->GetName();
+				string strVarValue = pkConVar->GetString();
+				fprintf(fp,"%s=%s\n",strVarName.c_str(), strVarValue.c_str());
+			}
+		}
+	}
 
 	fclose(fp);
 }
@@ -967,23 +968,6 @@ void ZFSystem::Config_Load(string strFileName)
 
 	for(map<string,NameObject>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
 	{
-		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
-
-		/*
-		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
-		{
-			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
-			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
-			
-			pkVal = m_kIni.GetValue(it->second.m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
-			if(pkVal) 
-			{
-				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
-				//cout << " " << pkVal << endl;
-				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
-			}
-		}
-		*/
 		for(unsigned int i=0; i<m_kConCommands.size(); i++)
 		{	
 			if(!m_kConCommands[i]->IsCommand())
@@ -997,6 +981,18 @@ void ZFSystem::Config_Load(string strFileName)
 		}
 	}	
 
+	// Load globals
+	for(unsigned int i=0; i<m_kConCommands.size(); i++)
+	{	
+		if(!m_kConCommands[i]->IsCommand())
+		{
+			ConVar* pkConVar = dynamic_cast<ConVar*>(m_kConCommands[i]);
+			string strVarName  = pkConVar->GetName();
+			pkVal = m_kIni.GetValue("Global", strVarName.c_str());
+			if(pkVal) 
+				pkConVar->SetString(pkVal);
+		}
+	}
 }
 
 void ZFSystem::Printf(const char* szMessageFmt,...)
