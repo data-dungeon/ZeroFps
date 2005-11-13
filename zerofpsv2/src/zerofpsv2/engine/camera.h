@@ -140,8 +140,9 @@ class ENGINE_API Camera : public I_Camera
 		int				m_iFSSTextureWidth;
 		int				m_iFSSTextureHeight;
 		
-		//shadow shaders
+		//shadow shaders		
 		ZFResourceHandle* m_pkDefaultShadowmapShader;
+		ZFResourceHandle* m_pkDefaultShadowmapShaderPPL;
 		ZFResourceHandle* m_pkDefaultFastShadowmapShader;
 		
 		//bloom

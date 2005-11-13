@@ -69,7 +69,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	
 	//setup default shaders
 	m_pkDefaultShadowmapShader = new ZFResourceHandle;
-	m_pkDefaultShadowmapShader->SetRes("shadowmap.vert#shadowmap.frag.glsl"); 				
+ 	m_pkDefaultShadowmapShader->SetRes("shadowmap.vert#shadowmap.frag.glsl"); 				
+	m_pkDefaultShadowmapShaderPPL= new ZFResourceHandle;
+ 	m_pkDefaultShadowmapShaderPPL->SetRes("pplshadowmap.vert#pplshadowmap.frag.glsl"); 				
 	m_pkDefaultFastShadowmapShader = new ZFResourceHandle;
 	m_pkDefaultFastShadowmapShader->SetRes("#fastshadowmap.frag.glsl");
  					
@@ -218,6 +220,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 Camera::~Camera()
 {
+	if(m_pkDefaultShadowmapShaderPPL)
+		delete m_pkDefaultShadowmapShaderPPL;			
 	if(m_pkDefaultShadowmapShader)
 		delete m_pkDefaultShadowmapShader;		
 	if(m_pkDefaultFastShadowmapShader)
@@ -1094,6 +1098,9 @@ void Camera::DrawWorld()
  			//only darken
 			if(iShadowMode == 2)			
 				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultFastShadowmapShader);
+			
+			if(iShadowMode == 3)			
+				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultShadowmapShaderPPL);						
 			
 			
 			//draw shadowed scene
