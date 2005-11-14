@@ -62,7 +62,7 @@ bool GLSLProgram::Load(string  strFile)
 		//no shader was loaded
 		if(iVSID == NO_GLSLPROGRAM && iFSID == NO_GLSLPROGRAM)
 		{
-			cout<<"WARNING: glslprogram not created, no shader loaded"<<endl;
+			cerr<<"WARNING: glslprogram not created, no shader loaded"<<endl;
 			return false;	
 		}
 			
@@ -76,7 +76,7 @@ bool GLSLProgram::Load(string  strFile)
 			glAttachObjectARB(m_iProgramIDs[i], iVSID);
 			if(glGetError() != GL_NO_ERROR)
 			{
-				cout<<"error while attaching vertex program: "<<strVShader<<endl;
+				cerr<<"error while attaching vertex program: "<<strVShader<<endl;
 			}
 		}
 		
@@ -86,7 +86,7 @@ bool GLSLProgram::Load(string  strFile)
 			glAttachObjectARB(m_iProgramIDs[i], iFSID);
 			if(glGetError() != GL_NO_ERROR)
 			{
-				cout<<"error while attaching fragment program: "<<iFSID<<endl;
+				cerr<<"error while attaching fragment program: "<<iFSID<<endl;
 			}		
 		}
 	
@@ -97,7 +97,7 @@ bool GLSLProgram::Load(string  strFile)
 		glGetObjectParameterivARB(m_iProgramIDs[i],GL_OBJECT_LINK_STATUS_ARB,&iRet);
 		if(iRet == GL_FALSE)
 		{	
-			cout<<"ERROR: While linking GLSL program: "<<strFile<<endl;		
+			cerr<<"ERROR: While linking GLSL program: "<<strFile<<endl;		
 				
 			//get log
 			static char log[1024];
@@ -105,7 +105,7 @@ bool GLSLProgram::Load(string  strFile)
 			glGetInfoLogARB(m_iProgramIDs[i],1024,&iLogSize,log);
 			
 			if(iLogSize != 0)
-				cout<<log<<endl;			
+				cerr<<log<<endl;			
 		
 			glDeleteObjectARB(m_iProgramIDs[i]);
 			m_iProgramIDs[i] = NO_GLSLPROGRAM;	
@@ -159,7 +159,7 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 	glGetObjectParameterivARB(iShaderID,GL_OBJECT_COMPILE_STATUS_ARB,&iRet);
 	if(iRet == GL_FALSE)
 	{	
-		cout<<"ERROR: While compiling shader "<<strFile<<endl;			
+		cerr<<"ERROR: While compiling shader "<<strFile<<endl;			
 		
 		//get log
 		static char log[1024];
@@ -167,7 +167,7 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 		glGetInfoLogARB(iShaderID,1024,&iLogSize,log);
 		
 		if(iLogSize != 0)
-			cout<<log<<endl;
+			cerr<<log<<endl;
  	
 		glDeleteObjectARB(iShaderID);
 		return NO_GLSLPROGRAM; 	
@@ -184,7 +184,7 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile,int iL
 	
 	if(!kFile.Open(strGLSLdir+strFile,0,false))
 	{	
-		cout<<"ERROR: could not open shader "<<strFile<<endl;
+		cerr<<"ERROR: could not open shader "<<strFile<<endl;
 		return false;
 	}
 		
@@ -273,7 +273,7 @@ bool GLSLProgram::LoadDataFromFile(string* pkString,const string& strFile,int iL
 	{		
  		if(!LoadDataFromFile(pkString,kIncludes[i],iLights))
  		{
- 			cout<<"ERROR while including: "<<kIncludes[i]<<"|"<<endl;
+ 			cerr<<"ERROR while including: "<<kIncludes[i]<<"|"<<endl;
  		}
 	}
 	
