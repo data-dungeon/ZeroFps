@@ -46,7 +46,7 @@ ZSSLight::ZSSLight()
 	
 	//RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
 	m_kiNrOfLights.Register(this, "r_maxlights", "8", "max number of lights used at the same time");
-	m_kfMinIntensity.Register(this, "r_minlightintensity", "0.3", "minimum intensity before disabling light");
+	m_kfMinIntensity.Register(this, "r_minlightintensity", "0.5", "minimum intensity before disabling light");
 	
 	m_kSun.kRot = Vector3(2,4,1);
 	m_kSun.kSpecular=Vector4(0.8,0.8,0.8,0);
@@ -381,7 +381,8 @@ void ZSSLight::EnableLight(LightSource* pkLight,int iGlLight)
 	{
 		case DIRECTIONAL_LIGHT:
 			temp=pkLight->kRot;  			
-			temp.w = 0;			
+			temp.w = 0;		
+			
 			glLightfv(light,GL_POSITION,(float*)&temp);								//		&temp[0]		
 			
 			break;

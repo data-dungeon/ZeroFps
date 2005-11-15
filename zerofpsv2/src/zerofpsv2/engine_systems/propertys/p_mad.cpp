@@ -223,7 +223,7 @@ void P_Mad::Update()
 				if(m_kOCTests[m_pkZeroFps->GetCam()].Visible(kMin,kMax))
 				{
 					//update lighting
-					m_pkLight->Update(&m_kLightProfile,kPos);						
+					m_pkLight->Update(&m_kLightProfile,kPos,m_pkEntity->GetRadius());						
 				
 					m_pkZShaderSystem->MatrixPush();																					
 						m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);
@@ -242,7 +242,7 @@ void P_Mad::Update()
 			else		
 			{
 				//update lighting
-				m_pkLight->Update(&m_kLightProfile,kPos);						
+				m_pkLight->Update(&m_kLightProfile,kPos,m_pkEntity->GetRadius());						
 			
 				m_pkZShaderSystem->MatrixPush();																					
 					m_pkZShaderSystem->MatrixTranslate(kPos + m_kOffset);

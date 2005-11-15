@@ -36,7 +36,13 @@ void P_ShadowBlob::Update()
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_NOSHADOWLAST)
 		return;
 
-
+	//frustum culling
+// 	if(!m_pkZeroFps->GetCam()->GetFrustum()->PointInFrustum(m_pkEntity->GetIWorldPosV()) )
+// 		return;			
+	
+	//distance culling
+	if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetIWorldPosV() ) > m_pkZeroFps->GetViewDistance()*0.5 )
+		return;
 	
 	
 	

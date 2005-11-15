@@ -73,7 +73,7 @@ void P_WaterRender::Update()
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(kMin,kMax))
 		return;			
 	
-	if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) - m_kSize.Length() > m_pkZeroFps->GetViewDistance()*2)
+	if(m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(kPos) - m_kSize.Length() > m_pkZeroFps->GetViewDistance())
 		return;
 
 		
