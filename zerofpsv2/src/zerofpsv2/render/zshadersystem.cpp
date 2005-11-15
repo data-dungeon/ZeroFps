@@ -687,10 +687,7 @@ void ZShaderSystem::SetupPass(int iPass)
 	SetupVertexProgram(pkSettings);
 
 	//setup fragment program
-	SetupFragmentProgram(pkSettings);
-	
-	//setup glsl program
-	SetupGLSLProgram(pkSettings);
+	SetupFragmentProgram(pkSettings);	
 	
 }
 
@@ -1115,18 +1112,21 @@ void ZShaderSystem::DrawArray()
 	//do software vertex transformations
 	VertexTransform();
 	
-	//update shader parameters
-	UpdateFragmentProgramParameters();
-	UpdateVertexProgramParameters();
+	//update ARB shader parameters
+	//UpdateFragmentProgramParameters();
+	//UpdateVertexProgramParameters();
 	
 	//we have to reset opengls data pointers
 	SetupArrayClientStates();
 	
 	if(m_pkCurrentMaterial->GetNrOfPasses() == 1)
-	{		
+	{						
 		SetupTUClientStates(0);
-	
-		//update glsl program parameter information
+			
+		//setup glsl program
+		SetupGLSLProgram(m_pkCurrentMaterial->GetPass(0) );
+		
+		//update glsl program parameter information if theres any glslprogram bound
 		if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
 			UpdateGLSLProgramParameters(0);
 		
@@ -1146,11 +1146,17 @@ void ZShaderSystem::DrawArray()
 	{	
 		//go trough all passes of material
 		for(int i=0;i<m_pkCurrentMaterial->GetNrOfPasses();i++)
-		{
+		{					
+			//load pass settings
 			SetupPass(i);
+						
 			SetupTUClientStates(i);
 	
-			//update glsl program parameter information
+			
+			//setup glsl program
+			SetupGLSLProgram(m_pkCurrentMaterial->GetPass(i));
+			
+			//update glsl program parameter information if theres any glslprogram bound
 			if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
 				UpdateGLSLProgramParameters(i);
 			
@@ -1720,12 +1726,10 @@ void ZShaderSystem::UpdateVertexProgramParameters()
 
 void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 {
-	static GLenum iProgram;
-		
 	if(!m_bSupportGLSLProgram)
 		return;
 
-	iProgram = 0;	
+	GLenum iProgram = 0;	
 		
 	if(!m_bForceDisableGLSL)
 	{
@@ -1740,9 +1744,11 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
  	if(iProgram == m_iCurrentGLSLProgramID)
  		return;
 	
-	glGetError(); 		
  		
 //   	cout<<"bidning "<<iProgram<<"  "<<m_pkLight->GetNrOfActiveLights()<<endl;
+ 		
+ 	//clear gl errors before trying to bind the shader
+	glGetError(); 		 		
  		
 	//bind program
 	glUseProgramObjectARB(iProgram);			
@@ -1754,10 +1760,7 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 	{
 		case GL_INVALID_VALUE: cout<<"glUseProgramObjectARB: ivalid value"<<endl;break;
 		case GL_INVALID_OPERATION: cout<<"glUseProgramObjectARB: ivalid operation"<<endl;break;
-	}	
-	
-	
-	
+	}				
 	
 }
 

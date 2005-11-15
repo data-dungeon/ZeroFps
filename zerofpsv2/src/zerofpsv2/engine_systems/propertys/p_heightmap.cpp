@@ -81,7 +81,7 @@ void P_Heightmap::Update()
 									kPos+Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0)))
 		{
 			//update light					
-		 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+		 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV(),GetEntity()->GetRadius());					
 			
 			DrawTexturedHeightmap();
 			
@@ -95,7 +95,7 @@ void P_Heightmap::Update()
 	else		
 	{
 		//update light					
-	 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+	 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV(),GetEntity()->GetRadius());					
 	
 		DrawTexturedHeightmap();		
 	}	

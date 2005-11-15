@@ -46,6 +46,7 @@ ZSSLight::ZSSLight()
 	
 	//RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
 	m_kiNrOfLights.Register(this, "r_maxlights", "8", "max number of lights used at the same time");
+	m_kfMinIntensity.Register(this, "r_minlightintensity", "0.3", "minimum intensity before disabling light");
 	
 	m_kSun.kRot = Vector3(2,4,1);
 	m_kSun.kSpecular=Vector4(0.8,0.8,0.8,0);
@@ -141,7 +142,7 @@ bool comp(LightSource* x, LightSource* y)
 }
 
 
-void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
+void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos,float fRefRadius )
 {
 	//disable all lights
 	TurnOffAll();
@@ -151,9 +152,9 @@ void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 		return;
 
 
-	//static float fTimeDiff	= 1;
 	bool bUpdate 				= false;
 	float fCurrentTime		= m_pkZeroFps->GetEngineTime();
+	float fMinIntensity		= m_kfMinIntensity.GetFloat();
 
 	if(pkLightProfile->m_iLastVersion != m_iVersion)
 		bUpdate = true;
@@ -169,7 +170,7 @@ void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 	
 		vector<LightSource*> kSorted;
 	
-		//loop trough all lightsources and find wich to view
+		//loop trough all lightsources and find wich to enable
 		int iLights = m_kLights.size();
 		for(int i = 0;i< iLights;i++) 
 		{
@@ -190,18 +191,47 @@ void ZSSLight::Update(LightProfile* pkLightProfile,const Vector3& kRefPos)
 				pkL->fIntensity=999999;
 				pkL->iListPos = i;
 				kSorted.push_back(pkL);
-			} else 
+			}
+			else 
 			{
 				//else add the light if it is bright enough
-				
-				
+								
 				//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
+				
+				
+				//distance to center of object
 				float fDistance = float(kRefPos.DistanceTo(pkL->kPos));
-				//float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
-				float fIntensity = 1 / ( pkL->fConst_Atten + (pkL->fLinear_Atten*fDistance) + (pkL->fQuadratic_Atten*(fDistance*fDistance)) );
-	
-				pkL->fIntensity=fIntensity;
-				pkL->iListPos = i;				
+				//distance to edge of object
+				float fClipDistance = float(Max(0.01,kRefPos.DistanceTo(pkL->kPos) - fRefRadius));
+					
+				
+// 				float fIntensity = Min(1.0f , 1 / ( pkL->fConst_Atten + (pkL->fLinear_Atten*fDistance) + (pkL->fQuadratic_Atten*(fDistance*fDistance)) ));
+				//intensity calculated to the center of the object				
+ 				float fIntensity = 1.0 / ( pkL->fConst_Atten + (pkL->fLinear_Atten*fDistance) + (pkL->fQuadratic_Atten*(fDistance*fDistance)) );
+ 				//intensity calculated to the edge of the object
+ 				float fClipIntensity = 1.0 / ( pkL->fConst_Atten + (pkL->fLinear_Atten*fDistance) + (pkL->fQuadratic_Atten*(fClipDistance*fClipDistance)) );
+				
+				//color values
+				float r = pkL->kDiffuse.x + pkL->kAmbient.x + pkL->kSpecular.x;
+				float g = pkL->kDiffuse.y + pkL->kAmbient.y + pkL->kSpecular.y;
+				float b = pkL->kDiffuse.z + pkL->kAmbient.z + pkL->kSpecular.z;				
+								
+				//use the highest color value as referens								
+				float fColor = Max(Max(r,g),b);
+				
+				//apply color to intensity
+ 				fClipIntensity *= fColor;
+ 				fIntensity *= fColor;
+
+				//save intensity for future sorting
+ 				pkL->fIntensity=fIntensity; 			
+ 				//save position in light vector for fast access in the future	
+				pkL->iListPos = i;								
+ 				 				 				
+ 				//check if intensity to the edge of the object is lower then the min treshold value
+ 				if(fClipIntensity < fMinIntensity)
+ 					continue;
+			
 				kSorted.push_back(pkL);
 			}
 		}

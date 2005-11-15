@@ -3,6 +3,7 @@
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
 #include "../script_interfaces/si_objectmanager.h" 
+#include "../../render/zvertexbuffer.h"
 
 using namespace ObjectManagerLua;
  
@@ -198,7 +199,7 @@ void P_Mad::Update()
 				}
 			}
 			
-			
+
 			if(m_pkZShaderSystem->SupportOcculusion() && 
 				m_pkZeroFps->GetOcculusionCulling() &&
 				m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED )
