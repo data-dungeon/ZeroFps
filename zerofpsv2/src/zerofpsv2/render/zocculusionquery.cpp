@@ -128,10 +128,12 @@ void ZOcculusionTest::DrawOcculusionBox(const Vector3& kMin,const Vector3& kMax)
 	kVertises[23].Set(kMax.x,kMin.y,kMax.z);	
 
 
-	//disable color writes 
+	//disable color writes 	
+	FORCE_SETTING iCM = m_pkZShaderSystem->GetForceColorMask();
 	m_pkZShaderSystem->ForceColorMask(FORCE_DISABLE);		
 
 	//disable all glsl stuff
+	bool bFC = m_pkZShaderSystem->GetForceDisableGLSL();
 	m_pkZShaderSystem->SetForceDisableGLSL(true);	
 
 	//set materail
@@ -143,11 +145,11 @@ void ZOcculusionTest::DrawOcculusionBox(const Vector3& kMin,const Vector3& kMax)
 		
 	m_pkZShaderSystem->DrawArray(QUADS_MODE);
 	
-	//reenable all glsl stuff
-	m_pkZShaderSystem->SetForceDisableGLSL(false);
+	//return glsl setting
+	m_pkZShaderSystem->SetForceDisableGLSL(bFC);
 
-	//disable color writes 
-	m_pkZShaderSystem->ForceColorMask(FORCE_DEFAULT);		
+	//return colormask setting
+	m_pkZShaderSystem->ForceColorMask(iCM);		
 
 }
 

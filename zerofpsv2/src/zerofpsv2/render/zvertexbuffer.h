@@ -23,7 +23,9 @@ class RENDER_API ZVertexBuffer
 		bool		m_bTexturePointer2;		
 		bool		m_bTexturePointer3;		
 		bool		m_bIndexPointer;
-		bool		m_bColorPointer;		
+		bool		m_bColorPointer;
+		bool		m_bTangentPointer;
+		bool		m_bBiTangentPointer;
 		
 		unsigned int		m_i2DVertexPointer;
 		unsigned int		m_iVertexPointer;
@@ -32,8 +34,9 @@ class RENDER_API ZVertexBuffer
 		unsigned int		m_iTexturePointer1;		
 		unsigned int		m_iTexturePointer2;		
 		unsigned int		m_iTexturePointer3;		
-		unsigned int		m_iColorPointer;			
-		
+		unsigned int		m_iColorPointer;					
+		unsigned int		m_iTangentPointer;			
+		unsigned int		m_iBiTangentPointer;			
 
 		
 	public:

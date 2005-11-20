@@ -984,6 +984,8 @@ void ZShaderSystem::ResetPointers()
 	m_pkTexturePointer3 = 		NULL;
 	m_pkIndexPointer = 			NULL;
 	m_pkColorPointer = 			NULL;
+	m_pkTangentPointer =			NULL;
+	m_pkBiTangentPointer =		NULL;
 	
 	//reset bakup buffert pointers
 	m_pkBakup2DVertexPointer =	NULL;
@@ -995,6 +997,8 @@ void ZShaderSystem::ResetPointers()
 	m_pkBakupTexturePointer3 = NULL;
 	m_pkBakupIndexPointer = 	NULL;
 	m_pkBakupColorPointer = 	NULL;	
+	m_pkBakupTangentPointer =	NULL;
+	m_pkBakupBiTangentPointer =NULL;
 	
 	
 	m_b2DVertexPointer =			false;
@@ -1006,6 +1010,8 @@ void ZShaderSystem::ResetPointers()
 	m_bTexturePointer3 = 		false;
 	m_bIndexPointer = 			false;
 	m_bColorPointer = 			false;	
+	m_bTangentPointer = 			false;
+	m_bBiTangentPointer =		false;
 }
 
 void ZShaderSystem::SetPointer(POINTER_TYPE eType,void* pkPointer)
@@ -1048,7 +1054,15 @@ void ZShaderSystem::SetPointer(POINTER_TYPE eType,void* pkPointer)
 			m_pkColorPointer = (Vector4*)pkPointer;
 			m_bColorPointer = true;
 			break;
-			
+		case TANGENT_POINTER:
+			m_pkTangentPointer = (Vector3*)pkPointer;
+			m_bTangentPointer = true;
+			break;
+		case BITANGENT_POINTER:
+			m_pkBiTangentPointer = (Vector3*)pkPointer;
+			m_bBiTangentPointer = true;
+			break;
+	
 	}	
 }
 
@@ -1226,6 +1240,11 @@ void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
  		SetPointer(TEXTURE_POINTER3, (void*)pkBuffer->m_iTexturePointer3);	
   	if(pkBuffer->m_bColorPointer)
   		SetPointer(COLOR_POINTER, (void*)pkBuffer->m_iColorPointer);		
+  	if(pkBuffer->m_bTangentPointer)
+  		SetPointer(TANGENT_POINTER, (void*)pkBuffer->m_iTangentPointer);		
+  	if(pkBuffer->m_bBiTangentPointer)
+  		SetPointer(BITANGENT_POINTER, (void*)pkBuffer->m_iBiTangentPointer);		
+
 
 		
  	if(pkBuffer->m_bIndexPointer)
@@ -1276,7 +1295,15 @@ void ZShaderSystem::DrawGeometry()
 	}
 	
 	
-	//normals
+	//tangents
+	if(!m_kTangents.empty())
+		SetPointer(TANGENT_POINTER,&m_kTangents[0]);
+	
+	//bitangents
+	if(!m_kBiTangents.empty())
+		SetPointer(BITANGENT_POINTER,&m_kBiTangents[0]);
+		
+	//colors
 	if(!m_kColors.empty())
 		SetPointer(COLOR_POINTER,&m_kColors[0]);
 	
@@ -1453,6 +1480,8 @@ void ZShaderSystem::CleanCopyedData()
 
 void ZShaderSystem::ClearGeometry()
 {
+	m_kTangents.clear();
+	m_kBiTangents.clear();
 	m_kVerties2D.clear();
 	m_kVerties.clear();
 	m_kNormals.clear();
@@ -1549,6 +1578,20 @@ void ZShaderSystem::AddTriangleUV(const Vector2& kPos1,const Vector2& kPos2,cons
 	m_kTexture[iTU].push_back(kPos1);
 	m_kTexture[iTU].push_back(kPos2);
 	m_kTexture[iTU].push_back(kPos3);
+}
+
+void ZShaderSystem::AddTriangleT(const Vector3& kTangent1,const Vector3& kTangent2,const Vector3& kTangent3)
+{
+	m_kTangents.push_back(kTangent1);
+	m_kTangents.push_back(kTangent2);
+	m_kTangents.push_back(kTangent3);
+}
+
+void ZShaderSystem::AddTriangleBT(const Vector3& kTangent1,const Vector3& kTangent2,const Vector3& kTangent3)
+{
+	m_kBiTangents.push_back(kTangent1);
+	m_kBiTangents.push_back(kTangent2);
+	m_kBiTangents.push_back(kTangent3);
 }
 
 void ZShaderSystem::AddQuadV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3,const Vector3& kPos4)
@@ -1661,6 +1704,28 @@ int ZShaderSystem::GetStencilBits()
 void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 {	
 	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->GetPass(iPass);
+
+	//attribute for tangent lists
+	GLuint iTangentArray = glGetAttribLocationARB(m_iCurrentGLSLProgramID,"g_kTangent");	
+	if(m_bTangentPointer)
+	{
+		glEnableVertexAttribArrayARB(iTangentArray);
+		glVertexAttribPointerARB(iTangentArray,3,GL_FLOAT,GL_FALSE,0,m_pkTangentPointer);
+	}
+	else
+		glDisableVertexAttribArrayARB(iTangentArray);
+	
+	//attribute for bitangent lists
+	GLuint iBiTangentArray= glGetAttribLocationARB(m_iCurrentGLSLProgramID,"g_kBiTangent");
+	if(m_bBiTangentPointer)
+	{
+		glEnableVertexAttribArrayARB(iBiTangentArray);
+		glVertexAttribPointerARB(iBiTangentArray,3,GL_FLOAT,GL_FALSE,0,m_pkBiTangentPointer);
+	}
+	else
+		glDisableVertexAttribArrayARB(iBiTangentArray);	
+	
+
 
 	//time
 	glUniform1fARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_fTime"), (float(SDL_GetTicks()) /1000.0));
@@ -1951,6 +2016,10 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 		iSize += m_iNrOfVertexs*sizeof(Vector2);
 	if(m_bColorPointer)
 		iSize += m_iNrOfVertexs*sizeof(Vector4);
+	if(m_bTangentPointer)
+		iSize += m_iNrOfVertexs*sizeof(Vector3);
+	if(m_bBiTangentPointer)
+		iSize += m_iNrOfVertexs*sizeof(Vector3);
 				
 			
 	//allocate vbo
@@ -2015,7 +2084,21 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 		pkNewBuffer->m_bColorPointer = true;						
 		iPos += m_iNrOfVertexs*sizeof(Vector4);			
 	}		
-
+	if(m_bTangentPointer)
+	{
+		glBufferSubDataARB(GL_ARRAY_BUFFER_ARB,iPos,m_iNrOfVertexs*sizeof(Vector3),m_pkTangentPointer);		
+		pkNewBuffer->m_iTangentPointer = iPos;		
+		pkNewBuffer->m_bTangentPointer = true;						
+		iPos += m_iNrOfVertexs*sizeof(Vector3);			
+	}
+	if(m_bBiTangentPointer)
+	{
+		glBufferSubDataARB(GL_ARRAY_BUFFER_ARB,iPos,m_iNrOfVertexs*sizeof(Vector3),m_pkBiTangentPointer);		
+		pkNewBuffer->m_iBiTangentPointer = iPos;		
+		pkNewBuffer->m_bBiTangentPointer = true;						
+		iPos += m_iNrOfVertexs*sizeof(Vector3);			
+	}	
+	
 	//reset buffer binding
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 

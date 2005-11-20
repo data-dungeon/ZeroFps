@@ -156,7 +156,9 @@ enum RENDER_API POINTER_TYPE
 	TEXTURE_POINTER3,		
 	INDEX_POINTER,	
 	COLOR_POINTER,
-	VERTEX2D_POINTER,	
+	VERTEX2D_POINTER,
+	TANGENT_POINTER,
+	BITANGENT_POINTER,
 };
 
 enum RENDER_API DRAW_MODE
@@ -251,6 +253,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		vector<Vector3>	m_kNormals;
 		vector<Vector2>	m_kTexture[4];
 		vector<Vector4>	m_kColors;
+		vector<Vector3>	m_kTangents;
+		vector<Vector3>	m_kBiTangents;
 		
 		//pointer to geometry data
 		Vector2*			m_pk2DVertexPointer;
@@ -262,6 +266,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		Vector2*			m_pkTexturePointer3;		
 		unsigned int*	m_pkIndexPointer;
 		Vector4*			m_pkColorPointer;		
+		Vector3*			m_pkTangentPointer;
+		Vector3*			m_pkBiTangentPointer;
 		
 		//pointer is set
 		bool			m_b2DVertexPointer;
@@ -272,7 +278,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool			m_bTexturePointer2;		
 		bool			m_bTexturePointer3;		
 		bool			m_bIndexPointer;
-		bool			m_bColorPointer;		
+		bool			m_bColorPointer;
+		bool			m_bTangentPointer;
+		bool			m_bBiTangentPointer;
 		
 		//bakup pointes, used when copying data
 		Vector2*			m_pkBakup2DVertexPointer;
@@ -284,6 +292,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		Vector2*			m_pkBakupTexturePointer3;		
 		unsigned int*	m_pkBakupIndexPointer;
 		Vector4*			m_pkBakupColorPointer;		
+		Vector3*			m_pkBakupTangentPointer;		
+		Vector3*			m_pkBakupBiTangentPointer;		
 		
 		//HDR
 		float			m_fExposure;										///< exposure factor sent to shaders
@@ -435,6 +445,12 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void ForceBlending(int iBlend)						{	m_iForceBlend = iBlend;					}
 		void ForceTU3Disabled(bool bDisableTU3)			{	m_bDisableTU3 = bDisableTU3;			}
 		
+		FORCE_SETTING 	GetForceColorMask()					{	return m_iForceColorMask;				}
+		FORCE_SETTING 	GetForceAlphaTest()					{	return m_iForceAlphaTest;				}
+		int 				GetForceLighting()					{	return m_iForceLighting;				}
+		int 				GetForceBlending()					{	return m_iForceBlend;					}
+		bool 				GetForceTU3Disabled()				{	return m_bDisableTU3;					}
+		
 		//information
 		bool HaveExtension(const string& strExt);
 		int GetStencilBits();
@@ -483,6 +499,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void AddTriangleN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3);
 		void AddTriangleC(const Vector4& kColor1,const Vector4& kColor2,const Vector4& kColor3);
 		void AddTriangleUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const int& iTU=0);			
+		void AddTriangleT(const Vector3& kTangent1,const Vector3& kTangent2,const Vector3& kTangent3);
+		void AddTriangleBT(const Vector3& kTangent1,const Vector3& kTangent2,const Vector3& kTangent3);
 		//quad 4V
 		void AddQuadV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3,const Vector3& kPos4);
 		void AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3,const Vector3& kNormal4);

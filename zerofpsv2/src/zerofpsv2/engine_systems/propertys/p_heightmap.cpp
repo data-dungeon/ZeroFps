@@ -157,6 +157,13 @@ void P_Heightmap::DrawTexturedHeightmap()
 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&((*pkDataArrays)[i]->m_kTextureData[0]));
 			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&((*pkDataArrays)[i]->m_kNormalData[0]));
 			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&((*pkDataArrays)[i]->m_kVertexData[0]));
+			
+// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,&((*pkDataArrays)[i]->m_kTangentData[0]));
+// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER2,&((*pkDataArrays)[i]->m_kBiTangentData[0]));
+			
+			m_pkZShaderSystem->SetPointer(TANGENT_POINTER,&((*pkDataArrays)[i]->m_kTangentData[0]));
+			m_pkZShaderSystem->SetPointer(BITANGENT_POINTER,&((*pkDataArrays)[i]->m_kBiTangentData[0]));
+			
 			m_pkZShaderSystem->SetNrOfVertexs((*pkDataArrays)[i]->m_kVertexData.size());
 			
 			m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);		
@@ -377,6 +384,8 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int iID,bo
 			AddVertex(pkNewArrays,x+iStep,y+iStep,iID);
 		}	
 	}
+	
+	
 }
 
 void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
@@ -400,13 +409,44 @@ void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
 	pkNewArrays->m_kColorData.push_back(kColor);		
 		
 	//UV's
-	pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,y*fTexMod));
+	pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,-y*fTexMod));
 	
 	//normals
-	pkNewArrays->m_kNormalData.push_back(GenerateNormal(x,y));
+	Vector3 kNormal = GenerateNormal(x,y).Unit();;
+// 	kNormal = Vector3(0,1,0);
+	pkNewArrays->m_kNormalData.push_back(kNormal);
+
+
+	
+
+	
+	Vector3 kVertex = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale);
+	Vector3 kVertex2;
+	
+	
+	
+ 	//handle right edge of hmap slightly different, so we dont go outside the dataarray
+ 	if(x == m_iCols-1)
+ 		kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
+ 	else
+		kVertex2 = Vector3( (x+1)*m_fScale,m_kHeightData[y*m_iRows + x+1],y*m_fScale);
+	
+	
+// // 	kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
+	
+	//add tangents and bitangents
+	Vector3 kTangent = (kVertex2 - kVertex).Unit();
+//  	Vector3 kTangent = Vector3(m_fScale,kVertex2.y - kVertex.y,0).Unit();
+// 	Vector3 kBiTangent = kTangent.Cross( kNormal).Unit();
+	
+// 	kTangent = Vector3(0,1,0).Unit();
+	Vector3 kBiTangent = kTangent.Cross(kNormal);
+	
+	pkNewArrays->m_kTangentData.push_back( kTangent );
+	pkNewArrays->m_kBiTangentData.push_back(kBiTangent );
 
 	//vertex
-	pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale));
+	pkNewArrays->m_kVertexData.push_back(kVertex);
 }
 
 

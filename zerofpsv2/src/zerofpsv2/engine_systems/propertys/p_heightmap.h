@@ -32,7 +32,9 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 				vector<Vector3>	m_kVertexData;
 				vector<Vector2>	m_kTextureData;
 				vector<Vector3>	m_kNormalData;	
-				vector<Vector4>	m_kColorData;	
+				vector<Vector3>	m_kTangentData;	
+				vector<Vector3>	m_kBiTangentData;	
+				vector<Vector4>	m_kColorData;
 				ZVertexBuffer*		m_pkVBO;		
 				
 				HeightmapArrays()

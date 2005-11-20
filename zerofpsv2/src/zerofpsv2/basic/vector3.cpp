@@ -14,19 +14,21 @@ const Vector3 Vector3::AXIS_Z(0,0,1);
 
 Vector3 Vector3::Proj(const Vector3& v ) const			
 {
-	static float dot,len,scale;
-	static Vector3 p;
+	return ( (Dot(v)) / (Dot(*this)) ) *  *this;
 
-
-	dot = Dot(v);
-	len = Length();
-	len *= len;
-
-	//	vector_c p = (dot / len) * (*this) ;	??
-	p = (*this);
-	scale = (dot / len);
-	p *= scale;
-	return p;
+// 	static float dot,len,scale;
+// 	static Vector3 p;
+// 
+// 
+// 	dot = Dot(v);
+// 	len = Length();
+// 	len *= len;
+// 
+// 	//	vector_c p = (dot / len) * (*this) ;	??
+// 	p = (*this);
+// 	scale = (dot / len);
+// 	p *= scale;
+// 	return p;
 }
 
 Vector3 Vector3::Perp(const Vector3& v )				
