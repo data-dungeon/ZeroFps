@@ -11,7 +11,7 @@
 #include "quaternion.h"
 #include "matrix3.h"
 #include "matrix4.h"
-
+#include <vector>
 
 using namespace std;
 
@@ -33,6 +33,10 @@ public:
 	static const float TWO_PI;				// pi * 2	360
 	static const float HALF_PI;			// pi / 2	90
 	static const float EPSILON;
+	
+	static void		GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,const Vector2* akTexCoord,vector<Vector3>& kTangents,vector<Vector3>& kBiTangents,int iVertises);
+	static void		GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,const Vector2* akTexCoord,const int* aiFaces,vector<Vector3>& kTangents,vector<Vector3>& kBiTangents,int iFaces);
+
 // 	const float PI 		= 3.1415926535897932384626433832795f;;					// pi			180
 // 	const float TWO_PI	= 2.0 * Math::PI;				// pi * 2	360
 // 	const float HALF_PI	= 0.5 * Math::PI;			// pi / 2	90

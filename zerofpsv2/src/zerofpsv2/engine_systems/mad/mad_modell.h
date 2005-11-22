@@ -37,6 +37,8 @@ private:
 	int					m_iSubMesh;
 
 	ZVertexBuffer*		m_pkVBO;
+	vector<Vector3>	m_kTangents;
+	vector<Vector3>	m_kBiTangents;
 	
 	ZFResourceHandle*	m_akReplaceTexturesHandles[256];				//ytterst in effektivt, o skapa 256 st res handles varje gång en modell skapas, blir många konstruktor anrop i onödan
 

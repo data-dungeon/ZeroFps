@@ -26,7 +26,7 @@ class BASIC_API Vector4 {
 		Vector4() { }
 		explicit Vector4(float fX,float fY,float fZ,float fW) : x(fX), y(fY), z(fZ), w(fW) { }; 
 		//Vector4(const Vector4 &kOtherV4) : x(kOtherV4.x), y(kOtherV4.y), z(kOtherV4.z), w(kOtherV4.w) { }; 
-		//explicit Vector4(const Vector3 &kOtherV3);
+		Vector4(const Vector3 &kOtherV3);
 	
 // Access 
 		float &operator[](const int i);
@@ -83,6 +83,13 @@ class BASIC_API Vector4 {
 #include "vector3.h"
 
 // Constructors
+inline Vector4::Vector4(const Vector3 &kOtherV3)
+{
+	x = kOtherV3.x;
+	y = kOtherV3.y;
+	z = kOtherV3.z;
+	w = 0;
+}
 
 // Access 
 inline float &Vector4::operator[](const int i)

@@ -3,6 +3,7 @@
 #include "../../basic/zfsystem.h"
 #include "../../render/res_texture.h"
 #include "../../basic/zfassert.h"
+#include "../../render/zvertexbuffer.h"
 
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
@@ -30,6 +31,7 @@ Mad_Modell::Mad_Modell()
 	m_bBlended = false;
 
 	m_pkVBO = NULL;
+	
 
 	m_pkRawMesh = NULL;
 
@@ -646,10 +648,27 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				}
 					
 				//VBO or normal rendering
-				if(m_pkVBO)
-					m_pkShader->DrawVertexBuffer(m_pkVBO);
-				else
+ 				if(m_pkVBO)
+ 					m_pkShader->DrawVertexBuffer(m_pkVBO);
+ 				else
 					m_pkShader->DrawArray();
+
+// 				if(m_kTangents.empty())
+// 				{
+// 					Math::GenerateTangents(	GetVerticesPtr(),
+// 													GetNormalsPtr(),
+// 													(Vector2*)GetTextureCooPtr(),
+// 													GetFacesPtr(),
+// 													m_kTangents,
+// 													m_kBiTangents,
+// 													iNumOfFaces * 3);								
+// 				
+// 				}
+// 				
+// 				
+// 				m_pkShader->SetPointer(TANGENT_POINTER,&m_kTangents[0]);
+// 				m_pkShader->SetPointer(BITANGENT_POINTER,&m_kBiTangents[0]);
+// 				m_pkShader->DrawArray();
 				
 				
 				g_iNumOfMadSurfaces += iNumOfFaces;

@@ -269,8 +269,24 @@ void P_Heightmap::BuildTextureArrays()
 					}
 				}				
 			}
+// 			cout<<"bla:"<<pkNewArrays->m_kVertexData.size()<<" "<<pkNewArrays->m_kNormalData.size()<<" "<<pkNewArrays->m_kTextureData.size()<<endl;
+			
+// 			for(int i = 0;i<pkNewArrays->m_kVertexData.size();i++)
+// 			{
+// 				pkNewArrays->m_kTangentData.push_back(Vector3(1,0,0));
+// 				pkNewArrays->m_kBiTangentData.push_back(Vector3(0,0,1));
+// 			}
 					
-					
+			Math::GenerateTangents(	&pkNewArrays->m_kVertexData[0],
+											&pkNewArrays->m_kNormalData[0],
+											&pkNewArrays->m_kTextureData[0],
+											pkNewArrays->m_kTangentData,
+											pkNewArrays->m_kBiTangentData,
+											pkNewArrays->m_kVertexData.size());
+			
+// 			cout<<"tangents:"<<	pkNewArrays->m_kTangentData.size()<<endl;		
+// 			cout<<"bitangents:"<<	pkNewArrays->m_kBiTangentData.size()<<endl;		
+			
 	// 		if(pkNewArrays->m_kVertexData.size() > 1000)
 	// 		{	
 	// 			m_pkZShaderSystem->ResetPointers();
@@ -420,33 +436,46 @@ void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
 	
 
 	
-	Vector3 kVertex = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale);
-	Vector3 kVertex2;
+	Vector3 kVertex = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale);	
+	pkNewArrays->m_kVertexData.push_back(kVertex);
 	
-	
-	
- 	//handle right edge of hmap slightly different, so we dont go outside the dataarray
- 	if(x == m_iCols-1)
- 		kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
- 	else
-		kVertex2 = Vector3( (x+1)*m_fScale,m_kHeightData[y*m_iRows + x+1],y*m_fScale);
-	
-	
+// 	Vector3 kVertex2;
+// 	
+// 	
+// 	
+//  	//handle right edge of hmap slightly different, so we dont go outside the dataarray
+//  	if(x == m_iCols-1)
+//  		kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
+//  	else
+//  	{		
+// 		kVertex2 = Vector3( 	(x+1)*m_fScale,
+// 									m_kHeightData[y*m_iRows + x+1],
+// 									y*m_fScale);
+// 	
+// 	}
 // // 	kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
 	
 	//add tangents and bitangents
-	Vector3 kTangent = (kVertex2 - kVertex).Unit();
+// 	Vector3 kTangent = (kVertex2 - kVertex).Unit();
+
+// 	float xd = m_fScale;	
+// 	float zd = 0;
+// 	float yd = m_kHeightData[y*m_iRows + x+1] - m_kHeightData[y*m_iRows + x];
+// 
+// 	kTangent.Set(xd,yd,zd);
+
+
 //  	Vector3 kTangent = Vector3(m_fScale,kVertex2.y - kVertex.y,0).Unit();
 // 	Vector3 kBiTangent = kTangent.Cross( kNormal).Unit();
 	
 // 	kTangent = Vector3(0,1,0).Unit();
-	Vector3 kBiTangent = kTangent.Cross(kNormal);
+// 	Vector3 kBiTangent = kTangent.Cross(kNormal);
 	
-	pkNewArrays->m_kTangentData.push_back( kTangent );
-	pkNewArrays->m_kBiTangentData.push_back(kBiTangent );
+// 	pkNewArrays->m_kTangentData.push_back( kTangent );
+// 	pkNewArrays->m_kBiTangentData.push_back(kBiTangent );
 
 	//vertex
-	pkNewArrays->m_kVertexData.push_back(kVertex);
+// 	pkNewArrays->m_kVertexData.push_back(kVertex);
 }
 
 
