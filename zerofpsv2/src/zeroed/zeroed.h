@@ -131,6 +131,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		//edit sun
 		bool 		m_bEditSun;
 		ConVar	m_kbRotatingSun;
+		ConVar	m_kbBloom;
 
 		//edit stuff
 		int		m_iEditMode;

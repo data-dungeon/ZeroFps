@@ -132,6 +132,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kstrLoginPW.Register(this, "ap_loginpw","topsecret");
 	m_kbPlaneMovement.Register(this, "ap_planemovement","1");
 	m_kbRotatingSun.Register(this, "ap_rotatesun","0");
+	m_kbBloom.Register(this, "ap_bloom","0");
 
 	
 	// Register Commands
@@ -429,25 +430,28 @@ void ZeroEd::Init()
 	m_pkCamera[0]->SetName("persp");
 	m_pkCamera[0]->SetFog(kFogColor,fNearFog,fFarFog,true);
 	m_pkCamera[0]->SetClearColor(kFogColor);
+	m_pkCamera[0]->SetBloomEnabled(m_kbBloom.GetBool());
 
 	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[1]->SetName("top");
 	m_pkCamera[1]->SetViewMode("top");
 	m_pkCamera[1]->SetFog(kFogColor,fNearFog,fFarFog,true);
 	m_pkCamera[1]->SetClearColor(kFogColor);
+	m_pkCamera[1]->SetBloomEnabled(m_kbBloom.GetBool());
 	
 	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[2]->SetName("front");
 	m_pkCamera[2]->SetViewMode("front");
 	m_pkCamera[2]->SetFog(kFogColor,fNearFog,fFarFog,true);	
 	m_pkCamera[2]->SetClearColor(kFogColor);
+	m_pkCamera[2]->SetBloomEnabled(m_kbBloom.GetBool());
 
 	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[3]->SetName("right");
 	m_pkCamera[3]->SetViewMode("right");
 	m_pkCamera[3]->SetFog(kFogColor,fNearFog,fFarFog,true);
 	m_pkCamera[3]->SetClearColor(kFogColor);
-
+	m_pkCamera[3]->SetBloomEnabled(m_kbBloom.GetBool());
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkEntityManager,m_pkScript);
