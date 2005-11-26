@@ -648,30 +648,30 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				}
 					
 				//VBO or normal rendering
- 				if(m_pkVBO)
- 					m_pkShader->DrawVertexBuffer(m_pkVBO);
- 				else
-					m_pkShader->DrawArray();
+//  				if(m_pkVBO)
+//  					m_pkShader->DrawVertexBuffer(m_pkVBO);
+//  				else
+// 					m_pkShader->DrawArray();
 
-// 				m_kTangents.clear();
-// 				m_kBiTangents.clear();
-// 				if(m_kTangents.empty())
-// 				{
-// 					Math::GenerateTangents(	GetVerticesPtr(),
-// 													GetNormalsPtr(),
-// 													(Vector2*)GetTextureCooPtr(),
-// 													GetFacesPtr(),
-// 													m_kTangents,
-// 													m_kBiTangents,
-// 													iNumOfFaces * 3);								
-// 				
-// 				}
-// 				
-// 				
-// 				m_pkShader->SetPointer(TANGENT_POINTER,&m_kTangents[0]);
-// 				m_pkShader->SetPointer(BITANGENT_POINTER,&m_kBiTangents[0]);
-// 				m_pkShader->DrawArray();
-// 				
+
+				//TEMPORARY HACK FOR NORMALMAPPING
+ 				//m_kTangents.clear();
+ 				//m_kBiTangents.clear();
+				if(m_kTangents.empty())
+				{
+					Math::GenerateTangents(	GetVerticesPtr(),
+													GetNormalsPtr(),
+													(Vector2*)GetTextureCooPtr(),
+													GetFacesPtr(),
+													m_kTangents,
+													m_kBiTangents,
+													iNumOfFaces * 3);												
+				}								
+				m_pkShader->SetPointer(TANGENT_POINTER,&m_kTangents[0]);
+				m_pkShader->SetPointer(BITANGENT_POINTER,&m_kBiTangents[0]);
+				m_pkShader->DrawArray();
+				// END OF HACK
+				
 				
 				g_iNumOfMadSurfaces += iNumOfFaces;
 			}

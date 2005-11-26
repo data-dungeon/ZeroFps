@@ -179,6 +179,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		ConVar			m_kiShadowMapMode;
 		ConVar			m_kiShadowMapQuality;
 		ConVar			m_kbSpecMap;
+		ConVar			m_kbNormalMap;
 
 		ConVar			m_kAxisIcon;
 		ConVar			m_kVegetation;
@@ -335,21 +336,22 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		bool GetMinimized() const						{	return m_bMinimized;								}
 		bool GetRenderOn() const						{	return m_kbRenderOn.GetFloat();				}
 		bool GetDebugGraph() const 					{	return m_kbDebugGraph.GetFloat();			}
-		bool GetDrawAxesIcon() const 					{	return m_kAxisIcon.GetBool();							}		
-		bool GetShadowMap() const						{	return m_kbShadowMap.GetBool();								}
-		bool GetSpecMap() const							{	return m_kbSpecMap.GetBool();								}
-		bool GetShadowMapRealtime() const			{	return m_kbShadowMapRealtime.GetBool();					}
-		int  GetShadowMapMode() const					{	return m_kiShadowMapMode.GetInt();						}
-		int  GetShadowMapQuality() const				{	return m_kiShadowMapQuality.GetInt();					}		
-		bool GetVegetation() const						{	return m_kVegetation.GetBool();							}
-		float GetViewDistance() const					{	return m_kViewDistance.GetFloat();							}
-		bool GetOcculusionCulling() const			{	return m_kbOcculusionCulling.GetBool();					}		
+		bool GetDrawAxesIcon() const 					{	return m_kAxisIcon.GetBool();					}		
+		bool GetShadowMap() const						{	return m_kbShadowMap.GetBool();				}
+		bool GetSpecMap() const							{	return m_kbSpecMap.GetBool();					}
+		bool GetNormalMap() const						{	return m_kbNormalMap.GetBool();				}
+		bool GetShadowMapRealtime() const			{	return m_kbShadowMapRealtime.GetBool();	}
+		int  GetShadowMapMode() const					{	return m_kiShadowMapMode.GetInt();			}
+		int  GetShadowMapQuality() const				{	return m_kiShadowMapQuality.GetInt();		}		
+		bool GetVegetation() const						{	return m_kVegetation.GetBool();				}
+		float GetViewDistance() const					{	return m_kViewDistance.GetFloat();			}
+		bool GetOcculusionCulling() const			{	return m_kbOcculusionCulling.GetBool();	}		
 					
 		//sets
-		void	SetDebugGraph(bool bDebug)				{	m_kbDebugGraph.SetBool( bDebug );							}		
-		void  SetSyncNetwork(bool bSync)				{	m_kbSyncNetwork.SetBool(bSync);							}
+		void	SetDebugGraph(bool bDebug)				{	m_kbDebugGraph.SetBool( bDebug );			}		
+		void  SetSyncNetwork(bool bSync)				{	m_kbSyncNetwork.SetBool(bSync);				}
 		void  SetSystemFps(int iFps) 					{	m_kfSystemUpdateFps.SetFloat(iFps);			}
-		void  SetNetworkFps(int iFps)					{	m_kfNetworkUpdateFps.SetFloat(iFps);			}		
+		void  SetNetworkFps(int iFps)					{	m_kfNetworkUpdateFps.SetFloat(iFps);		}		
 
 		//render targets
 		void AddRenderCamera(Camera* pkCamera);

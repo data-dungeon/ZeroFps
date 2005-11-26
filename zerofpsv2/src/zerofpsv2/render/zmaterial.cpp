@@ -1053,7 +1053,7 @@ namespace SI_ZMATERIAL
 		return 1;		
 	}		
 	
-/**	\fn ShadowMap( )
+/**	\fn UseShadowMapLua( )
 		\brief *** Unknown ZMaterial.cpp:965.
 		\relates Material
 */		
@@ -1071,7 +1071,7 @@ namespace SI_ZMATERIAL
 	}			
 	
 	
-/**	\fn ShadowMap( )
+/**	\fn SupportSpecMapLua( )
 		\brief *** Unknown ZMaterial.cpp:965.
 		\relates Material
 */		
@@ -1088,6 +1088,22 @@ namespace SI_ZMATERIAL
 		return 1;		
 	}	
 				
+/**	\fn SupportNormalMapLua( )
+		\brief *** Unknown ZMaterial.cpp:965.
+		\relates Material
+*/		
+	int SupportNormalMapLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,0))
+			return 0;		
+
+		double dRet = 0;					
+		if(g_pkZShaderSystem->SupportGLSLProgram() && g_pkZeroFps->GetNormalMap())
+			dRet = 1;	
+		
+		g_pkScript->AddReturnValue(pkLua, dRet);				
+		return 1;		
+	}					
 				
 /**	\fn CustomValue(string,string )
 		\brief adds a custom value to the material , like surface sounds
@@ -1122,6 +1138,7 @@ void RegisterSI_Material()
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportGLSLProgram",	SI_ZMATERIAL::SupportGLSLProgramLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("UseShadowMap",			SI_ZMATERIAL::UseShadowMapLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportSpecMap",		SI_ZMATERIAL::SupportSpecMapLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportNormalMap",	SI_ZMATERIAL::SupportNormalMapLua);
 
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("CustomValue",			SI_ZMATERIAL::CustomValueLua);
 };

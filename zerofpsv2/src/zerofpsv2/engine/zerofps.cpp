@@ -86,52 +86,23 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_iCurrentFrame			= 0;
 	m_fEngineTime				= 0;
 	
-	//m_fSystemUpdateFps		= 30;
 	m_fSystemUpdateTime		= 0;
 	m_fSystemUpdateFpsDelta = 0;
-	//m_fNetworkUpdateFps		= 20;
 	m_fNetworkUpdateTime		= 0;
 	m_fNetworkUpdateFpsDelta= 0;	
-	//m_bSyncNetwork				= true;
-	//m_iConnectionSpeed		= 10000;
 		
 	m_bEditMode					= false;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
 	m_bGuiMode					= false;
-	//m_iMadDraw					= 1;
-	//g_fMadLODScale				= 1.0;
-	//g_fMadTrans					= false;
 	m_pkCamera					= NULL;
-	//m_bRunWorldSim				= true;
-	//g_iLogRenderPropertys	= 0;
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount		= 0;
-	//m_bRenderOn					= true;
 	m_bMinimized 				= false;
 	m_iServerConnection		= -1;
-	//m_iMaxPlayers				= ZF_DEF_PLAYERS;
-	//m_bLockFps					= false;
-	//m_bDrawAxisIcon			= false;
-	//m_bDebugGraph				= false;
 	m_iClientEntityID			= -1;
 	m_bAlwaysWork				= true;
-	//m_bTcsFullframe			= false;
 	m_iProfileTotalTime		= 0;
-	//m_bVegetation				= true;
-	//m_fViewDistance			= 100;
-	//m_bOcculusionCulling		= true;
-	
-/*
-	m_bShadowMapRealtime		= false;
-	m_iShadowMapMode			= 1;
-	m_bShadowMap				= true;
-	m_iShadowMapQuality		= 1024;
-	m_bSpecMap					= true;
-*/
-
-	//m_bAiShowInfo				= false;
-	//g_iMadLOD					= true;
 
 	g_iNumOfFrames				= 0;
 	m_bProfileMode				= 0;
@@ -139,7 +110,6 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_pkDevPageMaterial			= NULL;
 
 	// Register Variables
-	//RegisterVariable("ai_showinfo",		&m_bAiShowInfo,			CSYS_BOOL);	
 	m_kAI_ShowInfo.Register(this, "ai_showinfo", "0", "Display debug info for ai's." );
 
 	m_kbTcsFullframe.Register(this,		"p_tcsfullframe", "0");
@@ -151,54 +121,28 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),		CSYS_BOOL);	
 	RegisterVariable("e_log",				g_ZFObjSys.GetLogEnabledPointer(),			CSYS_BOOL);		
 	*/
-	//RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
-	//RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);		
-	//RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
-	//RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
-	//RegisterVariable("n_networkfps",		&m_fNetworkUpdateFps,	CSYS_FLOAT);	
-	//RegisterVariable("n_syncnetwork",	&m_bSyncNetwork,			CSYS_BOOL);	
-	//RegisterVariable("n_netspeed",		&m_iConnectionSpeed,		CSYS_INT);
-	//RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);			
 	
-	m_kfNetworkUpdateFps.Register(this, "n_networkfps", "20");
-	m_kbSyncNetwork.Register(this, "n_syncnetwork", "1");
-	m_kiConnectionSpeed.Register(this, "n_netspeed", "10000");
-	m_kiMaxPlayers.Register(this, "n_maxplayers", "8");
-	m_kbRenderOn.Register(this, "r_render","1");
-	m_kbDebugGraph.Register(this, "r_debuggraph","0");
-	g_kiLogRenderPropertys.Register(this, "r_logrp","0");
+	m_kfNetworkUpdateFps.Register(this, 	"n_networkfps", "20");
+	m_kbSyncNetwork.Register(this, 			"n_syncnetwork", "1");
+	m_kiConnectionSpeed.Register(this, 		"n_netspeed", "10000");
+	m_kiMaxPlayers.Register(this,				"n_maxplayers", "8");
+	m_kbRenderOn.Register(this, 				"r_render","1");
+	m_kbDebugGraph.Register(this, 			"r_debuggraph","0");
+	g_kiLogRenderPropertys.Register(this, 	"r_logrp","0");
 	
-	//RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
-	//RegisterVariable("r_debuggraph",		&m_bDebugGraph,			CSYS_BOOL);
-	//RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
 
-	m_kAxisIcon.Register(this, "r_axis","1", "if we should display the axis icon or not.");
-	m_kVegetation.Register(this, "r_vegetation", "1");
-	m_kViewDistance.Register(this, "r_viewdistance", "100");
+	m_kAxisIcon.Register(this, 			"r_axis","1", "if we should display the axis icon or not.");
+	m_kVegetation.Register(this, 			"r_vegetation", "1");
+	m_kViewDistance.Register(this, 		"r_viewdistance", "100");
 
-	m_kbShadowMap.Register(this, "r_shadowmap", "1", "");
-	m_kbShadowMapRealtime.Register(this, "r_shadowmaprealtime", "0", "");
-	m_kiShadowMapMode.Register(this, "r_shadowmapmode", "1", "");
+	m_kbShadowMap.Register(this, 			"r_shadowmap", "1", "");
+	m_kbShadowMapRealtime.Register(this,"r_shadowmaprealtime", "0", "");
+	m_kiShadowMapMode.Register(this, 	"r_shadowmapmode", "1", "");
 	m_kiShadowMapQuality.Register(this, "r_shadowmapquality", "1024", "");
-	m_kbSpecMap.Register(this, "r_specmap", "1", "");
-
-
-	//RegisterVariable("r_madlodscale",	&g_fMadLODScale,			CSYS_FLOAT);
-	//RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
-	//m_kMadDraw.Register(this, "r_maddraw", "1", "Display mode to use for mads.");
-	//RegisterVariable("r_madtrans",		&g_fMadTrans,				CSYS_BOOL);
-	//RegisterVariable("r_madlod",			&g_iMadLOD,					CSYS_BOOL);
-	//RegisterVariable("r_vegetation",		&m_bVegetation,			CSYS_BOOL);	
-	//RegisterVariable("r_viewdistance",	&m_fViewDistance,			CSYS_FLOAT);	
-	//RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
-	//RegisterVariable("r_specmap",			&m_bSpecMap,				CSYS_BOOL);		
-	//RegisterVariable("r_shadowmap",		&m_bShadowMap,				CSYS_BOOL);	
-	//RegisterVariable("r_shadowmapmode",	&m_iShadowMapMode,		CSYS_INT);
-	//RegisterVariable("r_shadowmaprealtime",&m_bShadowMapRealtime,CSYS_BOOL);	
-	//RegisterVariable("r_shadowmapquality",	&m_iShadowMapQuality,CSYS_INT);
-	
+	m_kbSpecMap.Register(this, 			"r_specmap", "1", "");
+	m_kbNormalMap.Register(this, 			"r_normalmap", "0", "");	
 	m_kbOcculusionCulling.Register(this,"r_occulusionculling","1");
-	//RegisterVariable("r_occulusionculling",&m_bOcculusionCulling,CSYS_BOOL);
+
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);

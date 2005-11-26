@@ -251,6 +251,11 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 							(s1 * y2 - s2 * y1) * r,
 							(s1 * z2 - s2 * z1) * r);
 
+// 		Vector3* bla = (Vector3*)akNormals;
+// 		bla[i1] = (v2-v1).Cross(v3-v1).Unit();
+// 		bla[i2] = bla[i1];
+// 		bla[i3] = bla[i1];
+
 
 		tan1[i1] = sdir;
 		tan1[i2] = sdir;
