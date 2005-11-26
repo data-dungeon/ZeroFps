@@ -425,57 +425,15 @@ void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
 	pkNewArrays->m_kColorData.push_back(kColor);		
 		
 	//UV's
-	pkNewArrays->m_kTextureData.push_back(Vector2(x*fTexMod,-y*fTexMod));
+	pkNewArrays->m_kTextureData.push_back(Vector2(-x*fTexMod,y*fTexMod));
 	
 	//normals
-	Vector3 kNormal = GenerateNormal(x,y).Unit();;
-// 	kNormal = Vector3(0,1,0);
-	pkNewArrays->m_kNormalData.push_back(kNormal);
+	pkNewArrays->m_kNormalData.push_back( GenerateNormal(x,y).Unit());
 
-
-	
-
-	
-	Vector3 kVertex = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale);	
-	pkNewArrays->m_kVertexData.push_back(kVertex);
-	
-// 	Vector3 kVertex2;
-// 	
-// 	
-// 	
-//  	//handle right edge of hmap slightly different, so we dont go outside the dataarray
-//  	if(x == m_iCols-1)
-//  		kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
-//  	else
-//  	{		
-// 		kVertex2 = Vector3( 	(x+1)*m_fScale,
-// 									m_kHeightData[y*m_iRows + x+1],
-// 									y*m_fScale);
-// 	
-// 	}
-// // 	kVertex2 = Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale) + Vector3(m_fScale,0,0);
-	
-	//add tangents and bitangents
-// 	Vector3 kTangent = (kVertex2 - kVertex).Unit();
-
-// 	float xd = m_fScale;	
-// 	float zd = 0;
-// 	float yd = m_kHeightData[y*m_iRows + x+1] - m_kHeightData[y*m_iRows + x];
-// 
-// 	kTangent.Set(xd,yd,zd);
-
-
-//  	Vector3 kTangent = Vector3(m_fScale,kVertex2.y - kVertex.y,0).Unit();
-// 	Vector3 kBiTangent = kTangent.Cross( kNormal).Unit();
-	
-// 	kTangent = Vector3(0,1,0).Unit();
-// 	Vector3 kBiTangent = kTangent.Cross(kNormal);
-	
-// 	pkNewArrays->m_kTangentData.push_back( kTangent );
-// 	pkNewArrays->m_kBiTangentData.push_back(kBiTangent );
 
 	//vertex
-// 	pkNewArrays->m_kVertexData.push_back(kVertex);
+	pkNewArrays->m_kVertexData.push_back(Vector3(x*m_fScale,m_kHeightData[y*m_iRows + x],y*m_fScale));
+	
 }
 
 

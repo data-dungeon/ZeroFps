@@ -16,6 +16,8 @@ ZVertexBuffer::ZVertexBuffer()
 	m_bTexturePointer3 = 		false;
 	m_bIndexPointer = 			false;
 	m_bColorPointer = 			false;	
+	m_bTangentPointer =			false;
+	m_bBiTangentPointer = 		false;
 	
 	m_i2DVertexPointer = 		0;
 	m_iVertexPointer	=			0;
@@ -25,7 +27,8 @@ ZVertexBuffer::ZVertexBuffer()
 	m_iTexturePointer2=			0;		
 	m_iTexturePointer3=			0;		
 	m_iColorPointer=				0;		
-	
+	m_iTangentPointer=			0;
+	m_iBiTangentPointer=			0;
 		
 	m_iNrOfVertexs = 				0;
 	m_iNrOfIndexes = 				0;			

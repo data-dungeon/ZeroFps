@@ -187,49 +187,23 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 		const Vector3& n = akNormals[i];
 		const Vector3& t = tan1[i];
 			
-//  		Vector3 kTangent3 = (t - n * n.Dot(t)).Unit();			
-			
-			
 		// Gram-Schmidt orthogonalize
 		Vector3 kTangent3 = (t - n * n.Dot(t)).Unit();
 
 		// Calculate handedness
-		float inv = (n.Cross(t).Dot(tan2[i]) > 0.0F) ? -1.0F : 1.0F;		
+/*		float inv = (n.Cross(t).Dot(tan2[i]) > 0.0F) ? -1.0F : 1.0F;		
+		
 		kTangent3 *= inv;
 		kTangents.push_back(kTangent3);
-		kBiTangents.push_back(n.Cross(kTangent3) );			
-			
-// 		// Calculate handedness
-// 		float inv = (n.Cross(t).Dot(tan2[i]) > 0.0F) ? -1.0F : 1.0F;
-// 		
-// 		Vector4 kTangent4 = kTangent3;
-// // 		kTangent4.w = (n.Cross(t).Dot(tan2[i]) < 0.0F) ? -1.0F : 1.0F;
-// 
-// 		kTangents.push_back(kTangent4 * inv);
-// 		kBiTangents.push_back(kTangent3.Cross(n)  );
-					
-			
-// 		// Gram-Schmidt orthogonalize
-// 		Vector3 kTangent3 = (t - n * n.Dot(t)).Unit();
-// // 		Vector3 kBiTangent = kTangent3.Cross(n);
-// 			
-// 		// Calculate handedness
-// 		Vector4 kTangent4 = kTangent3;
-// 		kTangent4.w = (n.Cross(t).Dot(tan2[i]) < 0.0F) ? -1.0F : 1.0F;
-// // 		if(kTangent4.w <0)
-// // 			cout<<"back"<<endl;
-// // 		else
-// // 			cout<<"font"<<endl;
-// // 		if(kTangent4.w <0)
-// // 		{
-// //  			kTangents.push_back(Vector3(1,0,0));
-// //  			kBiTangents.push_back(Vector3(0,0,1));		
-// // 		}
-// // 		else
-// // 		{
-// 		kTangents.push_back(kTangent4);
-// 		kBiTangents.push_back(kTangent3.Cross(n) * kTangent4.w);
-// // 		}
+		kBiTangents.push_back(n.Cross(kTangent3) );			*/
+		
+		
+		// Calculate handedness
+		float inv = (n.Cross(t).Dot(tan2[i]) < 0.0F) ? -1.0F : 1.0F;				
+		
+		kTangents.push_back(kTangent3);
+		kBiTangents.push_back(n.Cross(kTangent3)*inv );			
+
 	}
 	
 	delete tan1;
@@ -257,12 +231,12 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 		const Vector2& w2 = akTexCoord[i2];
 		const Vector2& w3 = akTexCoord[i3];
 		
-		float x1 = v2.x - v1.x;
-		float x2 = v3.x - v1.x;
-		float y1 = v2.y - v1.y;
-		float y2 = v3.y - v1.y;
-		float z1 = v2.z - v1.z;
-		float z2 = v3.z - v1.z;
+		float x1 = v1.x - v2.x;
+		float x2 = v1.x - v3.x;
+		float y1 = v1.y - v2.y;
+		float y2 = v1.y - v3.y;
+		float z1 = v1.z - v2.z;
+		float z2 = v1.z - v3.z;
 		
 		float s1 = w2.x - w1.x;
 		float s2 = w3.x - w1.x;
@@ -277,6 +251,7 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 							(s1 * y2 - s2 * y1) * r,
 							(s1 * z2 - s2 * z1) * r);
 
+
 		tan1[i1] = sdir;
 		tan1[i2] = sdir;
 		tan1[i3] = sdir;
@@ -290,23 +265,17 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 	for(int i = 0;i<iFaces;i++)
 	{
 		const Vector3& n = akNormals[aiFaces[i]];
-		const Vector3& t = tan1[i];
+		const Vector3& t = tan1[aiFaces[i]];
 			
 		// Gram-Schmidt orthogonalize
 		Vector3 kTangent3 = (t - n * n.Dot(t)).Unit();
 
 		// Calculate handedness
-		float inv = (n.Cross(t).Dot(tan2[i]) > 0.0F) ? -1.0F : 1.0F;
+		float inv = (n.Cross(t).Dot(tan2[aiFaces[i]]) < 0.0F) ? -1.0F : 1.0F;
 		
-		kTangent3 *= inv;
 		
-// 		Vector4 kTangent4 = kTangent3;
-// 		kTangent4.w = (n.Cross(t).Dot(tan2[i]) < 0.0F) ? -1.0F : 1.0F;
-
-// 		kTangents.push_back(kTangent4 * inv);
 		kTangents.push_back(kTangent3);
-// 		kBiTangents.push_back(kTangent3.Cross(n)  );
-		kBiTangents.push_back(n.Cross(kTangent3) );
+		kBiTangents.push_back(n.Cross(kTangent3)*inv );
 	}
 	
 	delete tan1;
