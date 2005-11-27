@@ -138,8 +138,7 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 	
 
 	for(int i = 0;i<iVertises;i+=3)
-	{
-		
+	{		
 		int i1 = i;
 		int i2 = i+1;
 		int i3 = i+2;
@@ -152,15 +151,15 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 		const Vector2& w2 = akTexCoord[i2];
 		const Vector2& w3 = akTexCoord[i3];
 		
-		float x1 = v2.x - v1.x;
-		float x2 = v3.x - v1.x;		
-		float y1 = v2.y - v1.y;
-		float y2 = v3.y - v1.y;		
-		float z1 = v2.z - v1.z;
-		float z2 = v3.z - v1.z;
+		float x1 = v1.x - v2.x;
+		float x2 = v1.x - v3.x;
+		float y1 = v1.y - v2.y;
+		float y2 = v1.y - v3.y;
+		float z1 = v1.z - v2.z;
+		float z2 = v1.z - v3.z;
 		
 		float s1 = w2.x - w1.x;
-		float s2 = w3.x - w1.x;		
+		float s2 = w3.x - w1.x;
 		float t1 = w2.y - w1.y;
 		float t2 = w3.y - w1.y;
 		
