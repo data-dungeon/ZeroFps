@@ -1,10 +1,10 @@
 #include "p_tcstrigger.h"
 #include "../tcs/tcs.h"
 
+static	ConVar	g_kiEditorShowTriggers("r_showtrig", "1");
 
 P_TcsTrigger::P_TcsTrigger() : Property("P_TcsTrigger")
 {
-	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;	
 	
@@ -14,20 +14,15 @@ P_TcsTrigger::P_TcsTrigger() : Property("P_TcsTrigger")
 	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
 	m_pkRender = 	static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 	
-	
-	
 	m_iTriggerType = eSPHERE;
 	m_fRadius = 0.5;
 	m_kBoxSize.Set(0.5,0.5,0.5);
 	m_iTriggerID = 1;
 	
-	
-	
 	m_kPropertyValues.push_back(PropertyValues("type",VALUETYPE_INT,(void*)&m_iTriggerType));
 	m_kPropertyValues.push_back(PropertyValues("radius",VALUETYPE_FLOAT,(void*)&m_fRadius));
 	m_kPropertyValues.push_back(PropertyValues("boxsize",VALUETYPE_VECTOR3,(void*)&m_kBoxSize));
 	m_kPropertyValues.push_back(PropertyValues("id",VALUETYPE_INT,(void*)&m_iTriggerID));
-	
 }
 
 P_TcsTrigger::~P_TcsTrigger()
@@ -52,12 +47,37 @@ void P_TcsTrigger::Disable()
 
 void P_TcsTrigger::Update()
 {	
-	Enable();
-	
-	m_iType=0;
-	m_iSide=0;
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) )
+		DrawEditor();
 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) )
+	{
+		Enable();
+	
+		m_iType=PROPERTY_TYPE_RENDER;
+		m_iSide=PROPERTY_SIDE_CLIENT;
+	}
 }
+
+void P_TcsTrigger::DrawEditor()
+{
+	if(!g_kiEditorShowTriggers.GetBool())
+		return;
+
+	switch(m_iTriggerType)
+	{
+		case eSPHERE:
+			m_pkRender->Sphere(GetEntity()->GetWorldPosV(),m_fRadius,1,Vector3(1,1,1),false);
+			break;
+
+		case eBOX:
+			Vector3 kMin = GetEntity()->GetWorldPosV() - m_kBoxSize;
+			Vector3 kMax = GetEntity()->GetWorldPosV() + m_kBoxSize;
+			m_pkRender->DrawAABB(kMin,kMax);
+			break;
+	}
+}
+
 
 void P_TcsTrigger::Trigger(P_Tcs* pkTcs)
 {
@@ -69,8 +89,6 @@ void P_TcsTrigger::Trigger(P_Tcs* pkTcs)
 	args[0].m_pData = &iID;	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Trigger",&args);
 }
-
-
 
 void P_TcsTrigger::Save(ZFIoInterface* pkPackage)
 {

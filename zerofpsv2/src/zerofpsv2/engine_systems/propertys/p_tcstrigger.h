@@ -26,12 +26,13 @@ class ENGINE_SYSTEMS_API P_TcsTrigger : public Property
 		Tcs*			m_pkTcs;
 		ZSSRender*	m_pkRender;
 		
-		int		m_iTriggerType;
-		int		m_iTriggerID;
+		int			m_iTriggerType;
+		int			m_iTriggerID;
 		
-		Vector3	m_kBoxSize;
-		float		m_fRadius;
+		Vector3		m_kBoxSize;
+		float			m_fRadius;
 		
+		void			DrawEditor();
 		
 	public:
 		
