@@ -7,8 +7,6 @@
 
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
-//extern float g_fMadLODScale;
-//extern bool g_fMadTrans;
 
 ConVar g_kMadTrans("r_madtrans","0");
 ConVar g_kMadLODScale("r_madlodscale","1.0");
@@ -361,8 +359,8 @@ char* Mad_Modell::GetTextureName()
 
 Mad_CoreTexture* Mad_Modell::GetTextureInfo()
 {
-	return m_pkMesh->GetLODMesh(0)->GetTextureInfo(m_pkSubMesh->iTextureIndex);
-
+	return m_pkRawMesh->GetTextureInfo(m_pkSubMesh->iTextureIndex);
+	//return m_pkMesh->GetLODMesh(0)->GetTextureInfo(m_pkSubMesh->iTextureIndex);
 }
 
 void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
@@ -404,29 +402,33 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 
 void Mad_Modell::LoadTextures()
 {
-//	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-
 	int iNumOfMesh = GetNumOfMesh();
 	int iNumOfSubMesh;
 
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
+	// Loop all meshes.
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
 	{
 		SelectMesh(iM);
-		m_pkRawMesh = m_pkMesh->GetLODMesh(0);
 
-		iNumOfSubMesh = GetNumOfSubMesh(iM);
-		pkCore->PrepareMesh(pkCore->GetMeshByID(iM), pkCore->GetMeshByID(iM)->GetLODMesh(0));
-
-		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
+		// Loop all rawmeshes.
+		for(int iRaw=0; iRaw<m_pkMesh->m_kLodMesh.size(); iRaw++)
 		{
-			SelectSubMesh(iSubM);
+			m_pkRawMesh = m_pkMesh->GetLODMesh( iRaw );
 
-			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-			
-			sprintf(szFullTexName,"%s.zmt",pkTexInfo->ucTextureName);
-			m_pkMesh->GetLODMesh(0)->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);
+			iNumOfSubMesh = GetNumOfSubMesh(iM);
+			pkCore->PrepareMesh(pkCore->GetMeshByID(iM), pkCore->GetMeshByID(iM)->GetLODMesh( iRaw ));
+
+			for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
+			{
+				SelectSubMesh(iSubM);
+
+				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
+				
+				sprintf(szFullTexName,"%s.zmt",pkTexInfo->ucTextureName);
+				m_pkMesh->GetLODMesh( iRaw )->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);
+			}
 		}
 	}
 }
@@ -594,7 +596,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				}				
 				else 
 				{
-					pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+					// m_pkMesh->GetLODMesh(0)
+					pkRes = m_pkMesh->GetLODMesh(iLodIndex)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
 				}
 				
 				//setup material

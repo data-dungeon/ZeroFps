@@ -1098,7 +1098,9 @@ namespace SI_ZMATERIAL
 			return 0;		
 
 		double dRet = 0;					
-		if(g_pkZShaderSystem->SupportGLSLProgram() && g_pkZeroFps->GetNormalMap())
+
+		ConVar* pkNormalMap = g_pkZeroFps->GetSystem().GetConVar("r_normalmap");
+		if(g_pkZShaderSystem->SupportGLSLProgram() && pkNormalMap->GetBool() /*g_pkZeroFps->GetNormalMap()*/ )
 			dRet = 1;	
 		
 		g_pkScript->AddReturnValue(pkLua, dRet);				

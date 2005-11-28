@@ -56,7 +56,8 @@ void ModellObj::HandleObjCommand(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 	float x,y,z;
 	char* ucpToken;
 
-	if (!strcmp (ucpTokenCmd, "#"))
+	// If the first char is a # then this is a comment and the whole line can be skipped.
+	if (ucpTokenCmd[0] == '#')
 	{
 		pkScript->SkipLine();
 		return;	
@@ -258,11 +259,18 @@ MayaMtl*	ModellObj::GetMaterial(string strName)
 	return NULL;
 }
 
-
+// Note: Not really sure about any of the values in the .mtl file.
 void ModellObj::HandleMtlCommand(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 {
 	char* ucpToken;
 	float x,y,z;
+
+	// If the first char is a # then this is a comment and the whole line can be skipped.
+	if (ucpTokenCmd[0] == '#')
+	{
+		pkScript->SkipLine();
+		return;	
+	}
 
 	if (!strcmp (ucpTokenCmd, "newmtl"))
 	{
@@ -276,7 +284,7 @@ void ModellObj::HandleMtlCommand(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 		return;	
 	}
 
-	if (!strcmp (ucpTokenCmd, "map_Kd"))
+	if (!strcmp (ucpTokenCmd, "map_Kd"))	// Diffuse map
 	{
 		ucpToken = pkScript->GetToken();
 		m_kMaterial.m_strDiffuseColorTexture = ucpToken;
@@ -285,14 +293,8 @@ void ModellObj::HandleMtlCommand(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 		return;	
 	}
 
-	if (!strcmp (ucpTokenCmd, "##"))
-	{
-		pkScript->SkipLine();
-		return;	
-	}
-
 	// Skip unused variables.
-	if (!strcmp (ucpTokenCmd, "Kd"))
+	if (!strcmp (ucpTokenCmd, "Kd"))		// Diffuse color.
 	{
 		ucpToken = pkScript->GetToken();
 		x = atof(ucpToken);
@@ -306,11 +308,14 @@ void ModellObj::HandleMtlCommand(SimpleScriptFile* pkScript, char* ucpTokenCmd)
 		return;	
 	}
 
-		
-	if (!strcmp (ucpTokenCmd, "Ka")
-		|| !strcmp (ucpTokenCmd, "Ks") || !strcmp (ucpTokenCmd, "Ns")
-		|| !strcmp (ucpTokenCmd, "d") || !strcmp (ucpTokenCmd, "Tr")
-		|| !strcmp (ucpTokenCmd, "illum"))
+	if (!strcmp (ucpTokenCmd, "Ka")	||		// Ambient color.		
+		!strcmp (ucpTokenCmd, "Ks") ||		// Specular color.
+		!strcmp (ucpTokenCmd, "Ns")	||		// Specular exponent.
+		!strcmp (ucpTokenCmd, "Ni")	||		// Refraction index
+		!strcmp (ucpTokenCmd, "d")	||		// Transparency
+		!strcmp (ucpTokenCmd, "Tr")	||		// Transparency
+		!strcmp (ucpTokenCmd, "Tf")	||		// Transparency
+		!strcmp (ucpTokenCmd, "illum"))		// Illumination mode.
 	{
 		pkScript->SkipLine();
 		return;	

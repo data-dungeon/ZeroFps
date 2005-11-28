@@ -23,6 +23,11 @@ string Mad_RawMesh::ShowInfo(void)
 	kOut << "Animations: " << kHead.iNumOfAnimation << endl;
 	kOut << "m_fMaxDistance: " << m_fMaxDistance << endl;
 
+	for (unsigned int i=0; i<akTextures.size(); i++) 
+	{
+		kOut << " Texture[" << i << "]: " << akTextures[i].ucTextureName << endl;
+	}
+
 	for (unsigned int i=0; i<akSubMeshes.size(); i++) 
 	{
 		kOut << " Submesh[" << i << "]: " << akSubMeshes[i].iFirstTriangle << " , " << akSubMeshes[i].iNumOfTriangles << "," << akSubMeshes[i].iTextureIndex << endl; 
@@ -808,7 +813,7 @@ void Mad_CoreMesh::ShowInfo(void)
 	cout << "Mad_CoreMesh::ShowInfo" << endl;
 	cout << "Num Of RawMeshes: " << m_kLodMesh.size() << endl;
 	for(int i=0; i<m_kLodMesh.size(); i++)
-		m_kLodMesh[i].ShowInfo();
+		cout << m_kLodMesh[i].ShowInfo();
 }
 
 int Mad_CoreMesh::GetSizeInBytes()
