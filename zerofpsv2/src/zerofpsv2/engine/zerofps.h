@@ -165,21 +165,11 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		ConVar			m_kbRenderOn;
 		bool				m_bMinimized;
 		ConVar			m_kbDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
-		/*bool				m_bShadowMap;
-		bool				m_bShadowMapRealtime;
-		int				m_iShadowMapMode;
-		int				m_iShadowMapQuality;
-		bool				m_bSpecMap;*/
-		//bool				m_bDrawAxisIcon;
-		//bool				m_bVegetation;
-		//float				m_fViewDistance;		
 
 		ConVar			m_kbShadowMap;
 		ConVar			m_kbShadowMapRealtime;
 		ConVar			m_kiShadowMapMode;
 		ConVar			m_kiShadowMapQuality;
-		ConVar			m_kbSpecMap;
-		ConVar			m_kbNormalMap;
 
 		ConVar			m_kAxisIcon;
 		ConVar			m_kVegetation;
@@ -338,8 +328,6 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		bool GetDebugGraph() const 					{	return m_kbDebugGraph.GetFloat();			}
 		bool GetDrawAxesIcon() const 					{	return m_kAxisIcon.GetBool();					}		
 		bool GetShadowMap() const						{	return m_kbShadowMap.GetBool();				}
-		bool GetSpecMap() const							{	return m_kbSpecMap.GetBool();					}
-		bool GetNormalMap() const						{	return m_kbNormalMap.GetBool();				}
 		bool GetShadowMapRealtime() const			{	return m_kbShadowMapRealtime.GetBool();	}
 		int  GetShadowMapMode() const					{	return m_kiShadowMapMode.GetInt();			}
 		int  GetShadowMapQuality() const				{	return m_kiShadowMapQuality.GetInt();		}		

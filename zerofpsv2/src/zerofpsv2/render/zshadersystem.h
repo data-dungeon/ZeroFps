@@ -226,6 +226,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 
 		ConVar			m_kbUseGLSL;
 		ConVar			m_kbUseHDR;
+		ConVar			m_kbSpecMap;
+		ConVar			m_kbNormalMap;
+
 
 
 		ZFResourceHandle* m_pkDefaultGLSLProgram;
@@ -461,6 +464,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool SupportGLSLProgram()								{	return m_bSupportGLSLProgram;			}		
 		bool SupportFBO()											{	return m_bSupportFBO;					}
 		bool SupportARBTC()										{	return m_bSupportARBTC;					}
+		bool UseSpecMap() const									{	return m_kbSpecMap.GetBool();			}
+		bool UseNormalMap() const								{	return m_kbNormalMap.GetBool();		}		
 		bool UseHDR()												{	return m_kbUseHDR.GetBool() && m_bSupportHDR;	}
 		
 		//arrays

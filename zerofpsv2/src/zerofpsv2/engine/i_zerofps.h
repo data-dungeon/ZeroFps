@@ -25,7 +25,6 @@ class ENGINE_API I_ZeroFps
 		virtual	float GetEngineTime() const = 0;
 		virtual	Camera* GetCam() const= 0;								
 		virtual	bool GetShadowMap() const = 0;						
-		virtual	bool GetSpecMap() const = 0;							
 		virtual	DevStringPage* DevPrint_FindPage(const string& strName)= 0;	
 		virtual	void DrawDevStrings()= 0;
 		virtual	void DevPrintf(const char* szName, const char *fmt, ...)= 0;

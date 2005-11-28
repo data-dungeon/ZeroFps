@@ -60,11 +60,15 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	//register console commands
 	Register_Cmd("setgamma",FID_SETGAMMA);		
 	
-	m_kbUseGLSL.Register(this, "r_useglsl","0");
-	m_kbUseHDR.Register(this, "r_usehdr",	"1");
-	m_kfRedGamma.Register(this, "r_gammar", "1");
-	m_kfGreenGamma.Register(this, "r_gammag", "1");
-	m_kfBlueGamma.Register(this, "r_gammab", "1");
+	m_kbUseGLSL.Register(this, 	"r_useglsl","0");
+	m_kbUseHDR.Register(this, 		"r_usehdr",	"1");
+	m_kfRedGamma.Register(this,	"r_gammar", "1");
+	m_kfGreenGamma.Register(this,	"r_gammag", "1");
+	m_kfBlueGamma.Register(this, 	"r_gammab", "1");
+	
+	m_kbSpecMap.Register(this, 	"r_specmap", "1", "");
+	m_kbNormalMap.Register(this, 	"r_normalmap", "0", "");	
+	
 	
 	//reset all pointers
 	ResetPointers();

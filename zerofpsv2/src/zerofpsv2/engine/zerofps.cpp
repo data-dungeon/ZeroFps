@@ -134,13 +134,10 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_kAxisIcon.Register(this, 			"r_axis","1", "if we should display the axis icon or not.");
 	m_kVegetation.Register(this, 			"r_vegetation", "1");
 	m_kViewDistance.Register(this, 		"r_viewdistance", "100");
-
 	m_kbShadowMap.Register(this, 			"r_shadowmap", "1", "");
 	m_kbShadowMapRealtime.Register(this,"r_shadowmaprealtime", "0", "");
 	m_kiShadowMapMode.Register(this, 	"r_shadowmapmode", "1", "");
 	m_kiShadowMapQuality.Register(this, "r_shadowmapquality", "1024", "");
-	m_kbSpecMap.Register(this, 			"r_specmap", "1", "");
-	m_kbNormalMap.Register(this, 			"r_normalmap", "0", "");	
 	m_kbOcculusionCulling.Register(this,"r_occulusionculling","1");
 
 	

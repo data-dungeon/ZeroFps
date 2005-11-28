@@ -200,7 +200,8 @@ void ZeroEd::Input_EditZone()
 		//add heightmap if possible 
  		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone)) 		
  		{
-			if(!pkData->m_pkZone->GetProperty("P_Heightmap"))
+			if(!pkData->m_pkZone->GetProperty("P_Heightmap") &&
+				!pkData->m_pkZone->GetProperty("P_Mad"))
 			{			
 				P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
 				pkHM->SetSize(m_kZoneSize.x,m_kZoneSize.z);
