@@ -1209,11 +1209,11 @@ namespace SI_ZMATERIAL
 		return 1;		
 	}		
 	
-/**	\fn ParentMaterialLua(string,string )
+/**	\fn LoadMaterialLua(string,string )
 		\brief loads a parentmaterial
 		\relates Material
 */		
-	int ParentMaterialLua(lua_State* pkLua)
+	int LoadMaterialLua(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,1))
 			return 0;		
@@ -1262,7 +1262,7 @@ void RegisterSI_Material()
 
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SetMaterialParameter",	SI_ZMATERIAL::SetParameterLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("GetMaterialParameter",	SI_ZMATERIAL::GetParameterLua);
-	SI_ZMATERIAL::g_pkScript->ExposeFunction("ParentMaterial",			SI_ZMATERIAL::ParentMaterialLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("LoadMaterial",				SI_ZMATERIAL::LoadMaterialLua);
 };
 
 
