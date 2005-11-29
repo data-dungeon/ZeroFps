@@ -73,7 +73,7 @@ void P_TcsTrigger::DrawEditor()
 		case eBOX:
 			Vector3 kMin = GetEntity()->GetWorldPosV() - m_kBoxSize;
 			Vector3 kMax = GetEntity()->GetWorldPosV() + m_kBoxSize;
-			m_pkRender->DrawAABB(kMin,kMax);
+			m_pkRender->DrawAABB(kMin,kMax,Vector3(0,1,0),2);
 			break;
 	}
 }
