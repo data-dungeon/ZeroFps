@@ -130,7 +130,13 @@ void ZSSResourceDB::RunCommand(int cmdid, const ConCommandLine* kCommand)
 			break;
 
 		case FID_RESRELOADALL:
-				ReloadAllResorces();
+			if(kCommand->m_kSplitCommand.size() >= 2)
+			{
+				ReloadAllResorces(kCommand->m_kSplitCommand[1]);		
+			}
+			else
+				ReloadAllResorces();		
+			
 			break;
 		};
 }
@@ -316,25 +322,27 @@ bool ZSSResourceDB::IsResourceLoaded(string strResName)
 
 void ZSSResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
 {
+	pkResInfo->m_pkResource->Create(pkResInfo->m_strName);
+
 	// Remove Old Resource
-	delete pkResInfo->m_pkResource;
-	pkResInfo->m_pkResource = NULL;
-
-	// Create new resource.
-	ZFResource* pkRes = CreateResource(pkResInfo->m_strName);
-
-	// Failed to create resource.
-	if(!pkRes) {
-		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", pkResInfo->m_strName.c_str());
-		return;
-		}
-
-	if(pkRes->Create(pkResInfo->m_strName.c_str()) == false) {
-		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", pkResInfo->m_strName.c_str());
-		return;
-		}
-
-	 pkResInfo->m_pkResource = pkRes;
+// 	delete pkResInfo->m_pkResource;
+// 	pkResInfo->m_pkResource = NULL;
+// 
+// 	// Create new resource.
+// 	ZFResource* pkRes = CreateResource(pkResInfo->m_strName);
+// 
+// 	// Failed to create resource.
+// 	if(!pkRes) {
+// 		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", pkResInfo->m_strName.c_str());
+// 		return;
+// 		}
+// 
+// 	if(pkRes->Create(pkResInfo->m_strName.c_str()) == false) {
+// 		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", pkResInfo->m_strName.c_str());
+// 		return;
+// 		}
+// 
+// 	 pkResInfo->m_pkResource = pkRes;
 }
 
 
@@ -348,11 +356,21 @@ void ZSSResourceDB::ReloadResource(string strResName)
 	ReloadResource( pkResInfo );
 }
 
-void ZSSResourceDB::ReloadAllResorces()
+void ZSSResourceDB::ReloadAllResorces(const string& strName)
 {
-	for(unsigned int i = 0;i<m_kResources.size();i++)
-		ReloadResource(m_kResources[i]->m_strName);
-
+	if(strName.empty())
+		for(unsigned int i = 0;i<m_kResources.size();i++)
+			ReloadResource(m_kResources[i]->m_strName);
+	else
+		for(unsigned int i = 0;i<m_kResources.size();i++)
+		{
+// 			if(m_kResources[i]->m_strName.find(strName) != -1)
+			if(strstr(m_kResources[i]->m_strName.c_str(),strName.c_str()) != 0 )
+			{
+				cout<<"Reloading :"<<m_kResources[i]->m_strName<<endl;
+				ReloadResource(m_kResources[i]->m_strName);
+			}
+		}
 
 // 	list<ZFResourceInfo*>::iterator it;
 // 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 

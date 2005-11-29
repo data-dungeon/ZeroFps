@@ -83,7 +83,7 @@ class BASIC_API ZSSResourceDB : public ZFSubSystem {
 		ZFResourceInfo*		GetResourceData(const string& strResName);
 		ZFResourceInfo* 		FindResource(const string& strResName);
 
-		void ReloadAllResorces();
+		void ReloadAllResorces(const string& strName = "");
 
 	public:
 		ZSSResourceDB();
@@ -94,7 +94,8 @@ class BASIC_API ZSSResourceDB : public ZFSubSystem {
 		bool IsValid();
 
 		void ToggleInstantExpire(bool bOn) { m_bInstantExpire = bOn; }	// Zeb: Ibland vill jag tvinga resurserna att laddas 
-																		// ur ögonblickligen. Då kör jag en Toggle :)
+																							// ur ögonblickligen. Då kör jag en Toggle :)
+																							// ibland känner jag att jag måste, då går jag på toa
 
 		// Resource Types
 		void RegisterResource(string strName, ZFResource* (*Create)());
