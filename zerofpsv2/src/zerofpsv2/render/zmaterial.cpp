@@ -159,7 +159,7 @@ ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
 ZMaterial::ZMaterial()
 {
 	m_pkScript = NULL;
-	m_pkMaterialScript = NULL;
+//  	m_pkMaterialScript = NULL;
 	
 	//setup material ID
 	m_iID = m_iNextID;
@@ -192,14 +192,14 @@ ZMaterial& ZMaterial::operator=(const ZMaterial& kOther)
 		(*pkNew) = *kOther.GetPass(i); 
 	}
 	
-	int iValues = kOther.m_kCustomValues.size();
+	int iValues = kOther.m_kMaterialParameters.size();
 	for(int i =0;i<iValues;i++)
 	{
-		m_kCustomValues.push_back(m_kCustomValues[i]);	
+		m_kMaterialParameters.push_back(kOther.m_kMaterialParameters[i]);	
 	}
 	
 	m_pkScript = 			NULL;
-	m_pkMaterialScript = NULL;	
+//  	m_pkMaterialScript = NULL;	
 	
 	
 	return (*this);
@@ -235,47 +235,63 @@ void ZMaterial::Clear()
 	
 	m_strName = "UnNamed";
 	
-	m_kCustomValues.clear();
+	m_kMaterialParameters.clear();
 	
-	if(m_pkMaterialScript)
-	{
-		delete m_pkMaterialScript;
-		m_pkMaterialScript = NULL;
-	}
+//  	if(m_pkMaterialScript)
+//  	{
+//  		cerr<<"Warning: material script not NULL"<<endl;
+//  		//delete m_pkMaterialScript;
+//  		//m_pkMaterialScript = NULL;
+//  	}
 }
 
 
-bool ZMaterial::LoadLuaMaterial(const string& strFile)
+bool ZMaterial::LoadLuaMaterial(const string& strFile,bool bDontClear)
 {
-	Clear();
+	if(!bDontClear)
+		Clear();
 
 	//get script system pointer
 	if(!m_pkScript)
 		m_pkScript = static_cast<ZSSScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZSSScriptSystem"));
 
+	if(SI_ZMATERIAL::g_pkMaterialScript)
+	{
+		cerr<<"Tried to load material, but another material is already being loaded"<<endl;
+		return false;
+	}
+		
 		
 	//create script object
-	if(!m_pkMaterialScript)
-		m_pkMaterialScript = new ZFScript;
+	SI_ZMATERIAL::g_pkMaterialScript = new ZFScript;
+// 	if(!m_pkMaterialScript)
+// 		m_pkMaterialScript = new ZFScript;
 	
 	//load script
-	if(m_pkMaterialScript->Create(strFile))
+	if(SI_ZMATERIAL::g_pkMaterialScript->Create(strFile))
 	{
  		SI_ZMATERIAL::g_pkCurrentMaterial = this;
  		m_strName = strFile;
-		if(m_pkScript->Call(m_pkMaterialScript, "Main",0,0))
+		if(m_pkScript->Call(SI_ZMATERIAL::g_pkMaterialScript, "Main",0,0))
 		{
+			delete SI_ZMATERIAL::g_pkMaterialScript;
+			SI_ZMATERIAL::g_pkMaterialScript = NULL;
 			SI_ZMATERIAL::g_pkCurrentMaterial = NULL;	
+			
+			if(m_kPasses.size() == 0)
+				cerr<<"Warning: material "<<strFile<<" has no passes"<<endl;
+			
 			return true;		
 		}
-		else
-		{
-			cout<<"Lua material "<<strFile<< " did not contain any Main() function"<<endl;
-		}
 		
-		SI_ZMATERIAL::g_pkCurrentMaterial = NULL;
+		cerr<<"Lua material "<<strFile<< " did not contain any Main() function"<<endl;
+		
 	}
 
+	
+	delete SI_ZMATERIAL::g_pkMaterialScript;
+	SI_ZMATERIAL::g_pkMaterialScript = NULL;
+	SI_ZMATERIAL::g_pkCurrentMaterial = NULL;
 	
 	return false;
 }
@@ -479,9 +495,14 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 
 bool ZMaterial::PassGetLuaDouble(char* czName,double& dTemp)
 {
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,czName,dTemp))
+	if(!SI_ZMATERIAL::g_pkMaterialScript)
 	{
-		m_pkScript->RemoveGlobal(m_pkMaterialScript->m_pkLuaState,czName);
+		cerr<<"Error: PassGetLuaDouble called but no material is being loaded"<<endl;
+	}
+
+	if(m_pkScript->GetGlobal(SI_ZMATERIAL::g_pkMaterialScript->m_pkLuaState,czName,dTemp))
+	{
+		m_pkScript->RemoveGlobal(SI_ZMATERIAL::g_pkMaterialScript->m_pkLuaState,czName);
 		return true;
 	}
 	
@@ -490,23 +511,28 @@ bool ZMaterial::PassGetLuaDouble(char* czName,double& dTemp)
 
 bool ZMaterial::PassGetLuaChar(char* czName,char* cTemp)
 {
-	if(m_pkScript->GetGlobal(m_pkMaterialScript->m_pkLuaState,czName,cTemp))
+	if(!SI_ZMATERIAL::g_pkMaterialScript)
 	{
-		m_pkScript->RemoveGlobal(m_pkMaterialScript->m_pkLuaState,czName);
+		cerr<<"Error: PassGetLuaChar called but no material is being loaded"<<endl;
+	}
+
+	if(m_pkScript->GetGlobal(SI_ZMATERIAL::g_pkMaterialScript->m_pkLuaState,czName,cTemp))
+	{
+		m_pkScript->RemoveGlobal(SI_ZMATERIAL::g_pkMaterialScript->m_pkLuaState,czName);
 		return true;
 	}
 	
 	return false;
 }
 
-bool ZMaterial::LoadIniMaterial(const string& strFile)
+bool ZMaterial::LoadIniMaterial(const string& strFile,bool bDontClear)
 {
 	
 	
 	//TRY to load ZLM material first
 	string zlmfile = strFile;
 	zlmfile = zlmfile.substr(0,zlmfile.length()-3)+string("zlm");
-	if(LoadLuaMaterial(zlmfile.c_str()))
+	if(LoadLuaMaterial(zlmfile.c_str(),bDontClear))
 		return true;
 		
 
@@ -524,7 +550,8 @@ bool ZMaterial::LoadIniMaterial(const string& strFile)
 
 	if(open)
 	{
-		Clear();
+		if(!bDontClear)
+			Clear();
 	
 		m_strName = strFile;
 		
@@ -787,7 +814,11 @@ bool ZMaterial::LoadPass(int iPass)
 
 bool ZMaterial::Create(const string& strFile)
 {
-	string strName = strFile;
+	return LoadMaterial(strFile);
+} 
+
+bool ZMaterial::LoadMaterial(string strName, bool bDontClear)
+{
 
 	if(strName.find("data/material/") == -1)
 		strName ="data/material/" + strName;
@@ -797,19 +828,18 @@ bool ZMaterial::Create(const string& strFile)
 	if(strName.substr(strName.length()-4) == ".zmt")
 	{
 		//cout<<"loading ini material"<<endl;
-	 	return LoadIniMaterial(strName.c_str());	
+	 	return LoadIniMaterial(strName.c_str(),bDontClear);	
 	}
 	else if(strName.substr(strName.length()-4) == ".zlm")
 	{
 		//cout<<"loading lua material"<<endl;
-	 	return LoadLuaMaterial(strName);		
+	 	return LoadLuaMaterial(strName,bDontClear);		
 	}
-
-	assert(0);	// This should never happen?
+	
+	cerr<<"Warning: material "<<strName<<" has invalid sufix, shuld be .zmt or .zlm"<<endl;
+	
 	return false;
-
-// 	return LoadShader(strName.c_str());
-} 
+}
 
 int ZMaterial::CalculateSize()
 {
@@ -952,6 +982,36 @@ int ZMaterial::GetTranslateEnum(const string& strEnum)
 	}
 }
 
+void ZMaterial::LuaSetParameterValue(const string& strName,const string& strValue)
+{
+	//check if already added
+	for(int i= 0;i<m_kMaterialParameters.size();i++)
+	{
+		if(m_kMaterialParameters[i].first == strName)
+		{
+			m_kMaterialParameters[i].second = strValue;
+			return;
+		}
+	}
+
+	//add value
+	m_kMaterialParameters.push_back(pair<string,string>(strName,strValue));		
+}
+
+string ZMaterial::LuaGetParameterValue(const string& strName)
+{
+	//check if already added
+	for(int i= 0;i<m_kMaterialParameters.size();i++)
+	{
+		if(m_kMaterialParameters[i].first == strName)
+			return m_kMaterialParameters[i].second;
+	}
+
+
+	cerr<<"Warning: material "<<m_strName<<" tried to get unknown material parameter "<<strName<<endl;
+
+	return "none";
+}
 
 ZFResource* Create__Material()
 {
@@ -977,6 +1037,7 @@ ZFResource* Create__Material()
 //MATERIAL LUA INTERFACE
 namespace SI_ZMATERIAL
 {
+	ZFScript*			g_pkMaterialScript = 	NULL;
 	ZMaterial*			g_pkCurrentMaterial = 	NULL;
 	int					g_iCurrentMaterialPass = -1;
 	ZSSScriptSystem*	g_pkScript = 				NULL;
@@ -1106,11 +1167,11 @@ namespace SI_ZMATERIAL
 		return 1;		
 	}					
 				
-/**	\fn CustomValue(string,string )
+/**	\fn SetParameterLua(string,string )
 		\brief adds a custom value to the material , like surface sounds
 		\relates Material
 */		
-	int CustomValueLua(lua_State* pkLua)
+	int SetParameterLua(lua_State* pkLua)
 	{
 		if(!g_pkScript->VerifyArg(pkLua,2))
 			return 0;		
@@ -1121,10 +1182,68 @@ namespace SI_ZMATERIAL
 		g_pkScript->GetArgString(pkLua,0,strValueName);
 		g_pkScript->GetArgString(pkLua,1,strValue);
 
-		g_pkCurrentMaterial->LuaMaterialAddCustomValue(strValueName,strValue);
+		g_pkCurrentMaterial->LuaSetParameterValue(strValueName,strValue);
 		return 0;		
 	}	
-				
+	
+/**	\fn GetParameterLua(string,string )
+		\brief returns parameter value
+		\relates Material
+*/		
+	int GetParameterLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,1))
+			return 0;		
+
+		string strValueName;
+		
+		//get parameter name
+		g_pkScript->GetArgString(pkLua,0,strValueName);
+
+		//get parameter value
+		string strValue = g_pkCurrentMaterial->LuaGetParameterValue(strValueName);
+
+		//return value
+		g_pkScript->AddReturnValue(pkLua, (char*)strValue.c_str(), strValue.size());
+
+		return 1;		
+	}		
+	
+/**	\fn ParentMaterialLua(string,string )
+		\brief loads a parentmaterial
+		\relates Material
+*/		
+	int ParentMaterialLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,1))
+			return 0;		
+
+		string strMaterial;
+		
+		//get parameter name
+		g_pkScript->GetArgString(pkLua,0,strMaterial);
+
+		//backup material script pointer and material name
+		ZFScript* pkScriptBakup = 		g_pkMaterialScript;
+		ZMaterial* pkMaterialBakup = 	g_pkCurrentMaterial;
+		string strNameBakup = 			g_pkCurrentMaterial->GetName();
+		
+		//clear current material script		
+		g_pkMaterialScript = NULL;				
+		
+		//load parent material 
+		if(!g_pkCurrentMaterial->LoadMaterial(strMaterial,true))
+		{
+			cerr<<"Warning: parent material "<<strMaterial<<" could not be loaded for material "<<strNameBakup<<endl;
+		}
+		
+		//restore pointers and name
+		g_pkMaterialScript = 	pkScriptBakup;
+		g_pkCurrentMaterial = 	pkMaterialBakup;
+		g_pkCurrentMaterial->SetName(strNameBakup);
+
+		return 0;		
+	}		
 }
 
 
@@ -1141,7 +1260,9 @@ void RegisterSI_Material()
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportSpecMap",		SI_ZMATERIAL::SupportSpecMapLua);
 	SI_ZMATERIAL::g_pkScript->ExposeFunction("SupportNormalMap",	SI_ZMATERIAL::SupportNormalMapLua);
 
-	SI_ZMATERIAL::g_pkScript->ExposeFunction("CustomValue",			SI_ZMATERIAL::CustomValueLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("SetMaterialParameter",	SI_ZMATERIAL::SetParameterLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("GetMaterialParameter",	SI_ZMATERIAL::GetParameterLua);
+	SI_ZMATERIAL::g_pkScript->ExposeFunction("ParentMaterial",			SI_ZMATERIAL::ParentMaterialLua);
 };
 
 

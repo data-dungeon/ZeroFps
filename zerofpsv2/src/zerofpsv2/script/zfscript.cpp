@@ -574,8 +574,7 @@ bool ZSSScriptSystem::Run(ZFScript* pkScript)
 	{
 		string test = lua_tostring(pkScript->m_pkLuaState, -1);
 
-		printf("Failed to load script: \"%s\", %s!\n", 
-			pkScript->m_szScriptName, test.c_str());
+		cerr<<"Failed to load script: "<<pkScript->m_szScriptName<<", "<<test.c_str()<<endl;
 		return false;
 	}
 
@@ -1052,8 +1051,8 @@ bool ZSSScriptSystem::VerifyArg(lua_State* pkLua, int iRequiredNumOfArg)
 	string strName = GetFunctionName(pkLua, 0);
 	string strFileLine = GetCallAdress(pkLua);
 
-	cout << "Error: '" << strName << "' does not take " << iNumOfArg << " arguments. ";
-	cout << strFileLine << endl;
+	cerr << "Error: '" << strName << "' does not take " << iNumOfArg << " arguments. ";
+	cerr << strFileLine << endl;
 	return false;
 }
 

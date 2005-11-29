@@ -99,10 +99,8 @@ class RENDER_API ZMaterial : public ZFResource
 		
 		vector<ZMaterialSettings*> 	m_kPasses;				///< material passes
 		ZFIni									m_kIni;					///< inifile
-		ZFScript*							m_pkMaterialScript;
 		
-		vector<pair<string,string> >	m_kCustomValues;		///< vector containing custom material values, like surface sounds
-		
+		vector<pair<string,string> >	m_kMaterialParameters;	///< vector containing parameters, to parents
 		
 		static map<string,int> 		m_kEnums;		//enums for loading		
 		
@@ -137,35 +135,41 @@ class RENDER_API ZMaterial : public ZFResource
 		bool Create(const string& strName);	//	for resource system
 		int  CalculateSize();				
 	
-		int GetID() 					{return m_iID;};
-		int GetNrOfPasses() const 	{ return int(m_kPasses.size()); };
+		int GetID() 								{ return m_iID;						};
+		int GetNrOfPasses() const 				{ return int(m_kPasses.size());	};
+		string GetName() const					{ return m_strName;					};
+		void SetName(const string& strName)	{	m_strName = strName;				};
 		ZMaterialSettings* GetPass(int iPass) const;
 		ZMaterialSettings* AddPass();
 				
-		bool LoadIniMaterial(const string& strFile);
-		bool LoadLuaMaterial(const string& strFile);
+		bool LoadMaterial(string strName,bool bDontClear=false);
+		bool LoadIniMaterial(const string& strFile,bool bDontClear);
+		bool LoadLuaMaterial(const string& strFile,bool bDontClear);
 		
 		void Clear();
 	
 		
 		//material loading stuff 
 		void LuaMaterialEndPass(int iPass);
-		void LuaMaterialAddCustomValue(const string& strName,const string& strValue)	{	m_kCustomValues.push_back(pair<string,string>(strName,strValue));}
+		void LuaSetParameterValue(const string& strName,const string& strValue);
+		string LuaGetParameterValue(const string& strName);
+		
 				
 	friend class ZShaderSystem;
-
 };
 
 class ZSSZeroFps;
 
 namespace SI_ZMATERIAL
 {
+	extern RENDER_API ZFScript*			g_pkMaterialScript;
 	extern RENDER_API ZMaterial*			g_pkCurrentMaterial;	
 	extern RENDER_API int					g_iCurrentMaterialPass;	
 	
 	extern RENDER_API ZSSScriptSystem*	g_pkScript;
 	extern RENDER_API ZSSZeroFps*			g_pkZeroFps;
 	extern RENDER_API ZShaderSystem*		g_pkZShaderSystem;
+	
 	
 }
 
