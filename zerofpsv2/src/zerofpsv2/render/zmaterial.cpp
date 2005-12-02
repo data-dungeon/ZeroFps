@@ -264,19 +264,26 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile,bool bDontClear)
 		
 	//create script object
 	SI_ZMATERIAL::g_pkMaterialScript = new ZFScript;
-// 	if(!m_pkMaterialScript)
-// 		m_pkMaterialScript = new ZFScript;
+	
 	
 	//load script
 	if(SI_ZMATERIAL::g_pkMaterialScript->Create(strFile))
 	{
  		SI_ZMATERIAL::g_pkCurrentMaterial = this;
+ 		SI_ZMATERIAL::g_bMaterialLoadError = false;
+ 		
  		m_strName = strFile;
 		if(m_pkScript->Call(SI_ZMATERIAL::g_pkMaterialScript, "Main",0,0))
 		{
 			delete SI_ZMATERIAL::g_pkMaterialScript;
 			SI_ZMATERIAL::g_pkMaterialScript = NULL;
 			SI_ZMATERIAL::g_pkCurrentMaterial = NULL;	
+			
+			//check if there was any material loading errors
+			if(SI_ZMATERIAL::g_bMaterialLoadError)
+			{
+				return false;
+			}
 			
 			if(m_kPasses.size() == 0)
 				cerr<<"Warning: material "<<strFile<<" has no passes"<<endl;
@@ -296,14 +303,14 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile,bool bDontClear)
 	return false;
 }
 
-void ZMaterial::LuaMaterialEndPass(int iPass)
+bool ZMaterial::LuaMaterialEndPass(int iPass)
 {
 	ZMaterialSettings* newpass =  GetPass(iPass);
 	
 	if(!newpass)
 	{
 		cout<<"ERROR: LuaMaterialEndPass  missin pass , this shuld not hapen"<<endl;
-		return;	
+		return false;	
 	}
 		
 	char 		ctemp[128];	
@@ -319,15 +326,23 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 	if(PassGetLuaChar("slfragmentshader",ctemp))
 		strSLFS = ctemp;
 	if(!strSLVS.empty() || !strSLFS.empty())
-		newpass->m_pkSLP->SetRes(strSLVS+string("#")+strSLFS+string(".glsl"));
+	{
+		if(!newpass->m_pkSLP->SetRes(strSLVS+string("#")+strSLFS+string(".glsl")))
+			return false;
+	}
 
 	// ARB vertex program
 	if(PassGetLuaChar("vertexprogram",ctemp))
-		newpass->m_pkVP->SetRes(ctemp);		
+	{
+		if(!newpass->m_pkVP->SetRes(ctemp))
+			return false;
+	}
 	// ARB fragment program	
 	if(PassGetLuaChar("fragmentprogram",ctemp))
-		newpass->m_pkFP->SetRes(ctemp);
-	
+	{
+		if(!newpass->m_pkFP->SetRes(ctemp))
+			return false;
+	}
 			
 	//textures
 	if(PassGetLuaChar("texture0",ctemp))
@@ -491,6 +506,8 @@ void ZMaterial::LuaMaterialEndPass(int iPass)
 	if(PassGetLuaDouble("matshininess",dtemp))
 		newpass->m_fShininess = float(dtemp);
 		
+		
+	return true;
 }
 
 bool ZMaterial::PassGetLuaDouble(char* czName,double& dTemp)
@@ -1040,6 +1057,7 @@ namespace SI_ZMATERIAL
 	ZFScript*			g_pkMaterialScript = 	NULL;
 	ZMaterial*			g_pkCurrentMaterial = 	NULL;
 	int					g_iCurrentMaterialPass = -1;
+	bool					g_bMaterialLoadError = 	false;
 	ZSSScriptSystem*	g_pkScript = 				NULL;
 	ZSSZeroFps*			g_pkZeroFps = 				NULL;
 	ZShaderSystem*		g_pkZShaderSystem = 		NULL;
@@ -1089,10 +1107,19 @@ namespace SI_ZMATERIAL
 			return 0;
 		}			
 					
+		//return value
+		double dRet = 1;	
+					
 		//cout<<"ending pass"<<endl;
-		g_pkCurrentMaterial->LuaMaterialEndPass(g_iCurrentMaterialPass);		
+		if(!g_pkCurrentMaterial->LuaMaterialEndPass(g_iCurrentMaterialPass))
+		{
+			g_bMaterialLoadError = true;
+			dRet = 0;
+		}	
 						
-		return 0;		
+						
+		g_pkScript->AddReturnValue(pkLua, dRet);		
+		return 1;		
 	}		
 	
 /**	\fn SupportGLSLProgram( )
@@ -1231,10 +1258,14 @@ namespace SI_ZMATERIAL
 		//clear current material script		
 		g_pkMaterialScript = NULL;				
 		
+		//return value
+		double dRet = 1;					
+		
 		//load parent material 
 		if(!g_pkCurrentMaterial->LoadMaterial(strMaterial,true))
 		{
 			cerr<<"Warning: parent material "<<strMaterial<<" could not be loaded for material "<<strNameBakup<<endl;
+			dRet = 0;
 		}
 		
 		//restore pointers and name
@@ -1242,7 +1273,8 @@ namespace SI_ZMATERIAL
 		g_pkCurrentMaterial = 	pkMaterialBakup;
 		g_pkCurrentMaterial->SetName(strNameBakup);
 
-		return 0;		
+		g_pkScript->AddReturnValue(pkLua, dRet);				
+		return 1;		
 	}		
 }
 

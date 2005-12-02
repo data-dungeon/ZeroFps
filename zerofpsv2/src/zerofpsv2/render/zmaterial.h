@@ -95,18 +95,18 @@ options can be givven to manipulate a texture by entering them like "[Options]#[
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:		
-		ZSSScriptSystem*					m_pkScript;
-		
+		ZSSScriptSystem*					m_pkScript;				
 		vector<ZMaterialSettings*> 	m_kPasses;				///< material passes
+		
+		//used for loading
 		ZFIni									m_kIni;					///< inifile
 		
-		vector<pair<string,string> >	m_kMaterialParameters;	///< vector containing parameters, to parents
+		vector<pair<string,string> >	m_kMaterialParameters;	///< vector containing parameters, to parents		
 		
-		static map<string,int> 		m_kEnums;		//enums for loading		
-		
+		static map<string,int> 			m_kEnums;		//enums for loading				
 		static int	m_iNextID;							//next created material will get this id
-		int			m_iID;								//uniq id for this material
 		
+		int			m_iID;								//uniq id for this material		
 		string		m_strName;
 		
 		
@@ -150,7 +150,7 @@ class RENDER_API ZMaterial : public ZFResource
 	
 		
 		//material loading stuff 
-		void LuaMaterialEndPass(int iPass);
+		bool LuaMaterialEndPass(int iPass);
 		void LuaSetParameterValue(const string& strName,const string& strValue);
 		string LuaGetParameterValue(const string& strName);
 		
@@ -165,6 +165,8 @@ namespace SI_ZMATERIAL
 	extern RENDER_API ZFScript*			g_pkMaterialScript;
 	extern RENDER_API ZMaterial*			g_pkCurrentMaterial;	
 	extern RENDER_API int					g_iCurrentMaterialPass;	
+	extern RENDER_API bool					g_bMaterialLoadError;		///< set to true after material load failed		
+
 	
 	extern RENDER_API ZSSScriptSystem*	g_pkScript;
 	extern RENDER_API ZSSZeroFps*			g_pkZeroFps;

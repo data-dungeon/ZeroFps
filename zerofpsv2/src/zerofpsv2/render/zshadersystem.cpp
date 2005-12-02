@@ -652,33 +652,7 @@ void ZShaderSystem::SetupPass(int iPass)
  		glEnable(GL_ALPHA_TEST);
   		glAlphaFunc(GL_GREATER, 0.1);	
 	}
-	
-// 	if(m_iForceAlphaTest == -1)
-// 	{
-// 		if(pkSettings->m_bAlphaTest)
-// 		{
-// 			glEnable(GL_ALPHA_TEST);
-// 			glAlphaFunc(GL_GEQUAL, 0.05);
-// 		}
-// 		else
-// 			glDisable(GL_ALPHA_TEST);
-// 		
-// 	}
-// 	else if(m_iForceAlphaTest == 0)
-// 	{
-// 		glDisable(GL_ALPHA_TEST);		
-// 	}
-// 	else if(m_iForceAlphaTest == 1)
-// 	{
-// 		glEnable(GL_ALPHA_TEST);
-// 		glAlphaFunc(GL_GEQUAL, 0.1);			
-// 	}
-// 	else if(m_iForceAlphaTest == 2) //used for shadowmap comparison
-// 	{
-//  		glEnable(GL_ALPHA_TEST);
-//   		glAlphaFunc(GL_GREATER, 0.1);	
-// 	}
-	
+
 		
 	//setup tus
 	for(int i = 3;i>=0;i--)
