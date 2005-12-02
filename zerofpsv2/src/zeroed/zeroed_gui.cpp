@@ -550,7 +550,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(!m_pkIni->Open(strMenuFile.c_str(), false))
 			{
-				cout << "Failed to load ini file for menu!\n" << endl;
+				cerr << "Warning: Failed to load ini file for menu!\n" << endl;
 				return;
 			}
 

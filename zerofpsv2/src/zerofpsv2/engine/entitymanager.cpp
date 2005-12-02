@@ -215,7 +215,7 @@ void ZSSEntityManager::Link(Entity* pkEntity,int iId)
 	{
 		if(IsLinked(pkEntity))
 		{
-			cout<<"WARNING: Entity is already linked"<<endl;
+			cerr<<"WARNING: Entity is already linked"<<endl;
 			return;	
 		}
 	}

@@ -86,7 +86,7 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(!m_pkIni->Open("data/script/gui/menu_madview.txt", false))
 			{
-				cout << "Failed to load ini file for menu!\n" << endl;
+				cerr << "Warning: Failed to load ini file for menu!\n" << endl;
 				return;
 			}
 

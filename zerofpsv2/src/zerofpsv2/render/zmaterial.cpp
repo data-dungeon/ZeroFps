@@ -840,7 +840,7 @@ bool ZMaterial::LoadMaterial(string strName, bool bDontClear)
 	if(strName.find("data/material/") == -1)
 		strName ="data/material/" + strName;
 	else
-		cout<<"Warning: old resource path:"<<strName<<endl;
+		cerr<<"Warning: old resource path:"<<strName<<endl;
 	
 	if(strName.substr(strName.length()-4) == ".zmt")
 	{

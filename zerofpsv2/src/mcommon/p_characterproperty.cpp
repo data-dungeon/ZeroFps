@@ -96,7 +96,7 @@ void Skill::UpdateFromScript()
 {
 	if(!m_pkScriptFileHandle->IsValid())
 	{
-		cout<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
+		cerr<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
 		return;	
 	}
 
@@ -111,7 +111,7 @@ void Skill::UpdateFromScript()
 	
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Update",args))
 	{
-		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
+		cerr<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
 		return;
 	}
 	
@@ -186,7 +186,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 {
 	if(!m_pkScriptFileHandle->IsValid())
 	{
-		cout<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
+		cerr<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
 		return -1;	
 	}
 	
@@ -326,7 +326,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	//call use function
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
 	{
-		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
+		cerr<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
 		return -1;
 	}			
 	
@@ -2274,13 +2274,13 @@ bool P_CharacterProperty::ChangeSkill(const string& strSkillScript,int iValue)
 			{
 				if(pkParent->GetLevel() < 1)
 				{
-					cout<<"WARNING: Parent "<<pkSkill->GetParent()<<" have to be at least level 1 to level a child "<<strSkillScript<<endl;
+					cerr<<"WARNING: Parent "<<pkSkill->GetParent()<<" have to be at least level 1 to level a child "<<strSkillScript<<endl;
 					return false;
 				}
 			}
 			else
 			{
-				cout<<"WARNING:"<<strSkillScript<<" missing parent skill "<<pkSkill->GetParent()<<endl;
+				cerr<<"WARNING:"<<strSkillScript<<" missing parent skill "<<pkSkill->GetParent()<<endl;
 			}
 		}
 						
@@ -2323,7 +2323,7 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 	{
 		if(!GetSkillPointer(strParentSkill))
 		{
-			cout<<"WARNING: parent skill "<<strParentSkill<<" not found when adding skill "<<strSkillScript<<endl;
+			cerr<<"WARNING: parent skill "<<strParentSkill<<" not found when adding skill "<<strSkillScript<<endl;
 //			return false;
 		}
 	}

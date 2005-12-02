@@ -495,14 +495,14 @@ bool Mad_Core::Create(const string& strName)
 	if(MadFileName.find("data/mad/") == -1)
 		MadFileName = "data/mad/"+MadFileName;
  	else
- 		cout<<"Warning: old resource path:"<<MadFileName<<endl;
+ 		cerr<<"Warning: old resource path:"<<MadFileName<<endl;
 	
 	strcpy(Name,MadFileName.c_str());
 
 
 	ZFVFile kZFile;
 	if( !kZFile.Open(MadFileName,0,false) ) {
-		cout << "Failed to find" << MadFileName.c_str();
+		cerr << "Warning: Failed to find" << MadFileName.c_str();
 		cout << "\n";
 		return false;
 		}

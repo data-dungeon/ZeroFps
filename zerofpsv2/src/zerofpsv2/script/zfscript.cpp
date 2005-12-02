@@ -125,7 +125,6 @@ void ZSSScriptSystem::Close()
 		delete m_vkConstantVariables[i];
 	}
 
-	printf("ZSSScriptSystem::Close\n");
 }
 
 void ZSSScriptSystem::ExposeModule(lua_CFunction o_Function, lua_State* pkState)

@@ -1400,7 +1400,7 @@ bool ZGuiApp::CreateMenu(char* szFileName, char* szName, bool bPopup)
 	ZFIni kINI;
 	if(!kINI.Open(szFileName, false))
 	{
-		cout << "Failed to load ini file for menu!\n" << endl;
+		cerr << "Warning: Failed to load ini file for menu!\n" << endl;
 		return false;
 	}
 

@@ -53,7 +53,8 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 
 	if ( (pkFile = pkVFFileSys->Open( strFileName, 0, false)) == NULL)
 	{
-		printf("Failed to load ini file %s\n", strFileName);
+		cerr << "Warning: Failed to load ini file "<<strFileName<<endl;
+		//printf("Failed to load ini file %s\n", strFileName);
 		return (m_bFileReady = false);
 	}
 

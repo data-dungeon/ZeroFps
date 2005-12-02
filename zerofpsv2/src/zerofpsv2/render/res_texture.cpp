@@ -386,7 +386,7 @@ Image* ResTexture::LoadImage(const string& strFileName)
 	else
 	{
 		strFile = strFileName;
-		cout<<"Warning: old resource path:"<<strFileName<<endl;
+		cerr<<"Warning: old resource path:"<<strFileName<<endl;
 	}
 
 
