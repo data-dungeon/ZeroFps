@@ -508,6 +508,8 @@ bool Image::load_tga(FILE *fp)
 	if(data)	delete [] data;
 	if(map)		delete [] map;
 	
+	if(head.image_desc & 32) Flip(false, true);	// 
+
 	//Save("test.tga", true);
 	return true;
 }
