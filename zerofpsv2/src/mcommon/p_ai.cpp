@@ -628,11 +628,9 @@ void P_AI::Save(ZFIoInterface* pkPackage)
 void P_AI::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	if(iVersion == 2)
-	{
 		pkPackage->Read(m_iState);
-		
-		
-	}
+
+	SetState(m_iState);
 }
 // 
 // 
