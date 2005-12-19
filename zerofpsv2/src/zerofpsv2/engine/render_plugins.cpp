@@ -96,6 +96,171 @@ int ExposureCalculator::GetMinSize(int iRes)
 	return 256;
 }
 
+// --------- debug render
+
+DebugRenderPlugin::DebugRenderPlugin() : RenderPlugin("DebugRender")
+{
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
+	m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
+
+	
+	m_pkLineMaterial = new ZMaterial;
+	m_pkLineMaterial->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+	m_pkLineMaterial->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+	m_pkLineMaterial->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
+	m_pkLineMaterial->GetPass(0)->m_bLighting = false;
+	m_pkLineMaterial->GetPass(0)->m_bColorMaterial = true;
+}
+
+DebugRenderPlugin::~DebugRenderPlugin()
+{
+	delete m_pkLineMaterial;
+}
+
+
+bool DebugRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState& kRenderState)
+{	
+
+	//push matrises	
+	m_pkZShaderSystem->MatrixPush();
+	
+	//apply model matrix
+	m_pkZShaderSystem->MatrixMult(kRenderPackage.m_kModelMatrix);
+	
+	//bind material
+	m_pkZShaderSystem->BindMaterial(kRenderPackage.m_pkMaterial);
+	
+	
+	//SETUP MESH --------------
+	MeshData& kMesh = kRenderPackage.m_kMeshData;
+	
+	
+	const DataPointer* pkBoneMatrixPointer = NULL;
+	const DataPointer* pkBoneIndexPointer = NULL;
+	
+	const Vector3* 		pkVertexPointer = NULL;
+	const Vector3* 		pkNormalPointer = NULL;
+	const unsigned int*	pkIndexPointer = NULL;
+	int iVertises = 0;
+	
+	//setup new pointers from pointer array
+	int iPointers = kMesh.m_kDataPointers.size();
+	for(int i = 0;i<iPointers;i++)
+	{
+		switch(kMesh.m_kDataPointers[i].m_iType)
+		{
+			case VERTEX_POINTER: 
+			{
+				pkVertexPointer = (const Vector3*)kMesh.m_kDataPointers[i].m_pkPointer;
+				iVertises = kMesh.m_kDataPointers[i].m_iElements;
+				break;
+			}
+			case NORMAL_POINTER: 
+				pkNormalPointer = (const Vector3*)kMesh.m_kDataPointers[i].m_pkPointer;
+				break;		
+			case INDEX_POINTER: 
+				pkIndexPointer = (const unsigned int*)kMesh.m_kDataPointers[i].m_pkPointer;
+				break;					
+		
+			case BONEMATRIX_POINTER: 
+				pkBoneMatrixPointer = &kMesh.m_kDataPointers[i];
+				break;					
+			case BONEINDEX_POINTER: 
+				pkBoneIndexPointer = &kMesh.m_kDataPointers[i];
+				break;					
+		
+		}
+	}	
+	
+	if(!kMesh.m_kVertises.empty())
+	{ 	
+		pkVertexPointer = &(kMesh.m_kVertises[0]);
+		iVertises = kMesh.m_kVertises.size();
+	}
+	if(!kMesh.m_kNormals.empty()) 	pkNormalPointer =	&(kMesh.m_kNormals[0]);
+	if(!kMesh.m_kIndexs.empty()) 	pkIndexPointer =	&(kMesh.m_kIndexs[0]);
+						
+	if(!pkVertexPointer || !pkNormalPointer)
+		return true;
+						
+	if(!pkIndexPointer)
+		iVertises = kMesh.m_iNrOfDataElements;				
+						
+ 	if(iVertises == 0)
+ 	{
+ 		cout<<"WARNING: number of vertises is 0"<<endl;
+ 		return true;
+ 	}
+						
+						
+	//bone transformation
+	if(pkBoneMatrixPointer && pkBoneIndexPointer)
+	{
+		DoBoneTransformation(iVertises,*pkBoneMatrixPointer, *pkBoneIndexPointer,&pkVertexPointer,&pkNormalPointer);
+	}							
+						
+	vector<Vector3>	kNormals;
+	vector<Vector4>	kNormalColors;
+	
+	//loop all vertises and build normal array
+	for(int i=0;i<iVertises;i++)
+	{
+		kNormals.push_back(pkVertexPointer[i]);
+		kNormals.push_back(pkVertexPointer[i] + pkNormalPointer[i]*0.2 );			
+		kNormalColors.push_back(Vector4(1,0,0,1));
+		kNormalColors.push_back(Vector4(0,1,0,1));
+	}
+						
+	//setup and draw normals
+	bool bUDGS = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
+	m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+	
+	m_pkZShaderSystem->ResetPointers();	
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&kNormals[0]);
+	m_pkZShaderSystem->SetPointer(COLOR_POINTER,&kNormalColors[0]);
+	m_pkZShaderSystem->SetNrOfVertexs(kNormals.size());
+	m_pkZShaderSystem->BindMaterial(m_pkLineMaterial);
+	m_pkZShaderSystem->DrawArray(LINES_MODE);
+	m_pkZShaderSystem->UseDefaultGLSLProgram(bUDGS);
+				
+	m_pkZShaderSystem->MatrixPop();
+	
+	return true;
+}
+
+void DebugRenderPlugin::DoBoneTransformation(int iVertises,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes,const Vector3** pkVertises,const Vector3** pkNormals)
+{
+	static vector<Vector3>	kVertises;
+	static vector<Vector3>	kNormals;
+			
+	const Vector3* pkOldVertises 			= *pkVertises;
+	const Vector3* pkOldNormals 			= *pkNormals;
+	const int* pkBoneIndexes 				= (const int*) kBoneIndexes.m_pkPointer;	
+	const Matrix4*	pkMatrix					= ( Matrix4*) kBoneMatrises.m_pkPointer;
+		 	
+	 	
+	//resize arrays if they are to small
+	if(kVertises.size() < iVertises)
+	{
+		kVertises.resize(iVertises);
+		kNormals.resize(iVertises);
+	}	 	
+		
+	//loop all elements and transform them
+	for(int i = 0;i<iVertises;i++)
+	{
+		kVertises[i] = pkMatrix[ pkBoneIndexes[i] ].VectorTransform( pkOldVertises[i] );
+		kNormals[i]  = pkMatrix[ pkBoneIndexes[i] ].VectorRotate( pkOldNormals[i] ); 
+	}
+	
+		
+	*pkVertises = &kVertises[0];
+	*pkNormals = &kNormals[0]; 
+}
+
+
+
 // ---------DefaultRenderPlugin
 
 bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState& kRenderState)
@@ -207,7 +372,6 @@ bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState&
 	return true;
 }
 
-// VimRp2
 void DefaultRenderPlugin::DoBoneTransformation(const RenderPackage& kRenderPackage,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes)
 {
 	static vector<Vector3>	kVertises;
@@ -217,7 +381,7 @@ void DefaultRenderPlugin::DoBoneTransformation(const RenderPackage& kRenderPacka
 	const Vector3* pkOldNormals 			= (const Vector3*) m_pkZShaderSystem->GetPointer(NORMAL_POINTER);	
 	const int*	pkIndexes		 			= (const int*)	m_pkZShaderSystem->GetPointer(INDEX_POINTER);
 	const int* pkBoneIndexes 				= (const int*) kBoneIndexes.m_pkPointer;	
-	const Matrix4*	pkMatrix					= ( Matrix4*) kBoneMatrises.m_pkPointer;
+	const Matrix4*	pkMatrix					= (const Matrix4*) kBoneMatrises.m_pkPointer;
 	
 
 	//find nr of vertiess (HACK)
@@ -571,6 +735,10 @@ bool InterfaceRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 
 //---- create functions
 
+Plugin* Create_DebugRenderPlugin()
+{
+	return (Plugin*)new DebugRenderPlugin();
+};
 
 Plugin* Create_InterfaceRender()
 {

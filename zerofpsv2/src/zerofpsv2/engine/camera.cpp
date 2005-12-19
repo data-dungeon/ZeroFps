@@ -72,6 +72,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 // 	m_kRenderState.AddPlugin("Bloom");
 	m_kRenderState.AddPlugin("InterfaceRender");
 	m_kRenderState.AddPlugin("HdrExposure");
+// 	m_kRenderState.AddPlugin("DebugRender");
 	
 	
 	//setup default shaders

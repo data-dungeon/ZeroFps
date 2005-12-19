@@ -185,6 +185,7 @@ bool ZSSRenderEngine::StartUp()
 	m_kPluginFactory.RegisterPlugin("HdrExposure",Create_ExposureCalculator);
 	m_kPluginFactory.RegisterPlugin("Bloom",Create_BloomPostPlugin);
 	m_kPluginFactory.RegisterPlugin("InterfaceRender",Create_InterfaceRender);
+	m_kPluginFactory.RegisterPlugin("DebugRender",Create_DebugRenderPlugin);
 
 
 	return true;

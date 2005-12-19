@@ -32,6 +32,24 @@ enum BonePointers
 	BONEINDEX_POINTER,
 };		
 		
+class DebugRenderPlugin : public RenderPlugin
+{	
+	private:
+		ZShaderSystem*		m_pkZShaderSystem;
+		ZSSLight*			m_pkLight;
+		ZSSZeroFps*			m_pkZeroFps;
+		ZMaterial*			m_pkLineMaterial;
+	
+		void DoBoneTransformation(int iVertises,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes,const Vector3** pkVertises,const Vector3** pkNormals);
+	
+	public:					
+		DebugRenderPlugin();	
+		~DebugRenderPlugin();
+		
+		bool Call(RenderPackage& kRenderPackage, const RenderState& kRenderState);
+};
+Plugin* Create_DebugRenderPlugin();
+		
 class DefaultRenderPlugin : public RenderPlugin
 {
 	private:
@@ -53,6 +71,8 @@ class DefaultRenderPlugin : public RenderPlugin
 		bool Call(RenderPackage& kRenderPackage, const RenderState& kRenderState);
 };
 Plugin* Create_DefaultRenderPlugin();
+
+
 
 class DefaultPreRenderPlugin : public PreRenderPlugin
 {	

@@ -556,9 +556,8 @@ void Mad_Modell::Draw_All_RenderP(RenderPackage kBaseRp)
 				m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(BONEMATRIX_POINTER, kFinalMatrixTransform ));
 				m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(BONEINDEX_POINTER, &m_pkRawMesh->akBoneConnections[0],GetNumVertices()));
 			}			
-			
-						
-			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER, GetVerticesPtr()));
+									
+			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER, GetVerticesPtr(),GetNumVertices()));
 			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0, GetTextureCooPtr()));
 			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(NORMAL_POINTER, GetNormalsPtr()));
 
