@@ -131,7 +131,7 @@ public:
 
 	void UpdateBones();
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
-	void Draw_All_RenderP(RenderPackage kBaseRp);	
+	void Draw_All_RenderP();	
 	
 	float GetRadius();
 	float GetSize();

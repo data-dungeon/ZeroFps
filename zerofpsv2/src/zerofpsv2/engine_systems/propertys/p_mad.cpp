@@ -109,28 +109,48 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 	
 	
 	// For now we rebuild all renderpackages every time we draw, cry for me fps.
-	m_kRenderPackage.clear();
+// 	m_kRenderPackage.clear();
+// 
+// 	// Set up a basic transform to be used in all renderpackages.
+// 	RenderPackage	m_kRP;
+// 	m_kRP.m_kModelMatrix.Identity();
+// 	m_kRP.m_kModelMatrix*= m_pkEntity->GetWorldRotM();		
+// 	m_kRP.m_kModelMatrix.Scale( m_fScale );
+// 	m_kRP.m_kModelMatrix.Translate(kPos);
+// 	m_kRP.m_kCenter = kPos;
+// 	m_kRP.m_fRadius = GetRadius();
+// // 	m_kRP.m_kAABBMin =  Vector3(-0.5,-0.5,-0.5);
+// // 	m_kRP.m_kAABBMax =  Vector3(0.5,0.5,0.5);
+// // 	m_kRP.m_bOcculusionTest = true;
+// 	m_kRP.m_pkLightProfile = &m_kLightProfile;
 
-	// Set up a basic transform to be used in all renderpackages.
-	RenderPackage	m_kRP;
-	m_kRP.m_kModelMatrix.Identity();
-	m_kRP.m_kModelMatrix*= m_pkEntity->GetWorldRotM();		
-	m_kRP.m_kModelMatrix.Scale( m_fScale );
-	m_kRP.m_kModelMatrix.Translate(kPos);
-	m_kRP.m_kCenter = kPos;
-	m_kRP.m_fRadius = GetRadius();
-// 	m_kRP.m_kAABBMin =  Vector3(-0.5,-0.5,-0.5);
-// 	m_kRP.m_kAABBMax =  Vector3(0.5,0.5,0.5);
-// 	m_kRP.m_bOcculusionTest = true;
-	m_kRP.m_pkLightProfile = &m_kLightProfile;
+	static Matrix4 kModelMatrix;
+	kModelMatrix.Identity();
+	kModelMatrix*= m_pkEntity->GetWorldRotM();		
+	kModelMatrix.Scale( m_fScale );
+	kModelMatrix.Translate(kPos);
 
 	DoAnimationUpdate();
 	UpdateBones();					// And we build the bones also every frame.
-	Draw_All_RenderP( m_kRP );		// Fill in renderpackages.			
+	Draw_All_RenderP( );		// Fill in renderpackages.			
 
 	// Add Render packages.
 	for(int i=0; i<m_kRenderPackage.size(); i++)
 	{
+		RenderPackage& kRP = m_kRenderPackage[i];
+		kRP.m_kModelMatrix = kModelMatrix;
+		kRP.m_kCenter = kPos;
+		kRP.m_fRadius = GetRadius();
+		kRP.m_kAABBMin =  Vector3(-kRP.m_fRadius,-kRP.m_fRadius,-kRP.m_fRadius);
+		kRP.m_kAABBMax =  Vector3(kRP.m_fRadius,kRP.m_fRadius,kRP.m_fRadius);
+ 		kRP.m_bOcculusionTest = true;			
+		kRP.m_pkLightProfile = &m_kLightProfile;	
+		
+		if(i != 0)
+			kRP.m_pkOcculusionParent = &m_kRenderPackage[0];
+
+		
+	
 		kRenderPackages.push_back(& m_kRenderPackage[i] );			
 	}
 }

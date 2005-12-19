@@ -23,6 +23,9 @@ ExposureCalculator::~ExposureCalculator()
 
 bool ExposureCalculator::Call(const RenderState& kRenderState)
 {			
+	if(!m_pkZShaderSystem->UseHDR())
+		return true;
+		
 	m_fExposureFactor = GetExposureFactor(kRenderState);
 	m_pkZShaderSystem->SetExposure(m_fExposureFactor);
 	
@@ -322,18 +325,20 @@ bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState&
 	{
 		//setup pointer
 		m_pkZShaderSystem->SetPointer((POINTER_TYPE)kMesh.m_kDataPointers[i].m_iType,kMesh.m_kDataPointers[i].m_pkPointer);										
+				
+		switch(kMesh.m_kDataPointers[i].m_iType)
+		{
+			case INDEX_POINTER: 
+				bIndexed = true;
+				break;
+			case BONEMATRIX_POINTER:
+				pkBoneMatrixPointer = &kMesh.m_kDataPointers[i];
+				break;
 		
-		//check if if theres an index list
-		if(kMesh.m_kDataPointers[i].m_iType == INDEX_POINTER)
-			bIndexed = true;
-			
-		//check for bone matrix pointer
-		if(kMesh.m_kDataPointers[i].m_iType == BONEMATRIX_POINTER)
-			pkBoneMatrixPointer = &kMesh.m_kDataPointers[i];
-		
-		//check for bone index pointer
-		if(kMesh.m_kDataPointers[i].m_iType == BONEINDEX_POINTER)
-			pkBoneIndexPointer = &kMesh.m_kDataPointers[i];
+			case BONEINDEX_POINTER:
+				pkBoneIndexPointer = &kMesh.m_kDataPointers[i];
+				break;
+		}
 	}
 	
 	// setup new pointers from none pointer data, this will override any privius set pointers
@@ -359,7 +364,7 @@ bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState&
 	
 	
 	//bone transformation
-	if(pkBoneMatrixPointer && pkBoneIndexPointer)
+	if(kRenderPackage.m_pkMaterial->m_bBoneTransform && pkBoneMatrixPointer && pkBoneIndexPointer)
 	{
 		DoBoneTransformation(kRenderPackage,*pkBoneMatrixPointer, *pkBoneIndexPointer);
 	}

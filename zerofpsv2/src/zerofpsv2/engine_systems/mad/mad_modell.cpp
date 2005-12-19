@@ -518,12 +518,14 @@ void Mad_Modell::UpdateBones()
 }
 
 // VimRp - Input is a base renderpackage with transform information set.
-void Mad_Modell::Draw_All_RenderP(RenderPackage kBaseRp)
+void Mad_Modell::Draw_All_RenderP()
 {
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
 	int iNumOfMesh = m_kActiveMesh.size();	
 	int iNumOfSubMesh;
+
+	int iRenderPackage = 0;
 
 	pkCore->fRenderDistance = fRenderDistance;
 	for(int iM = 0; iM <iNumOfMesh; iM++) 
@@ -540,40 +542,52 @@ void Mad_Modell::Draw_All_RenderP(RenderPackage kBaseRp)
 		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]), m_pkRawMesh);
 	
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
-		RenderPackage	m_kRP;
-		m_kRP = kBaseRp;	// Copy basic transform to new render package.
+// 		RenderPackage	m_kRP;
+// 		m_kRP = kBaseRp;	// Copy basic transform to new render package.
 
 
 
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
 		{
+			iRenderPackage++;
+		
+			//grow package list if needed
+			if(m_kRenderPackage.size() < iRenderPackage)
+				m_kRenderPackage.resize(iRenderPackage);
+		
+			RenderPackage& kRP = m_kRenderPackage[iRenderPackage-1];
+		
 			SelectSubMesh(iSubM);
-			m_kRP.m_kMeshData.m_kDataPointers.clear();
+			
+			kRP.m_kMeshData.m_kDataPointers.clear();
 			
 			// If this is skelleton animated we add matrix/jointlinks.
 			if(!pkCore->GetMeshByID(m_kActiveMesh[iM])->bNotAnimated && iActiveAnimation != MAD_NOANIMINDEX)
 			{
-				m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(BONEMATRIX_POINTER, kFinalMatrixTransform ));
-				m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(BONEINDEX_POINTER, &m_pkRawMesh->akBoneConnections[0],GetNumVertices()));
+				kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(BONEMATRIX_POINTER, kFinalMatrixTransform ));
+				kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(BONEINDEX_POINTER, &m_pkRawMesh->akBoneConnections[0],GetNumVertices()));
 			}			
 									
-			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER, GetVerticesPtr(),GetNumVertices()));
-			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0, GetTextureCooPtr()));
-			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(NORMAL_POINTER, GetNormalsPtr()));
+			kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER, GetVerticesPtr(),GetNumVertices()));
+			kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0, GetTextureCooPtr()));
+			kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(NORMAL_POINTER, GetNormalsPtr()));
 
-			m_kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(INDEX_POINTER, GetFacesPtr()));
-			m_kRP.m_kMeshData.m_iNrOfDataElements = GetNumFaces() * 3;
-			m_kRP.m_kMeshData.m_ePolygonMode = TRIANGLES_MODE;					 
+			kRP.m_kMeshData.m_kDataPointers.push_back(DataPointer(INDEX_POINTER, GetFacesPtr()));
+			kRP.m_kMeshData.m_iNrOfDataElements = GetNumFaces() * 3;
+			kRP.m_kMeshData.m_ePolygonMode = TRIANGLES_MODE;					 
 
-			ZFResourceHandle* pkRes;
-			pkRes = m_pkMesh->GetLODMesh(iLodIndex)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+			ZFResourceHandle* pkRes = m_pkMesh->GetLODMesh(iLodIndex)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
 			ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());		
-			m_kRP.m_pkMaterial = pkMaterial; 			
+			kRP.m_pkMaterial = pkMaterial; 			
 	
 			g_iNumOfMadSurfaces += GetNumFaces();
-			m_kRenderPackage.push_back( m_kRP );			
+			//m_kRenderPackage.push_back( m_kRP );			
 		}
 	}
+	
+	//shrik package list
+	if(m_kRenderPackage.size() > iRenderPackage)
+		m_kRenderPackage.resize(iRenderPackage);
 
 	m_pkRawMesh = NULL;
 }
