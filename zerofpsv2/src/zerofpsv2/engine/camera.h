@@ -11,6 +11,7 @@
 #include "application.h"
 #include "../engine_systems/common/zshadow.h"
 #include "../engine_systems/propertys/p_camera.h"
+#include "zssrenderengine.h"
 
 #include "i_camera.h"
 
@@ -25,14 +26,6 @@ enum ENGINE_API RENDERMODE
 	RENDER_SHADOWED		=2,
 	RENDER_NOSHADOWFIRST	=4,
 	RENDER_NOSHADOWLAST	=8,
-
-
-/*
-	RENDER_NORMAL		=1,
-	RENDER_SHADOWMAP	=2,
-	RENDER_SHADOW		=4,	
-	RENDER_NONE			=8,
-	RENDER_NOSHADOWED	=16,*/
 };
 
 /** \brief	A Camera (ViewPoint) in ZeroFPS
@@ -64,12 +57,14 @@ class ENGINE_API Camera : public I_Camera
 	private:	
 
 		ZSSEntityManager*	m_pkEntityMan;
-		ZSSRender*		m_pkRender;
-		ZShaderSystem*	m_pkZShaderSystem;
+		ZSSRender*			m_pkRender;
+		ZShaderSystem*		m_pkZShaderSystem;
 		ZSSZeroFps*			m_pkZeroFps;
-		ZShadow*			m_pkZShadow;
-		ZSSLight*		m_pkLight;
-		TextureManager* m_pkTexMan;
+		ZShadow*				m_pkZShadow;
+		ZSSLight*			m_pkLight;
+		TextureManager* 	m_pkTexMan;
+		ZSSRenderEngine*	m_pkZSSRenderEngine;
+		
 		
 		//matrises and position
 		Matrix4	m_kCamProjectionMatrix;
@@ -182,12 +177,18 @@ class ENGINE_API Camera : public I_Camera
 		void		MakeBloom();
 		
 		float		GetExposureFactor();
+		
+		void		SetupRenderState();
+		
 	public:
 		bool				m_bForceFullScreen;	// Ignore own settings and render to fullscreen.
 		static bool		m_bDrawOrthoGrid;		// Draw grid when rendering from ortho cameras.
 		static float	m_fGridSpace;			// Distance between each grid line.
 		static bool		m_bGridSnap;			// Snap postions to grid when use Camera::SnapToGrid
 
+		//render state
+		RenderState	m_kRenderState;
+				
 				
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 		~Camera();

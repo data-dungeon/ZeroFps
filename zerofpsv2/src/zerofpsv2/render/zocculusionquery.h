@@ -33,7 +33,7 @@ class RENDER_API ZOcculusionTest : private ZOcculusionQuery
 	public:
 		ZOcculusionTest();	
 		bool Visible(const Vector3& kMin,const Vector3& kMax);
-		
+		bool GetCurrentResult() {	return m_bVisible;	};
 };
 
 #endif

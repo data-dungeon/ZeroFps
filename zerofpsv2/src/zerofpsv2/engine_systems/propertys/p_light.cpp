@@ -47,6 +47,28 @@ P_Light::P_Light() : Property("P_Light")
 	m_kPropertyValues.push_back(PropertyValues("FlareSize",VALUETYPE_FLOAT,(void*)&m_fFlareSize));
 	m_kPropertyValues.push_back(PropertyValues("FlareMaterial",VALUETYPE_STRING,(void*)&m_strMaterial));
 		
+		
+	//setup renderpackage ---------
+	static float afVerts[] = {	-0.5,	0.5,	
+							 			-0.5,	-0.5,	
+							 			0.5,	-0.5,	
+										0.5,	0.5};
+	
+	static float afUvs[] = {	0,1,
+							 			1,1,
+										1,0,
+										0,0};	
+										
+	//setup pointers
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.clear();
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX2D_POINTER,afVerts));
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0,afUvs));
+	m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = 4;
+	m_kRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;					 
+	
+	m_kRenderPackage.m_bOcculusionTest = true;
+	m_kRenderPackage.m_kAABBMin.Set(-0.1,-0.1,-0.1);
+	m_kRenderPackage.m_kAABBMax.Set(0.1,0.1,0.1);										
 }
 
 P_Light::~P_Light()
@@ -60,6 +82,33 @@ void P_Light::Init()
 {
 	TurnOn();
 
+}
+
+void P_Light::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
+{			
+	//Distance culling
+	if(kRenderState.m_kCameraPosition.DistanceTo(m_pkLightSource->kPos) > m_pkZeroFps->GetViewDistance())
+		return;
+
+	if(!kRenderState.m_kFrustum.PointInFrustum(m_pkLightSource->kPos))
+		return;
+
+
+	static Matrix4 ble;
+	ble = kRenderState.m_kCameraRotation;
+	ble.Transponse();
+	
+	//setup orientation
+	m_kRenderPackage.m_kModelMatrix.Identity();
+  	m_kRenderPackage.m_kModelMatrix*= ble;
+	m_kRenderPackage.m_kModelMatrix.Scale(m_fFlareSize);	
+	m_kRenderPackage.m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());	
+	m_kRenderPackage.m_kCenter = m_pkEntity->GetWorldPosV();	
+
+	//material
+	m_kRenderPackage.m_pkMaterial = (ZMaterial*)m_pkMaterial->GetResourcePtr();
+			
+	kRenderPackages.push_back(&m_kRenderPackage);
 }
 
 void P_Light::Update() 
@@ -111,13 +160,14 @@ void P_Light::DrawFlare()
 	{
 		pkTestMat = new ZMaterial;
 	
-		pkTestMat->GetPass(0)->m_kTUs[0]->SetRes("clear.tga");
+		pkTestMat->GetPass(0)->m_pkTUs[0]->SetRes("clear.tga");
 		pkTestMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkTestMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;
 		pkTestMat->GetPass(0)->m_bDepthMask = 				false;
 		pkTestMat->GetPass(0)->m_bBlend = 					true;	
 		pkTestMat->GetPass(0)->m_iBlendSrc = 				SRC_ALPHA_BLEND_SRC;
 		pkTestMat->GetPass(0)->m_iBlendDst = 				ONE_MINUS_SRC_ALPHA_BLEND_DST;	
+		pkTestMat->GetPass(0)->m_bLighting=					false;
 	}
 
 

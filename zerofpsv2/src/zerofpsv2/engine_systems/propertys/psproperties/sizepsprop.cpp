@@ -4,7 +4,7 @@
 
 // ------------------------------------------------------------------------------------------
 
-void SizePSProp::Update()
+void SizePSProp::Update(const RenderState* pkRenderState)
 {
 	// Update size for particles
 

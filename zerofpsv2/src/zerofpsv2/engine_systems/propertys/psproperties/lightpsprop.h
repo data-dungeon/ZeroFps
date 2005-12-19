@@ -11,7 +11,7 @@ private:
 	Vector4 m_kColorChange;
 
 public:
-	void Update();
+	void Update(const RenderState* pkRenderState);
 	LightPSProp ( PSystem *pkParent );
 };
 

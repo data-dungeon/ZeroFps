@@ -4,14 +4,14 @@
 //#include "../../engine_systems/common/psystem.h"
 
 class PSystem;
-
+class RenderState;
 class ParticleProperty
 {
 protected:
 	PSystem *m_pkParent;
 
 public:
-	virtual void Update() = 0;
+	virtual void Update(const RenderState* pkRenderState) = 0;
 };
 
 

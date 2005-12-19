@@ -25,26 +25,29 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 		string				m_strMaterial;	
 		LightProfile		m_kLightProfile;
 		
+		RenderPackage		m_kRenderPackage;
+		RenderPackage		m_kDebugRenderPackage;
+		
 		int		m_iTexture;		
 		string	m_sTexture;
 		Vector3	m_kSize;
 		int		m_iStep;
 		float		m_fWave;
 
-		float		m_fBlendValue;
-		bool		m_bBlendDirUp;
+		bool		m_bHaveMesh;
 		
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		void HaveSetValue( const string& kValueName);		
 		
 		void DrawSurface();
-		
+		void GenerateMesh();
 	public:
 		P_WaterRender();
 		void Init();
 
 		void SetMaterial(const string& strMaterial);
 		
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
 		void Update();
 
 		void Save(ZFIoInterface* pkPackage);

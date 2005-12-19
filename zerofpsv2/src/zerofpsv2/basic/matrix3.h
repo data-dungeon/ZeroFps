@@ -6,6 +6,7 @@
 #include "string.h"
 #include "math.h"
 
+
 class Matrix4;
 class Quaternion;
 

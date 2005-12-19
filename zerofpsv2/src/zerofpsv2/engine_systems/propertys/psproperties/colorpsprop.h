@@ -13,7 +13,7 @@ private:
 		m_fB,
 		m_fA;
 public:
-	void Update();
+	void Update(const RenderState* pkRenderState);
 	ColorPSProp ( PSystem *pkParent );
 };
 

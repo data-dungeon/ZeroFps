@@ -1451,6 +1451,65 @@ Entity* ZSSEntityManager::CloneEntity(int iNetID)
 	return pkObjClone;
 }
 
+void ZSSEntityManager::GetAABBTreeRenderPackages(vector<RenderPackage*>&	kPackages,const RenderState& kRenderState)
+{
+	if(!m_kbDrawAABBTree.GetBool())
+		return;
+
+	static Vector3 kLeaf(1,0.5,0);
+	static Vector3 kCulled(0,0.5,0.5);
+	static Vector3 kBranch(0.5,0.5,1);
+
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
+		pkLine->GetPass(0)->m_bLighting = false;
+		pkLine->GetPass(0)->m_bColorMaterial = true;
+	}	
+	
+	static RenderPackage* pkAABBTree = NULL;
+	if(!pkAABBTree)
+	{
+		pkAABBTree = new RenderPackage;	
+		pkAABBTree->m_pkMaterial = pkLine;
+		pkAABBTree->m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	}	
+	
+	//clear zone vertex data	
+	pkAABBTree->m_kMeshData.m_kVertises.clear();
+	pkAABBTree->m_kMeshData.m_kColors.clear();	
+	
+	
+	vector<AABBGraphInfo>	kAABBs;
+	m_pkSceneAABBTree->GetAABBList(&kAABBs);
+	
+	for(int i = 0;i<kAABBs.size();i++)
+	{
+		if(kAABBs[i].m_bLeaf)
+		{	
+			if(kAABBs[i].m_bInFrustum)
+			{
+				m_pkRender->AddAABB(*pkAABBTree,kAABBs[i].m_kMin,kAABBs[i].m_kMax,kLeaf);
+			}
+			else	
+				m_pkRender->AddAABB(*pkAABBTree,kAABBs[i].m_kMin,kAABBs[i].m_kMax,kCulled);
+		}
+		else
+			m_pkRender->AddAABB(*pkAABBTree,kAABBs[i].m_kMin,kAABBs[i].m_kMax,kBranch);
+	}
+	
+	
+	if(!pkAABBTree->m_kMeshData.m_kVertises.empty())
+	{
+ 		pkAABBTree->m_kMeshData.m_iNrOfDataElements = pkAABBTree->m_kMeshData.m_kVertises.size();
+		kPackages.push_back(pkAABBTree);
+	}
+}
+
 void ZSSEntityManager::DrawSceneAABBTree()
 {
 	if(!m_kbDrawAABBTree.GetBool())
@@ -1485,12 +1544,139 @@ void ZSSEntityManager::DrawSceneAABBTree()
 		Inactive:	Red.
 		Active:		Green.
 		EditMode:	Blue.
-eeeeeeereere*/
+*/
 void ZSSEntityManager::DrawZones()
 {
 	DrawZones(&m_kZones);
 }
 
+void ZSSEntityManager::GetZonesDebugRenderPackages(vector<RenderPackage*>&	kPackages,const RenderState& kRenderState,vector<ZoneData>* pkZoneList)
+{	
+	if(!m_kbDrawZones.GetBool())
+		return;
+
+	if(!pkZoneList)
+		pkZoneList = &m_kZones;
+
+	vector<ZoneData>& kZoneList = *pkZoneList;
+
+
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
+		pkLine->GetPass(0)->m_bLighting = false;
+		pkLine->GetPass(0)->m_bColorMaterial = true;
+	}		
+	
+	static ZMaterial* pkMatText = NULL;	
+	if(!pkMatText)
+	{
+		pkMatText = new ZMaterial;
+		pkMatText->GetPass(0)->m_pkTUs[0]->SetRes("text/defguifont.tga");
+		pkMatText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		pkMatText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		pkMatText->GetPass(0)->m_bLighting = 				false;		
+		pkMatText->GetPass(0)->m_bColorMaterial = 		true;
+		pkMatText->GetPass(0)->m_kVertexColor =			Vector3(1,0,1);
+		pkMatText->GetPass(0)->m_bFog = 						false;		
+		pkMatText->GetPass(0)->m_bAlphaTest =				true;		
+		pkMatText->GetPass(0)->m_bDepthTest = 				true;	
+	}
+
+	static ZGuiFont* m_pkFont=NULL;
+	if(!m_pkFont)
+	{
+		m_pkFont = new ZGuiFont("defguifont");
+		m_pkFont->Create("/data/textures/text/defguifont.fnt",-1);	
+	}
+		
+	static RenderPackage* pkZones;
+	if(!pkZones)
+	{
+		pkZones = new RenderPackage;	
+		pkZones->m_pkMaterial = pkLine;
+		pkZones->m_kMeshData.m_ePolygonMode = QUADS_MODE;
+		
+	}
+	
+	static RenderPackage* pkText;
+	if(!pkText)
+	{
+		pkText = new RenderPackage;	
+		pkText->m_pkMaterial = pkMatText;
+		pkText->m_kMeshData.m_ePolygonMode = QUADS_MODE;		
+	
+	}	
+	
+	//clear zone vertex data	
+	pkZones->m_kMeshData.m_kVertises.clear();
+	pkZones->m_kMeshData.m_kColors.clear();
+	
+ 	//clear text vertexdata
+ 	pkText->m_kMeshData.m_kVertises.clear();
+ 	pkText->m_kMeshData.m_kTexture[0].clear();
+	
+	
+	//collect zones data
+	Vector3 kMin,kMax;
+	for(unsigned int i=0;i<kZoneList.size();i++) 
+	{
+		if((*pkZoneList)[i].m_iStatus == EZS_UNUSED)
+			continue;
+		
+		kMin = (*pkZoneList)[i].m_kPos;
+		kMax = (*pkZoneList)[i].m_kPos + (*pkZoneList)[i].m_kSize / 2;
+		kMin.x -= int( (*pkZoneList)[i].m_kSize.x / 2 );
+		kMin.y -= int( (*pkZoneList)[i].m_kSize.y / 2 );
+		kMin.z -= int( (*pkZoneList)[i].m_kSize.z / 2 );
+
+		kMax.x += (*pkZoneList)[i].m_kSize.x/2 - int((*pkZoneList)[i].m_kSize.x)/2;
+		kMax.y += (*pkZoneList)[i].m_kSize.y/2 - int((*pkZoneList)[i].m_kSize.y)/2;
+		kMax.z += (*pkZoneList)[i].m_kSize.z/2 - int((*pkZoneList)[i].m_kSize.z)/2;	
+				
+		switch(kZoneList[i].m_iStatus)
+		{
+			case EZS_LOADED:
+				m_pkRender->AddAABB(*pkZones,kMin,kMax,Vector4(0,1,0,1));
+				
+				//print enviroment
+				if(m_kbDrawEnviroments.GetBool())
+					if(!((*pkZoneList)[i].m_strEnviroment.empty()))
+						m_pkRender->AddTextBillboard(*pkText,kRenderState,(*pkZoneList)[i].m_kPos,1,(*pkZoneList)[i].m_strEnviroment,pkMatText,m_pkFont,true);
+				
+				break;
+		
+			case EZS_UNLOADED:
+				m_pkRender->AddAABB(*pkZones,kMin,kMax,Vector4(1,1,1,1));
+				break;
+
+			case EZS_CACHED:
+				m_pkRender->AddAABB(*pkZones,kMin,kMax,Vector4(0,0,1,1));
+				break;								
+		}
+	}
+				
+	
+	
+	//add zone text if theres any
+	if(!pkText->m_kMeshData.m_kVertises.empty())
+	{
+		pkText->m_kMeshData.m_iNrOfDataElements = pkText->m_kMeshData.m_kVertises.size();
+		kPackages.push_back(pkText);
+	}
+	
+	//add zone graph package if any data
+	if(!pkZones->m_kMeshData.m_kVertises.empty())
+	{
+		pkZones->m_kMeshData.m_iNrOfDataElements = pkZones->m_kMeshData.m_kVertises.size();	
+		kPackages.push_back(pkZones);
+	}
+	
+}
 
 void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 {
@@ -1552,7 +1738,7 @@ void ZSSEntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 	if(!pkMatText)
 	{
 		pkMatText = new ZMaterial;
-		pkMatText->GetPass(0)->m_kTUs[0]->SetRes("text/defguifont.tga");
+		pkMatText->GetPass(0)->m_pkTUs[0]->SetRes("text/defguifont.tga");
 		pkMatText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkMatText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		pkMatText->GetPass(0)->m_bLighting = 				false;		

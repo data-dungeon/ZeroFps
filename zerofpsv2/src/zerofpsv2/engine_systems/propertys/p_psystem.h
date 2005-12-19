@@ -18,9 +18,11 @@ class ENGINE_SYSTEMS_API P_PSystem : public Property
 		vector<ActiveSystem> 			m_kPSystems;
 		ZShaderSystem*	m_pkZShaderSystem;
 
-		bool UpdatePS(int iPS);
+		bool UpdatePS(int iPS,const RenderState*	pkRenderState);
 		
 	public:
+	
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
 		void Update();
 		vector<PropertyValues>& GetPropertyValues();
 

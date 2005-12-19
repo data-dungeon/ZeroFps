@@ -36,7 +36,7 @@ class ZShadow;
 class ZSSAudioSystem;
 class Network;
 class ZSSAStar;
-
+class ZSSRenderEngine;
 
 // #define	ZFGP_OBJECTSTATE		1
 // #define	ZFGP_CLIENTSTATE		2
@@ -127,6 +127,10 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 			FID_MASSSPAWN,		// Some weird shit
 			FID_POS, 			// Dumps x,y,z of camera
 			FID_PROFILEMODE,
+			
+			FID_CAMERALIST,			// List rendered cameras
+			FID_CAMERAADDPLUGIN,		// Add a pre render plugin to a camera			
+			FID_CAMERAREMOVEPLUGIN,	// Add a pre render plugin to a camera			
 		};
 
 		ZFVersion		m_kVersion;
@@ -254,9 +258,10 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		Application*			m_pkApp;						///< Application object.
 		ZShaderSystem*			m_pkZShaderSystem;		///< zerofps shader system
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
-		ZSSAStar*				m_pkAStar;
-		Tcs*						m_pkTcs;
-		ZShadow*					m_pkZShadow;
+		ZSSAStar*				m_pkAStar;					///< Path finding subsystem
+		Tcs*						m_pkTcs;						///< Tiny Collission system, rigid body physics system
+		ZShadow*					m_pkZShadow;				///< old stencil shadow system
+		ZSSRenderEngine*		m_pkZSSRenderEngine;		///< Render engine, handles all ingame rendering
 
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS
@@ -270,16 +275,13 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		ConVar	m_kbRunWorldSim;
 
 		bool		m_bAlwaysWork;								///< Paramater that should be set if engine should work (ie. Update) no matter if the application is minimized or not.
-		//int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 		int		m_iNumOfMadRender;
 		
 		int		m_iOcculedObjects;
 		int		m_iNotOcculedObjects;
-		//bool		m_bOcculusionCulling;
 		ConVar	m_kbOcculusionCulling;
 		
-		//bool		m_bAiShowInfo;
 		ConVar	m_kAI_ShowInfo;
 		
 		

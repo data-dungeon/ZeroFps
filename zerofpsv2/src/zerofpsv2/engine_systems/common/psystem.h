@@ -36,103 +36,104 @@ struct Particle
 	bool m_bActive;
 };
 
-class PSystem {
+class PSystem 
+{
+		
+	private:
+		vector<ParticleProperty*> m_kPSProperties;
 	
-private:
-
-
-	vector<ParticleProperty*> m_kPSProperties;
-
-	ZShaderSystem *m_pkShader;
-	ZSSZeroFps* m_pkFps;
-
-	P_PSystem* m_pkParent;
-
-	Vector3 
-		m_kPosition;
+		ZShaderSystem *m_pkShader;
+		ZSSZeroFps* m_pkFps;
+		ZSSRender* m_pkRender;
 	
-	Matrix4 m_kRotation;
-
-	LightProfile		m_kLightProfile;
-	ZSSLight*			m_pkLight;
-
-	float 
-		*m_pfVertices,
-		*m_pfColors,
-		m_fFrameTime,
-		m_fTimeSinceLastCreatedParticle,
-		m_fAge,
-		m_fAgePercent,
-		m_fLastTime;
-
-	Vector2* m_pkTexCoords;
-
-	vector<Particle> m_kParticles;
-
-	int 		
-		m_iActiveParticles,
-		m_uiFirstParticle,
-		m_uiParticles,
-		m_uiLastParticle;
-
-	unsigned int* m_pfIndices;
-
-	bool 
-		m_bFirstRun,
-		m_bInsideFrustum;
-
-	PSystemType* m_pkPSystemType;
-
-public:
-	Vector3 m_kPosOffset;
-
-	void TestInsideFrustum();
-	bool Draw();
-	bool Update( Vector3 kNewPosition, Matrix4 kNewRotation );
-	void AddPSProperty ( ParticleProperty *pkPSProperty );
-
-   float Age()                               { return m_fAge; }
-   void SetAge (float fAge)                  { m_fAge = fAge; }
-
-	float* GetVertices()								{ return m_pfVertices; }
-	float* GetColors()								{ return m_pfColors;   }
-	Vector2* GetTexCoords()							{ return m_pkTexCoords;}
-	unsigned int* GetIndices()						{ return m_pfIndices;  }
-
-	Vector3 GetPosition()							{ return m_kPosition;  }
-	Matrix4 GetRotation()							{ return m_kRotation;  }
-
-	void SetVertices (float *pfVertices)		{ m_pfVertices = pfVertices;   }
-	void SetTexCoords (Vector2 *pkTexCoords)	{ m_pkTexCoords = pkTexCoords; }
-	void SetColors	(float *pfColors)				{ m_pfColors = pfColors;       }
-	void SetIndices (unsigned int *pfIndices)	{ m_pfIndices = pfIndices;		 }
-
-	int Particles()									{ return m_uiLastParticle - m_uiFirstParticle + 1;	 }
-	int Start()											{ return m_uiFirstParticle; }
-	int End()											{ return m_uiLastParticle + 1; }
-
-	void SetParticles (unsigned int uiNrOf)	{ m_uiParticles = uiNrOf;		 }
-
-	void SetParent(P_PSystem* pkP_PSystem)		{ m_pkParent = pkP_PSystem; }
-
-	void ResetParticle (int iParticleIndex, float fTimeOffset);
-	void DisableParticle ( int iParticleIndex );
-
-	// Make PSystem have particles from start
-	void TimeoffSet ();
-   
-	PSystem(PSystemType* pkPSystemType);
-	~PSystem();
-
-	friend class MovePSProp;
-	friend class ColorPSProp;
-	friend class SizePSProp;
-   friend class TexturePSProp;
-	friend class LightPSProp;
-
-	PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
-
-   friend class P_PSystem;
+		P_PSystem* m_pkParent;
+	
+		Vector3 m_kPosition;	
+		Matrix4 m_kRotation;
+	
+		LightProfile		m_kLightProfile;
+		RenderPackage		m_kRenderPackage;
+		ZSSLight*			m_pkLight;
+	
+		float 
+			*m_pfVertices,
+			*m_pfColors,
+			m_fFrameTime,
+			m_fTimeSinceLastCreatedParticle,
+			m_fAge,
+			m_fAgePercent,
+			m_fLastTime;
+	
+		Vector2* m_pkTexCoords;
+		
+		vector<Vector3>	m_kNormals;
+		vector<Particle>	m_kParticles;
+	
+		int 		
+			m_iActiveParticles,
+			m_uiFirstParticle,
+			m_uiParticles,
+			m_uiLastParticle;
+	
+		unsigned int* m_pfIndices;
+	
+		bool 
+			m_bFirstRun,
+			m_bInsideFrustum;
+	
+		PSystemType* m_pkPSystemType;
+	
+	public:
+		Vector3 m_kPosOffset;
+	
+		void TestInsideFrustum(const RenderState& kRenderState);
+		RenderPackage* GetRenderPackage(const RenderState& kRenderState);
+		bool Draw();
+		bool Update(const Vector3& kNewPosition,const Matrix4& kNewRotation ,const RenderState* pkRenderState);
+		void AddPSProperty ( ParticleProperty *pkPSProperty );
+	
+		float Age()                               { return m_fAge; }
+		void SetAge (float fAge)                  { m_fAge = fAge; }
+	
+		float* GetVertices()								{ return m_pfVertices; }
+		float* GetColors()								{ return m_pfColors;   }
+		Vector2* GetTexCoords()							{ return m_pkTexCoords;}
+		unsigned int* GetIndices()						{ return m_pfIndices;  }
+	
+		Vector3 GetPosition()							{ return m_kPosition;  }
+		Matrix4 GetRotation()							{ return m_kRotation;  }
+	
+		void SetVertices (float *pfVertices)		{ m_pfVertices = pfVertices;   }
+		void SetTexCoords (Vector2 *pkTexCoords)	{ m_pkTexCoords = pkTexCoords; }
+		void SetColors	(float *pfColors)				{ m_pfColors = pfColors;       }
+		void SetIndices (unsigned int *pfIndices)	{ m_pfIndices = pfIndices;		 }
+	
+		int Particles()									{ return m_uiLastParticle - m_uiFirstParticle + 1;	 }
+		int Start()											{ return m_uiFirstParticle; }
+		int End()											{ return m_uiLastParticle + 1; }
+	
+		void SetParticles (unsigned int uiNrOf)	{ m_uiParticles = uiNrOf;		 }
+	
+		void SetParent(P_PSystem* pkP_PSystem)		{ m_pkParent = pkP_PSystem; }
+	
+		void ResetParticle (int iParticleIndex, float fTimeOffset);
+		void DisableParticle ( int iParticleIndex );
+	
+		// Make PSystem have particles from start
+		void TimeoffSet ();
+		
+		PSystem(PSystemType* pkPSystemType);
+		~PSystem();
+	
+		friend class MovePSProp;
+		friend class ColorPSProp;
+		friend class SizePSProp;
+		friend class TexturePSProp;
+		friend class LightPSProp;
+	
+		PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
+	
+		friend class P_PSystem;
 
 };
 

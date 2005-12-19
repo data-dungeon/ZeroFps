@@ -44,7 +44,7 @@ class BASIC_API Matrix4
 		float &operator[](const int i);				
 		void SetAxis(int iAxisNum, const Vector3& kNewAxis);
 		Vector3 GetAxis(int iAxisNum);
-		Vector3 GetPos();
+		Vector3 GetPos() const;
 		void SetPos(const Vector3& kPos);
 
 // Assignment 
@@ -75,8 +75,8 @@ class BASIC_API Matrix4
 		Vector4 operator* (const Vector4 &f);
 
 // Matrix/Vector 
-		Vector3 VectorIRotate (const Vector3& kVec);
-		Vector3 VectorRotate (const Vector3& kVec);
+		Vector3 VectorIRotate (const Vector3& kVec) const;
+		Vector3 VectorRotate (const Vector3& kVec) const;
 		Vector3 VectorTransform (const Vector3& kVec) const;
 
 // Common Matrix Methods
@@ -97,6 +97,7 @@ class BASIC_API Matrix4
 		void Rotate(float fX, float fY, float fZ);
 		void Rotate(const Vector3& kRot);
 		void Scale(float fX, float fY, float fZ);
+		void Scale(float fScale);
 		void Scale(const Vector3& kScale);
 		void OldTranslate(float x, float y, float z);		
 		void Translate(float fX, float fY, float fZ);
@@ -153,7 +154,7 @@ inline Vector3 Matrix4::GetAxis(int iAxisNum)
 	return Vector3(RowCol[iAxisNum][0], RowCol[iAxisNum][1], RowCol[iAxisNum][2]);
 }
 
-inline Vector3 Matrix4::GetPos()
+inline Vector3 Matrix4::GetPos() const
 {
 	return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
 }
@@ -413,7 +414,7 @@ inline Vector4 Matrix4::operator*(const Vector4 &f)
 }
 
 // Common Matrix Methods
-inline  Vector3 Matrix4::VectorIRotate (const Vector3& kVec)
+inline  Vector3 Matrix4::VectorIRotate (const Vector3& kVec) const
 {
 	static Vector3 res;
 	
@@ -423,7 +424,7 @@ inline  Vector3 Matrix4::VectorIRotate (const Vector3& kVec)
 	return res;
 }
 
-inline Vector3 Matrix4::VectorRotate (const Vector3& kVec)
+inline Vector3 Matrix4::VectorRotate (const Vector3& kVec) const
 {
 	static Vector3 kV3;			
 	kV3.Set(	kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0],

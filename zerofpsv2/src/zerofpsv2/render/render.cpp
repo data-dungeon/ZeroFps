@@ -396,6 +396,122 @@ void ZSSRender::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kP
 	m_pkZShaderSystem->MatrixPop();
 }
 
+void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState& kRenderState,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
+{
+	float fXScale = 1.0/pkFont->m_iTextureWidth;
+	float fYScale = 1.0/pkFont->m_iTextureHeight;
+
+	float fUVX,fUVY,fUVW,fUVH; 
+	float fW,fH;
+	float fXPos=0;
+	
+	if(bCentered)
+	{
+ 		fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+ 		fXPos = -( float(strText.length())/1.5 ) * fW;
+	}	
+	
+	static Matrix4 ble;
+	ble = kRenderState.m_kCameraRotation;
+	ble.Transponse();
+	
+	Vector3 kXOffset = ble.VectorTransform(Vector3(1,0,0));
+	Vector3 kYOffset = ble.VectorTransform(Vector3(0,1,0));
+	
+ 	Vector3 kMove;
+ 	Vector3 kWidth;
+	Vector3 kHeight;
+ 			
+ 			
+	int iCharacters = strText.length();
+	for(int i = 0;i<iCharacters;i++)
+	{
+		int iChar = int(strText[i]);				
+		if(iChar == 32)
+		{
+			fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+			fXPos += fW;
+			continue;
+		}
+		
+		fUVX =  float(pkFont->m_aChars[iChar].iPosX) * fXScale;
+		fUVY = -(float(pkFont->m_aChars[iChar].iPosY) * fYScale);
+		fUVW =  float(pkFont->m_aChars[iChar].iSizeX) * fXScale;
+		fUVH =  float(pkFont->m_aChars[iChar].iSizeY) * fYScale;
+	
+		fW	= float(pkFont->m_aChars[iChar].iSizeX) / float(pkFont->m_iRowHeight);
+		fH	= float(pkFont->m_aChars[iChar].iSizeY) / float(pkFont->m_iRowHeight);
+ 		
+ 		kMove = kPos + kXOffset * fXPos;
+ 		kWidth = kXOffset * fW;
+ 		kHeight = kYOffset * fH;
+ 		
+ 		kRenderPackage.m_kMeshData.m_kVertises.push_back(kMove ); 		
+ 		kRenderPackage.m_kMeshData.m_kVertises.push_back(kMove +kWidth); 		
+ 		kRenderPackage.m_kMeshData.m_kVertises.push_back(kMove +kHeight+kWidth ); 		
+ 		kRenderPackage.m_kMeshData.m_kVertises.push_back(kMove +kHeight); 		
+		
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX,fUVY-fUVH));
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX+fUVW,fUVY-fUVH));
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX+fUVW,fUVY));
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX,fUVY));
+		
+		fXPos += fW;		
+	}
+
+}
+
+
+void ZSSRender::AddText(RenderPackage& kRenderPackage,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
+{
+	float fXScale = 1.0/pkFont->m_iTextureWidth;
+	float fYScale = 1.0/pkFont->m_iTextureHeight;
+
+	int iChar;
+	float fUVX,fUVY,fUVW,fUVH; 
+	float fW,fH;
+	float fXPos=0;
+	
+	if(bCentered)
+	{
+ 		fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+ 		fXPos = -( float(strText.length())/1.5 ) * fW;
+	}	
+	
+	int iCharacters = strText.length();
+	for(int i = 0;i<iCharacters;i++)
+	{
+		iChar = int(strText[i]);				
+		if(iChar == 32)
+		{
+			fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+			fXPos += fW;
+			continue;
+		}
+		
+		fUVX =  float(pkFont->m_aChars[iChar].iPosX) * fXScale;
+		fUVY = -(float(pkFont->m_aChars[iChar].iPosY) * fYScale);
+		fUVW =  float(pkFont->m_aChars[iChar].iSizeX) * fXScale;
+		fUVH =  float(pkFont->m_aChars[iChar].iSizeY) * fYScale;
+	
+		fW	= float(pkFont->m_aChars[iChar].iSizeX) / float(pkFont->m_iRowHeight);
+		fH	= float(pkFont->m_aChars[iChar].iSizeY) / float(pkFont->m_iRowHeight);
+ 		
+		kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos+Vector3(fXPos			,0 ,0));
+		kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos+Vector3(fXPos + fW	,0 ,0));
+		kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos+Vector3(fXPos + fW	,fH,0));
+		kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos+Vector3(fXPos  		,fH,0));
+		
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX,fUVY-fUVH));
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX+fUVW,fUVY-fUVH));
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX+fUVW,fUVY));
+		kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(fUVX,fUVY));
+		
+		fXPos += fW;		
+	}
+	
+}
+
 void ZSSRender::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
 {
 	static Matrix4 temp;
@@ -642,7 +758,7 @@ void ZSSRender::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLi
 	if(!pkConsole)
 	{
 		pkConsole = new ZMaterial;
-		pkConsole->GetPass(0)->m_kTUs[0]->SetRes("text/devstr.bmp");
+		pkConsole->GetPass(0)->m_pkTUs[0]->SetRes("text/devstr.bmp");
 		pkConsole->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkConsole->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		pkConsole->GetPass(0)->m_bLighting = 				false;		
@@ -1479,6 +1595,70 @@ void ZSSRender::DrawAABB( const Vector3& kMin,const Vector3& kMax, const Vector3
 
 										 										 
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+}
+
+void ZSSRender::AddAABB(RenderPackage& pkRenderPackage, const Vector3& kMin,const Vector3& kMax, const Vector4& kColor)
+{
+	MeshData& kMesh = pkRenderPackage.m_kMeshData;
+		
+	//front
+	kMesh.m_kVertises.push_back(kMin);
+	kMesh.m_kVertises.push_back(Vector3(kMin.x,kMax.y,kMin.z));
+	kMesh.m_kVertises.push_back(Vector3(kMax.x,kMax.y,kMin.z));
+	kMesh.m_kVertises.push_back(Vector3(kMax.x,kMin.y,kMin.z));	
+	
+	//back
+	kMesh.m_kVertises.push_back(Vector3(kMin.x,kMin.y,kMax.z));
+	kMesh.m_kVertises.push_back(Vector3(kMin.x,kMax.y,kMax.z));
+	kMesh.m_kVertises.push_back(kMax);
+	kMesh.m_kVertises.push_back(Vector3(kMax.x,kMin.y,kMax.z));	
+
+	//left
+	kMesh.m_kVertises.push_back(kMin);
+	kMesh.m_kVertises.push_back(Vector3(kMin.x,kMin.y,kMax.z));
+	kMesh.m_kVertises.push_back(Vector3(kMin.x,kMax.y,kMax.z));
+	kMesh.m_kVertises.push_back(Vector3(kMin.x,kMax.y,kMin.z));
+
+	//right
+	kMesh.m_kVertises.push_back(Vector3(kMax.x,kMin.y,kMin.z));
+	kMesh.m_kVertises.push_back(Vector3(kMax.x,kMin.y,kMax.z));
+	kMesh.m_kVertises.push_back(kMax);
+	kMesh.m_kVertises.push_back(Vector3(kMax.x,kMax.y,kMin.z));
+		
+	for(int i = 0;i<16;i++)
+		kMesh.m_kColors.push_back(kColor);		
+	
+}
+
+void ZSSRender::AddAABB(vector<Vector3>&	kVertexs,vector<Vector4>&	kColors, const Vector3& kMin,const Vector3& kMax, const Vector4& kColor)
+{
+	//front
+	kVertexs.push_back(kMin);
+	kVertexs.push_back(Vector3(kMin.x,kMax.y,kMin.z));
+	kVertexs.push_back(Vector3(kMax.x,kMax.y,kMin.z));
+	kVertexs.push_back(Vector3(kMax.x,kMin.y,kMin.z));	
+	
+	//back
+	kVertexs.push_back(Vector3(kMin.x,kMin.y,kMax.z));
+	kVertexs.push_back(Vector3(kMin.x,kMax.y,kMax.z));
+	kVertexs.push_back(kMax);
+	kVertexs.push_back(Vector3(kMax.x,kMin.y,kMax.z));	
+
+	//left
+	kVertexs.push_back(kMin);
+	kVertexs.push_back(Vector3(kMin.x,kMin.y,kMax.z));
+	kVertexs.push_back(Vector3(kMin.x,kMax.y,kMax.z));
+	kVertexs.push_back(Vector3(kMin.x,kMax.y,kMin.z));
+
+	//right
+	kVertexs.push_back(Vector3(kMax.x,kMin.y,kMin.z));
+	kVertexs.push_back(Vector3(kMax.x,kMin.y,kMax.z));
+	kVertexs.push_back(kMax);
+	kVertexs.push_back(Vector3(kMax.x,kMax.y,kMin.z));
+		
+	for(int i = 0;i<16;i++)
+		kColors.push_back(kColor);		
+
 }
 
 void ZSSRender::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor )

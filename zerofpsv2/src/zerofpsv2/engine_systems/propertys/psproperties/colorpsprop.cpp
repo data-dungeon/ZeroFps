@@ -6,7 +6,7 @@
 
 // ------------------------------------------------------------------------------------------
 
-void ColorPSProp::Update()
+void ColorPSProp::Update(const RenderState* pkRenderState)
 {
 	// Update color value for particles
 	float *pfColors = m_pkParent->GetColors();

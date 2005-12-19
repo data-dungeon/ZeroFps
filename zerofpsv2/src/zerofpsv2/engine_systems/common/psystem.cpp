@@ -3,6 +3,46 @@
 
 // ------------------------------------------------------------------------------------------
 
+RenderPackage* PSystem::GetRenderPackage(const RenderState& kRenderState)
+{
+	if(!m_bInsideFrustum)
+		return NULL;
+
+
+	int iVertises = Particles()*4;
+
+	//seutp pointers
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.clear();	
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER,&m_pfVertices[Start() * 12]));
+	
+	if (m_pkTexCoords)
+		m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0,&m_pkTexCoords[Start() * 4]));
+	
+	if (m_pfColors)
+		m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(COLOR_POINTER,&m_pfColors[Start() * 16] ));
+	
+	//hack to add normals
+	if(m_kNormals.size() != iVertises)
+	{
+		m_kNormals.clear();
+		for(int i = 0;i<iVertises;i++)
+			m_kNormals.push_back(Vector3(0,1,0));
+	}	
+	
+ 	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(NORMAL_POINTER,&(m_kNormals[0]) ));
+		
+		
+	m_kRenderPackage.m_kCenter = m_kPosition + m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;	
+	m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = iVertises;
+	m_kRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	m_kRenderPackage.m_pkLightProfile = &m_kLightProfile;
+	m_kRenderPackage.m_pkMaterial = (ZMaterial*)(GetPSystemType()->m_kParticleBehaviour.m_pkMaterial->GetResourcePtr());
+	
+	return &m_kRenderPackage;
+}
+
+// ------------------------------------------------------------------------------------------
+
 bool PSystem::Draw()
 {
 	if ( m_bInsideFrustum )
@@ -35,7 +75,7 @@ bool PSystem::Draw()
 
 // ------------------------------------------------------------------------------------------
 
-bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
+bool PSystem::Update( const Vector3& kNewPosition,const Matrix4& kNewRotation ,const RenderState* pkRenderState)
 {
 	// Inherit position from parent
 	m_kPosition = kNewPosition;
@@ -43,7 +83,8 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	// Inherit rotation from parent
 	m_kRotation = kNewRotation;
 
-	TestInsideFrustum();
+	if(pkRenderState)
+		TestInsideFrustum(*pkRenderState);
 
 	// don't update live-forevever psystems if not inside frustum
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && !m_bInsideFrustum )
@@ -57,7 +98,12 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	}
 
 	// Get Frametime
-	m_fFrameTime = m_pkFps->GetFrameTime();// - m_fLastTime;//GetTicks() - m_fLastTime;
+// 	m_fFrameTime = m_pkFps->GetFrameTime();// - m_fLastTime;//GetTicks() - m_fLastTime;
+	
+	m_fFrameTime = m_pkFps->GetEngineTime() - m_fLastTime;
+	m_fLastTime = m_pkFps->GetEngineTime();
+	
+	
 	// 	m_fLastTime =  SDL_GetTicks();// m_pkFps->m_pkObjectMan->GetSimTime();
 	// Update particlesystem lifetime
 	if ( m_fAge != -9999999 )
@@ -65,7 +111,6 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 		m_fAge -= m_fFrameTime;
 	}
  	
-	m_fLastTime = m_pkFps->GetEngineTime();
 
 	// Update age life percent
 	m_fAgePercent = m_fAge / m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
@@ -126,7 +171,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 	// Update properties
 	for ( i = 0; i < (int) m_kPSProperties.size(); i++ )
-		m_kPSProperties[i]->Update();
+		m_kPSProperties[i]->Update(pkRenderState);
 	
 	// Has PSystem reached its age and has no active particles, return true (PS finished)
 	if ( m_fAge != -9999999 && m_fAge < 0 && m_iActiveParticles < 1 )
@@ -166,6 +211,7 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 	m_pkFps = static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 	m_pkLight= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight")); 
 	m_pkShader	= static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
+	m_pkRender	= static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
 
 	m_pkPSystemType = pkPSystemType;
 
@@ -495,26 +541,19 @@ void PSystem::TimeoffSet ()
 
 // ------------------------------------------------------------------------------------------
 
-void PSystem::TestInsideFrustum()
+void PSystem::TestInsideFrustum(const RenderState& kRenderState)
 {
-	if(!m_pkFps->GetCam())
-	{
-		m_bInsideFrustum = false;
-		return;
-	}
-
-
 	Vector3 kPos = m_kPosition + m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
 
 
 	//Distance culling
-	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kPos) > m_pkFps->GetViewDistance() * 0.3)
+	if(kRenderState.m_kCameraPosition.DistanceTo(kPos) > m_pkFps->GetViewDistance() * 0.3)
 	{
 		m_bInsideFrustum = false;
 		return;
 	}
 
-	Frustum *pkFrustum = m_pkFps->GetCam()->GetFrustum();
+	const Frustum *pkFrustum = &kRenderState.m_kFrustum;
 
 	// test culling
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "cube" )
@@ -542,4 +581,49 @@ void PSystem::TestInsideFrustum()
 	}
 	else
 		m_bInsideFrustum = true;
+// 	if(!m_pkFps->GetCam())
+// 	{
+// 		m_bInsideFrustum = false;
+// 		return;
+// 	}
+// 
+// 
+// 	Vector3 kPos = m_kPosition + m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
+// 
+// 
+// 	//Distance culling
+// 	if(m_pkFps->GetCam()->GetRenderPos().DistanceTo(kPos) > m_pkFps->GetViewDistance() * 0.3)
+// 	{
+// 		m_bInsideFrustum = false;
+// 		return;
+// 	}
+// 
+// 	Frustum *pkFrustum = m_pkFps->GetCam()->GetFrustum();
+// 
+// 	// test culling
+// 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "cube" )
+// 	{
+// 		Vector3 kScale = m_pkPSystemType->m_kPSystemBehaviour.m_kMaxSize;
+// 
+// 		
+// 		if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
+// 			m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset,
+// 																		 kScale, m_kRotation );
+// 		else
+// 			m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset,
+// 																		 kScale, Matrix4(1,0,0,0,
+// 																							  0,1,0,0,
+// 																							  0,0,1,0,
+// 																							  0,0,0,1) );
+// 
+// 	}
+// 	else if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "point" )
+// 	{		
+// 		if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
+// 			m_bInsideFrustum = pkFrustum->PointInFrustum ( m_kRotation.VectorRotate( kPos ) );
+// 		else
+// 			m_bInsideFrustum = pkFrustum->PointInFrustum ( kPos );
+// 	}
+// 	else
+// 		m_bInsideFrustum = true;
 }

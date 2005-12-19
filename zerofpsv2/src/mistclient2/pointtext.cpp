@@ -9,7 +9,7 @@ PointText::PointText()
 
 	//setup material
 	m_pkRedMaterial = new ZMaterial;
-	m_pkRedMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/fetfont.tga");
+	m_pkRedMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/fetfont.tga");
 	m_pkRedMaterial->GetPass(0)->m_bLighting = 				false;		
 	m_pkRedMaterial->GetPass(0)->m_bColorMaterial = 		true;
 	m_pkRedMaterial->GetPass(0)->m_kVertexColor =			Vector3(1,0,0);
@@ -18,7 +18,7 @@ PointText::PointText()
 	m_pkRedMaterial->GetPass(0)->m_bDepthTest = 			false;
 
 	m_pkGreenMaterial = new ZMaterial;
-	m_pkGreenMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/fetfont.tga");
+	m_pkGreenMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/fetfont.tga");
 	m_pkGreenMaterial->GetPass(0)->m_bLighting = 				false;		
 	m_pkGreenMaterial->GetPass(0)->m_bColorMaterial = 		true;
 	m_pkGreenMaterial->GetPass(0)->m_kVertexColor =			Vector3(0,1,0);
@@ -27,7 +27,7 @@ PointText::PointText()
 	m_pkGreenMaterial->GetPass(0)->m_bDepthTest = 			false;
 	
 	m_pkBlueMaterial = new ZMaterial;
-	m_pkBlueMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/fetfont.tga");
+	m_pkBlueMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/fetfont.tga");
 	m_pkBlueMaterial->GetPass(0)->m_bLighting = 				false;		
 	m_pkBlueMaterial->GetPass(0)->m_bColorMaterial = 		true;
 	m_pkBlueMaterial->GetPass(0)->m_kVertexColor =			Vector3(0,0,1);
@@ -37,7 +37,7 @@ PointText::PointText()
 	
 	
 	m_pkYellowMaterial = new ZMaterial;
-	m_pkYellowMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/fetfont.tga");
+	m_pkYellowMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/fetfont.tga");
 	m_pkYellowMaterial->GetPass(0)->m_bLighting = 			false;		
 	m_pkYellowMaterial->GetPass(0)->m_bColorMaterial = 	true;
 	m_pkYellowMaterial->GetPass(0)->m_kVertexColor =		Vector3(1,1,0);

@@ -11,9 +11,9 @@ using namespace std;
 Quaternion Quaternion::ZERO(0.0,0.0,0.0,0.0);
 Quaternion Quaternion::IDENTITY(1.0,0.0,0.0,0.0);
 
-Vector3 Quaternion::RotateVector3(Vector3 v)
+Vector3 Quaternion::RotateVector3(const Vector3& v) const
 {
-	Quaternion t,bla;
+	Quaternion t;
 	
 	t = (*this) * v * conjugate();
 	
@@ -300,7 +300,7 @@ void Quaternion::QuaternionSlerp( Quaternion* from, Quaternion* to, float t)
 }
 
 //globals--
-Quaternion operator*(Quaternion q,Vector3 v)
+Quaternion operator*(const Quaternion& q,const Vector3& v)
 {
 	return Quaternion(	-(q.x*v.x + q.y*v.y + q.z*v.z),
 								  q.w*v.x + q.y*v.z - q.z*v.y,
@@ -308,7 +308,7 @@ Quaternion operator*(Quaternion q,Vector3 v)
 								  q.w*v.z + q.x*v.y - q.y*v.x);
 }
 
-Quaternion operator*(Vector3 v,Quaternion q)
+Quaternion operator*(const Vector3& v,const Quaternion& q)
 {
 	return Quaternion(	-(q.x*v.x + q.y*v.y + q.z*v.z),
 								  q.w*v.x + q.z*v.y - q.y*v.z,

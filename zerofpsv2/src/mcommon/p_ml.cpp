@@ -21,7 +21,7 @@ P_Ml::P_Ml() : Property("P_Ml")
 
 	//setup material
 	m_pkTextMaterial = new ZMaterial;
-	m_pkTextMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/fetfont.tga");
+	m_pkTextMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/fetfont.tga");
 	m_pkTextMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 	m_pkTextMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 	m_pkTextMaterial->GetPass(0)->m_bLighting = 				false;		

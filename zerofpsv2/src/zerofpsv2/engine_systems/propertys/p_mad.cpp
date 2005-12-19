@@ -64,8 +64,80 @@ P_Mad::P_Mad() : Property("P_Mad")
 
 }
 
+// VimRp - A new evil function.
+void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
+{
+	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
+	if(!pkCore)
+		return;
+	
+	if(!m_bIsVisible)
+		return;
+	
+	static Vector3 kPos;
+	kPos = m_pkEntity->GetIWorldPosV()+m_kOffset;
+	
+	//distance cull
+	float fDistance = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kPos) - GetRadius();
+	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW && !m_pkEntity->IsZone())
+	{
+		m_bDistanceCulled = false;		 			
+		
+		if(fDistance > m_pkZeroFps->GetViewDistance() )
+		{
+			m_bDistanceCulled = true;
+		}
+		else if(fDistance > 5)
+		{
+			float r = GetSize();				
+			if( (fDistance - r)*5 > m_pkZeroFps->GetViewDistance() * r)
+			{
+				m_bDistanceCulled = true;
+			} 				
+		}
+		
+	}
+
+	if(m_bDistanceCulled)
+		return;	
+		
+	//Cull against sphere
+	if(!kRenderState.m_kFrustum.SphereInFrustum(kPos,GetRadius()))
+		return;		
+	
+	
+	
+	
+	// For now we rebuild all renderpackages every time we draw, cry for me fps.
+	m_kRenderPackage.clear();
+
+	// Set up a basic transform to be used in all renderpackages.
+	RenderPackage	m_kRP;
+	m_kRP.m_kModelMatrix.Identity();
+	m_kRP.m_kModelMatrix*= m_pkEntity->GetWorldRotM();		
+	m_kRP.m_kModelMatrix.Scale( m_fScale );
+	m_kRP.m_kModelMatrix.Translate(kPos);
+	m_kRP.m_kCenter = kPos;
+	m_kRP.m_fRadius = GetRadius();
+// 	m_kRP.m_kAABBMin =  Vector3(-0.5,-0.5,-0.5);
+// 	m_kRP.m_kAABBMax =  Vector3(0.5,0.5,0.5);
+// 	m_kRP.m_bOcculusionTest = true;
+	m_kRP.m_pkLightProfile = &m_kLightProfile;
+
+	DoAnimationUpdate();
+	UpdateBones();					// And we build the bones also every frame.
+	Draw_All_RenderP( m_kRP );		// Fill in renderpackages.			
+
+	// Add Render packages.
+	for(int i=0; i<m_kRenderPackage.size(); i++)
+	{
+		kRenderPackages.push_back(& m_kRenderPackage[i] );			
+	}
+}
+
 void P_Mad::Update()
 {
+
 	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;

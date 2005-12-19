@@ -38,6 +38,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		Vector3	m_kOffset;
 		
 		LightProfile	m_kLightProfile;				//used for lighting
+		//RenderPackage	m_kRenderPackage;				// VimRp - Moved to mad_modell
 		
 		map< Camera*,ZOcculusionTest>	m_kOCTests;
 		bool		m_bHaveOCTested;
@@ -70,12 +71,15 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		
 		void CreateAABB();
 		
+		
+		
 	public:
 		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.		
 		
 		//base funktions
 		P_Mad();
 		void Update();
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );

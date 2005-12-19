@@ -32,6 +32,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		bool					m_bOculled;
 
 		vector<Vector3>	m_kVertexArray;
+		vector<Vector3>	m_kNormalArray;
 		vector<Vector2>	m_kTextureArray;
 		vector<Vector4>	m_kColorArray;
 		
@@ -57,6 +58,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		bool					m_bCastShadow;
 		
 		LightProfile		m_kLightProfile;				//used for lighting		
+		RenderPackage		m_kRenderPackage;
 		
 		bool					m_CheckedForHM;
 		
@@ -71,6 +73,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		P_Vegitation();
 		~P_Vegitation();
 		
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
 		void Update();
 		void Init();
 

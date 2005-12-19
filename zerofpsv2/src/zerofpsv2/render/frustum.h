@@ -31,12 +31,12 @@ class RENDER_API Frustum
 		
 		void 	GetFrustum(const Matrix4& kProjectionMatrix,const Matrix4& kModelViewMatrix);
 		
-		bool 	PointInFrustum(const Vector3& kPoint);		
-		bool 	SphereInFrustum(const Vector4& kPoint);			
-		bool 	SphereInFrustum(const Vector3& kPos,float fRadius);				
-		bool 	CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
-		bool 	CubeInFrustum( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation );
-		bool	CubeInFrustum( const Vector3& kMin,const Vector3& kMax);
+		bool 	PointInFrustum(const Vector3& kPoint) const;		
+		bool 	SphereInFrustum(const Vector4& kPoint) const;			
+		bool 	SphereInFrustum(const Vector3& kPos,float fRadius) const;				
+		bool 	CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez ) const;
+		bool 	CubeInFrustum( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation ) const;
+		bool	CubeInFrustum( const Vector3& kMin,const Vector3& kMax) const;
 };
 
 

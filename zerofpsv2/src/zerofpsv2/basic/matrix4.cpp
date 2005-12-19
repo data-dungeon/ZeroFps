@@ -84,16 +84,17 @@ void Matrix4::Scale(float fX, float fY, float fZ)
 	kMatrix.RowCol[2][2] = fZ;			
 	
 	*this *= kMatrix;
-	
-// 	*this *= Matrix4(fX		,0 	,0		,0,
-// 						  0		,fY	,0		,0,
-// 						  0		,0		,fZ	,0,
-// 						  0		,0		,0		,1);;
+
 }
 
 void Matrix4::Scale(const Vector3& kScale)
 {
 	Scale(kScale.x, kScale.y, kScale.z);
+}
+
+void Matrix4::Scale(float fScale)
+{
+	Scale(fScale,fScale,fScale);
 }
 
 

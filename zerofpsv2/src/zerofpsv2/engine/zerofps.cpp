@@ -25,12 +25,7 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-//float		g_fMadLODScale;
 ConVar		g_kiLogRenderPropertys;
-//char 		g_szIpPort[256];
-//bool		g_fMadTrans;
-//extern	bool	g_iMadLOD;
-
 
 static char Devformat_text[4096];	//
 
@@ -79,6 +74,7 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	m_pkScript					= new ZSSScriptSystem;
 	m_pkTcs						= new Tcs;
 	m_pkZShadow					= new ZShadow;
+	m_pkZSSRenderEngine		= new ZSSRenderEngine;
 
 	// Set Default values
 	m_fFrameTime				= 0;
@@ -142,23 +138,28 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 
 	
 	// Register Commands
-	Register_Cmd("setdisplay",FID_SETDISPLAY);
-	Register_Cmd("quit",FID_QUIT);
-	Register_Cmd("slist",FID_SLIST);
-	Register_Cmd("connect",FID_CONNECT);
-	Register_Cmd("server",FID_SERVER);
+	Register_Cmd("setdisplay",	FID_SETDISPLAY);
+	Register_Cmd("quit",			FID_QUIT);
+	Register_Cmd("slist",		FID_SLIST);
+	Register_Cmd("connect",		FID_CONNECT);
+	Register_Cmd("server",		FID_SERVER);
 	Register_Cmd("printobject",FID_PRINTOBJECT);	
-	Register_Cmd("version",FID_VERSION);	
-	Register_Cmd("credits",FID_CREDITS);	
-	Register_Cmd("echo",FID_ECHO);	
-	Register_Cmd("devshow",FID_DEV_SHOWPAGE, CSYS_FLAG_SRC_ALL, "devshow name", 1);	
-	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
-	Register_Cmd("devtog",FID_DEV_TOGGLE, CSYS_FLAG_SRC_ALL, "devtog name", 1);	
-	Register_Cmd("debug",FID_LISTMAD);	
-	Register_Cmd("shot",FID_SCREENSHOOT);	
-	Register_Cmd("mass",FID_MASSSPAWN);	
-	Register_Cmd("pos",FID_POS);	
-	Register_Cmd("profmode",FID_PROFILEMODE);	
+	Register_Cmd("version",		FID_VERSION);	
+	Register_Cmd("credits",		FID_CREDITS);	
+	Register_Cmd("echo",			FID_ECHO);	
+	Register_Cmd("devshow",		FID_DEV_SHOWPAGE, CSYS_FLAG_SRC_ALL, "devshow name", 1);	
+	Register_Cmd("devhide",		FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
+	Register_Cmd("devtog",		FID_DEV_TOGGLE, CSYS_FLAG_SRC_ALL, "devtog name", 1);	
+	Register_Cmd("debug",		FID_LISTMAD);	
+	Register_Cmd("shot",			FID_SCREENSHOOT);	
+	Register_Cmd("mass",			FID_MASSSPAWN);	
+	Register_Cmd("pos",			FID_POS);	
+	Register_Cmd("profmode",	FID_PROFILEMODE);	
+	
+	Register_Cmd("cameralist",				FID_CAMERALIST);	
+	Register_Cmd("addplugin",		FID_CAMERAADDPLUGIN);	
+	Register_Cmd("removeplugin",	FID_CAMERAREMOVEPLUGIN);	
+	
 	
 }
 
@@ -325,7 +326,7 @@ void ZSSZeroFps::CreateMaterials()
 {
 	//devpage material
 	m_pkDevPageMaterial = new ZMaterial;
-	m_pkDevPageMaterial->GetPass(0)->m_kTUs[0]->SetRes("text/devstr.bmp");
+	m_pkDevPageMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/devstr.bmp");
 	m_pkDevPageMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 	m_pkDevPageMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 	m_pkDevPageMaterial->GetPass(0)->m_bLighting = 				false;		
@@ -1039,12 +1040,12 @@ void ZSSZeroFps::DrawDevStrings()
 	if(!pkGraphTexture)
 	{
 		pkGraphTexture = new ZMaterial;
-		pkGraphTexture->GetPass(0)->m_kTUs[0]->SetRes("graph.bmp");
+		pkGraphTexture->GetPass(0)->m_pkTUs[0]->SetRes("graph.bmp");
 		pkGraphTexture->GetPass(0)->m_bLighting = 			false;
 		pkGraphTexture->GetPass(0)->m_bFog = 					false;
 	
 		pkMaxTexture = new ZMaterial;
-		pkMaxTexture->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
+		pkMaxTexture->GetPass(0)->m_pkTUs[0]->SetRes("notex.bmp");
 		pkMaxTexture->GetPass(0)->m_bLighting = 			false;
 		pkMaxTexture->GetPass(0)->m_bFog = 					false;	
 	}	
@@ -1251,12 +1252,82 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 			break;
 
 		case FID_POS:
+		{
 			Vector3 kCamPos = m_pkCamera->GetPos();
 			cout << "Position - x:" << kCamPos.x << 
 				" y:" << kCamPos.y <<
 				" z:" << kCamPos.z << endl;
 			m_pkCamera->SetPos(kCamPos);
 			break;
+		}
+	
+		case FID_CAMERALIST:
+		{
+			for(int i = 0;i<m_kRenderCamera.size();i++)
+			{
+				//print camera name
+				m_pkConsole->Printf("%d : %s",i,m_kRenderCamera[i]->GetName().c_str());
+				
+				//print camera plugin list
+				vector<string> kPlugins = m_kRenderCamera[i]->m_kRenderState.GetPluginList();
+ 				for(int j = 0;j<kPlugins.size();j++)
+ 					m_pkConsole->Printf("  Plugin: %d : %s",j,kPlugins[j].c_str() );					
+			}
+			
+			m_pkConsole->Printf("Number of cameras %d",m_kRenderCamera.size());						
+			
+			break;
+		}
+	
+		case FID_CAMERAADDPLUGIN:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 2) 
+			{		
+				m_pkConsole->Printf("addplugin [cameraname] [pluginname]");			
+				break;
+			}
+		
+			for(int i = 0;i<m_kRenderCamera.size();i++)
+			{
+				if(m_kRenderCamera[i]->GetName() == kCommand->m_kSplitCommand[1])
+				{
+					if(m_kRenderCamera[i]->m_kRenderState.AddPlugin(kCommand->m_kSplitCommand[2]))
+						m_pkConsole->Printf("plugin added");			
+					else
+						m_pkConsole->Printf("plugin not found");			
+					
+					return;
+				}
+			}
+						
+			m_pkConsole->Printf("camera not found");						
+			break;			
+		}
+		
+		case FID_CAMERAREMOVEPLUGIN:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 2) 
+			{		
+				m_pkConsole->Printf("removeplugin [cameraname] [pluginname]");			
+				break;
+			}
+		
+			for(int i = 0;i<m_kRenderCamera.size();i++)
+			{
+				if(m_kRenderCamera[i]->GetName() == kCommand->m_kSplitCommand[1])
+				{
+					if(m_kRenderCamera[i]->m_kRenderState.RemovePlugin(kCommand->m_kSplitCommand[2]))
+						m_pkConsole->Printf("plugin removed");			
+					else
+						m_pkConsole->Printf("plugin not found");			
+					
+					return;
+				}
+			}
+						
+			m_pkConsole->Printf("camera not found");						
+			break;			
+		}		
 	}	
 }
 

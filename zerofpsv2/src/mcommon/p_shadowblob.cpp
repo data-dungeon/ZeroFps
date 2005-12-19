@@ -201,7 +201,7 @@ void P_ShadowBlob::Init()
 {
 
 	m_pkMaterial = new ZMaterial;
-	m_pkMaterial->GetPass(0)->m_kTUs[0]->SetRes("shadowblob.tga");
+	m_pkMaterial->GetPass(0)->m_pkTUs[0]->SetRes("shadowblob.tga");
 	m_pkMaterial->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
 	m_pkMaterial->GetPass(0)->m_bLighting = 			false;		
 	m_pkMaterial->GetPass(0)->m_bBlend = 				true;

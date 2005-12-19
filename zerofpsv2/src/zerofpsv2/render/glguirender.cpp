@@ -123,6 +123,7 @@ bool GLGuiRender::EndRender()
 
 	glPopMatrix();
 	
+	m_pkShader->SetForceDisableGLSL(false);
 	m_pkShader->Pop();
 	
 	return true;

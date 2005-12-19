@@ -17,6 +17,8 @@
 #include "zshadersystem.h"
 #include "../basic/zguifont.h"
 
+class RenderState;
+class RenderPackage;
 class HeightMap;
 class Heightmap2;
 class BasicConsole;
@@ -215,6 +217,14 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 		void Draw_AxisIcon(float scale = 1.0);													///< Draw axis lines.
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.
+
+
+		//RENDERPACKAGE STUFF
+		void AddAABB(vector<Vector3>&	kVertexs,vector<Vector4>&	kColors, const Vector3& kMin,const Vector3& kMax, const Vector4& kColor);
+		void AddAABB(RenderPackage& pkRenderPackage, const Vector3& kMin,const Vector3& kMax, const Vector4& kColor);
+
+		void AddTextBillboard(RenderPackage& kRenderPackage,const RenderState& kRenderState,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered);
+		void AddText(RenderPackage& kRenderPackage,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered);
 
 
 		void     EditColor_Set(string strName, float f, float g, float b);

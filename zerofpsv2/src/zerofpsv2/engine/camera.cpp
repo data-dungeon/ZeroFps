@@ -3,7 +3,7 @@
 #include "../ogl/zfpsgl.h"
 #include "inputhandle.h"
 #include "../basic/math.h"
-
+#include "render_plugins.h"
 
 
 bool Camera::m_bDrawOrthoGrid(false);
@@ -20,7 +20,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_pkZShadow = 			static_cast<ZShadow*>(g_ZFObjSys.GetObjectPtr("ZShadow"));
 	m_pkLight	=			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 	m_pkTexMan	=			static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-	
+	m_pkZSSRenderEngine=	static_cast<ZSSRenderEngine*>(g_ZFObjSys.GetObjectPtr("ZSSRenderEngine"));
 	
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
@@ -66,6 +66,13 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iShadowFBO = 		0;
 	m_iShadowRBOcolor =	0;	
 	
+	//default renderstate settings
+	m_kRenderState.AddPlugin("PreRender");
+	m_kRenderState.AddPlugin("Render");
+// 	m_kRenderState.AddPlugin("Bloom");
+	m_kRenderState.AddPlugin("InterfaceRender");
+	m_kRenderState.AddPlugin("HdrExposure");
+	
 	
 	//setup default shaders
 	m_pkDefaultShadowmapShader = new ZFResourceHandle;
@@ -88,7 +95,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	//default fss
 	m_pkFSSMaterial = new ZMaterial;
 	//m_pkFSSMaterial->GetPass(0)->m_pkSLP->SetRes("#fssblackwhite.frag.glsl");
-	m_pkFSSMaterial->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
+	m_pkFSSMaterial->GetPass(0)->m_pkTUs[0]->SetRes("notex.bmp");
 	m_pkFSSMaterial->GetPass(0)->m_bLighting = false;
 	m_pkFSSMaterial->GetPass(0)->m_bDepthTest = false;
 
@@ -96,14 +103,14 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	//BLOOM 
 	m_pkBloomMaterial1 = new ZMaterial;
 	m_pkBloomMaterial1->GetPass(0)->m_pkSLP->SetRes("#bloom1.frag.glsl");
-	m_pkBloomMaterial1->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
+	m_pkBloomMaterial1->GetPass(0)->m_pkTUs[0]->SetRes("notex.bmp");
 	m_pkBloomMaterial1->GetPass(0)->m_bLighting = false;
 	m_pkBloomMaterial1->GetPass(0)->m_bDepthTest = false;
 	
 	m_pkBloomMaterial2 = new ZMaterial;
 	m_pkBloomMaterial2->GetPass(0)->m_pkSLP->SetRes("#bloom2.frag.glsl");
-	m_pkBloomMaterial2->GetPass(0)->m_kTUs[0]->SetRes("notex.bmp");
-	m_pkBloomMaterial2->GetPass(0)->m_kTUs[1]->SetRes("notex.bmp");
+	m_pkBloomMaterial2->GetPass(0)->m_pkTUs[0]->SetRes("notex.bmp");
+	m_pkBloomMaterial2->GetPass(0)->m_pkTUs[1]->SetRes("notex.bmp");
 	m_pkBloomMaterial2->GetPass(0)->m_bLighting = false;
 	m_pkBloomMaterial2->GetPass(0)->m_bDepthTest = false;
 	
@@ -577,6 +584,35 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, 
 	m_pkZShaderSystem->ReloadMaterial();			
 }
 
+void Camera::SetupRenderState()
+{
+	//force full screen
+	if(m_bForceFullScreen)
+	{
+		m_kViewPortCorner.x = 0;
+		m_kViewPortCorner.y = 0;
+		m_kViewPortSize.x = float(m_pkRender->GetWidth());
+		m_kViewPortSize.y = float(m_pkRender->GetHeight());
+	}
+
+	//setup render state
+	m_kRenderState.m_kCameraPosition 			=	m_kPos;
+	m_kRenderState.m_kCameraProjectionMatrix 	= 	m_kCamProjectionMatrix;
+	m_kRenderState.m_kCameraRotation 			=	m_kRotM;	
+	m_kRenderState.m_kViewPortPos 				=	m_kViewPortCorner;
+	m_kRenderState.m_kViewPortSize 				=	m_kViewPortSize;
+
+	m_kRenderState.m_fFogFar 		= m_fFogFar;
+	m_kRenderState.m_fFogNear 		= m_fFogNear;
+	m_kRenderState.m_bFogEnabled 	= m_bFogEnabled;
+	m_kRenderState.m_kFogColor 	= m_kFogColor;
+	m_kRenderState.m_kClearColor 	= m_kClearColor;;
+
+	m_kRenderState.m_pkRoot = m_pkEntityMan->GetEntityByID(m_iRootEntity);
+
+	//save render pos in camera
+	m_kRenderPos = m_kPos = m_kPos;
+}
 
 void Camera::InitView()//int iWidth,int iHeight) 
 {
@@ -648,6 +684,8 @@ void Camera::InitView()//int iWidth,int iHeight)
 	else
 		ClearViewPort(false);	
 }
+
+
 
 
 Vector3 Camera::GetViewPortSize()
@@ -985,17 +1023,23 @@ void Camera::RenderView()
 		
 		m_pkCameraProp->Update();
 	}
-							
-	//first make this camera matrises the current ones
-	InitView();
+	
+	//set current camera in engine ( render propertys wants to know this)
+	m_pkZeroFps->m_pkCamera=this;				
 	
 	//return if no rendering shuld be done
 	if( (!m_bRender) || (!m_pkZeroFps->GetRenderOn()) || m_pkZeroFps->GetMinimized() )
+	{		
 		return;
+	}
 
+	SetupRenderState();
+ 	m_pkZSSRenderEngine->Render(m_kRenderState);	
+return;
 
-	//set current camera in engine ( render propertys wants to know this)
-	m_pkZeroFps->m_pkCamera=this;			
+	//first make this camera matrises the current ones
+	InitView();
+
 
 	
 	//set exposure
@@ -1152,6 +1196,27 @@ void Camera::DrawWorld()
 	}
 	else
 	{		
+		//set default glsl shader
+		switch(m_pkZeroFps->GetShadowMapMode())
+		{
+			case 0:
+				m_pkZShaderSystem->UseDefaultGLSLProgram(false);
+				break;
+		
+			case 1:
+				m_pkZShaderSystem->UseDefaultGLSLProgram(true);
+				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultShadowmapShader);
+				break;
+			case 2:
+				m_pkZShaderSystem->UseDefaultGLSLProgram(true);
+				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultFastShadowmapShader);
+				break;
+			case 3:
+				m_pkZShaderSystem->UseDefaultGLSLProgram(true);
+				m_pkZShaderSystem->SetDefaultGLSLProgram(m_pkDefaultShadowmapShaderPPL);
+				break;
+		}		
+	
 		//update all render propertys that shuld be shadowed
 		m_iCurrentRenderMode = RENDER_NOSHADOWFIRST;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);		
@@ -1166,6 +1231,8 @@ void Camera::DrawWorld()
 		m_iCurrentRenderMode = RENDER_NOSHADOWLAST;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);
 		
+		//disable default glslprogram
+		m_pkZShaderSystem->UseDefaultGLSLProgram(false);
 		
 		m_iCurrentRenderMode = RENDER_NONE;	
 	}

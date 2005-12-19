@@ -42,6 +42,10 @@ P_Vegitation::P_Vegitation() : Property("P_Vegitation")
 	m_kPropertyValues.push_back(PropertyValues("amount",VALUETYPE_INT,(void*)&m_iAmount));
 	m_kPropertyValues.push_back(PropertyValues("size",VALUETYPE_INT,(void*)&m_iSize));
 	
+	//setup renderpackage
+	m_kRenderPackage.m_pkLightProfile = &m_kLightProfile;
+	m_kRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	
 }
 
 P_Vegitation::~P_Vegitation()
@@ -52,6 +56,70 @@ P_Vegitation::~P_Vegitation()
 void P_Vegitation::Init()
 {
 	Random();	
+}
+
+void P_Vegitation::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
+{
+	if(!m_pkZeroFps->GetVegetation())
+		return;
+
+	//Distance culling
+	if(kRenderState.m_kCameraPosition.DistanceTo(m_pkEntity->GetWorldPosV()) > m_pkZeroFps->GetViewDistance()*0.3)
+		return;
+
+	//frustum culling sphere
+ 	if(!kRenderState.m_kFrustum.SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
+ 		return;
+	
+	
+	//setup grass
+	if(!m_CheckedForHM)
+	{
+		m_CheckedForHM = true;
+	
+		//check if theres a heightmap in this zone	
+		Entity* hme = m_pkEntity->GetParent();
+		if(hme)
+		{
+			if(hme->GetProperty("P_Heightmap"))
+			{
+			
+				vector<Entity*> kZones;
+				vector<P_Heightmap*> kHMaps;
+				
+				//get zones			
+				m_pkEntityManager->GetAllEntitys(&kZones);	
+				
+				//get heightmaps
+				for(int i =0;i<kZones.size();i++)
+				{
+					if(P_Heightmap* pkHmap = (P_Heightmap*)kZones[i]->GetProperty("P_Heightmap"))
+						kHMaps.push_back(pkHmap);
+				}
+				
+				
+				//send heightmaps to random function
+				Random(&kHMaps);
+			}	
+			else				
+				Random();
+		}		
+	}	
+
+
+	//setup position and material
+	m_kRenderPackage.m_kModelMatrix.Identity();
+	m_kRenderPackage.m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());
+	m_kRenderPackage.m_pkMaterial = (ZMaterial*)(m_pkMaterial->GetResourcePtr());	
+
+	m_kRenderPackage.m_kAABBMin = m_kAABBMin;
+	m_kRenderPackage.m_kAABBMax = m_kAABBMax;
+	m_kRenderPackage.m_kCenter = m_pkEntity->GetWorldPosV();
+	m_kRenderPackage.m_bOcculusionTest = true;
+	
+	//add renderpackage
+	kRenderPackages.push_back(&m_kRenderPackage);
+
 }
 
 void P_Vegitation::Random(vector<P_Heightmap*>* pkHMaps)
@@ -253,6 +321,7 @@ void P_Vegitation::SetMaterial(const char* acNewTex)//,const char* acTex2)
 	m_pkMaterial->SetRes(acNewTex);	
 	m_strMaterialFile=acNewTex;	
 	
+	
 	SetNetUpdateFlag(true);	
 }
 
@@ -449,6 +518,7 @@ void P_Vegitation::BuildArrays()
 	m_kVertexArray.clear();
 	m_kTextureArray.clear();
 	m_kColorArray.clear();
+	m_kNormalArray.clear();
 
 	static Vector2 kUV1(0,1);
 	static Vector2 kUV2(1,1);
@@ -456,7 +526,6 @@ void P_Vegitation::BuildArrays()
 	static Vector2 kUV4(0,0);
 
 	Vector3 kScale(m_kScale.x/2,m_kScale.y,m_kScale.z/2);// = m_kScale * 0.5;
-// 	Vector3 kScale(m_kScale.x,m_kScale.y,m_kScale.z);
 
 	Vector3 topleft(-kScale.x,kScale.y,0);
 	Vector3 topright(kScale.x,kScale.y,0);
@@ -494,20 +563,6 @@ void P_Vegitation::BuildArrays()
 		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(sinrd2*w,0,cosrd2*w));		
 		m_kVertexArray.push_back(m_akPositions[i].kPos + Vector3(-sinrd2*w,0,-cosrd2*w));		
 		
-	
-	
-/*		//cross vertises
-		m_kVertexArray.push_back(m_akPositions[i].kPos +topleft+off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +topright-off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomright-off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomleft+off);
-	
-		m_kVertexArray.push_back(m_akPositions[i].kPos +topback+off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +topfront-off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomfront-off);
-		m_kVertexArray.push_back(m_akPositions[i].kPos +bottomback+off);*/
-	
-
 		//uv's
 		m_kTextureArray.push_back(kUV1);
 		m_kTextureArray.push_back(kUV2);
@@ -528,8 +583,19 @@ void P_Vegitation::BuildArrays()
 		m_kColorArray.push_back(Vector4(1,1,1,1));
 		m_kColorArray.push_back(Vector4(1,1,1,0.1));
 		m_kColorArray.push_back(Vector4(1,1,1,0.1));
-
+	
+		//normals
+		for(int j = 0;j<8;j++)
+			m_kNormalArray.push_back(Vector3(0,1,0));
 	}
+	
+	
+	//setup renderpackage
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER,&m_kVertexArray[0]));
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0,&m_kTextureArray[0]));
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(COLOR_POINTER,&m_kColorArray[0]));
+	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(NORMAL_POINTER,&m_kNormalArray[0]));
+	m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kVertexArray.size();
 }
 
 void P_Vegitation::DrawArray()

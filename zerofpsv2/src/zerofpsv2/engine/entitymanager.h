@@ -274,6 +274,9 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		void AddEntityToAllClientDeleteQueues(int iEntityID);		
 		
 		// Debug / Help Functions		
+		void GetZonesDebugRenderPackages(vector<RenderPackage*>&	kPackages,const RenderState& kRenderState,vector<ZoneData>* pkZoneList);
+		void GetAABBTreeRenderPackages(vector<RenderPackage*>&	kPackages,const RenderState& kRenderState);
+		
 		void DisplayTree();
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
 		void DrawZones();

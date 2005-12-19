@@ -45,10 +45,10 @@ enum RENDER_API STENCILOP
 
 enum RENDER_API BUFFERS
 {
-	COLOR_BUFFER=		0,
-	DEPTH_BUFFER=		1,
-	ACCUM_BUFFER=		2,
-	STENCIL_BUFFER=	3,
+	COLOR_BUFFER=		1,
+	DEPTH_BUFFER=		2,
+	ACCUM_BUFFER=		4,
+	STENCIL_BUFFER=	8,
 };
 
 enum RENDER_API CULL_FACE
@@ -148,7 +148,7 @@ enum RENDER_API TEXENV_MODES
 
 enum RENDER_API POINTER_TYPE
 {
-	VERTEX_POINTER,
+	VERTEX_POINTER		=0,
 	NORMAL_POINTER,
 	TEXTURE_POINTER0,	
 	TEXTURE_POINTER1,	
@@ -470,7 +470,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//arrays
 		void ResetPointers();
-		void SetPointer(POINTER_TYPE eType,void* pkPointer);
+		void SetPointer(POINTER_TYPE eType,const void* pkPointer);
+		const void* GetPointer(POINTER_TYPE eType);
 		void SetNrOfVertexs(const int& iNr)					{	m_iNrOfVertexs = iNr;	};
 		void SetNrOfIndexes(const int& iNr)					{	m_iNrOfIndexes = iNr;	};
 		void SetDrawMode(DRAW_MODE eDrawMode);

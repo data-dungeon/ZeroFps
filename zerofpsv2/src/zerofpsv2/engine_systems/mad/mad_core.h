@@ -246,7 +246,7 @@ public:
 
 	friend class Body;
 	friend class Mad_Core;
-
+	friend class Mad_Modell;
 };
 
 /// A Mesh in a MAD. 
@@ -513,7 +513,7 @@ public:
 	int	GetAnimIndex(const char* szName);
 	string GetAnimationName(int iIndex);
 	void  SetupBonePose(BoneTransform* pkBones);
-	void  GenerateBoneMatris(BoneTransform* pkBones);
+	void  GenerateBoneMatris(BoneTransform* pkBones, Matrix4* pkMatrix);	// VimRp2
 	void InterPolTransforms(BoneTransform* pkResultat, BoneTransform* pkFrom, BoneTransform* pkTo, float fDelta);
 
 	void  SetUpBindPose();

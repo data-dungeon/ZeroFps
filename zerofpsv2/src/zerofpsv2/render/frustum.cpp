@@ -62,9 +62,9 @@ void Frustum::GetFrustum(const Matrix4& kProjectionMatrix,const Matrix4& kModelV
 }
 
 
-bool Frustum::PointInFrustum( const Vector3& kPoint)
+bool Frustum::PointInFrustum( const Vector3& kPoint) const
 {
-	m_iPointCulls++;
+// 	m_iPointCulls++;
 
 	for(int p = 0; p < 6; p++ ){
 		if( m_akFrustum[p].x * kPoint.x + m_akFrustum[p].y * kPoint.y + m_akFrustum[p].z * kPoint.z + m_akFrustum[p].w <= 0 )
@@ -74,10 +74,10 @@ bool Frustum::PointInFrustum( const Vector3& kPoint)
    return true;
 }
 
-
-bool Frustum::SphereInFrustum(const Vector4& kPoint)
+ 
+bool Frustum::SphereInFrustum(const Vector4& kPoint) const
 {
-	m_iSphereCulls++;
+// 	m_iSphereCulls++;
 
 	static float d;
 
@@ -93,9 +93,9 @@ bool Frustum::SphereInFrustum(const Vector4& kPoint)
 
 
 
-bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
+bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius) const
 {
-	m_iSphereCulls++;
+// 	m_iSphereCulls++;
 
 	static float d;
 
@@ -110,9 +110,9 @@ bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
 }
 
 
-bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez )
+bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez ) const
 {
-	m_iCubeCulls++;
+// 	m_iCubeCulls++;
 
 	static Vector3 kCubeNeg;
 	static Vector3 kCubePos;
@@ -143,9 +143,9 @@ bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,
 	return true;
 }
 
-bool Frustum::CubeInFrustum( const Vector3& kMin,const Vector3& kMax)
+bool Frustum::CubeInFrustum( const Vector3& kMin,const Vector3& kMax) const
 {
-	m_iCubeCulls++;
+// 	m_iCubeCulls++;
 
 	for(int p = 0; p < 6; p++ )
 	{
@@ -171,9 +171,9 @@ bool Frustum::CubeInFrustum( const Vector3& kMin,const Vector3& kMax)
 }
 
 
-bool Frustum::CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation )
+bool Frustum::CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation ) const
 {
-	m_iCubeCulls++;
+// 	m_iCubeCulls++;
 
 	static int p;
 	static Vector3 kEdge[8];

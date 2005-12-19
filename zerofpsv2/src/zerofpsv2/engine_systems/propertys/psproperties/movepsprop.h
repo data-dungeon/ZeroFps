@@ -9,7 +9,7 @@ class MovePSProp : public ParticleProperty
 private:
 	Vector3 m_kForce, m_kRelPos;
 public:
-	void Update();
+	void Update(const RenderState* pkRenderState);
 	MovePSProp ( PSystem *pkParent );
 
 	void SetForce ( Vector3 kForce )						{ m_kForce = kForce; }

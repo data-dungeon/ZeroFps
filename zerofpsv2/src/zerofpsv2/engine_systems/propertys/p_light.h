@@ -27,6 +27,8 @@ class ENGINE_SYSTEMS_API P_Light : public Property
 		ZFResourceHandle* m_pkMaterial;
 		string				m_strMaterial;
 		
+		RenderPackage		m_kRenderPackage;
+		
 		bool HandleSetValue( const string& kValueName ,const string& kValue );		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
@@ -40,6 +42,7 @@ class ENGINE_SYSTEMS_API P_Light : public Property
 		P_Light();
 		~P_Light();
 
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
 		void Update();
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;

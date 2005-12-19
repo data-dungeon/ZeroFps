@@ -14,11 +14,8 @@ P_WaterRender::P_WaterRender() : Property("P_WaterRender")
 	m_iVersion = 2;
 
 	m_iSortPlace	=	10;
-	m_fBlendValue	=	0.7;
-	m_bBlendDirUp	=  false;
-
 	m_bNetwork	=	true;
-	
+	m_bHaveMesh = false;
 	
 	m_kSize.Set(0.5,0.5,0.5);
 	m_iStep = 1;
@@ -50,6 +47,109 @@ void P_WaterRender::SetMaterial(const string& strMaterial)
 	SetNetUpdateFlag(true);
 }
 
+void P_WaterRender::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
+{
+	static Vector3 kPos;
+	static Vector3 kMin;
+	static Vector3 kMax;
+	
+	kPos = m_pkEntity->GetWorldPosV();
+	kMin.Set(kPos.x-m_kSize.x,kPos.y-m_kSize.y,kPos.z-m_kSize.z);
+	kMax.Set(kPos.x+m_kSize.x,kPos.y+m_kSize.y,kPos.z+m_kSize.z);
+			
+	//frustum culling
+	if(!kRenderState.m_kFrustum.CubeInFrustum(kMin,kMax))
+		return;			
+	
+	if(kRenderState.m_kCameraPosition.DistanceTo(kPos) - m_kSize.Length() > m_pkZeroFps->GetViewDistance())
+		return;
+
+	//setup mesh and renderpackages
+	if(!m_bHaveMesh)
+		GenerateMesh();
+
+
+	//setup renderpackage
+	m_kRenderPackage.m_pkMaterial = (ZMaterial*)m_pkMaterial->GetResourcePtr();	
+	m_kRenderPackage.m_kCenter = kPos;		
+	m_kRenderPackage.m_kModelMatrix.Identity();
+	m_kRenderPackage.m_kModelMatrix.Translate(kPos);		
+	kRenderPackages.push_back(&m_kRenderPackage);
+	
+	
+	//debug render package
+	if(m_pkZeroFps->GetDebugGraph())
+	{	
+		m_kDebugRenderPackage.m_kModelMatrix.Identity();
+		m_kDebugRenderPackage.m_kModelMatrix.Translate(kPos);					
+		kRenderPackages.push_back(&m_kDebugRenderPackage);
+	}
+}
+
+void P_WaterRender::GenerateMesh()
+{
+	m_bHaveMesh = true;
+
+	m_kRenderPackage.m_pkLightProfile = &m_kLightProfile;	
+	m_kRenderPackage.m_kAABBMin = -m_kSize;
+	m_kRenderPackage.m_kAABBMax = m_kSize;
+	m_kRenderPackage.m_fRadius = 0;//m_kSize.Length();
+	m_kRenderPackage.m_bOcculusionTest = true;
+
+	m_kRenderPackage.m_kMeshData.m_kVertises.clear();
+	m_kRenderPackage.m_kMeshData.m_kNormals.clear();
+	m_kRenderPackage.m_kMeshData.m_kTexture[0].clear();
+
+	for(int x = int(-m_kSize.x);x< m_kSize.x;x+=m_iStep)
+	{	
+		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
+		{
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z));
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z));
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z+m_iStep));
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));
+		
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1,z*0.1));
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1+0.1,z*0.1));
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1+0.1,z*0.1+0.1));
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1,z*0.1+0.1));
+		
+			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+
+		}
+	}	
+
+
+	m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kRenderPackage.m_kMeshData.m_kVertises.size();
+	m_kRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	
+	
+	
+	//debug package	
+	static ZMaterial* pkLine = NULL;
+	if(!pkLine)
+	{
+		pkLine = new ZMaterial;
+		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
+		pkLine->GetPass(0)->m_bLighting = false;
+		pkLine->GetPass(0)->m_bColorMaterial = true;
+		pkLine->GetPass(0)->m_bUseShader = false;
+	}					
+	m_kDebugRenderPackage.m_pkMaterial = pkLine;	
+	
+	
+	m_kDebugRenderPackage.m_kMeshData.m_kVertises.clear();
+	m_kDebugRenderPackage.m_kMeshData.m_kColors.clear();	
+	m_pkRender->AddAABB(m_kDebugRenderPackage,-m_kSize,m_kSize,Vector3(1,1,1));
+	m_kDebugRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kDebugRenderPackage.m_kMeshData.m_kVertises.size();
+	m_kDebugRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
+
+}
 
 void P_WaterRender::Update() 
 {	
@@ -173,6 +273,8 @@ void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read_Str(m_strMaterial);	
 	SetMaterial(m_strMaterial);
 	GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
+
+	m_bHaveMesh = false;
 }
 
 
@@ -196,6 +298,7 @@ void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read_Str(m_strMaterial);	
 		SetMaterial(m_strMaterial);
 		GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
+		m_bHaveMesh = false;
 	}
 	else
 	{
@@ -204,6 +307,7 @@ void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read_Str(m_strMaterial);	
 		SetMaterial(m_strMaterial);		
 		GetEntity()->SetLocalAABB(-m_kSize,m_kSize);		
+		m_bHaveMesh = false;
 	}
 
 }
@@ -223,8 +327,10 @@ bool P_WaterRender::HandleSetValue( const string& kValueName ,const string& kVal
 void P_WaterRender::HaveSetValue( const string& kValueName)
 {
 	if(kValueName == "size")
+	{
 		GetEntity()->SetLocalAABB(-m_kSize,m_kSize);
-
+		m_bHaveMesh = false;
+	}
 }
 
 
@@ -235,28 +341,3 @@ Property* Create_WaterRenderProperty()
 
 
 
-
-/*
-vector<PropertyValues> P_WaterRender::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(4);
-			
-	kReturn[0].kValueName="size";
-	kReturn[0].iValueType=VALUETYPE_VECTOR3;
-	kReturn[0].pkValue=(void*)&m_kSize;
-	
-	kReturn[1].kValueName="step";
-	kReturn[1].iValueType=VALUETYPE_INT;
-	kReturn[1].pkValue=(void*)&m_iStep;
-	
-	kReturn[2].kValueName="material";
-	kReturn[2].iValueType=VALUETYPE_STRING;
-	kReturn[2].pkValue=(void*)&m_strMaterial;
-
-	kReturn[3].kValueName="wave";
-	kReturn[3].iValueType=VALUETYPE_FLOAT;
-	kReturn[3].pkValue=(void*)&m_fWave;
-	
-	
-	return kReturn;
-}*/

@@ -5,7 +5,7 @@
 #include "../p_psystem.h"
 // ------------------------------------------------------------------------------------------
 
-void LightPSProp::Update()
+void LightPSProp::Update(const RenderState* pkRenderState)
 {
 	// Get lightProp each frame in case it was removed, to prevent crash
 	P_Light* pkLight = (P_Light*)m_pkParent->m_pkParent->GetEntity()->GetProperty("P_Light");

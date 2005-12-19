@@ -7,6 +7,7 @@
 #include <vector>
 #include "../../render/texturemanager.h"
 #include "../../render/zshadersystem.h"
+#include "../../engine/zssrenderengine.h"
 
 #define MAD_DRAW_MESH		1
 #define MAD_DRAW_NORMAL		2
@@ -65,9 +66,15 @@ private:
 
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
+
 protected:
 	ZShaderSystem*					m_pkShader;
 	vector<int>				m_kActiveMesh;
+
+	vector<RenderPackage>	m_kRenderPackage;			// VimRp - Our list of all renderpackages.
+	BoneTransform	kFinalBoneTransform[MAX_BONES];		// VimRp - We now store bonetransforms in each mad_modell as they are to be used later by renderpackages.
+	Matrix4			kFinalMatrixTransform[MAX_BONES];	// VimRp2 - Bone transformation matrix.
+
 
 public:
 	string	m_kMadFile;
@@ -124,6 +131,7 @@ public:
 
 	void UpdateBones();
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
+	void Draw_All_RenderP(RenderPackage kBaseRp);	
 	
 	float GetRadius();
 	float GetSize();

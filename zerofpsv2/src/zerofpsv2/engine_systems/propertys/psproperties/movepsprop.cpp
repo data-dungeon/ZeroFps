@@ -7,7 +7,7 @@
 
 // ------------------------------------------------------------------------------------------
 
-void MovePSProp::Update()
+void MovePSProp::Update(const RenderState* pkRenderState)
 {
 
 	// move ALL vertices...*puh*
@@ -37,10 +37,13 @@ void MovePSProp::Update()
 															  m_pkParent->m_kParticles[i].m_kForce * float(pow(fFrameTime,2)/2.f);
 					
  
+ 	if(!pkRenderState)
+ 		return;
+ 
 	// get modelviewmatrix
-	float *afM = new float[16];
-
-	glGetFloatv(GL_MODELVIEW_MATRIX, afM);
+	
+ 	float *afM = (float*)&pkRenderState->m_kCameraRotation;
+// 	glGetFloatv(GL_MODELVIEW_MATRIX, afM);
 	
 	Vector3 kRightVect;
 	Vector3 kUpVect;
@@ -88,7 +91,7 @@ void MovePSProp::Update()
 		pfVertices[i + 11] = pkParticles->at(iPartIndex).m_kCenter.z + d.z * fWidth;
 	}
 	
-	delete [] afM;
+// 	delete [] afM;
 }
 
 // ------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 #include "engine_x.h"
 #include <cfloat>
 #include "entity.h"
+#include "zssrenderengine.h"
 
 using namespace std;
 
@@ -137,6 +138,7 @@ class ENGINE_API Property
 		virtual void ZoneChange(int iCurrent,int iNew) {};
 		virtual void Init() {};											//executet when property is added to an entity
 		virtual void Update() {};										//executet once every game loop
+		virtual void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)	{};
 		virtual void PackTo(NetPacket* pkNetPacket, int iConnectionID) {};
 		virtual void PackFrom(NetPacket* pkNetPacket, int iConnectionID) {};
 		

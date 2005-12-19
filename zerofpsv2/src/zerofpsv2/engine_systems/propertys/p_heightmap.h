@@ -29,6 +29,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		class HeightmapArrays
 		{
 			public:
+			
 				vector<Vector3>	m_kVertexData;
 				vector<Vector2>	m_kTextureData;
 				vector<Vector3>	m_kNormalData;	
@@ -71,14 +72,20 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		int				m_iRows;
 		int				m_iCols;
 		bool				m_bHaveRebuilt;
+		
+		float				m_fExtremeMax;
+		float				m_fExtremeMin;
+		
 	
+		ZMaterial		m_kBottom;
+		vector<RenderPackage>			m_kRenderPackages;
 		vector<ZFResourceHandle*>		m_kMaterials;		
 		vector<float>						m_kHeightData;
 		vector<signed char>				m_kTextureIDs;
 			
-			
 		vector<vector<HeightmapArrays*> >	m_kLodLevels;
 		
+		void FindExtremeValues(float& fMax,float& fMin);
 		Vector3 GenerateNormal(int x,int y);	
 		void BuildTextureArrays();
 		void AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int i,bool bTop,int iStep = 1);
@@ -93,6 +100,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		~P_Heightmap();
 
 		void Update();
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
 		void Init();
 
 		void Save(ZFIoInterface* pkPackage);

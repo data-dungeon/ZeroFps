@@ -51,9 +51,61 @@ P_Heightmap::~P_Heightmap()
 void P_Heightmap::SetMaxValue(float fMax)							
 {
 	m_fMaxValue = fMax;	
-	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,-m_fMaxValue,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fMaxValue,m_iWidth/2.0));
+	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fExtremeMax,m_iWidth/2.0));
 }
 
+void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
+{
+	if(!m_bHaveRebuilt)
+		BuildTextureArrays();
+	
+	if(!kRenderState.m_kFrustum.CubeInFrustum(	m_pkEntity->GetWorldPosV() + Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iHeight/2.0),
+																m_pkEntity->GetWorldPosV() + Vector3(m_iWidth/2.0,m_fExtremeMax,m_iHeight/2.0)))
+		return;
+
+
+	
+	//calculate lod level
+	float fDistance =kRenderState.m_kCameraPosition.DistanceTo(m_pkEntity->GetWorldPosV()) - m_iWidth/2.0;		
+	
+	m_iLod = 3;
+	if(fDistance < m_pkZeroFps->GetViewDistance()*0.8)
+		m_iLod = 2;		
+	if(fDistance < m_pkZeroFps->GetViewDistance()*0.5)
+		m_iLod = 1;
+	if(fDistance < m_pkZeroFps->GetViewDistance()*0.2)
+		m_iLod = 0;		
+
+	if(m_iLod < 0) m_iLod = 0;
+	if(m_iLod >= m_kLodLevels.size()) m_iLod = m_kLodLevels.size()-1;	
+	
+	vector<HeightmapArrays*>& kDataArrays = m_kLodLevels[m_iLod];
+		
+	for(int i =0;i<kDataArrays.size();i++)
+	{
+		if(kDataArrays[i]->m_kVertexData.empty())
+			continue;	
+	
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.clear();
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER,&kDataArrays[i]->m_kVertexData[0]));
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.push_back(DataPointer(NORMAL_POINTER,&kDataArrays[i]->m_kNormalData[0]));
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.push_back(DataPointer(TEXTURE_POINTER0,&kDataArrays[i]->m_kTextureData[0]));		
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.push_back(DataPointer(COLOR_POINTER,&kDataArrays[i]->m_kColorData[0]));		
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.push_back(DataPointer(TANGENT_POINTER,&kDataArrays[i]->m_kTangentData[0]));
+		m_kRenderPackages[i].m_kMeshData.m_kDataPointers.push_back(DataPointer(BITANGENT_POINTER,&kDataArrays[i]->m_kBiTangentData[0]));							
+		m_kRenderPackages[i].m_kMeshData.m_iNrOfDataElements = kDataArrays[i]->m_kVertexData.size();		
+	
+		m_kRenderPackages[i].m_kModelMatrix.Identity();
+		m_kRenderPackages[i].m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());
+		m_kRenderPackages[i].m_kModelMatrix*= m_pkEntity->GetWorldRotM();
+		m_kRenderPackages[i].m_kModelMatrix.Translate(-Vector3(m_iWidth/2.0,0,m_iHeight/2.0));	
+		m_kRenderPackages[i].m_kCenter = m_pkEntity->GetWorldPosV();
+		
+		
+		kRenderPackages.push_back(&m_kRenderPackages[i]);					
+	}
+
+}
 
 void P_Heightmap::Update()
 {
@@ -179,9 +231,37 @@ void P_Heightmap::DrawTexturedHeightmap()
 	return;
 }
 
+void P_Heightmap::FindExtremeValues(float& fMax,float& fMin)
+{
+	fMax = -999999999;
+	fMin =  999999999;
+
+	int iSize = m_kHeightData.size();
+	for(int i = 0;i<iSize;i++)
+	{
+		if(m_kHeightData[i] < fMin) fMin = m_kHeightData[i];
+		if(m_kHeightData[i] > fMax) fMax = m_kHeightData[i];	
+	}
+	
+}
+
 void P_Heightmap::BuildTextureArrays()
 {
 	m_bHaveRebuilt = true;
+
+	//make a new material with no blending
+	m_kBottom = *(ZMaterial*)(m_kMaterials[0]->GetResourcePtr());
+	m_kBottom.GetPass(0)->m_bBlend = false;			
+
+	//setup renderpackages array
+	if(m_kRenderPackages.size() != m_kMaterials.size())
+		m_kRenderPackages.resize(m_kMaterials.size());
+
+	//find extreme values
+	FindExtremeValues(m_fExtremeMax,m_fExtremeMin);
+
+	//update AABB
+	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fExtremeMax,m_iWidth/2.0));
 
 	//clear data arrays
 	for(int i = 0;i<m_kLodLevels.size();i++)
@@ -222,7 +302,8 @@ void P_Heightmap::BuildTextureArrays()
 			
 			
 			//draw the first material all over the place if we dont have glsl support
-			if(i == 0 && !m_pkZShaderSystem->SupportGLSLProgram())
+// 			if(i == 0 && !m_pkZShaderSystem->SupportGLSLProgram())
+			if(i == 0 )
 			{
 				for(int y = 0;y<m_iCols-iStep;y+=iStep)
 				{	
@@ -269,14 +350,8 @@ void P_Heightmap::BuildTextureArrays()
 					}
 				}				
 			}
-// 			cout<<"bla:"<<pkNewArrays->m_kVertexData.size()<<" "<<pkNewArrays->m_kNormalData.size()<<" "<<pkNewArrays->m_kTextureData.size()<<endl;
-			
-// 			for(int i = 0;i<pkNewArrays->m_kVertexData.size();i++)
-// 			{
-// 				pkNewArrays->m_kTangentData.push_back(Vector3(1,0,0));
-// 				pkNewArrays->m_kBiTangentData.push_back(Vector3(0,0,1));
-// 			}
-					
+
+			//generate tangent data					
 			Math::GenerateTangents(	&pkNewArrays->m_kVertexData[0],
 											&pkNewArrays->m_kNormalData[0],
 											&pkNewArrays->m_kTextureData[0],
@@ -284,22 +359,41 @@ void P_Heightmap::BuildTextureArrays()
 											pkNewArrays->m_kBiTangentData,
 											pkNewArrays->m_kVertexData.size());
 			
-// 			cout<<"tangents:"<<	pkNewArrays->m_kTangentData.size()<<endl;		
-// 			cout<<"bitangents:"<<	pkNewArrays->m_kBiTangentData.size()<<endl;		
 			
-	// 		if(pkNewArrays->m_kVertexData.size() > 1000)
-	// 		{	
-	// 			m_pkZShaderSystem->ResetPointers();
-	// 			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&(pkNewArrays->m_kColorData[0]));
-	// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&(pkNewArrays->m_kTextureData[0]));
-	// 			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&(pkNewArrays->m_kNormalData[0]));
-	// 			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkNewArrays->m_kVertexData[0]));
-	// 			m_pkZShaderSystem->SetNrOfVertexs(pkNewArrays->m_kVertexData.size());		
-	// 			
-	// 			pkNewArrays->m_pkVBO = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLES_MODE);						
-	// 		}
+
+
 		}
 	}
+	
+	
+	//setup renderpackages
+		
+	for(int i = 0;i<m_kRenderPackages.size();i++)
+	{
+		//if this is the bottom material, use special no blending bottom material			
+		if(i == 0)
+			m_kRenderPackages[i].m_pkMaterial = &m_kBottom;
+		else						
+			m_kRenderPackages[i].m_pkMaterial = (ZMaterial*)(m_kMaterials[i]->GetResourcePtr());
+
+		m_kRenderPackages[i].m_kMeshData.m_ePolygonMode = TRIANGLES_MODE;
+		
+		m_kRenderPackages[i].m_pkLightProfile = &m_kLightProfile;
+		m_kRenderPackages[i].m_fRadius = GetEntity()->GetRadius();
+		
+		//disable blend sorting
+		m_kRenderPackages[i].m_bBlendSort = false;
+		
+		//occulusion
+		m_kRenderPackages[i].m_kAABBMin = Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iHeight/2.0);
+		m_kRenderPackages[i].m_kAABBMax = Vector3(m_iWidth/2.0,m_fExtremeMax,m_iHeight/2.0);
+		m_kRenderPackages[i].m_bOcculusionTest = true;
+		
+		//set occulusion test parent to bottom material
+		if(i != 0)
+			m_kRenderPackages[i].m_pkOcculusionParent = &(m_kRenderPackages[i]);	
+	}
+	
 }
 
 void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int iID,bool bTop,int iStep)
@@ -570,7 +664,7 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	
 	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());	
 	//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
-	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
+	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,m_fExtremeMin,-m_iWidth),Vector3(m_iWidth,m_fExtremeMax,m_iWidth));
 }
 
 void P_Heightmap::Smooth()
@@ -703,6 +797,12 @@ void P_Heightmap::PurgeUnusedMaterials()
 
 void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial)
 {
+	if(strMaterial.substr(strMaterial.length()-3) != "zlm")
+	{
+		cerr<<"WARNING: invalide material "<<strMaterial<<endl;
+		return;
+	}
+
 	signed char cTexture = GetMaterialID(strMaterial);
 
 	for(int i = 0;i<kSelectionData->size();i++)

@@ -62,10 +62,15 @@ ZOcculusionTest::ZOcculusionTest()
 
 bool ZOcculusionTest::Visible(const Vector3& kMin,const Vector3& kMax)
 {
-	if(m_bHaveTested && HaveResult())
+	//if we have tested, check if we got results yet and return that else we return the old result 
+	//if we havent tested do a test and return old result
+	if(m_bHaveTested)
 	{
-		m_bHaveTested = false;
-		m_bVisible = GetResult() > 10;					
+		if(HaveResult())
+		{	
+			m_bHaveTested = false;
+			m_bVisible = GetResult() > 10;					
+		}
 	}
 	else
 	{

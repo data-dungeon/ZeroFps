@@ -10,10 +10,10 @@ int ZMaterial::m_iNextID = 1;
 
 ZMaterialSettings::ZMaterialSettings()
 {
-	m_kTUs[0] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
-	m_kTUs[1] = new ZFResourceHandle();
-	m_kTUs[2] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
-	m_kTUs[3] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
+	m_pkTUs[0] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
+	m_pkTUs[1] = new ZFResourceHandle();
+	m_pkTUs[2] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
+	m_pkTUs[3] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
 	
 	m_pkVP = new ZFResourceHandle();					// LEAK - MistClient, Level loaded.
 	m_pkFP = new ZFResourceHandle();
@@ -51,6 +51,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bStencilTest=	false;
 	m_iDepthFunc =		DEPTHFUNC_LEQUAL;
 	m_bFog=				true;
+	m_bUseShader	=	true;
 	
 	m_iStencilOpFail=		STENCILOP_KEEP;
 	m_iStencilOpZFail=	STENCILOP_KEEP;
@@ -81,11 +82,8 @@ ZMaterialSettings::~ZMaterialSettings()
 {
 	for(int i=0;i<4;i++)
 	{
-		if(m_kTUs[i])
-			delete m_kTUs[i];	
-			
-		m_kTUs[i] = NULL;
-		
+		if(m_pkTUs[i])
+			delete m_pkTUs[i];				
 	}
 
 	
@@ -98,9 +96,6 @@ ZMaterialSettings::~ZMaterialSettings()
 	if(m_pkSLP)
 		delete m_pkSLP;
 			
-	m_pkVP = NULL;
-	m_pkFP = NULL;
-	m_pkSLP = NULL;
 }
 
 ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
@@ -108,7 +103,7 @@ ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
 	//copy textures
 	for(int i =0;i<4;i++)
 	{
-		m_kTUs[i] = kOther.m_kTUs[i];			
+		*(m_pkTUs[i]) = *(kOther.m_pkTUs[i]);			
 	}
 
 	*m_pkVP = 	*(kOther.m_pkVP);
@@ -151,6 +146,7 @@ ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
 	m_iBlendDst = 			kOther.m_iBlendDst;
 	m_bColorMask = 		kOther.m_bColorMask;
 	m_bDepthMask = 		kOther.m_bDepthMask;
+	m_bUseShader=			kOther.m_bUseShader;
 			
 	return (*this);
 }
@@ -159,7 +155,6 @@ ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
 ZMaterial::ZMaterial()
 {
 	m_pkScript = NULL;
-//  	m_pkMaterialScript = NULL;
 	
 	//setup material ID
 	m_iID = m_iNextID;
@@ -169,9 +164,6 @@ ZMaterial::ZMaterial()
 	Clear();
 
 	ZMaterialSettings* first = AddPass();	
-	
-	
-	//cout<<"bah:"<<GetTranslateEnum("SRC_ALPHA_BLEND_DST")<<endl;;
 	
 }
 
@@ -188,7 +180,6 @@ ZMaterial& ZMaterial::operator=(const ZMaterial& kOther)
 	for(int i =0;i<iPasses;i++)
 	{
 		ZMaterialSettings* pkNew = AddPass();
-
 		(*pkNew) = *kOther.GetPass(i); 
 	}
 	
@@ -199,8 +190,6 @@ ZMaterial& ZMaterial::operator=(const ZMaterial& kOther)
 	}
 	
 	m_pkScript = 			NULL;
-//  	m_pkMaterialScript = NULL;	
-	
 	
 	return (*this);
 }
@@ -232,17 +221,13 @@ void ZMaterial::Clear()
 	m_bRandomMovements 	= false;
 	m_bWaves 				= false;	
 	m_bTextureOffset 		= false;
+	m_bBoneTransform		= true;
+
 	
 	m_strName = "UnNamed";
 	
 	m_kMaterialParameters.clear();
-	
-//  	if(m_pkMaterialScript)
-//  	{
-//  		cerr<<"Warning: material script not NULL"<<endl;
-//  		//delete m_pkMaterialScript;
-//  		//m_pkMaterialScript = NULL;
-//  	}
+
 }
 
 
@@ -275,6 +260,10 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile,bool bDontClear)
  		m_strName = strFile;
 		if(m_pkScript->Call(SI_ZMATERIAL::g_pkMaterialScript, "Main",0,0))
 		{
+			//finaly get global parameters
+			LuaMaterialGetGlobals();
+		
+			//clear and remove script
 			delete SI_ZMATERIAL::g_pkMaterialScript;
 			SI_ZMATERIAL::g_pkMaterialScript = NULL;
 			SI_ZMATERIAL::g_pkCurrentMaterial = NULL;	
@@ -291,7 +280,7 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile,bool bDontClear)
 			return true;		
 		}
 		
-		cerr<<"Lua material "<<strFile<< " did not contain any Main() function"<<endl;
+		cerr<<"Error: Lua material "<<strFile<< " is broken"<<endl;
 		
 	}
 
@@ -301,6 +290,20 @@ bool ZMaterial::LoadLuaMaterial(const string& strFile,bool bDontClear)
 	SI_ZMATERIAL::g_pkCurrentMaterial = NULL;
 	
 	return false;
+}
+
+void ZMaterial::LuaMaterialGetGlobals()
+{
+	if(!SI_ZMATERIAL::g_pkMaterialScript || !SI_ZMATERIAL::g_pkCurrentMaterial)
+	{
+		cerr<<"ERROR: no material is being loaded"<<endl;
+		return;
+	}
+
+	char czTemp[128];
+
+	if(PassGetLuaChar("bonetransform",czTemp))
+		m_bBoneTransform = GetTranslateEnum(czTemp);
 }
 
 bool ZMaterial::LuaMaterialEndPass(int iPass)
@@ -346,13 +349,13 @@ bool ZMaterial::LuaMaterialEndPass(int iPass)
 			
 	//textures
 	if(PassGetLuaChar("texture0",ctemp))
-		newpass->m_kTUs[0]->SetRes(ctemp);
+		newpass->m_pkTUs[0]->SetRes(ctemp);
 	if(PassGetLuaChar("texture1",ctemp))
-		newpass->m_kTUs[1]->SetRes(ctemp);
+		newpass->m_pkTUs[1]->SetRes(ctemp);
 	if(PassGetLuaChar("texture2",ctemp))
-		newpass->m_kTUs[2]->SetRes(ctemp);
+		newpass->m_pkTUs[2]->SetRes(ctemp);
 	if(PassGetLuaChar("texture3",ctemp))
-		newpass->m_kTUs[3]->SetRes(ctemp);
+		newpass->m_pkTUs[3]->SetRes(ctemp);
 
 	//texutre cordinats
 	if(PassGetLuaChar("texcords0",ctemp))
@@ -414,6 +417,9 @@ bool ZMaterial::LuaMaterialEndPass(int iPass)
 	if(PassGetLuaChar("colormaterial",ctemp))
 		newpass->m_bColorMaterial = bool(GetTranslateEnum(ctemp));		
 				
+	if(PassGetLuaChar("useshader",ctemp))
+		newpass->m_bUseShader = bool(GetTranslateEnum(ctemp));
+		
 		
 		
 	//blending
@@ -604,10 +610,11 @@ bool ZMaterial::LoadGlobalSection()
 	//read shader global settings
 
 	if(m_kIni.KeyExist("global","waves"))
-		if(m_kIni.GetBoolValue("global","waves"))
-			m_bWaves = true;
-		else
-			m_bWaves = false;
+		m_bWaves = m_kIni.GetBoolValue("global","waves");
+
+	if(m_kIni.KeyExist("global","bonetransform"))
+		m_bBoneTransform = m_kIni.GetBoolValue("global","bonetransform");
+	
 
 	if(m_kIni.KeyExist("global","randommovements"))
 		if(m_kIni.GetBoolValue("global","randommovements"))
@@ -663,13 +670,13 @@ bool ZMaterial::LoadPass(int iPass)
 		newpass->m_bAlphaTest = m_kIni.GetBoolValue(passname.c_str(),"alphatest");
 	
 	if(m_kIni.KeyExist(passname.c_str(),"tu0"))
-		newpass->m_kTUs[0]->SetRes(m_kIni.GetValue(passname.c_str(),"tu0"));
+		newpass->m_pkTUs[0]->SetRes(m_kIni.GetValue(passname.c_str(),"tu0"));
 	if(m_kIni.KeyExist(passname.c_str(),"tu1"))
-		newpass->m_kTUs[1]->SetRes(m_kIni.GetValue(passname.c_str(),"tu1"));
+		newpass->m_pkTUs[1]->SetRes(m_kIni.GetValue(passname.c_str(),"tu1"));
 	if(m_kIni.KeyExist(passname.c_str(),"tu2"))
-		newpass->m_kTUs[2]->SetRes(m_kIni.GetValue(passname.c_str(),"tu2"));
+		newpass->m_pkTUs[2]->SetRes(m_kIni.GetValue(passname.c_str(),"tu2"));
 	if(m_kIni.KeyExist(passname.c_str(),"tu3"))
-		newpass->m_kTUs[3]->SetRes(m_kIni.GetValue(passname.c_str(),"tu3"));
+		newpass->m_pkTUs[3]->SetRes(m_kIni.GetValue(passname.c_str(),"tu3"));
 
 	if(m_kIni.KeyExist(passname.c_str(),"vertexprogram"))
 		newpass->m_pkVP->SetRes(m_kIni.GetValue(passname.c_str(),"vertexprogram"));
@@ -731,6 +738,10 @@ bool ZMaterial::LoadPass(int iPass)
 		newpass->m_bColorMask = m_kIni.GetBoolValue(passname.c_str(),"colormask");
 	if(m_kIni.KeyExist(passname.c_str(),"depthmask"))
 		newpass->m_bDepthMask = m_kIni.GetBoolValue(passname.c_str(),"depthmask");
+	
+	if(m_kIni.KeyExist(passname.c_str(),"useshader"))
+		newpass->m_bUseShader = m_kIni.GetBoolValue(passname.c_str(),"useshader");
+	
 	
 	if(m_kIni.KeyExist(passname.c_str(),"blend"))
 		newpass->m_bBlend = m_kIni.GetBoolValue(passname.c_str(),"blend");

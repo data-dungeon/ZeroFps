@@ -8,7 +8,7 @@ class SizePSProp : public ParticleProperty
 private:
 
 public:
-	void Update();
+	void Update(const RenderState* pkRenderState);
 	SizePSProp ( PSystem *pkParent );
 };
 

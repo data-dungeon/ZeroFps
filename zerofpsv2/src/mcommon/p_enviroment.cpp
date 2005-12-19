@@ -45,7 +45,7 @@ P_Enviroment::P_Enviroment() : Property("P_Enviroment")
 	m_kThunderSounds.push_back("thunder/thunder3.wav");
 	
 	m_pkRainSplashMat = new ZMaterial;
-		m_pkRainSplashMat->GetPass(0)->m_kTUs[0]->SetRes("rainsplash.tga");
+		m_pkRainSplashMat->GetPass(0)->m_pkTUs[0]->SetRes("rainsplash.tga");
 		m_pkRainSplashMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		m_pkRainSplashMat->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;		
 		m_pkRainSplashMat->GetPass(0)->m_bLighting = 			true;			
@@ -56,7 +56,7 @@ P_Enviroment::P_Enviroment() : Property("P_Enviroment")
 		m_pkRainSplashMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 
 	m_pkSunMat = new ZMaterial;
-		m_pkSunMat->GetPass(0)->m_kTUs[0]->SetRes("sun.tga");
+		m_pkSunMat->GetPass(0)->m_pkTUs[0]->SetRes("sun.tga");
 		m_pkSunMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		m_pkSunMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		m_pkSunMat->GetPass(0)->m_bLighting = 				false;			
@@ -67,7 +67,7 @@ P_Enviroment::P_Enviroment() : Property("P_Enviroment")
 		m_pkSunMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 
 	m_pkSunFlareMat = new ZMaterial;
-		m_pkSunFlareMat->GetPass(0)->m_kTUs[0]->SetRes("sunflare.tga");
+		m_pkSunFlareMat->GetPass(0)->m_pkTUs[0]->SetRes("sunflare.tga");
 		m_pkSunFlareMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		m_pkSunFlareMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		m_pkSunFlareMat->GetPass(0)->m_bLighting = 				false;			
@@ -124,6 +124,8 @@ void P_Enviroment::Init()
 
 void P_Enviroment::Update()
 {
+	return;
+
 	if(m_bEnabled)
 	{
 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWFIRST)
@@ -495,8 +497,8 @@ void P_Enviroment::DrawSky()
 	if(!pkSkyBackMat)
 	{
 		pkSkyBackMat = new ZMaterial;
-			pkSkyBackMat->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
-			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes("enviroment/sky.tga");
+			pkSkyBackMat->GetPass(0)->m_pkTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkSkyBackMat->GetPass(0)->m_pkTUs[1]->SetRes("enviroment/sky.tga");
 			pkSkyBackMat->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSkyBackMat->GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");
@@ -517,8 +519,8 @@ void P_Enviroment::DrawSky()
 	if(!pkSkyFrontMat)
 	{
 		pkSkyFrontMat = new ZMaterial;
-			pkSkyFrontMat->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
-			pkSkyFrontMat->GetPass(0)->m_kTUs[1]->SetRes("enviroment/space.tga");
+			pkSkyFrontMat->GetPass(0)->m_pkTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkSkyFrontMat->GetPass(0)->m_pkTUs[1]->SetRes("enviroment/space.tga");
 			pkSkyFrontMat->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSkyFrontMat->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
@@ -541,8 +543,8 @@ void P_Enviroment::DrawSky()
 	if(!pkSpace)
 	{
 		pkSpace = new ZMaterial;
-			pkSpace->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
-			pkSpace->GetPass(0)->m_kTUs[1]->SetRes("enviroment/space.tga");
+			pkSpace->GetPass(0)->m_pkTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkSpace->GetPass(0)->m_pkTUs[1]->SetRes("enviroment/space.tga");
 			//pkSpace->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 			
 			pkSpace->GetPass(0)->m_iPolygonModeFront =FILL_POLYGON;
@@ -562,8 +564,8 @@ void P_Enviroment::DrawSky()
 	if(!pkCloudMatLow)
 	{
 		pkCloudMatLow = new ZMaterial;
-			pkCloudMatLow->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
-			pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes("enviroment/cloud.tga");
+			pkCloudMatLow->GetPass(0)->m_pkTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkCloudMatLow->GetPass(0)->m_pkTUs[1]->SetRes("enviroment/cloud.tga");
 			pkCloudMatLow->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
  			pkCloudMatLow->GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");
 			
@@ -583,8 +585,8 @@ void P_Enviroment::DrawSky()
 	if(!pkCloudMatHi)
 	{
 		pkCloudMatHi = new ZMaterial;
-			pkCloudMatHi->GetPass(0)->m_kTUs[0]->SetRes("enviroment/skyalpha.tga");
-			pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes("enviroment/cloud2.tga");
+			pkCloudMatHi->GetPass(0)->m_pkTUs[0]->SetRes("enviroment/skyalpha.tga");
+			pkCloudMatHi->GetPass(0)->m_pkTUs[1]->SetRes("enviroment/cloud2.tga");
 			pkCloudMatHi->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
 			pkCloudMatHi->GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");
 			
@@ -631,11 +633,11 @@ void P_Enviroment::DrawSky()
 							  fPS,	0};
 										
 	//setup textures
-	pkSpace->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strSpace);
+	pkSpace->GetPass(0)->m_pkTUs[1]->SetRes(m_kCurrentEnvSetting.m_strSpace);
 //	pkSkyMat->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strSky[0]);
 	
-	pkCloudMatLow->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strCloudLow);
-	pkCloudMatHi->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strCloudHi);
+	pkCloudMatLow->GetPass(0)->m_pkTUs[1]->SetRes(m_kCurrentEnvSetting.m_strCloudLow);
+	pkCloudMatHi->GetPass(0)->m_pkTUs[1]->SetRes(m_kCurrentEnvSetting.m_strCloudHi);
 
 	pkCloudMatLow->GetPass(0)->m_kVertexColor = m_kCurrentEnvSetting.m_kSunDiffuseColor;						
 	pkCloudMatHi->GetPass(0)->m_kVertexColor = m_kCurrentEnvSetting.m_kSunDiffuseColor;						
@@ -662,8 +664,8 @@ void P_Enviroment::DrawSky()
 		if(!m_kCurrentEnvSetting.m_strSky[0].empty())
 		{													
 			
-			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes(		m_kCurrentEnvSetting.m_strSky[m_iPartOfDay]	);			
-			pkSkyFrontMat->GetPass(0)->m_kTUs[1]->SetRes(	m_kCurrentEnvSetting.m_strSky[m_iNextPart]		);	
+			pkSkyBackMat->GetPass(0)->m_pkTUs[1]->SetRes(		m_kCurrentEnvSetting.m_strSky[m_iPartOfDay]	);			
+			pkSkyFrontMat->GetPass(0)->m_pkTUs[1]->SetRes(	m_kCurrentEnvSetting.m_strSky[m_iNextPart]		);	
 			pkSkyFrontMat->GetPass(0)->m_kVertexColor= Vector4(1,1,1,m_fPosOfPart);	
 												
 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);				
@@ -696,7 +698,7 @@ void P_Enviroment::DrawSky()
 		//sky
 		if(!m_kCurrentEnvSetting.m_strSky[0].empty())
 		{			
-			pkSkyBackMat->GetPass(0)->m_kTUs[1]->SetRes(m_kCurrentEnvSetting.m_strSky[0]);
+			pkSkyBackMat->GetPass(0)->m_pkTUs[1]->SetRes(m_kCurrentEnvSetting.m_strSky[0]);
 			pkSkyBackMat->GetPass(0)->m_kVertexColor = m_kCurrentEnvSetting.m_kSunDiffuseColor;
 		
 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);				

@@ -24,7 +24,7 @@ using namespace std;
 class RENDER_API ZMaterialSettings
 {
 	public:
-		ZFResourceHandle*	m_kTUs[4];	
+		ZFResourceHandle*	m_pkTUs[4];	
 		ZFResourceHandle*	m_pkVP;
 		ZFResourceHandle*	m_pkFP;
 		
@@ -65,6 +65,8 @@ class RENDER_API ZMaterialSettings
 		int				m_iBlendDst;
 		bool				m_bColorMask;
 		bool				m_bDepthMask;
+		
+		bool				m_bUseShader;
 		
 	
 		ZMaterialSettings();
@@ -118,13 +120,16 @@ class RENDER_API ZMaterial : public ZFResource
 		bool PassGetLuaDouble(char* czName,double& dTemp);
 		bool PassGetLuaChar(char* czName,char* cTemp);
 		
+		void LuaMaterialGetGlobals();
+		
 	public:		
 		//global material settings
 		bool	m_bRandomMovements;
 		bool	m_bWaves;
 		bool	m_bTextureOffset;
 		float	m_faTextureOffset[2];
-		
+		bool	m_bBoneTransform;
+
 	
 	
 		ZMaterial();

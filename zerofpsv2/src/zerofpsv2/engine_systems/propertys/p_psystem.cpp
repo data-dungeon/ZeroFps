@@ -9,55 +9,65 @@ using namespace ObjectManagerLua;
 
 // ------------------------------------------------------------------------------------------
 
-void P_PSystem::Update()
+void P_PSystem::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
 {
-
-// 	StartProfileTimer("r___PSystem");
-
-	//m_pkZShaderSystem->Push("P_PSystem::Update");
-
-// 	static Matrix4 kMat;
-// 	kMat = m_pkEntity->GetWorldRotM();
-// 
-// 	int iFinishedPS = 0;
-// 	cout<<"crashing"<<endl;
-// 	cout<<"psystemid: "<<m_pkEntity->GetEntityID()<<"   pss: "<<m_kPSystems.size()<<endl;
 	for (int i = 0; i < m_kPSystems.size(); i++)
 	{
 		if ( m_kPSystems[i].m_pkPSystem )
 		{
-		
-			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
-			{		
-				if( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() )
-				{
-					UpdatePS(i);
-				}		
-				
-				return;
-			}
-
-			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
+			if(UpdatePS(i,&kRenderState))
 			{
-				if(UpdatePS(i))
-				{
-			
-					if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
-					{				
-						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
-						m_kPSystems[i].m_pkPSystem->Draw();
-					}
-				}
+				if(RenderPackage* pkRenderPackage = m_kPSystems[i].m_pkPSystem->GetRenderPackage(kRenderState))
+					kRenderPackages.push_back(pkRenderPackage);
 			}
+				
 		}
 	}
-
-	//m_pkZShaderSystem->Pop();
 	
-// 	StopProfileTimer("r___PSystem");	
+	m_pkEntity->SetLocalAABB(10);
 }
 
-bool P_PSystem::UpdatePS(int iPS)
+void P_PSystem::Update()
+{
+// 	for (int i = 0; i < m_kPSystems.size(); i++)
+// 	{
+// 		if ( m_kPSystems[i].m_pkPSystem )
+// 		{
+// 			UpdatePS(i,NULL);
+// 		}		
+// 	}
+
+// 	for (int i = 0; i < m_kPSystems.size(); i++)
+// 	{
+// 		if ( m_kPSystems[i].m_pkPSystem )
+// 		{
+// 		
+// 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
+// 			{		
+// 				if( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() )
+// 				{
+// 					UpdatePS(i);
+// 				}		
+// 				
+// 				return;
+// 			}
+// 
+// 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
+// 			{
+// 				if(UpdatePS(i))
+// 				{			
+// 					if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
+// 					{				
+// 						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
+// 						m_kPSystems[i].m_pkPSystem->Draw();
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+}
+
+bool P_PSystem::UpdatePS(int iPS,const RenderState*	pkRenderState)
 {
 	static Matrix4 kMat;
 	kMat = m_pkEntity->GetWorldRotM();
@@ -72,7 +82,7 @@ bool P_PSystem::UpdatePS(int iPS)
 		kJointPos = pkMad->GetJointPosition("root");
 	}
 
-	if( m_kPSystems[iPS].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat ) )
+	if( m_kPSystems[iPS].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat,pkRenderState) )
 	{	
 		if ( m_kPSystems[iPS].m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish &&
 			m_pkEntity->m_eRole == NETROLE_AUTHORITY )

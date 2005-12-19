@@ -70,6 +70,7 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	m_kbNormalMap.Register(this, 	"r_normalmap", "0", "");	
 	
 	
+	
 	//reset all pointers
 	ResetPointers();
 };
@@ -90,11 +91,11 @@ bool ZShaderSystem::StartUp()
 	
 	//check for vertex and fragment program support
 	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
-		Printf("ZSHADER: No vertex program support");
-		//cout<<"ZSHADER: No vertex program support"<<endl;
+		//Printf("ZSHADER: No vertex program support");
+		cerr<<"ZSHADER: No vertex program support"<<endl;
 	if(!(m_bSupportFragmentProgram = HaveExtension("GL_ARB_fragment_program")))
-		Printf("ZSHADER: No fragment program support");
-		//cout<<"ZSHADER: No fragment program support"<<endl;
+		//Printf("ZSHADER: No fragment program support");
+		cerr<<"ZSHADER: No fragment program support"<<endl;
 	
 	//check for glsl support
 	m_bSupportGLSLProgram  =HaveExtension("GL_ARB_shader_objects") &&
@@ -103,31 +104,31 @@ bool ZShaderSystem::StartUp()
 									HaveExtension("GL_ARB_fragment_shader") && m_kbUseGLSL.GetBool();
 	
 	if(!m_bSupportGLSLProgram)
-		Printf("ZSHADER: No GLSL program support");
-		//cout<<"ZSHADER: No GLSL program support"<<endl;
+		//Printf("ZSHADER: No GLSL program support");
+		cerr<<"ZSHADER: No GLSL program support"<<endl;
 											
 	//check for framebuffer object support
 	m_bSupportFBO = HaveExtension("GL_EXT_framebuffer_object");
 	if(!m_bSupportFBO)
-		Printf("ZSHADER: No Framebuffer object support");
-		//cout<<"ZSHADER: No Framebuffer object support"<<endl;
+		//Printf("ZSHADER: No Framebuffer object support");
+		cerr<<"ZSHADER: No Framebuffer object support"<<endl;
 											
 	//check for vertexbuffer support	
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
-		Printf("ZSHADER: No vertexbuffer support");
-		//cout<<"ZSHADER: No vertexbuffer support"<<endl;	
+		//Printf("ZSHADER: No vertexbuffer support");
+		cerr<<"ZSHADER: No vertexbuffer support"<<endl;	
 		
 	//setup ucculusion
 	if(!(m_bOcclusion = HaveExtension("GL_ARB_occlusion_query")))
-		Printf("ZSHADER: No Occlusion support");
-		//cout<<"ZSHADER: No Occlusion support"<<endl;
+		//Printf("ZSHADER: No Occlusion support");
+		cerr<<"ZSHADER: No Occlusion support"<<endl;
 	else
 		SetupOcculusion();
 	
 	m_bSupportARBTC = HaveExtension("ARB_texture_compression");
 	if(!m_bSupportARBTC)
-		Printf("ZSHADER: No arb texturecompression support");
-		//cout<<"ZSHADER: No arb texturecompression support"<<endl;
+		//Printf("ZSHADER: No arb texturecompression support");
+		cerr<<"ZSHADER: No arb texturecompression support"<<endl;
 			
 	//hdr requires glsl support
 	m_bSupportHDR = m_bSupportGLSLProgram;
@@ -175,6 +176,11 @@ void ZShaderSystem::Push(const char* czNote)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
+	if(m_bSupportGLSLProgram)
+	{
+		glUseProgramObjectARB(0);			
+		m_iCurrentGLSLProgramID = 0 ;
+	}
 	
 	//load empty material
 	BindMaterial(&m_kEmptyMaterial);
@@ -774,10 +780,10 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 	}
 	
 
-	if(pkSettings->m_kTUs[iTU]->IsValid())
+	if(pkSettings->m_pkTUs[iTU]->IsValid())
 	{		
 		glEnable(GL_TEXTURE_2D);
-		BindTexture((ResTexture*)pkSettings->m_kTUs[iTU]->GetResourcePtr());
+		BindTexture((ResTexture*)pkSettings->m_pkTUs[iTU]->GetResourcePtr());
 		
 		switch(pkSettings->m_iTUTexEnvMode[iTU])
 		{
@@ -864,7 +870,7 @@ void ZShaderSystem::SetupTUClientStates(const int& iPass)
 		}
 	
 		//no valid texutre
-		if(!pkSettings->m_kTUs[iTU]->IsValid())
+		if(!pkSettings->m_pkTUs[iTU]->IsValid())
 		{
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			continue;
@@ -992,7 +998,29 @@ void ZShaderSystem::ResetPointers()
 	m_bBiTangentPointer =		false;
 }
 
-void ZShaderSystem::SetPointer(POINTER_TYPE eType,void* pkPointer)
+const void* ZShaderSystem::GetPointer(POINTER_TYPE eType)
+{
+	switch(eType)
+	{
+		case VERTEX2D_POINTER: 	return (void*)m_pk2DVertexPointer;
+		case VERTEX_POINTER:		return (void*)m_pkVertexPointer;
+		case NORMAL_POINTER: 	return (void*)m_pkNormalPointer;
+		case TEXTURE_POINTER0: 	return (void*)m_pkTexturePointer0;
+		case TEXTURE_POINTER1: 	return (void*)m_pkTexturePointer1;
+		case TEXTURE_POINTER2: 	return (void*)m_pkTexturePointer2;
+		case TEXTURE_POINTER3: 	return (void*)m_pkTexturePointer3;								
+		case INDEX_POINTER:		return (void*)m_pkIndexPointer;
+		case COLOR_POINTER: 		return (void*)m_pkColorPointer;
+		case TANGENT_POINTER: 	return (void*)m_pkTangentPointer;
+		case BITANGENT_POINTER: return (void*)m_pkBiTangentPointer;
+										
+		default:
+			cerr<<"ERROR: ZShaderSystem::GetPointer , invalid pointer id "<<eType<<endl;
+			break;
+	}	
+}
+
+void ZShaderSystem::SetPointer(POINTER_TYPE eType,const void* pkPointer)
 {
 	switch(eType)
 	{
@@ -1040,7 +1068,6 @@ void ZShaderSystem::SetPointer(POINTER_TYPE eType,void* pkPointer)
 			m_pkBiTangentPointer = (Vector3*)pkPointer;
 			m_bBiTangentPointer = true;
 			break;
-	
 	}	
 }
 
@@ -1774,7 +1801,7 @@ void ZShaderSystem::SetupGLSLProgram(ZMaterialSettings* pkSettings)
 
 	GLenum iProgram = 0;	
 		
-	if(!m_bForceDisableGLSL)
+	if(!m_bForceDisableGLSL && pkSettings->m_bUseShader)
 	{
 		if(GLSLProgram* pkRt = (GLSLProgram*)pkSettings->m_pkSLP->GetResourcePtr())	
 			iProgram = pkRt->m_iProgramIDs[m_pkLight->GetNrOfActiveLights()];
@@ -1878,22 +1905,36 @@ void ZShaderSystem::SetFragmentProgram(const int& iFPID)
 
 void ZShaderSystem::ClearBuffer(const int& iBuffer)
 {
-	switch(iBuffer)
-	{
-		case COLOR_BUFFER:
-			glClear(GL_COLOR_BUFFER_BIT);					
-			break;
-		case DEPTH_BUFFER:
-			glDepthMask(GL_TRUE);
-			glClear(GL_DEPTH_BUFFER_BIT);					
-			break;
-		case ACCUM_BUFFER:
-			glClear(GL_ACCUM_BUFFER_BIT);						
-			break;
-		case STENCIL_BUFFER:			
-			glClear(GL_STENCIL_BUFFER_BIT);			
-			break;
-	}
+	if(iBuffer & COLOR_BUFFER)
+		glClear(GL_COLOR_BUFFER_BIT);					
+	
+	if(iBuffer & DEPTH_BUFFER)
+		glClear(GL_DEPTH_BUFFER_BIT);					
+	
+	if(iBuffer & ACCUM_BUFFER)
+		glClear(GL_ACCUM_BUFFER_BIT);					
+
+	if(iBuffer & STENCIL_BUFFER)
+		glClear(GL_STENCIL_BUFFER_BIT);					
+
+
+
+// 	switch(iBuffer)
+// 	{
+// 		case COLOR_BUFFER:
+// 			glClear(GL_COLOR_BUFFER_BIT);					
+// 			break;
+// 		case DEPTH_BUFFER:
+// 			glDepthMask(GL_TRUE);
+// 			glClear(GL_DEPTH_BUFFER_BIT);					
+// 			break;
+// 		case ACCUM_BUFFER:
+// 			glClear(GL_ACCUM_BUFFER_BIT);						
+// 			break;
+// 		case STENCIL_BUFFER:			
+// 			glClear(GL_STENCIL_BUFFER_BIT);			
+// 			break;
+// 	}
 } 
 
 

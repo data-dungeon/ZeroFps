@@ -43,23 +43,14 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iPickedEntityID 	= 	-1;
 	m_fDelayTime  			=	0;
 
-	//m_bBloom					=	false;
 	m_iCharacterID 		=	-1;
 	m_iTargetID 			=	-1;
 	m_bFrontView 			=	false;
-	//m_bShowMenulevel 		= 	false;
-	//m_bQuickStart 			=	false;
-	//m_bTargetRotate		=	false;
 	m_bLoginKeepAlive    =  false;
-	//m_bShowLagMeeter		=	true;
 	m_fPingDelay			=  2;
-	//m_strQuickStartAddress = "127.0.0.1:4242";
 	m_pkMakerEntity		= NULL;
 
 	m_strMenuMusic			=	"music/menu_music.ogg";
-
-	//m_strLoginName			= "player";
-   //m_strLoginPW 			= "topsecret";
 
 	Register_Cmd("msref", FID_MSREFRESH);
 	Register_Cmd("skill", FID_SETSKILLBAR);
@@ -73,15 +64,6 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kbShowLagMeeter.Register(this, "ap_lagmeeter", "1");
 	m_kbBloom.Register(this, "ap_bloom", "0");
 
-	//RegisterVariable("ap_loginname", 		 	&m_strLoginName,				CSYS_STRING);
-   //RegisterVariable("ap_loginpw", 			 	&m_strLoginPW,					CSYS_STRING);
-	//RegisterVariable("ap_showmenulevel", 	 	&m_bShowMenulevel,			CSYS_BOOL);
-	//RegisterVariable("ap_quickstart",		 	&m_bQuickStart,				CSYS_BOOL);
-	//RegisterVariable("ap_quickstartadress",	&m_strQuickStartAddress,	CSYS_STRING);
-	//RegisterVariable("ap_targetrotate",			&m_bTargetRotate,				CSYS_BOOL);
-	//RegisterVariable("ap_lagmeeter",				&m_bShowLagMeeter,			CSYS_BOOL);
-	//RegisterVariable("ap_bloom",					&m_bBloom,				CSYS_BOOL);
-	
 	
 	m_bGuiCapture = false;
 	m_iNumBuffIcons = 0;
@@ -107,7 +89,7 @@ void MistClient::OnInit()
 	//initiate our mainview camera
 // 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),85,1.333,0.1,250);	
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),75,1.333,0.1,250);	
-	m_pkCamera->SetName("Main camera");
+	m_pkCamera->SetName("main");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
 	//register property b?
@@ -644,8 +626,8 @@ void MistClient::DrawHUDEffect(int iHUDEffect)
 		pkWater->m_faTextureOffset[0] = 0.25;
 		pkWater->m_faTextureOffset[1] = 0;
 		
-		pkWater->GetPass(0)->m_kTUs[0]->SetRes("water.tga");	
-		pkWater->GetPass(0)->m_kTUs[1]->SetRes("water.tga");	
+		pkWater->GetPass(0)->m_pkTUs[0]->SetRes("water.tga");	
+		pkWater->GetPass(0)->m_pkTUs[1]->SetRes("water.tga");	
 		pkWater->GetPass(0)->m_bLighting = 		false;
 		pkWater->GetPass(0)->m_bFog = 			false;	
 		pkWater->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
@@ -663,7 +645,7 @@ void MistClient::DrawHUDEffect(int iHUDEffect)
 	{
 		pkDead = new ZMaterial;
 
-		pkDead->GetPass(0)->m_kTUs[0]->SetRes("dead-color.tga");	
+		pkDead->GetPass(0)->m_pkTUs[0]->SetRes("dead-color.tga");	
 		pkDead->GetPass(0)->m_bLighting = 	false;
 		pkDead->GetPass(0)->m_bFog = 			false;	
 		pkDead->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
@@ -684,8 +666,8 @@ void MistClient::DrawHUDEffect(int iHUDEffect)
  		pkDeadFog->m_faTextureOffset[0] = 0.1;
  		pkDeadFog->m_faTextureOffset[1] = 0;
 
-		pkDeadFog->GetPass(0)->m_kTUs[0]->SetRes("dead.tga");	
-		pkDeadFog->GetPass(0)->m_kTUs[1]->SetRes("dead.tga");	
+		pkDeadFog->GetPass(0)->m_pkTUs[0]->SetRes("dead.tga");	
+		pkDeadFog->GetPass(0)->m_pkTUs[1]->SetRes("dead.tga");	
 		pkDeadFog->GetPass(0)->m_bLighting = 	false;
 		pkDeadFog->GetPass(0)->m_bFog = 			false;	
 		pkDeadFog->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
@@ -747,7 +729,7 @@ void MistClient::DrawCrossHair()
 	if(!pkNormalPointer)
 	{
 		pkNormalPointer = new ZMaterial;
-		pkNormalPointer->GetPass(0)->m_kTUs[0]->SetRes("crosshair.tga");	
+		pkNormalPointer->GetPass(0)->m_pkTUs[0]->SetRes("crosshair.tga");	
 		pkNormalPointer->GetPass(0)->m_bLighting = 	false;
 		pkNormalPointer->GetPass(0)->m_bFog = 			false;	
 		pkNormalPointer->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
@@ -765,7 +747,7 @@ void MistClient::DrawCrossHair()
 	if(!pkActivePointer)
 	{
 		pkActivePointer = new ZMaterial;
-		pkActivePointer->GetPass(0)->m_kTUs[0]->SetRes("crosshair-active.tga");	
+		pkActivePointer->GetPass(0)->m_pkTUs[0]->SetRes("crosshair-active.tga");	
 		pkActivePointer->GetPass(0)->m_bLighting = 	false;
 		pkActivePointer->GetPass(0)->m_bFog = 			false;	
 		pkActivePointer->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
@@ -807,7 +789,7 @@ void MistClient::DrawMouseOverMarker(const Vector3& kPos,float fSize)
 	if(!pkMarker)
 	{
 		pkMarker = new ZMaterial;
-		pkMarker->GetPass(0)->m_kTUs[0]->SetRes("enemymarker.tga");	
+		pkMarker->GetPass(0)->m_pkTUs[0]->SetRes("enemymarker.tga");	
 		pkMarker->GetPass(0)->m_bLighting = 	false;
 		pkMarker->GetPass(0)->m_bFog = 			false;	
 		pkMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
@@ -829,7 +811,7 @@ void MistClient::DrawTargetMarker()
 	if(!pkEnemyMarker)
 	{
 		pkEnemyMarker = new ZMaterial;
-		pkEnemyMarker->GetPass(0)->m_kTUs[0]->SetRes("enemymarker.tga");	
+		pkEnemyMarker->GetPass(0)->m_pkTUs[0]->SetRes("enemymarker.tga");	
 		pkEnemyMarker->GetPass(0)->m_bLighting = 	false;
 		pkEnemyMarker->GetPass(0)->m_bFog = 			false;	
 		pkEnemyMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
@@ -846,7 +828,7 @@ void MistClient::DrawTargetMarker()
 	if(!pkFriendMarker)
 	{
 		pkFriendMarker = new ZMaterial;
-		pkFriendMarker->GetPass(0)->m_kTUs[0]->SetRes("friendmarker.tga");	
+		pkFriendMarker->GetPass(0)->m_pkTUs[0]->SetRes("friendmarker.tga");	
 		pkFriendMarker->GetPass(0)->m_bLighting = 	false;
 		pkFriendMarker->GetPass(0)->m_bFog = 			false;	
 		pkFriendMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		

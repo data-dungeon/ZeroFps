@@ -62,14 +62,14 @@ public:
    friend Quaternion operator* (float fScalar, const Quaternion& rkQ);
 
 // Geometric
-	Quaternion conjugate(void);
+	Quaternion conjugate(void) const;
 	float Dot (const Quaternion& q) const;
 	float Length(void);
 	void Normalize(void);
-	float Norm(void);
-	Quaternion Inverse (void);
-	Quaternion UnitInverse (void);
-	Vector3 RotateVector3(Vector3 v);
+	float Norm(void) const;
+	Quaternion Inverse (void) const;
+	Quaternion UnitInverse (void) const;
+	Vector3 RotateVector3(const Vector3& v) const;
 
 // Conversions
    void FromRotationMatrix (const Matrix3& kRot);
@@ -89,8 +89,8 @@ public:
 	void QuaternionSlerp( Quaternion* from, Quaternion* to, float t);
 };
 
-BASIC_API Quaternion operator*(Quaternion q,Vector3 v);
-BASIC_API Quaternion operator*(Vector3 v,Quaternion q);
+BASIC_API Quaternion operator*(const Quaternion& q,const Vector3& v);
+BASIC_API Quaternion operator*(const Vector3& v,const Quaternion& q);
 
 // Constructors
 inline Quaternion::Quaternion()
@@ -265,7 +265,7 @@ inline Quaternion operator* (float fScalar, const Quaternion& rkQ)
 }
 
 // Geometric
-inline Quaternion Quaternion::conjugate(void)
+inline Quaternion Quaternion::conjugate(void) const
 {
 	return Quaternion(
 		-x,
@@ -297,12 +297,12 @@ inline void Quaternion::Normalize(void)
     }
 }
 
-inline float Quaternion::Norm(void)
+inline float Quaternion::Norm(void) const
 {
     return w*w + x*x + y*y + z*z;
 }
 
-inline Quaternion Quaternion::Inverse (void) 
+inline Quaternion Quaternion::Inverse (void) const
 {
     float fNorm = Norm();
 
@@ -318,7 +318,7 @@ inline Quaternion Quaternion::Inverse (void)
     }
 }
 
-inline Quaternion Quaternion::UnitInverse (void)
+inline Quaternion Quaternion::UnitInverse (void) const
 {
    // this must be unit length.
    return Quaternion (w,-x,-y,-z);

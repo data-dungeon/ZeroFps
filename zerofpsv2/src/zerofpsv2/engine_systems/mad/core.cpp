@@ -7,7 +7,7 @@
 
 
 Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix
-Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
+//Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.	// Vimrp2
 //Quaternion	g_Madq[MAX_BONES];						// Quat angle for bone.
 //Vector3		g_Madpos[MAX_BONES];						// Position for bone.
 Vector3		g_TransformedVertex[10000];			// Transformed Skinvertex Position.
@@ -313,7 +313,8 @@ void Mad_Core::InterPolTransforms(BoneTransform* pkResultat, BoneTransform* pkFr
 	}	
 }
 
-void Mad_Core::GenerateBoneMatris(BoneTransform* pkBones)
+// VimRp2
+void Mad_Core::GenerateBoneMatris(BoneTransform* pkBones, Matrix4* pkMatrix)
 {
 	Matrix4		kMadkBoneMatrix;					
 
@@ -334,7 +335,7 @@ void Mad_Core::GenerateBoneMatris(BoneTransform* pkBones)
 			g_Madkbonetransform[ iId ] = kMadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[ iId ].m_iParent];
 		}
 
-		g_FullBoneTransform[ iId ] = m_MadkbonetransformI[ iId ] * g_Madkbonetransform[ iId ];
+		pkMatrix[ iId ] = m_MadkbonetransformI[ iId ] * g_Madkbonetransform[ iId ];
 	}
 
 /*for (i = 0; i < m_kSkelleton.size(); i++) 
@@ -569,6 +570,8 @@ Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 
 Vector3*  Mad_Core::GetVerticesPtr()
 {
+	return &g_pkSelectedRawMesh->akFrames[0].akVertex[0];	// VimRP
+
 	if(g_pkSelectedMesh->bNotAnimated)
 		return &g_pkSelectedRawMesh->akFrames[0].akVertex[0];
 
@@ -581,6 +584,8 @@ Vector3*  Mad_Core::GetVerticesPtr()
 
 Vector3* Mad_Core::GetNormalsPtr()
 {
+	return &g_pkSelectedRawMesh->akFrames[0].akNormal[0];	// VimRP
+
 	if(g_pkSelectedMesh->bNotAnimated)
 		//return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
 		return &g_pkSelectedRawMesh->akFrames[0].akNormal[0];
@@ -619,7 +624,14 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 	if(pkMesh->bNotAnimated)
 		return;
 	
-	Vector3* pkVertexDst = g_TransformedVertex;
+	return;		// VimRp - Read below.
+	/*
+		The rest of the things in this function is what needs to be done in a render plugin.
+		It should be possible to more or less copy this and plugin the pointers in the variable names.
+	*/
+
+
+/*	Vector3* pkVertexDst = g_TransformedVertex;
 	Vector3* pkNormalDst = g_TransformedNormal;
 		
 	Vector3* pkVertex = &pkRawMesh->akFrames[0].akVertex[0];
@@ -651,7 +663,7 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh,Mad_RawMesh* pkRawMesh)
 		piBoneConnection++;
 		pkVertex++;
 		pkNormal++;
-	}
+	}*/
 }
 
 
@@ -846,7 +858,7 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 		for(i=0; i<m_kSkelleton.size(); i++) {
 
 			if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) {
-				return g_FullBoneTransform[i].GetPos();
+				return Vector3::ZERO;	//g_FullBoneTransform[i].GetPos();
 				}
 			}
 		}
