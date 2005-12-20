@@ -37,6 +37,7 @@ class DebugRenderPlugin : public RenderPlugin
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
 		ZSSLight*			m_pkLight;
+		ZSSRender*			m_pkRender;
 		ZSSZeroFps*			m_pkZeroFps;
 		ZMaterial*			m_pkLineMaterial;
 	

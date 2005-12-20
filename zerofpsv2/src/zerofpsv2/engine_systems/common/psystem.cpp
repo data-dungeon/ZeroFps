@@ -11,6 +11,9 @@ RenderPackage* PSystem::GetRenderPackage(const RenderState& kRenderState)
 
 	int iVertises = Particles()*4;
 
+	if(iVertises == 0)
+		return NULL;
+
 	//seutp pointers
 	m_kRenderPackage.m_kMeshData.m_kDataPointers.clear();	
 	m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(VERTEX_POINTER,&m_pfVertices[Start() * 12]));
@@ -22,10 +25,11 @@ RenderPackage* PSystem::GetRenderPackage(const RenderState& kRenderState)
 		m_kRenderPackage.m_kMeshData.m_kDataPointers.push_back(DataPointer(COLOR_POINTER,&m_pfColors[Start() * 16] ));
 	
 	//hack to add normals
-	if(m_kNormals.size() != iVertises)
+	if(m_kNormals.size() < iVertises)
 	{
-		m_kNormals.clear();
-		for(int i = 0;i<iVertises;i++)
+		//m_kNormals.clear();
+		int iNew = iVertises - m_kNormals.size();
+		for(int i = 0;i<iNew;i++)
 			m_kNormals.push_back(Vector3(0,1,0));
 	}	
 	

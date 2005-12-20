@@ -285,7 +285,7 @@ bool ZSSRenderEngine::ValidateRenderPackages(const vector<RenderPackage*>& kRend
 		
 		if(!kRenderPackage.m_kMeshData.m_pkVBO && kRenderPackage.m_kMeshData.m_iNrOfDataElements == 0)
 		{
-				cerr<<"WARNING: num of elements is 0"<<endl;
+				cerr<<"ERROR: num of elements in renderpackage is 0"<<endl;
 				return false;		
 		}
 				

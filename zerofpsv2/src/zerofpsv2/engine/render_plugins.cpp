@@ -106,7 +106,7 @@ DebugRenderPlugin::DebugRenderPlugin() : RenderPlugin("DebugRender")
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 	m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
-
+	m_pkRender			= static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));
 	
 	m_pkLineMaterial = new ZMaterial;
 	m_pkLineMaterial->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
@@ -225,9 +225,17 @@ bool DebugRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState& k
 	m_pkZShaderSystem->SetNrOfVertexs(kNormals.size());
 	m_pkZShaderSystem->BindMaterial(m_pkLineMaterial);
 	m_pkZShaderSystem->DrawArray(LINES_MODE);
-	m_pkZShaderSystem->UseDefaultGLSLProgram(bUDGS);
+				
 				
 	m_pkZShaderSystem->MatrixPop();
+				
+				
+	//DRAW RENDERPACKAGES
+	m_pkRender->DrawAABB(kRenderPackage.m_kCenter - Vector3(0.25,0.25,0.25),
+								kRenderPackage.m_kCenter + Vector3(0.25,0.25,0.25),
+								Vector3(1,1,1),2);
+				
+	m_pkZShaderSystem->UseDefaultGLSLProgram(bUDGS);
 	
 	return true;
 }
