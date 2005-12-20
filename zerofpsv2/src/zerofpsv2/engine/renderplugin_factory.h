@@ -3,17 +3,18 @@
 
 #include <string>
 #include <vector>
+#include "engine_x.h"
 
 using namespace std;
 
-class Plugin
+class ENGINE_API Plugin
 {
 	
 	public:
 		virtual void ImPlugin() {};
 };
 
-class PluginInfo
+class ENGINE_API PluginInfo
 {
 	public:
 		string		m_strName;
@@ -28,7 +29,7 @@ class PluginInfo
 };
 
 
-class PluginFactory
+class ENGINE_API PluginFactory
 {
 	private:
 		vector<PluginInfo>	m_kPlugins;

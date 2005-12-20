@@ -40,7 +40,7 @@ enum RENDER_TARGET
 	6: call DoRender() in render engine
 	7: return view matrises to previus state
 */
-class PreRenderPlugin : public Plugin
+class ENGINE_API PreRenderPlugin : public Plugin
 {
 	private:
 		string	m_strName;
@@ -58,7 +58,7 @@ class PreRenderPlugin : public Plugin
 	
 	used to apply fullscreen post effects, like bloom etc
 */
-class PostRenderPlugin : public Plugin
+class ENGINE_API PostRenderPlugin : public Plugin
 {
 	private:
 		string	m_strName;
@@ -79,7 +79,7 @@ class PostRenderPlugin : public Plugin
 	3: Setup pointers
 	4: Render
 */
-class RenderPlugin : public Plugin
+class ENGINE_API RenderPlugin : public Plugin
 {
 	private:
 		string	m_strName;
@@ -92,7 +92,7 @@ class RenderPlugin : public Plugin
 };
 
 
-class RenderState
+class ENGINE_API RenderState
 {
 	private:
 		static int			m_iNextStateID;	//next renderstateID		
@@ -144,7 +144,7 @@ class RenderState
 		friend class ZSSRenderEngine;
 };
 
-class DataPointer
+class ENGINE_API DataPointer
 {
 	public:
 		int				m_iType;
@@ -166,7 +166,7 @@ class DataPointer
 		}
 };
 
-class MeshData
+class ENGINE_API MeshData
 {
 	public:
 		//if VBO is sett it will override everything else in the mesh
@@ -220,7 +220,7 @@ class MeshData
 		}
 };
 
-class RenderPackage
+class ENGINE_API RenderPackage
 {
 	public:
 		ZMaterial*						m_pkMaterial;				//pointer to material, always needed
@@ -265,7 +265,7 @@ class RenderPackage
 };
 
 
-class RENDER_API ZSSRenderEngine : public ZFSubSystem
+class ENGINE_API ZSSRenderEngine : public ZFSubSystem
 {
 	private:
 		

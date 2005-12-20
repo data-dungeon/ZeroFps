@@ -304,6 +304,12 @@
 				RelativePath=".\propertyfactory.cpp">
 			</File>
 			<File
+				RelativePath=".\render_plugins.cpp">
+			</File>
+			<File
+				RelativePath=".\renderplugin_factory.cpp">
+			</File>
+			<File
 				RelativePath=".\sceneaabb.cpp">
 			</File>
 			<File
@@ -317,6 +323,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\zshadow.cpp">
+			</File>
+			<File
+				RelativePath=".\zssrenderengine.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -464,6 +473,12 @@
 				RelativePath="..\engine_systems\propertys\propertys.pkg">
 			</File>
 			<File
+				RelativePath=".\render_plugins.h">
+			</File>
+			<File
+				RelativePath=".\renderplugin_factory.h">
+			</File>
+			<File
 				RelativePath=".\sceneaabb.h">
 			</File>
 			<File
@@ -477,6 +492,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\common\zshadow.h">
+			</File>
+			<File
+				RelativePath=".\zssrenderengine.h">
 			</File>
 		</Filter>
 		<Filter

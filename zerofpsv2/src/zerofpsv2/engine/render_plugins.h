@@ -4,7 +4,7 @@
 #include "zerofps.h"
 
 
-class InterfaceRender : public PreRenderPlugin
+class ENGINE_API InterfaceRender : public PreRenderPlugin
 {
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
@@ -32,7 +32,7 @@ enum BonePointers
 	BONEINDEX_POINTER,
 };		
 		
-class DebugRenderPlugin : public RenderPlugin
+class ENGINE_API DebugRenderPlugin : public RenderPlugin
 {	
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
@@ -51,7 +51,7 @@ class DebugRenderPlugin : public RenderPlugin
 };
 Plugin* Create_DebugRenderPlugin();
 		
-class DefaultRenderPlugin : public RenderPlugin
+class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 {
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
@@ -75,7 +75,7 @@ Plugin* Create_DefaultRenderPlugin();
 
 
 
-class DefaultPreRenderPlugin : public PreRenderPlugin
+class ENGINE_API DefaultPreRenderPlugin : public PreRenderPlugin
 {	
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
@@ -115,7 +115,7 @@ class DefaultPreRenderPlugin : public PreRenderPlugin
 };
 Plugin* Create_DefaultPreRenderPlugin();
 
-class ExposureCalculator : public PostRenderPlugin
+class ENGINE_API ExposureCalculator : public PostRenderPlugin
 {	
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
@@ -139,7 +139,7 @@ class ExposureCalculator : public PostRenderPlugin
 };
 Plugin* Create_ExposureCalculator();
 
-class BloomPostPlugin : public PostRenderPlugin
+class ENGINE_API BloomPostPlugin : public PostRenderPlugin
 {	
 	private:
 		ZShaderSystem*		m_pkZShaderSystem;
