@@ -57,6 +57,7 @@ class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 		ZShaderSystem*		m_pkZShaderSystem;
 		ZSSLight*			m_pkLight;
 		ZSSZeroFps*			m_pkZeroFps;
+		ZSSEntityManager*	m_pkEntityManager;
 	
 		void DoBoneTransformation(const RenderPackage& kRenderPackage,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes);
 	
@@ -67,6 +68,7 @@ class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 			m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 			m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
 			m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
+			m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
 		}
 	
 		bool Call(RenderPackage& kRenderPackage, const RenderState& kRenderState);

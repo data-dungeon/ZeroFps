@@ -226,6 +226,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		bool 	IsUpdate(int iFlags);											///< Check if the current update is of a selected type
 		void 	UpdateGameMessages(void);									///< Update game messages.
 		int 	GetCurrentUpdateFlags()	{	return m_iUpdateFlags;	};
+		void  SetCurrentUpdateFlags(int iFlags)	{	m_iUpdateFlags = iFlags;	};
 		
 		// Gets
 		Entity* GetWorldEntity()	{	return m_pkWorldEntity;				};

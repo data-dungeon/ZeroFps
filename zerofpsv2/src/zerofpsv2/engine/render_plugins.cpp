@@ -276,6 +276,14 @@ void DebugRenderPlugin::DoBoneTransformation(int iVertises,const DataPointer& kB
 
 bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState& kRenderState)
 {
+	//HACK
+	if(kRenderPackage.m_pkProperty)
+	{
+		m_pkEntityManager->SetCurrentUpdateFlags(PROPERTY_TYPE_RENDER|PROPERTY_SIDE_CLIENT);
+		kRenderPackage.m_pkProperty->Update();
+		return true;
+	}
+
 	//do occulusion test
 	if(m_pkZeroFps->GetOcculusionCulling() && kRenderPackage.m_bOcculusionTest)
 	{
@@ -397,7 +405,7 @@ void DefaultRenderPlugin::DoBoneTransformation(const RenderPackage& kRenderPacka
 	const Matrix4*	pkMatrix					= (const Matrix4*) kBoneMatrises.m_pkPointer;
 	
 
-	//find nr of vertiess (HACK)
+	//find nr of vertises
 	int iNrOfVertises = 0;	
 	if(pkIndexes)
 	{

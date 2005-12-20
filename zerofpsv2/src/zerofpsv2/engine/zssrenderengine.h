@@ -2,8 +2,6 @@
 #define _ZSSRENDERINGINE_H_
 
 #include "../basic/zfsystem.h"
-//#include "../basic/matrix4.h"
-
 #include "../basic/vector2.h"
 #include "../basic/vector3.h"
 #include "../basic/vector4.h"
@@ -18,6 +16,7 @@ class RenderPackage;
 class RenderState;
 class ZSSRenderEngine;
 class Entity;
+class Property;
 
 enum RENDER_TARGET
 {
@@ -223,6 +222,8 @@ class ENGINE_API MeshData
 class ENGINE_API RenderPackage
 {
 	public:
+		Property*						m_pkProperty;				//HACK override everything and do a ugly draw how the hell u want call
+	
 		ZMaterial*						m_pkMaterial;				//pointer to material, always needed
 		LightProfile*					m_pkLightProfile;			//pointer to lightprofile, if lighting is to be used
 		Matrix4							m_kModelMatrix;			

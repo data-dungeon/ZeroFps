@@ -148,6 +148,8 @@ vector<string> RenderState::GetPluginList()
 
 RenderPackage::RenderPackage()
 {
+	m_pkProperty			=	NULL;
+
 	m_pkMaterial			=	NULL;
 	m_pkLightProfile		=	NULL;
 	m_fRadius				=	0;
