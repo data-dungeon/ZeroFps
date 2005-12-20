@@ -1364,7 +1364,7 @@ void ZSSNetWork::Run()
 							temp.WriteNp(&NetP);
 													
 							//is this package a split to? if not handle package
-							if(NetP.m_kData.m_kHeader.m_iSplit == false)
+							if(NetP.m_kData.m_kHeader.m_iSplit == 0)	// False
 							{
 								//cout<<"got the final package in the spliced package, total size "<<temp.m_iLength<<endl;
 								temp.m_iPos = 0;
@@ -1375,7 +1375,7 @@ void ZSSNetWork::Run()
 						else
 						{
 							//is this package a spliced package?
-							if(NetP.m_kData.m_kHeader.m_iSplit == true)
+							if(NetP.m_kData.m_kHeader.m_iSplit != 0)	// True
 							{
 								//cout<<"got the first package in a spliced package, size "<<NetP.m_iLength<<endl;
 								bHaveSplit = true;

@@ -332,8 +332,8 @@ void ZeroEd::CamCenterOnSelection()
 		kForward = kPos - m_pkActiveCameraObject->GetWorldPosV();
 		
 		P_Camera* pkCamProp;
-		ZFAssert(pkCamProp, "Camera has no p_cam in editor.");
 		pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+		ZFAssert(pkCamProp, "Camera has no p_cam in editor.");
 
 		Vector3 newpos = m_pkActiveCameraObject->GetLocalPosV();
 		pkCamProp->LookAt( newpos, kPos, Vector3(0,1,0));

@@ -294,7 +294,7 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	int iSize;
-	float fAge;
+	//float fAge;
 	string strPSName;
 	pkNetPacket->Read(iSize);
 

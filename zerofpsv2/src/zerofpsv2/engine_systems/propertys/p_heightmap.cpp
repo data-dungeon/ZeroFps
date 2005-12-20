@@ -1046,7 +1046,7 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 		
 			int 				iSize;
 			float 			fVal;
-			unsigned char 	cTex;
+			//unsigned char 	cTex;
 			m_kHeightData.clear();
 			m_kTextureIDs.clear();
 			

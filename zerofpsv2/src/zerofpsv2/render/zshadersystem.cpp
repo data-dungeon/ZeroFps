@@ -1018,6 +1018,8 @@ const void* ZShaderSystem::GetPointer(POINTER_TYPE eType)
 			cerr<<"ERROR: ZShaderSystem::GetPointer , invalid pointer id "<<eType<<endl;
 			break;
 	}	
+
+	return NULL;
 }
 
 void ZShaderSystem::SetPointer(POINTER_TYPE eType,const void* pkPointer)

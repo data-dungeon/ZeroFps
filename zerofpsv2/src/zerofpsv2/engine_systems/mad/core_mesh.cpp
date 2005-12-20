@@ -580,7 +580,7 @@ void Mad_RawMesh::OptimizeSubMeshes()
 	vector<Mad_CoreSubMesh>			akNewSubMeshes;
 	vector<int>							akNewBoneConnections;	
 	Mad_CoreVertexFrame				kVertexFrame;
-	int iVIndex;
+	//int iVIndex;
 	Mad_CoreSubMesh					kSubMesh;
 
 //    cout << ShowInfo();

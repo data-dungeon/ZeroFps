@@ -39,7 +39,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="basic_debug.lib"
 				OutputFile="../../../../bin/fontgen.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="../../../../lib"
 				GenerateDebugInformation="TRUE"

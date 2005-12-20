@@ -665,7 +665,7 @@ bool ResTexture::CopyTexture(ResTexture* pkSource)
 // 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);			
 	
 	cout<<"COPY COMPLETE"<<endl;
-	
+	return true;
 }
 
 ZFResource* Create__ResTexture()

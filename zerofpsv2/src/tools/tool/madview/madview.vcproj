@@ -37,6 +37,7 @@
 				AdditionalDependencies="engine_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
 				OutputFile="../../../../bin/madview.exe"
 				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="../../../../lib"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="TRUE"

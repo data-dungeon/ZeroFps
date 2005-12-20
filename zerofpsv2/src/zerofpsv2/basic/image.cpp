@@ -203,8 +203,12 @@ void Image::CreateEmpty(int iSetWidth, int iSetHeight)
 // TGA FORMAT
 void Image::ReadPixel(color_rgba* pkDst, char* pcSrc, int iPixsize)
 {
-	char red,grn,blu,alp;
-	char j,k; 
+	unsigned char red;
+	unsigned char grn;
+	unsigned char blu;
+	unsigned char alp;
+	unsigned char j;
+	unsigned char k; 
 	red = grn = blu = alp = 0;
 	char *data = pcSrc;
 
