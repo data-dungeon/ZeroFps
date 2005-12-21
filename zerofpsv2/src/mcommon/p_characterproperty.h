@@ -347,9 +347,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void	RemoveAllSkills();		
 		vector<Skill*>*	GetSkillList()			{	return &m_kSkills;				};
 		void  LockSkillUsage(float fTime);
-
 		void	AddSkillToSkillbar(const string& strSkill,int iPos);
 		void  RemoveItemFromSkillbar(int iPos);
+		void  ReloadAllSkills();
 
 		//experience and level
 		void  GiveExperience(int iXP);		

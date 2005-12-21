@@ -1390,10 +1390,23 @@ void MistServer::OnDmc(int iClientID, string strDmc)
 
 	if(kDmc.m_kSplitCommand[0] == "res")
 	{
-		pkCP->m_kCharacterStats.SetStat("Health",		pkCP->m_kCharacterStats.GetStat("HealthMax") );
-		pkCP->m_kCharacterStats.SetStat("Mana",		pkCP->m_kCharacterStats.GetStat("ManaMax") );
-		pkCP->m_kCharacterStats.SetStat("Stamina",	pkCP->m_kCharacterStats.GetStat("StaminaMax") );
+		pkCP->m_kCharacterStats.SetStat("Health",		pkCP->m_kCharacterStats.GetTotal("HealthMax") );
+		pkCP->m_kCharacterStats.SetStat("Mana",		pkCP->m_kCharacterStats.GetTotal("ManaMax") );
+		pkCP->m_kCharacterStats.SetStat("Stamina",	pkCP->m_kCharacterStats.GetTotal("StaminaMax") );
+		pkCP->ReloadAllSkills();
+		SayToClients("Restore","Server",-1,iClientID);						 
 	}
+
+	// Skilltests, raise stats to use all skills.
+	if(kDmc.m_kSplitCommand[0] == "st")
+	{
+		pkCP->m_kCharacterStats.ChangeMod("ManaMax",	1000);
+		pkCP->m_kCharacterStats.SetStat("Mana",		pkCP->m_kCharacterStats.GetTotal("ManaMax") );
+		pkCP->m_kCharacterStats.ChangeMod("StaminaMax",1000);
+		pkCP->m_kCharacterStats.SetStat("Stamina",	pkCP->m_kCharacterStats.GetTotal("StaminaMax") );
+		SayToClients("Skilltest mode","Server",-1,iClientID);						 
+	}
+
 
 	if(kDmc.m_kSplitCommand[0] == "rez")
 	{
@@ -1401,6 +1414,7 @@ void MistServer::OnDmc(int iClientID, string strDmc)
 		{
 			pkCP->MakeAlive();
 		}
+		SayToClients("Rez","Server",-1,iClientID);						 
 	}
 
 	if(kDmc.m_kSplitCommand[0] == "notarget")

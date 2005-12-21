@@ -2787,6 +2787,13 @@ void P_CharacterProperty::RemoveItemFromSkillbar(int iPos)
 	SendSkillbar();
 }
 
+void P_CharacterProperty::ReloadAllSkills()
+{
+	for(int i = 0;i<m_kSkills.size();i++)
+		m_kSkills[i]->SetTimeLeft( 0 );
+}
+
+
 void P_CharacterProperty::SendCloseContainer(int iContainerID)
 {
 	if(m_iConID == -1)

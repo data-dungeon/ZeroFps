@@ -1605,11 +1605,11 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 			for(unsigned int i =0;i<vkSkillInfo.size();i++)
 			{
-// 				cout<<"SKILL "<<i<<" "<<strName<<" "<<strParent<<" "<<strIcon<<endl;
+				//cout << "SKILL[" << i << "]: " << vkSkillInfo[i].strName<<" "<< vkSkillInfo[i]. strParent<<" "<<vkSkillInfo[i].strIcon<<endl;
 
 				SKILL_TREE_INFO info = vkSkillInfo[i];
 
-				int idex = icon_map[info.strName];
+				int idex = icon_map[info.strIcon];
 			
 				if(info.strParent.empty())
 				{
@@ -1624,7 +1624,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					}
 				}
 
-				cout<<"Have added: "<<info.strName<<endl;
+				cout<<"Have added: " << info.strName << "," << info.strScreenName << endl;
 			}				
 			
 			break;

@@ -590,7 +590,7 @@ void MistClient::AddIconsToSkillTree(ZGuiTreebox* pkTreebox,
 			pkSkin->m_iBkTexID = iID;
 			pkTreebox->InsertBranchSkin(oka, pkSkin, true); 
 
-			kNameIndexMap[vSkills[i].strName] = oka;
+			kNameIndexMap[vSkills[i].strIcon] = oka;
 
 			oka++;
 		}
