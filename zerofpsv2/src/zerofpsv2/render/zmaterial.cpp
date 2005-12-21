@@ -191,6 +191,12 @@ ZMaterial& ZMaterial::operator=(const ZMaterial& kOther)
 	
 	m_pkScript = 			NULL;
 	
+	
+	m_bCastShadow 		= kOther.m_bCastShadow;
+	m_bBoneTransform 	= kOther.m_bBoneTransform;
+	m_bTextureOffset	= kOther.m_bTextureOffset;
+	m_bReceiveShadow	= kOther.m_bReceiveShadow;
+	
 	return (*this);
 }
 
@@ -218,11 +224,10 @@ void ZMaterial::Clear()
 	}
 	m_kPasses.clear();
 
-	m_bRandomMovements 	= false;
-	m_bWaves 				= false;	
-	m_bTextureOffset 		= false;
 	m_bBoneTransform		= true;
-
+	m_bCastShadow			= true;
+	m_bTextureOffset		= false;
+	m_bReceiveShadow		= true;
 	
 	m_strName = "UnNamed";
 	
@@ -304,6 +309,14 @@ void ZMaterial::LuaMaterialGetGlobals()
 
 	if(PassGetLuaChar("bonetransform",czTemp))
 		m_bBoneTransform = GetTranslateEnum(czTemp);
+		
+	if(PassGetLuaChar("castshadow",czTemp))
+		m_bCastShadow = GetTranslateEnum(czTemp);
+		
+	if(PassGetLuaChar("receiveshadow",czTemp))
+		m_bReceiveShadow = GetTranslateEnum(czTemp);
+	
+		
 }
 
 bool ZMaterial::LuaMaterialEndPass(int iPass)
@@ -609,18 +622,15 @@ bool ZMaterial::LoadGlobalSection()
 
 	//read shader global settings
 
-	if(m_kIni.KeyExist("global","waves"))
-		m_bWaves = m_kIni.GetBoolValue("global","waves");
-
 	if(m_kIni.KeyExist("global","bonetransform"))
 		m_bBoneTransform = m_kIni.GetBoolValue("global","bonetransform");
 	
-
-	if(m_kIni.KeyExist("global","randommovements"))
-		if(m_kIni.GetBoolValue("global","randommovements"))
-			m_bRandomMovements = true;
-		else
-			m_bRandomMovements = false;
+	if(m_kIni.KeyExist("global","castshadow"))
+		m_bCastShadow = m_kIni.GetBoolValue("global","castshadow");
+	
+	if(m_kIni.KeyExist("global","receiveshadow"))
+		m_bReceiveShadow = m_kIni.GetBoolValue("global","receiveshadow");
+		
 
 	// load textureoffset values
 	if(m_kIni.KeyExist("global","textureoffset_u"))

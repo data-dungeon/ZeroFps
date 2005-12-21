@@ -16,6 +16,7 @@ class ENGINE_API InterfaceRender : public PreRenderPlugin
 		ZMaterial*			m_pkLine;	
 		RenderPackage		m_kAxesIcon;
 	
+	
 	public:
 		InterfaceRender();
 		~InterfaceRender();
@@ -25,6 +26,57 @@ class ENGINE_API InterfaceRender : public PreRenderPlugin
 Plugin* Create_InterfaceRender();
 
 
+
+enum ShadowmapPointers
+{
+	SHADOWMAP_POINTER	= 1,
+};
+
+class ENGINE_API ShadowMap
+{
+	public:
+		ResTexture	m_kTexture;
+		Matrix4		m_kTextureMatrix;
+};
+
+class ENGINE_API ShadowmapPlugin : public PreRenderPlugin
+{	
+	private:
+		ZShaderSystem*		m_pkZShaderSystem;
+		ZSSEntityManager*	m_pkEntityManager;
+		ZSSZeroFps*			m_pkZeroFps;
+		ZSSRender*			m_pkRender;
+		ZSSLight*			m_pkLight;
+		
+		int 			m_iShadowTexWidth;
+		int 			m_iShadowTexHeight;
+		bool 			m_bEnabled;
+		float			m_fShadowArea;
+		
+		Vector3		m_kLastShadowPos;
+		Vector3		m_kLastShadowRot;
+				
+				
+		GLuint		m_iShadowFBO;
+		GLuint		m_iShadowRBOcolor;				
+		Matrix4		m_kLightViewMatrix;
+		Matrix4		m_kLightProjMatrix;
+		
+		ShadowMap	m_kShadowmap;
+		
+		RenderState	m_kShadowRenderState;
+		
+		int   GetMinSize(int iRes);
+		void  MakeShadowTexture(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState,const Vector3& kLightPos,const Vector3& kCenter);
+		
+	public:
+		ShadowmapPlugin();
+		~ShadowmapPlugin();
+		
+		bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState);
+		
+};
+Plugin* Create_ShadowmapPlugin();
 
 enum BonePointers
 {
@@ -47,10 +99,31 @@ class ENGINE_API DebugRenderPlugin : public RenderPlugin
 		DebugRenderPlugin();	
 		~DebugRenderPlugin();
 		
-		bool Call(RenderPackage& kRenderPackage, const RenderState& kRenderState);
+		bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState);
 };
 Plugin* Create_DebugRenderPlugin();
 		
+class ENGINE_API DepthMapRenderer : public RenderPlugin
+{
+	private:
+		ZShaderSystem*		m_pkZShaderSystem;
+		ZSSLight*			m_pkLight;
+		ZSSZeroFps*			m_pkZeroFps;
+		ZSSEntityManager*	m_pkEntityManager;
+	
+		ZMaterial*			m_pkDepthMaterial;
+	
+		void DoBoneTransformation(const RenderPackage& kRenderPackage,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes);
+	
+	public:
+					
+		DepthMapRenderer();
+		~DepthMapRenderer();
+	
+		bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState);
+};
+Plugin* Create_DepthMapRendererPlugin();		
+
 class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 {
 	private:
@@ -60,6 +133,7 @@ class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 		ZSSEntityManager*	m_pkEntityManager;
 	
 		void DoBoneTransformation(const RenderPackage& kRenderPackage,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes);
+		void SetupShadowmap(ShadowMap* kShadowmap);
 	
 	public:
 					
@@ -71,7 +145,7 @@ class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 			m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
 		}
 	
-		bool Call(RenderPackage& kRenderPackage, const RenderState& kRenderState);
+		bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState);
 };
 Plugin* Create_DefaultRenderPlugin();
 
@@ -108,6 +182,8 @@ class ENGINE_API DefaultPreRenderPlugin : public PreRenderPlugin
 				return false;
 			};
 		} Less_RenderPackage;
+		
+		
 		
 	public:
 		DefaultPreRenderPlugin();

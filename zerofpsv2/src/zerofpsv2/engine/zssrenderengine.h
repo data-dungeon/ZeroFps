@@ -87,7 +87,7 @@ class ENGINE_API RenderPlugin : public Plugin
 		RenderPlugin(const string& strName);
 		const string& GetName()	{	return m_strName;	};
 		
-		virtual bool Call(RenderPackage& kRenderPackage, const RenderState& kRenderState) = 0;
+		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState) = 0;
 };
 
 
@@ -128,7 +128,8 @@ class ENGINE_API RenderState
 		Vector4			m_kFogColor;
 		float				m_fFogNear;
 		float				m_fFogFar;
-		bool				m_bFogEnabled;		
+		bool				m_bFogEnabled;
+		
 				
 		int GetStateID() const												{	return m_iStateID;	};
 				
@@ -138,7 +139,7 @@ class ENGINE_API RenderState
 		//plugin handling
 		bool AddPlugin(const string& strName);		
 		bool RemovePlugin(const string& strName);
-		vector<string> GetPluginList();
+		vector<string> GetPluginList();	
 
 		friend class ZSSRenderEngine;
 };
@@ -163,6 +164,7 @@ class ENGINE_API DataPointer
 			m_pkPointer = pkPointer;
 			m_iElements = iElements;
 		}
+		
 };
 
 class ENGINE_API MeshData
@@ -270,12 +272,14 @@ class ENGINE_API ZSSRenderEngine : public ZFSubSystem
 {
 	private:
 		
-		ZShaderSystem*		m_pkZShaderSystem;
-			
+		ZShaderSystem*		m_pkZShaderSystem;			
 		ConVar				m_kRenderEngineDebug;
 			
+			
+		map<string,void*>	m_kParameters;
+			
+			
 		void SetupFramebuffer(const RenderState& kRenderState);
-
 		bool ValidateRenderState(const RenderState& kRenderState);	
 		bool ValidateRenderPackages(const vector<RenderPackage*>& kRenderPackages);	
 
@@ -290,11 +294,12 @@ class ENGINE_API ZSSRenderEngine : public ZFSubSystem
 		bool Render(RenderState& kRenderState);
 		void DoRender(const vector<RenderPackage*>&	kRenderPackages,const RenderState& kRenderState);
 		
+		//used to paste parameters between renderplugins, will be cleared after each render call
+		void  SetParameter(const string& strName,void* pkValue);
+		void* GetParameter(const string& strName);
 		
 		//help functions
-		void SetupView(RenderState& kRenderState);
-
-			
+		void SetupView(RenderState& kRenderState);	
 		
 };
 

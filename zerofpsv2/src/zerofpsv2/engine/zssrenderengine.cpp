@@ -105,6 +105,7 @@ bool RenderState::RemovePlugin(const string& strName)
 	for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it != m_kPreRenderPlugins.end(); it++)
 		if( (*it)->GetName() == strName)
 		{
+			delete *it;
 			m_kPreRenderPlugins.erase(it);
 			return true;
 		}
@@ -112,6 +113,7 @@ bool RenderState::RemovePlugin(const string& strName)
 	for(vector<RenderPlugin*>::iterator it = m_kRenderPlugins.begin();it != m_kRenderPlugins.end(); it++)
 		if( (*it)->GetName() == strName)
 		{
+			delete *it;
 			m_kRenderPlugins.erase(it);
 			return true;
 		}
@@ -119,6 +121,7 @@ bool RenderState::RemovePlugin(const string& strName)
 	for(vector<PostRenderPlugin*>::iterator it = m_kPostRenderPlugins.begin();it != m_kPostRenderPlugins.end(); it++)
 		if( (*it)->GetName() == strName)
 		{
+			delete *it;
 			m_kPostRenderPlugins.erase(it);
 			return true;
 		}
@@ -188,6 +191,8 @@ bool ZSSRenderEngine::StartUp()
 	m_kPluginFactory.RegisterPlugin("Bloom",Create_BloomPostPlugin);
 	m_kPluginFactory.RegisterPlugin("InterfaceRender",Create_InterfaceRender);
 	m_kPluginFactory.RegisterPlugin("DebugRender",Create_DebugRenderPlugin);
+	m_kPluginFactory.RegisterPlugin("Shadowmap",Create_ShadowmapPlugin);
+	m_kPluginFactory.RegisterPlugin("DepthMapRender",Create_DepthMapRendererPlugin);
 
 
 	return true;
@@ -237,6 +242,8 @@ bool ZSSRenderEngine::Render(RenderState& kRenderState)
 	}	
 
 	
+	//clear parameters
+	m_kParameters.clear();	
 	
 	return true;
 }
@@ -249,13 +256,13 @@ bool ZSSRenderEngine::ValidateRenderState(const RenderState& kRenderState)
 	
 	if(kRenderState.m_kPreRenderPlugins.empty())
 	{
-		//cerr<<"ERROR: no pre render plugins in render state"<<endl;
+		cerr<<"ERROR: no pre render plugins in render state"<<endl;
 		return false;
 	}
 	
 	if(kRenderState.m_kRenderPlugins.empty()) 
 	{
-		//cerr<<"ERROR: no render plugins in render state"<<endl;		
+		cerr<<"ERROR: no render plugins in render state"<<endl;		
 		return false;
 	}
 		
@@ -362,12 +369,26 @@ void ZSSRenderEngine::DoRender(const vector<RenderPackage*>&	kRenderPackages,con
 	{	
 		for(int i = 0;i<iPackages;i++)
 		{
-			kRenderState.m_kRenderPlugins[iR]->Call(*kRenderPackages[i],kRenderState);
+			kRenderState.m_kRenderPlugins[iR]->Call(*this,*kRenderPackages[i],kRenderState);
 		}
 	}	
 }
 
+void  ZSSRenderEngine::SetParameter(const string& strName,void* pkValue)
+{
+	m_kParameters[strName] = pkValue;
+}
 
+void* ZSSRenderEngine::GetParameter(const string& strName)
+{
+	static map<string,void*>::iterator it;
+	
+	it = m_kParameters.find(strName);
+	if(it != m_kParameters.end())
+		return (*it).second;
+
+	return NULL;
+}
 
 
 

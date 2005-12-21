@@ -67,7 +67,6 @@ class RENDER_API ZMaterialSettings
 		bool				m_bDepthMask;
 		
 		bool				m_bUseShader;
-		
 	
 		ZMaterialSettings();
 		~ZMaterialSettings();
@@ -124,12 +123,11 @@ class RENDER_API ZMaterial : public ZFResource
 		
 	public:		
 		//global material settings
-		bool	m_bRandomMovements;
-		bool	m_bWaves;
-		bool	m_bTextureOffset;
-		float	m_faTextureOffset[2];
+ 		bool	m_bTextureOffset;
+ 		float	m_faTextureOffset[2];
 		bool	m_bBoneTransform;
-
+		bool	m_bCastShadow;
+		bool	m_bReceiveShadow;
 	
 	
 		ZMaterial();

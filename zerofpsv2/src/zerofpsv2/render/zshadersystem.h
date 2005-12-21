@@ -13,7 +13,6 @@
 #include "res_texture.h"
 #include "zvprogram.h"
 #include "zfprogram.h"
-// #include "zvertexbuffer.h"
 #include "stack"
 
 
@@ -371,7 +370,6 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void CopyPointerData(int iPointer);
 		
 		//vertex transform funktions
-		void Waves();	
 		void TextureOffset();
 		
 		

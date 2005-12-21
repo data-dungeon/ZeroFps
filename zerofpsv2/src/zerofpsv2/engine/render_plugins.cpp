@@ -2,6 +2,497 @@
 #include "zerofps.h"
 
 
+// ---------DepthMap renderer
+
+DepthMapRenderer::DepthMapRenderer() : RenderPlugin("DepthMapRender")
+{
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
+	m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
+	m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
+
+	m_pkDepthMaterial = new ZMaterial;
+
+	m_pkDepthMaterial->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+	m_pkDepthMaterial->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
+	m_pkDepthMaterial->GetPass(0)->m_bLighting = false;
+	m_pkDepthMaterial->GetPass(0)->m_bColorMaterial = false;
+	m_pkDepthMaterial->GetPass(0)->m_bFog = false;
+
+}
+
+DepthMapRenderer::~DepthMapRenderer()
+{
+	delete m_pkDepthMaterial;
+}
+
+
+bool DepthMapRenderer::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
+{
+	//do this material cast shadows?
+	if(!kRenderPackage.m_pkMaterial->m_bCastShadow)
+		return true;
+
+	//do occulusion test
+	if(m_pkZeroFps->GetOcculusionCulling() && kRenderPackage.m_bOcculusionTest)
+	{
+		//if we have an occulusion parent test parent
+		if(kRenderPackage.m_pkOcculusionParent)
+		{
+			if(!kRenderPackage.m_pkOcculusionParent->m_kOcculusionTest[kRenderState.GetStateID()].GetCurrentResult())
+			{	
+				return true;									
+			}			
+		}
+		
+		//else test this object
+		else if(!kRenderPackage.m_kOcculusionTest[kRenderState.GetStateID()].Visible(	kRenderPackage.m_kAABBMin + kRenderPackage.m_kCenter,
+																												kRenderPackage.m_kAABBMax + kRenderPackage.m_kCenter))
+		{
+			m_pkZeroFps->m_iOcculedObjects++;
+			return true;					
+		}
+		else
+			m_pkZeroFps->m_iNotOcculedObjects++;
+	}
+
+	
+	//push matrises	
+	m_pkZShaderSystem->MatrixPush();
+	
+	//apply model matrix
+	m_pkZShaderSystem->MatrixMult(kRenderPackage.m_kModelMatrix);
+	
+	//bind material
+	if(kRenderPackage.m_pkMaterial->GetPass(0)->m_bAlphaTest)
+	 	m_pkZShaderSystem->BindMaterial(kRenderPackage.m_pkMaterial);
+	else
+		m_pkZShaderSystem->BindMaterial(m_pkDepthMaterial);
+		
+	//SETUP MESH --------------
+	MeshData& kMesh = kRenderPackage.m_kMeshData;
+	
+	//reset all data pointers	
+	m_pkZShaderSystem->ResetPointers();
+
+
+	bool bIndexed = false;
+	const DataPointer* pkBoneMatrixPointer = NULL;
+	const DataPointer* pkBoneIndexPointer = NULL;
+	
+	//setup new pointers from pointer array
+	int iPointers = kMesh.m_kDataPointers.size();
+	for(int i = 0;i<iPointers;i++)
+	{
+		//setup pointer
+		m_pkZShaderSystem->SetPointer((POINTER_TYPE)kMesh.m_kDataPointers[i].m_iType,kMesh.m_kDataPointers[i].m_pkPointer);										
+				
+		switch(kMesh.m_kDataPointers[i].m_iType)
+		{
+			case INDEX_POINTER: 
+				bIndexed = true;
+				break;
+			case BONEMATRIX_POINTER:
+				pkBoneMatrixPointer = &kMesh.m_kDataPointers[i];
+				break;
+		
+			case BONEINDEX_POINTER:
+				pkBoneIndexPointer = &kMesh.m_kDataPointers[i];
+				break;
+		}
+	}
+	
+	// setup new pointers from none pointer data, this will override any privius set pointers
+	if(!kMesh.m_kVertises2D.empty()) 	m_pkZShaderSystem->SetPointer(VERTEX2D_POINTER,	&(kMesh.m_kVertises2D[0]));
+	if(!kMesh.m_kVertises.empty()) 		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,	&(kMesh.m_kVertises[0]));
+	if(!kMesh.m_kNormals.empty()) 		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,	&(kMesh.m_kNormals[0]));
+	if(!kMesh.m_kTexture[0].empty()) 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,	&(kMesh.m_kTexture[0][0]));
+	if(!kMesh.m_kTexture[1].empty()) 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,	&(kMesh.m_kTexture[1][0]));
+	if(!kMesh.m_kTexture[2].empty()) 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER2,	&(kMesh.m_kTexture[2][0]));
+	if(!kMesh.m_kTexture[3].empty()) 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER3,	&(kMesh.m_kTexture[3][0]));
+	if(!kMesh.m_kColors.empty()) 			m_pkZShaderSystem->SetPointer(COLOR_POINTER,		&(kMesh.m_kColors[0]));
+	if(!kMesh.m_kTangents.empty()) 		m_pkZShaderSystem->SetPointer(TANGENT_POINTER,	&(kMesh.m_kTangents[0]));
+	if(!kMesh.m_kBiTangents.empty()) 	m_pkZShaderSystem->SetPointer(BITANGENT_POINTER,&(kMesh.m_kBiTangents[0]));
+	if(!kMesh.m_kIndexs.empty()) 			{m_pkZShaderSystem->SetPointer(INDEX_POINTER,	&(kMesh.m_kIndexs[0]));	bIndexed = true;	};
+						
+	//set number of elements
+	if(bIndexed)
+		m_pkZShaderSystem->SetNrOfIndexes(kMesh.m_iNrOfDataElements);
+	else
+		m_pkZShaderSystem->SetNrOfVertexs(kMesh.m_iNrOfDataElements);
+	
+	//---------------------
+	
+	
+	//bone transformation
+	if(kRenderPackage.m_pkMaterial->m_bBoneTransform && pkBoneMatrixPointer && pkBoneIndexPointer)
+	{
+		DoBoneTransformation(kRenderPackage,*pkBoneMatrixPointer, *pkBoneIndexPointer);
+	}
+	
+	//draw
+	m_pkZShaderSystem->DrawArray(kMesh.m_ePolygonMode);		
+				
+	m_pkZShaderSystem->MatrixPop();
+	
+	return true;
+}
+
+void DepthMapRenderer::DoBoneTransformation(const RenderPackage& kRenderPackage,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes)
+{
+	static vector<Vector3>	kVertises;
+	static vector<Vector3>	kNormals;
+			
+	const Vector3* pkOldVertises 			= (const Vector3*) m_pkZShaderSystem->GetPointer(VERTEX_POINTER);
+	const Vector3* pkOldNormals 			= (const Vector3*) m_pkZShaderSystem->GetPointer(NORMAL_POINTER);	
+	const int*	pkIndexes		 			= (const int*)	m_pkZShaderSystem->GetPointer(INDEX_POINTER);
+	const int* pkBoneIndexes 				= (const int*) kBoneIndexes.m_pkPointer;	
+	const Matrix4*	pkMatrix					= (const Matrix4*) kBoneMatrises.m_pkPointer;
+	
+
+	//find nr of vertises
+	int iNrOfVertises = 0;	
+	if(pkIndexes)
+	{
+		iNrOfVertises = kBoneIndexes.m_iElements;	
+		if(iNrOfVertises == 0)
+		{
+			cerr<<"ERROR: DefaultRenderPlugin::DoBoneTransformation, indexed mesh needs nr of elements in bone index list"<<endl;
+			return;				
+		}
+	}
+	else
+	 	iNrOfVertises = kRenderPackage.m_kMeshData.m_iNrOfDataElements;
+	 	
+	 	
+	//resize arrays if they are to small
+	if(kVertises.size() < iNrOfVertises)
+	{
+		kVertises.resize(iNrOfVertises);
+		kNormals.resize(iNrOfVertises);
+	}	 	
+		
+	//loop all elements and transform them
+	for(int i = 0;i<iNrOfVertises;i++)
+	{
+		kVertises[i] = pkMatrix[ pkBoneIndexes[i] ].VectorTransform( pkOldVertises[i] );
+		kNormals[i]  = pkMatrix[ pkBoneIndexes[i] ].VectorRotate( pkOldNormals[i] ); 
+	}
+	
+ 	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&kVertises[0]);
+ 	m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&kNormals[0]);
+}
+
+
+// ---------- SHADOWMAP RENDER PLUGIN
+ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap")
+{
+	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
+	m_pkRender= 			static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
+	m_pkZeroFps = 			static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));	
+	m_pkEntityManager = 	static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
+	m_pkLight = 			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));			
+		
+	
+	m_bEnabled = true;
+	
+	m_kShadowRenderState.AddPlugin("DepthMapRender");
+		
+	//create shadowmap texture	
+	if(	(!m_pkZShaderSystem->HaveExtension("GL_ARB_shadow")) || 
+			(!m_pkZShaderSystem->HaveExtension("GL_ARB_depth_texture")) )
+	{
+		cerr<<"WARNING: GL_ARB_shadow not supported shadows disabled"<<endl;
+		m_bEnabled = false;
+	}
+	else	
+	{
+		//SHADOW HACK
+		
+		//find shadowtexture size
+		int iQuality = m_pkZeroFps->GetShadowMapQuality();
+ 		m_iShadowTexWidth = iQuality;
+ 		m_iShadowTexHeight = iQuality; 		 		
+		
+		if(m_pkZShaderSystem->SupportFBO())
+		{
+			int iMaxFBO;
+			glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT,&iMaxFBO);
+			
+			g_Logf("CAMERA: Using FBO's for shadows , max resulution %dx%d", iMaxFBO, iMaxFBO);
+			//cout<<"CAMERA: Using FBO's for shadows , max resulution "<<iMaxFBO<<"x"<<iMaxFBO<<endl;
+	 		m_iShadowTexWidth = (int)Min(iQuality,iMaxFBO);
+ 			m_iShadowTexHeight = (int)Min(iQuality,iMaxFBO);;							
+		}
+		else
+		{
+			int iMaxWidth = GetMinSize(m_pkRender->GetWidth());
+			int iMaxHeight = GetMinSize(m_pkRender->GetHeight());
+		
+			g_Logf("CAMERA: No FBO support, falling back to glCopyTexSubImage2D, max resulution %dx%d.\n",iMaxWidth,iMaxHeight);
+			//cout<<"CAMERA: No FBO support, falling back to glCopyTexSubImage2D, max resulution "<<iMaxWidth<<"x"<<iMaxHeight<<endl;
+	 		m_iShadowTexWidth = (int)Min(iQuality,iMaxWidth);
+ 			m_iShadowTexHeight = (int)Min(iQuality,iMaxHeight);;					
+		}
+			
+		m_pkZShaderSystem->SetShadowMapSize(m_iShadowTexWidth,m_iShadowTexHeight);
+		g_Logf("CAMERA: Using shadow texture size: %dx%d.\n", m_iShadowTexWidth, m_iShadowTexHeight);
+		//cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
+		
+		//are the shadowmap shuld cover
+		m_fShadowArea = 50;
+		
+		m_kShadowmap.m_kTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_DEPTH|T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
+// 		m_kShadowTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
+		m_kShadowmap.m_kTexture.SetBorderColor(Vector4(1,1,1,1));
+ 		
+		
+		//USE FBO ?
+		if(m_pkZShaderSystem->SupportFBO())
+		{
+			//create FBO and color buffer
+			glGetError();
+			glGenFramebuffersEXT(1, &m_iShadowFBO);
+			glGenRenderbuffersEXT(1, &m_iShadowRBOcolor);
+			if(glGetError() != GL_NO_ERROR) cerr<<"ERROR generating FBO"<<endl;
+			
+			//bind frame buffer
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_iShadowRBOcolor);			
+			if(glGetError() != GL_NO_ERROR) cerr<<"ERROR binding FBO"<<endl;
+			
+			
+			//setup color buffer
+			glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_iShadowRBOcolor);
+			glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,
+												GL_RGBA, m_iShadowTexWidth, m_iShadowTexHeight);			
+			glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
+													GL_COLOR_ATTACHMENT0_EXT,
+													GL_RENDERBUFFER_EXT, m_iShadowRBOcolor);			
+			if(glGetError() != GL_NO_ERROR) cerr<<"ERROR color buffer"<<endl;
+			
+			
+			// attach depth buffer texture                                 		
+			glFramebufferTexture2DEXT(	GL_FRAMEBUFFER_EXT,
+												GL_DEPTH_ATTACHMENT_EXT,
+												GL_TEXTURE_2D, m_kShadowmap.m_kTexture.GetOpenGLTextureID(), 0);			
+												
+			if(glGetError() != GL_NO_ERROR) cerr<<"ERROR binding depth "<<endl;
+				
+			//check framebuffer status
+			GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+			switch(status)
+			{
+				case GL_FRAMEBUFFER_COMPLETE_EXT:					
+					break;
+					
+				case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+					cerr<<"ERROR unsupported FBO format"<<endl;
+					break;
+					
+				default:
+					cerr<<"ERROR fbo totaly failed"<<endl;					
+					break;
+			}
+					
+			//return to normal window buffer
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);	
+		}
+	
+		//Light projection matrix
+		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
+		m_pkZShaderSystem->MatrixGenerateOrtho(-m_fShadowArea,m_fShadowArea,-m_fShadowArea,m_fShadowArea,1,200);
+		m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
+		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);		
+		
+		
+	}	
+}
+
+ShadowmapPlugin::~ShadowmapPlugin()
+{
+
+
+}
+
+void ShadowmapPlugin::MakeShadowTexture(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState,const Vector3& kLightPos,const Vector3& kCenter)
+{
+	//push matrises
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPush();	
+
+
+	//load matrises
+ 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+ 	m_pkZShaderSystem->MatrixLoad(&m_kLightProjMatrix);
+	
+	//modelview matrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
+	m_pkZShaderSystem->MatrixIdentity();
+	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
+					kCenter.x,kCenter.y,kCenter.z,
+					0.0f, 1.0f, 0.0f);
+					
+	m_pkZShaderSystem->MatrixSave(&m_kLightViewMatrix);													
+
+	//seutp frustum
+	m_kShadowRenderState.m_kFrustum.GetFrustum(m_kLightProjMatrix,m_kLightViewMatrix);	
+ 	m_kShadowRenderState.m_kCameraPosition = kRenderState.m_kCameraPosition;
+
+	//setup FBO if supported
+	if(m_pkZShaderSystem->SupportFBO())
+	{
+		//enable FBO
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_iShadowFBO);
+	}
+	
+	//setup viewport
+	glViewport(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+	glScissor(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+	
+	//clear viewport
+	m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER|DEPTH_BUFFER);
+			
+	//Disable color writes, and use flat shading for speed
+  	m_pkZShaderSystem->ForceColorMask(FORCE_DISABLE);
+
+ 	//polygon offset
+ 	glEnable(GL_POLYGON_OFFSET_FILL);
+  	glPolygonOffset(2,0);
+
+	//reload last material
+	m_pkZShaderSystem->ReloadMaterial();		
+	
+	//shading stuff
+  	m_pkLight->SetLighting(false);
+	m_pkZShaderSystem->ForceLighting(LIGHT_ALWAYS_OFF);
+ 	glShadeModel(GL_FLAT);
+	
+	//disable all shaders
+	bool bFDGS = m_pkZShaderSystem->GetForceDisableGLSL();
+	m_pkZShaderSystem->SetForceDisableGLSL(true);
+
+	//depending on root entity
+	vector<Property*>	kPropertys;	
+	if(kRenderState.m_pkRoot)
+		kRenderState.m_pkRoot->GetAllPropertys(&kPropertys, PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
+	else
+		m_pkEntityManager->m_pkSceneAABBTree->GetRenderPropertysInFrustum(&kPropertys,&m_kShadowRenderState.m_kFrustum);
+	
+	//get render packages from propertys
+	vector<RenderPackage*>	kRenderPackages;
+	int iPropertys = kPropertys.size();
+	for(int i = 0;i<iPropertys;i++)
+		kPropertys[i]->GetRenderPackages(kRenderPackages,m_kShadowRenderState);		
+
+	//do render call
+	kRenderEngine.DoRender(kRenderPackages,m_kShadowRenderState);
+	
+	//save texture	
+	if(m_pkZShaderSystem->SupportFBO())
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	else
+		m_kShadowmap.m_kTexture.CopyFrameBuffer(0,0,m_iShadowTexWidth,m_iShadowTexHeight);	
+	
+	
+	//enable shaders again
+	m_pkZShaderSystem->SetForceDisableGLSL(bFDGS);
+	
+  	glDepthRange (0.0, 1.0);
+ 	glDisable(GL_POLYGON_OFFSET_FILL);
+  	glPolygonOffset(0,0);
+	
+  	m_pkLight->SetLighting(true);
+	m_pkZShaderSystem->ForceLighting(LIGHT_MATERIAL);
+ 	glShadeModel(GL_SMOOTH);
+	m_pkZShaderSystem->ForceColorMask(FORCE_DEFAULT);
+		
+		
+	//return viewport settings
+	glScissor(	GLint(kRenderState.m_kViewPortPos.x), 		GLint(kRenderState.m_kViewPortPos.y),	
+					GLsizei(kRenderState.m_kViewPortSize.x), 	GLsizei(kRenderState.m_kViewPortSize.y) );					
+	glViewport(	GLint(kRenderState.m_kViewPortPos.x), 		GLint(kRenderState.m_kViewPortPos.y),	
+					GLsizei(kRenderState.m_kViewPortSize.x), 	GLsizei(kRenderState.m_kViewPortSize.y) );					
+	
+	m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER|DEPTH_BUFFER);
+	
+	
+	//reload last material
+	m_pkZShaderSystem->ReloadMaterial();		
+	
+	//setup matrix
+	static Matrix4 biasMatrix(	0.5f, 0.0f, 0.0f, 0.0f,
+										0.0f, 0.5f, 0.0f, 0.0f,
+										0.0f, 0.0f, 0.5f, 0.0f,
+										0.5f, 0.5f, 0.5f, 1.0f); //bias from [-1, 1] to [0, 1]
+
+	static Matrix4 Proj;
+	static Matrix4 View;
+	static Matrix4 Bias;
+	
+	Proj = m_kLightProjMatrix;
+	View = m_kLightViewMatrix;
+	Bias = biasMatrix;	
+
+	View.Transponse();
+	Proj.Transponse();
+	Bias.Transponse();	
+	
+	m_kShadowmap.m_kTextureMatrix=Bias*(Proj*View);			
+	
+	
+	
+	//pop matrises
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPop();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPop();		
+}
+
+bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
+{
+	if(!m_bEnabled) return true;
+	
+	//setup light
+	LightSource* pkLight = m_pkLight->GetSunPointer();		
+	Vector3 kLightPos = (kRenderState.m_kCameraPosition + (pkLight->kRot.Unit() * 100));
+
+	
+	//create shadow map	realtime or not
+	if(m_pkZeroFps->GetShadowMapRealtime())
+		MakeShadowTexture(kRenderEngine,kRenderState,kLightPos,kRenderState.m_kCameraPosition);
+	else if(m_kLastShadowPos.DistanceTo(kRenderState.m_kCameraPosition) > m_fShadowArea/8.0 || m_kLastShadowRot != pkLight->kRot)
+	{
+		m_kLastShadowRot = pkLight->kRot;
+		m_kLastShadowPos = kRenderState.m_kCameraPosition;
+		
+		MakeShadowTexture(kRenderEngine,kRenderState,kLightPos,kRenderState.m_kCameraPosition);
+	}
+	
+	//set shadowmap parameter
+	kRenderEngine.SetParameter("shadowmap",&m_kShadowmap);
+	
+	
+	return true;
+}
+
+int ShadowmapPlugin::GetMinSize(int iRes)
+{
+	if(iRes <= 256 )
+		return 256;
+	else if(iRes <= 512)
+		return 512;
+	else if(iRes <= 1024)
+		return 1024;
+	else if(iRes <= 2048)
+		return 2048;
+		
+	return 256;
+}
+
+// ---------- HDR EXPOSURE CALCULATOR PLUGIN
+
 ExposureCalculator::ExposureCalculator() : PostRenderPlugin("HdrExposure")
 {
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
@@ -122,7 +613,7 @@ DebugRenderPlugin::~DebugRenderPlugin()
 }
 
 
-bool DebugRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState& kRenderState)
+bool DebugRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
 {	
 
 	//push matrises	
@@ -274,7 +765,7 @@ void DebugRenderPlugin::DoBoneTransformation(int iVertises,const DataPointer& kB
 
 // ---------DefaultRenderPlugin
 
-bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState& kRenderState)
+bool DefaultRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
 {
 	//HACK
 	if(kRenderPackage.m_pkProperty)
@@ -306,6 +797,12 @@ bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState&
 		else
 			m_pkZeroFps->m_iNotOcculedObjects++;
 	}
+
+	//setup shadowmaping
+	ShadowMap* pkShadowmap = (ShadowMap*)kRenderEngine.GetParameter("shadowmap");	
+	if(pkShadowmap && kRenderPackage.m_pkMaterial->m_bReceiveShadow)
+		SetupShadowmap(pkShadowmap);	
+
 
 	//setup lighting if any
 	if(kRenderPackage.m_pkLightProfile)
@@ -385,12 +882,88 @@ bool DefaultRenderPlugin::Call(RenderPackage& kRenderPackage, const RenderState&
 		DoBoneTransformation(kRenderPackage,*pkBoneMatrixPointer, *pkBoneIndexPointer);
 	}
 	
+
 	//draw
 	m_pkZShaderSystem->DrawArray(kMesh.m_ePolygonMode);		
+				
+	//disable shadowmap
+	if(pkShadowmap && kRenderPackage.m_pkMaterial->m_bReceiveShadow)
+		SetupShadowmap(NULL);	
+				
 				
 	m_pkZShaderSystem->MatrixPop();
 	
 	return true;
+}
+
+
+void DefaultRenderPlugin::SetupShadowmap(ShadowMap* pkShadowmap)
+{
+	if(pkShadowmap)
+	{
+		m_pkZShaderSystem->ForceTU3Disabled(true);
+	
+		//setup some textures
+		glActiveTextureARB(GL_TEXTURE3_ARB);						
+		
+		glEnable(GL_TEXTURE_2D);
+		
+		//Bind & enable shadow map texture
+		m_pkZShaderSystem->BindTexture(&pkShadowmap->m_kTexture);
+		
+		
+		
+		//Set up texture coordinate generation.
+		glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+		glTexGenfv(GL_S, GL_EYE_PLANE, &(pkShadowmap->m_kTextureMatrix.RowCol[0][0]));
+		glEnable(GL_TEXTURE_GEN_S);
+		
+		glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+		glTexGenfv(GL_T, GL_EYE_PLANE, &(pkShadowmap->m_kTextureMatrix.RowCol[1][0]));
+		glEnable(GL_TEXTURE_GEN_T);
+		
+		glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+		glTexGenfv(GL_R, GL_EYE_PLANE, &(pkShadowmap->m_kTextureMatrix.RowCol[2][0]));
+		glEnable(GL_TEXTURE_GEN_R);
+		
+		glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+		glTexGenfv(GL_Q, GL_EYE_PLANE, &(pkShadowmap->m_kTextureMatrix.RowCol[3][0]));
+		glEnable(GL_TEXTURE_GEN_Q);
+	
+		
+		//Enable shadow comparison
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
+		
+		//Shadow comparison should be true (ie not in shadow) if r<=texture
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GEQUAL);
+		
+		//Shadow comparison should generate an INTENSITY result
+		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_ALPHA);
+		
+		//Set alpha test to discard false comparisons
+		//if((!m_pkZeroFps->GetShadowMapMode()) || (!m_pkZShaderSystem->SupportGLSLProgram()))
+		//	m_pkZShaderSystem->ForceAlphaTest(FORCE_OTHER);
+	}
+	else
+	{
+		
+		glActiveTextureARB(GL_TEXTURE3_ARB);
+		
+		//m_pkZShaderSystem->ForceAlphaTest(FORCE_DEFAULT);
+		
+		//Disable textures and texgen
+		glDisable(GL_TEXTURE_2D);
+		
+		glDisable(GL_TEXTURE_GEN_S);
+		glDisable(GL_TEXTURE_GEN_T);
+		glDisable(GL_TEXTURE_GEN_R);
+		glDisable(GL_TEXTURE_GEN_Q);
+		
+		//Restore other states
+		glActiveTextureARB(GL_TEXTURE0_ARB);
+		
+		m_pkZShaderSystem->ForceTU3Disabled(false);	
+	}
 }
 
 void DefaultRenderPlugin::DoBoneTransformation(const RenderPackage& kRenderPackage,const DataPointer& kBoneMatrises,const DataPointer& kBoneIndexes)
@@ -511,6 +1084,10 @@ bool DefaultPreRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kR
 			break;
 	}	
 	
+	
+
+	
+	
 	//render call to render engine
 	kRenderEngine.DoRender(kRenderPackages,kRenderState);
 	
@@ -526,6 +1103,7 @@ bool DefaultPreRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kR
 	
 	return true;
 }
+
 
 
 //------ BLOOM
@@ -755,6 +1333,18 @@ bool InterfaceRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 }
 
 //---- create functions
+
+
+
+Plugin* Create_DepthMapRendererPlugin()
+{
+	return (Plugin*)new DepthMapRenderer();
+};
+
+Plugin* Create_ShadowmapPlugin()
+{
+	return (Plugin*)new ShadowmapPlugin();
+};
 
 Plugin* Create_DebugRenderPlugin()
 {

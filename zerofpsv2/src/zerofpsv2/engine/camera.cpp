@@ -67,8 +67,11 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iShadowRBOcolor =	0;	
 	
 	//default renderstate settings
+	m_kRenderState.AddPlugin("Shadowmap");
 	m_kRenderState.AddPlugin("PreRender");
 	m_kRenderState.AddPlugin("Render");
+//  	m_kRenderState.AddPlugin("DepthMapRender");
+
 // 	m_kRenderState.AddPlugin("Bloom");
 	m_kRenderState.AddPlugin("InterfaceRender");
 	m_kRenderState.AddPlugin("HdrExposure");
@@ -307,7 +310,7 @@ void Camera::FullScreenShader()
  	uvdata[7] = ys;
 	
 	//save screen surface to fss texture									
-	m_kFSSTexture.CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
+	m_kFSSTexture.CopyFrameBuffer((int)m_kViewPortCorner.x,(int)m_kViewPortCorner.y,(int)m_kViewPortSize.x, (int)m_kViewPortSize.y);
 	
 	//setup fss orthogonal projection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
@@ -362,7 +365,7 @@ float Camera::GetExposureFactor()
 	}
 	
 	//get framebuffer
-	pkTex->CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
+	pkTex->CopyFrameBuffer((int)m_kViewPortCorner.x,(int)m_kViewPortCorner.y,(int)m_kViewPortSize.x, (int)m_kViewPortSize.y);
 	pkTex->RegenerateMipmaps();
 	
 	float fx= float(m_kViewPortSize.x)/float(m_iFSSTextureWidth);
@@ -432,7 +435,7 @@ void Camera::MakeBloom()
  	uvdata[7] = ys;
 	
 	//save screen surface to fss texture									
-	m_kFSSTexture.CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
+	m_kFSSTexture.CopyFrameBuffer((int)m_kViewPortCorner.x,(int)m_kViewPortCorner.y,(int)m_kViewPortSize.x, (int)m_kViewPortSize.y);
 			
 	//setup fss orthogonal projection matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
@@ -466,7 +469,7 @@ void Camera::MakeBloom()
   	
   	
 	//save image, and do another draw	
-	m_kBloomTexture.CopyFrameBuffer(m_kViewPortCorner.x,m_kViewPortCorner.y,m_kViewPortSize.x, m_kViewPortSize.y);
+	m_kBloomTexture.CopyFrameBuffer((int)m_kViewPortCorner.x,(int)m_kViewPortCorner.y,(int)m_kViewPortSize.x, (int)m_kViewPortSize.y);
 	
 	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);	
 	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);		
