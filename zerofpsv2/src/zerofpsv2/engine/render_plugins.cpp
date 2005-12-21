@@ -243,7 +243,6 @@ ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap")
 		m_fShadowArea = 50;
 		
 		m_kShadowmap.m_kTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_DEPTH|T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
-// 		m_kShadowTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
 		m_kShadowmap.m_kTexture.SetBorderColor(Vector4(1,1,1,1));
  		
 		
@@ -726,6 +725,16 @@ bool DebugRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRend
 								kRenderPackage.m_kCenter + Vector3(0.25,0.25,0.25),
 								Vector3(1,1,1),2);
 				
+	
+	if(kRenderPackage.m_bOcculusionTest && !kRenderPackage.m_pkOcculusionParent)
+	{
+		//DRAW 
+		m_pkRender->DrawAABB(kRenderPackage.m_kCenter + kRenderPackage.m_kAABBMin,
+									kRenderPackage.m_kCenter + kRenderPackage.m_kAABBMax,
+									Vector3(0,1,0),1);				
+	}
+					
+					
 	m_pkZShaderSystem->UseDefaultGLSLProgram(bUDGS);
 	
 	return true;

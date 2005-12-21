@@ -141,14 +141,23 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 		kRP.m_kModelMatrix = kModelMatrix;
 		kRP.m_kCenter = kPos;
 		kRP.m_fRadius = GetRadius();
-		kRP.m_kAABBMin =  Vector3(-kRP.m_fRadius,-kRP.m_fRadius,-kRP.m_fRadius);
-		kRP.m_kAABBMax =  Vector3(kRP.m_fRadius,kRP.m_fRadius,kRP.m_fRadius);
+		
  		kRP.m_bOcculusionTest = true;			
 		kRP.m_pkLightProfile = &m_kLightProfile;	
-		
 		if(i != 0)
 			kRP.m_pkOcculusionParent = &m_kRenderPackage[0];
-
+		
+		
+		if(!m_bHaveAABB)
+		{
+	 		kRP.m_kAABBMin =  Vector3(-kRP.m_fRadius,-kRP.m_fRadius,-kRP.m_fRadius);
+ 			kRP.m_kAABBMax =  Vector3(kRP.m_fRadius,kRP.m_fRadius,kRP.m_fRadius);
+ 		}
+ 		else
+ 		{
+	 		kRP.m_kAABBMin =  m_AABBMin;
+ 			kRP.m_kAABBMax =  m_AABBMax;
+ 		}		
 		
 	
 		kRenderPackages.push_back(& m_kRenderPackage[i] );			
@@ -179,9 +188,45 @@ void P_Mad::Update()
 		{
 			DoAnimationUpdate();
 		}
+		
+		if(m_bIsVisible)
+		{			
+			//get entity rotation
+			static Matrix3 kRot;
+			kRot = m_pkEntity->GetWorldRotM();		
+			
+			
+			//shuld aabb be remade?
+ 			if(m_bHaveAABB)
+  				if(m_fScale != m_fOldScale ||
+ 					m_kLastRot != kRot)
+ 					m_bHaveAABB = false;					
+ 			
+			if(!m_bHaveAABB)
+			{
+				if(m_pkZeroFps->GetEngineTime() - m_fLastAABBTest > 2)
+				{
+					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
+							m_fScale == m_fOldScale &&
+							m_kLastRot == kRot)
+					{
+						//create AABB
+						m_bHaveAABB = true;
+						CreateAABB();
+					}
+					else
+					{
+						//update test information
+						m_fLastAABBTest = m_pkZeroFps->GetEngineTime();
+						m_fOldScale = m_fScale;
+						m_kLastRot = kRot;
+					}
+				}
+			}		
+		}
 	}
 	
-
+return;
 
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
