@@ -34,8 +34,8 @@ ZGuiToolTip::~ZGuiToolTip()
 
 void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime)
 {
-	if(m_pkLastToolTipWnd == NULL)
-		return;
+//	if(m_pkLastToolTipWnd == NULL)
+//		return;
 
 	if(m_pkToolTipWnd->GetFont() == NULL )
 		m_pkToolTipWnd->SetFont(m_pkGui->GetResMan()->Font("defguifont"));  
@@ -76,7 +76,6 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 		{
 			if(pkWnd->GetScreenRect().Inside(mouse_x,mouse_y))
 			{
-
 				fLifeTime = m_vkWindowList[i].fLifeTimeInSec;
 
 				m_pkToolTipWnd->Show(); 
@@ -155,6 +154,7 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 		}
 	}
 
+	fLifeTime = 10;
 	if(fGameTime - m_fToolTipDisplayTime > fLifeTime/*m_fDisplayTime*/)
 	{
 		m_pkToolTipWnd->Hide();
