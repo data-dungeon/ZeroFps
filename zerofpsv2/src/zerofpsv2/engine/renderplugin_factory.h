@@ -39,6 +39,8 @@ class ENGINE_API PluginFactory
 		void RegisterPlugin(const string& strName,Plugin*	(*CreateFunction)());
 
 		Plugin* CreatePluginInstans(const string strName);
+		
+		vector<string> GetPluginList();
 };
 
 

@@ -39,3 +39,13 @@ Plugin* PluginFactory::CreatePluginInstans(const string strName)
 	return NULL;
 }
 
+
+vector<string> PluginFactory::GetPluginList()
+{
+	vector<string> kPluginList;
+
+	for(int i = 0;i<m_kPlugins.size();i++)
+		kPluginList.push_back(m_kPlugins[i].m_strName);	
+
+	return kPluginList;
+}

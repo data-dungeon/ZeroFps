@@ -131,6 +131,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 			FID_CAMERALIST,			// List rendered cameras
 			FID_CAMERAADDPLUGIN,		// Add a pre render plugin to a camera			
 			FID_CAMERAREMOVEPLUGIN,	// Add a pre render plugin to a camera			
+			FID_RENDERPLUGINLIST,
 		};
 
 		ZFVersion		m_kVersion;

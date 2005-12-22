@@ -43,12 +43,14 @@ class ENGINE_API PreRenderPlugin : public Plugin
 {
 	private:
 		string	m_strName;
-
+		int		m_iOrder;
+		
 	public:
-		PreRenderPlugin(const string& strName);
+		PreRenderPlugin(const string& strName,int iOrder);
 		const string& GetName()	{	return m_strName;	};
 		
 		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState) = 0;
+		friend class RenderState;
 };
 
 
@@ -61,12 +63,14 @@ class ENGINE_API PostRenderPlugin : public Plugin
 {
 	private:
 		string	m_strName;
-
+		int		m_iOrder;
+		
 	public:
-		PostRenderPlugin(const string& strName);
+		PostRenderPlugin(const string& strName,int iOrder);
 		const string& GetName()	{	return m_strName;	};
 		
 		virtual bool Call(const RenderState& kRenderState) = 0;
+		friend class RenderState;
 };
 
 
@@ -82,12 +86,14 @@ class ENGINE_API RenderPlugin : public Plugin
 {
 	private:
 		string	m_strName;
-
-	public:
-		RenderPlugin(const string& strName);
-		const string& GetName()	{	return m_strName;	};
+		int		m_iOrder;
 		
-		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState) = 0;
+	public:
+		RenderPlugin(const string& strName,int iOrder);
+		const string& GetName()	{	return m_strName;	};		
+		
+		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState) = 0;		
+		friend class RenderState;
 };
 
 

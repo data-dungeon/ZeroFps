@@ -6,21 +6,24 @@ int		RenderState::m_iNextStateID = 0;
 
 
 //------- PreRenderPlugin
-PreRenderPlugin::PreRenderPlugin(const string& strName)
+PreRenderPlugin::PreRenderPlugin(const string& strName,int iOrder)
 {
 	m_strName = strName;
+	m_iOrder = iOrder;
 }
 
 //------ PostRenderPlugin
-PostRenderPlugin::PostRenderPlugin(const string& strName)
+PostRenderPlugin::PostRenderPlugin(const string& strName,int iOrder)
 {
 	m_strName = strName;
+	m_iOrder = iOrder;
 }
 
 //------ RenderPlugin
-RenderPlugin::RenderPlugin(const string& strName)
+RenderPlugin::RenderPlugin(const string& strName,int iOrder)
 {
 	m_strName = strName;
+	m_iOrder = iOrder;
 }
 
 
@@ -75,18 +78,39 @@ bool RenderState::AddPlugin(const string& strName)
 		
 			if(dynamic_cast<PreRenderPlugin*>(pkPlugin))
 			{
+				for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it!=m_kPreRenderPlugins.end();it++)
+					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
+					{
+						m_kPreRenderPlugins.insert(it,(PreRenderPlugin*)pkPlugin);
+						return true;
+					}
+				
 				m_kPreRenderPlugins.push_back((PreRenderPlugin*)pkPlugin);
 				return true;
 			}
 			
 			if(dynamic_cast<RenderPlugin*>(pkPlugin))
 			{
+				for(vector<RenderPlugin*>::iterator it = m_kRenderPlugins.begin();it!=m_kRenderPlugins.end();it++)
+					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
+					{
+						m_kRenderPlugins.insert(it,(RenderPlugin*)pkPlugin);
+						return true;
+					}				
+				
 				m_kRenderPlugins.push_back((RenderPlugin*)pkPlugin);
 				return true;
 			}
 			
 			if(dynamic_cast<PostRenderPlugin*>(pkPlugin))
 			{
+				for(vector<PostRenderPlugin*>::iterator it = m_kPostRenderPlugins.begin();it!=m_kPostRenderPlugins.end();it++)
+					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
+					{
+						m_kPostRenderPlugins.insert(it,(PostRenderPlugin*)pkPlugin);
+						return true;
+					}						
+			
 				m_kPostRenderPlugins.push_back((PostRenderPlugin*)pkPlugin);
 				return true;
 			}

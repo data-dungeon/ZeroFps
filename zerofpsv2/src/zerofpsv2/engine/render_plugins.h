@@ -137,7 +137,7 @@ class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 	
 	public:
 					
-		DefaultRenderPlugin() : RenderPlugin("Render")
+		DefaultRenderPlugin() : RenderPlugin("Render",0)
 		{
 			m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 			m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));

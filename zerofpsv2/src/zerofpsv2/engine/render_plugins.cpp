@@ -4,7 +4,7 @@
 
 // ---------DepthMap renderer
 
-DepthMapRenderer::DepthMapRenderer() : RenderPlugin("DepthMapRender")
+DepthMapRenderer::DepthMapRenderer() : RenderPlugin("DepthMapRender",0)
 {
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
@@ -185,7 +185,7 @@ void DepthMapRenderer::DoBoneTransformation(const RenderPackage& kRenderPackage,
 
 
 // ---------- SHADOWMAP RENDER PLUGIN
-ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap")
+ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap",-10)
 {
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
 	m_pkRender= 			static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
@@ -492,7 +492,7 @@ int ShadowmapPlugin::GetMinSize(int iRes)
 
 // ---------- HDR EXPOSURE CALCULATOR PLUGIN
 
-ExposureCalculator::ExposureCalculator() : PostRenderPlugin("HdrExposure")
+ExposureCalculator::ExposureCalculator() : PostRenderPlugin("HdrExposure",10)
 {
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
 	m_pkRender= 			static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
@@ -591,7 +591,7 @@ int ExposureCalculator::GetMinSize(int iRes)
 
 // --------- debug render
 
-DebugRenderPlugin::DebugRenderPlugin() : RenderPlugin("DebugRender")
+DebugRenderPlugin::DebugRenderPlugin() : RenderPlugin("DebugRender",0)
 {
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
@@ -1022,7 +1022,7 @@ void DefaultRenderPlugin::DoBoneTransformation(const RenderPackage& kRenderPacka
 
 //---------- PRE RENDER
 
-DefaultPreRenderPlugin::DefaultPreRenderPlugin() : PreRenderPlugin("PreRender")
+DefaultPreRenderPlugin::DefaultPreRenderPlugin() : PreRenderPlugin("PreRender",0)
 {
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
@@ -1117,7 +1117,7 @@ bool DefaultPreRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kR
 
 //------ BLOOM
 
-BloomPostPlugin::BloomPostPlugin() : PostRenderPlugin("Bloom")
+BloomPostPlugin::BloomPostPlugin() : PostRenderPlugin("Bloom",0)
 {
 	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));	
 	m_pkRender= 			static_cast<ZSSRender*>(g_ZFObjSys.GetObjectPtr("ZSSRender"));	
@@ -1253,7 +1253,7 @@ int BloomPostPlugin::GetMinSize(int iRes)
 }
 
 // -------- InterfaceRender
-InterfaceRender::InterfaceRender() : PreRenderPlugin("InterfaceRender")
+InterfaceRender::InterfaceRender() : PreRenderPlugin("InterfaceRender",0)
 {
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 	m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));

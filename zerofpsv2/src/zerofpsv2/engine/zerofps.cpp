@@ -156,9 +156,10 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	Register_Cmd("pos",			FID_POS);	
 	Register_Cmd("profmode",	FID_PROFILEMODE);	
 	
-	Register_Cmd("cameralist",				FID_CAMERALIST);	
-	Register_Cmd("addplugin",		FID_CAMERAADDPLUGIN);	
-	Register_Cmd("removeplugin",	FID_CAMERAREMOVEPLUGIN);	
+	Register_Cmd("cameralist",			FID_CAMERALIST);	
+	Register_Cmd("addplugin",			FID_CAMERAADDPLUGIN);	
+	Register_Cmd("removeplugin",		FID_CAMERAREMOVEPLUGIN);	
+	Register_Cmd("renderpluginlist",	FID_RENDERPLUGINLIST);	
 	
 	
 }
@@ -1276,6 +1277,20 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 			
 			m_pkConsole->Printf("Number of cameras %d",m_kRenderCamera.size());						
 			
+			break;
+		}
+	
+		case FID_RENDERPLUGINLIST:
+		{
+			vector<string> kPluginList = m_pkZSSRenderEngine->m_kPluginFactory.GetPluginList();
+							
+			for(int i = 0;i<kPluginList.size();i++)
+			{
+				m_pkConsole->Printf("%d : %s",i,kPluginList[i].c_str());
+			}
+		
+			m_pkConsole->Printf("Number of plugins %d",kPluginList.size());						
+		
 			break;
 		}
 	
