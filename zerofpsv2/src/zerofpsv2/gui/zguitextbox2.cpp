@@ -549,6 +549,7 @@ void ZGuiTextbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 }
 
 
+
 bool ZGuiTextbox::IsMultiLine()
 {
 	return m_bMultiLine;
@@ -594,6 +595,15 @@ void ZGuiTextbox::ToggleMultiLine(bool bMultiLine)
 	BuildTagList();
 	BuildTextStrings();
 }
+
+void ZGuiTextbox::SetMultiLine(bool bMultiLine)
+{
+	if(m_bMultiLine == bMultiLine)
+		return;
+
+	ToggleMultiLine( bMultiLine );
+}
+
 
 void ZGuiTextbox::SetReadOnly(bool bReadOnly)
 {

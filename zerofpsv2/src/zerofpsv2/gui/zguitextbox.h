@@ -54,6 +54,7 @@ public:
 	bool m_bNumberOnly;
 
 	//pair<int,int> GetWordLength(char *text, int offset, int max_width);
+	void SetMultiLine(bool bMultiLine);
 
 private:
 	void MoveDownOneRow();

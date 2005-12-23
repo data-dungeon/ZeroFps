@@ -1555,7 +1555,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 			if(ZGuiTextbox* pkTextbox = (ZGuiTextbox*)g_kMistClient.GetWnd("SkillInfoText"))
 			{
-				pkTextbox->ToggleMultiLine(true);
+				pkTextbox->SetMultiLine(true);
 				pkTextbox->SetReadOnly(true);
 				pkTextbox->SetText((char*)strInfoText.c_str());
 			}
