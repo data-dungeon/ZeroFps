@@ -15,6 +15,13 @@ class ENGINE_API SkyLayer
 		Vector3			m_kRotation;
 };
 
+enum SKY_HDR
+{
+	NO_HDR		=0,
+	SQUARE_HDR	=1,
+	EXTERNAL_HDR=2,
+};
+
 class ENGINE_API SkyRender : public PreRenderPlugin
 {
 	private:
@@ -31,7 +38,7 @@ class ENGINE_API SkyRender : public PreRenderPlugin
 		~SkyRender();
 		
 		void Clear();
-		void AddTexture(const string& strName);
+		void AddTexture(const string& strName,SKY_HDR eHDR = NO_HDR);
 		bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState);
 };
 Plugin* Create_SkyRender();

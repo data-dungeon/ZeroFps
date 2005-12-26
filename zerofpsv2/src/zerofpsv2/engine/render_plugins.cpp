@@ -28,7 +28,7 @@ void SkyRender::Clear()
 	m_kMaterials.clear();	
 }
 
-void SkyRender::AddTexture(const string& strName)
+void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
 {
 	static string strNames[6] = {	"_north.tga",
 											"_east.tga",
@@ -36,6 +36,14 @@ void SkyRender::AddTexture(const string& strName)
 											"_west.tga",
 											"_up.tga",
 											"_down.tga"};	
+	
+	static string strNameshi[6] = {	"_north_hi.tga",
+											"_east_hi.tga",
+											"_south_hi.tga",
+											"_west_hi.tga",
+											"_up_hi.tga",
+											"_down_hi.tga"};	
+	
 	
 	bool bBottom = m_kMaterials.empty();
 	m_kMaterials.push_back(	new SkyLayer);
@@ -51,12 +59,27 @@ void SkyRender::AddTexture(const string& strName)
 		//setup material	
 		kMaterial.GetPass(0)->m_iTUTexCords[1] = 		CORDS_FROM_ARRAY_0;	
 		kMaterial.GetPass(0)->m_pkTUs[0]->SetRes(strName + strNames[i]);	
-		//kMaterial.GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");	
 		kMaterial.GetPass(0)->m_iPolygonModeFront =	FILL_POLYGON;
 		kMaterial.GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;		
 		kMaterial.GetPass(0)->m_bLighting = 			false;			
 		kMaterial.GetPass(0)->m_bFog = 					false;		
 		kMaterial.GetPass(0)->m_bDepthTest = 			false;		
+
+		if(eHDR != NO_HDR && m_pkZShaderSystem->SupportGLSLProgram())
+		{
+ 			kMaterial.GetPass(0)->m_kVertexColor = 		Vector4(10,10,10,1);
+			
+			if(eHDR == SQUARE_HDR)
+			{
+		 		kMaterial.GetPass(0)->m_pkSLP->SetRes("#hdrsky_square.frag.glsl");								
+			}
+			else
+			{
+				kMaterial.GetPass(0)->m_pkTUs[1]->SetRes(strName + strNameshi[i]);	
+		 		kMaterial.GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");					
+			}	
+		}
+		
 		if(!bBottom)
 		{		
 			kMaterial.GetPass(0)->m_bBlend = 			true;		
@@ -124,7 +147,10 @@ void SkyRender::AddTexture(const string& strName)
 bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 {		
 	if(m_kMaterials.empty())
-		AddTexture("cp#skybox/rusted/rusted");
+	{
+		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR);
+// 		AddTexture("cp#skybox/winter/winter",SQUARE_HDR);
+	}
 
 	//push matrises
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
