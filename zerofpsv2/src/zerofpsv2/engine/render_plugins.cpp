@@ -452,6 +452,7 @@ void ShadowmapPlugin::MakeShadowTexture(ZSSRenderEngine& kRenderEngine,RenderSta
 bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 {
 	if(!m_bEnabled) return true;
+	if(!m_pkZShaderSystem->SupportGLSLProgram()) return true;
 	
 	//setup light
 	LightSource* pkLight = m_pkLight->GetSunPointer();		

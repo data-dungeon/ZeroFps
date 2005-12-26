@@ -121,7 +121,7 @@ bool ZShaderSystem::StartUp()
 	//setup ucculusion
 	if(!(m_bOcclusion = HaveExtension("GL_ARB_occlusion_query")))
 		//Printf("ZSHADER: No Occlusion support");
-		cerr<<"ZSHADER: No Occlusion support"<<endl;
+		cerr<<"ZSHADER: No Occlusion support ( THIS IS BAD! ecspect none working occuluction culling and flares )"<<endl;
 	else
 		SetupOcculusion();
 	
