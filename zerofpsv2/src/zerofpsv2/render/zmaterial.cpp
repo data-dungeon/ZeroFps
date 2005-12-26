@@ -10,12 +10,12 @@ int ZMaterial::m_iNextID = 1;
 
 ZMaterialSettings::ZMaterialSettings()
 {
-	m_pkTUs[0] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
+	m_pkTUs[0] = new ZFResourceHandle();		
 	m_pkTUs[1] = new ZFResourceHandle();
-	m_pkTUs[2] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
-	m_pkTUs[3] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
+	m_pkTUs[2] = new ZFResourceHandle();		
+	m_pkTUs[3] = new ZFResourceHandle();		
 	
-	m_pkVP = new ZFResourceHandle();					// LEAK - MistClient, Level loaded.
+	m_pkVP = new ZFResourceHandle();				
 	m_pkFP = new ZFResourceHandle();
 	
 	m_pkSLP = new ZFResourceHandle();
@@ -82,8 +82,7 @@ ZMaterialSettings::~ZMaterialSettings()
 {
 	for(int i=0;i<4;i++)
 	{
-		if(m_pkTUs[i])
-			delete m_pkTUs[i];				
+		delete m_pkTUs[i];				
 	}
 
 	
@@ -95,7 +94,7 @@ ZMaterialSettings::~ZMaterialSettings()
 		
 	if(m_pkSLP)
 		delete m_pkSLP;
-			
+
 }
 
 ZMaterialSettings& ZMaterialSettings::operator=(const ZMaterialSettings& kOther)
@@ -219,9 +218,9 @@ void ZMaterial::Clear()
 {
 	for(unsigned int i=0;i<m_kPasses.size();i++)
 	{
-		if(m_kPasses[i])
-			delete m_kPasses[i];	
+ 		delete m_kPasses[i];	
 	}
+	
 	m_kPasses.clear();
 
 	m_bBoneTransform		= true;

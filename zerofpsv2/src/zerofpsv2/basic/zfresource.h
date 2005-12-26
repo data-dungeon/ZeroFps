@@ -58,6 +58,8 @@ private:
 	
 	ZFResource*	m_pkResource;
 
+	bool GetResDB();
+
 public:
 	ZFResourceHandle();
 	ZFResourceHandle(const ZFResourceHandle& kOther);

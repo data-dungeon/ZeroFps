@@ -217,6 +217,7 @@ bool ZSSRenderEngine::StartUp()
 	m_kPluginFactory.RegisterPlugin("DebugRender",Create_DebugRenderPlugin);
 	m_kPluginFactory.RegisterPlugin("Shadowmap",Create_ShadowmapPlugin);
 	m_kPluginFactory.RegisterPlugin("DepthMapRender",Create_DepthMapRendererPlugin);
+	m_kPluginFactory.RegisterPlugin("SkyRender",Create_SkyRender);
 
 
 	return true;

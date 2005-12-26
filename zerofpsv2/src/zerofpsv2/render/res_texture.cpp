@@ -671,6 +671,7 @@ bool ResTexture::CopyTexture(ResTexture* pkSource)
 ZFResource* Create__ResTexture()
 {
 	return new ResTexture;
+	
 }
 
 

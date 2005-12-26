@@ -2,6 +2,39 @@
 #include "../render/light.h"
 #include "entitymanager.h"
 #include "zerofps.h"
+#include "../render/zmaterial.h"
+
+class ZMaterial;
+
+
+class ENGINE_API SkyLayer
+{
+	public:
+		RenderPackage	m_kRenderPackage[6];
+		ZMaterial		m_kMaterials[6];
+		Vector3			m_kRotation;
+};
+
+class ENGINE_API SkyRender : public PreRenderPlugin
+{
+	private:
+		ZShaderSystem*		m_pkZShaderSystem;
+		ZSSLight*			m_pkLight;
+		ZSSZeroFps*			m_pkZeroFps;
+		Application*		m_pkApplication;
+		ZSSEntityManager*	m_pkEntityManager;
+	
+		vector<SkyLayer*>	m_kMaterials;
+	
+	public:
+		SkyRender();
+		~SkyRender();
+		
+		void Clear();
+		void AddTexture(const string& strName);
+		bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState);
+};
+Plugin* Create_SkyRender();
 
 
 class ENGINE_API InterfaceRender : public PreRenderPlugin

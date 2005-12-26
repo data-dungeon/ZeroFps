@@ -1,6 +1,168 @@
 #include "render_plugins.h"
 #include "zerofps.h"
 
+// --------- SKY RENDERER
+
+SkyRender::SkyRender() : PreRenderPlugin("SkyRender",-100)
+{
+	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+	m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
+	m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));	
+
+	
+
+//  	AddTexture("skybox/winter/winter");
+}
+
+SkyRender::~SkyRender()
+{
+}
+
+void SkyRender::Clear()
+{	
+	for(int i = 0;i<m_kMaterials.size();i++)
+	{
+		delete m_kMaterials[i];
+	}
+	
+	m_kMaterials.clear();	
+}
+
+void SkyRender::AddTexture(const string& strName)
+{
+	static string strNames[6] = {	"_north.tga",
+											"_east.tga",
+											"_south.tga",
+											"_west.tga",
+											"_up.tga",
+											"_down.tga"};	
+	
+	bool bBottom = m_kMaterials.empty();
+	m_kMaterials.push_back(	new SkyLayer);
+	
+	
+	SkyLayer& kLayer = *m_kMaterials[m_kMaterials.size()-1];
+
+	for(int i = 0;i<6;i++)
+	{	
+		ZMaterial& kMaterial = kLayer.m_kMaterials[i];
+	
+		
+		//setup material	
+		kMaterial.GetPass(0)->m_iTUTexCords[1] = 		CORDS_FROM_ARRAY_0;	
+		kMaterial.GetPass(0)->m_pkTUs[0]->SetRes(strName + strNames[i]);	
+		//kMaterial.GetPass(0)->m_pkSLP->SetRes("#hdrsky.frag.glsl");	
+		kMaterial.GetPass(0)->m_iPolygonModeFront =	FILL_POLYGON;
+		kMaterial.GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;		
+		kMaterial.GetPass(0)->m_bLighting = 			false;			
+		kMaterial.GetPass(0)->m_bFog = 					false;		
+		kMaterial.GetPass(0)->m_bDepthTest = 			false;		
+		if(!bBottom)
+		{		
+			kMaterial.GetPass(0)->m_bBlend = 			true;		
+			kMaterial.GetPass(0)->m_iBlendSrc =			SRC_ALPHA_BLEND_SRC;
+			kMaterial.GetPass(0)->m_iBlendDst =			ONE_MINUS_SRC_ALPHA_BLEND_DST;			
+		}
+		
+		
+		//setup renderpackage
+		kLayer.m_kRenderPackage[i].m_pkMaterial = &kLayer.m_kMaterials[i]; 
+		
+		switch(i)
+		{
+			case 0://north
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,1));							
+				break;					
+			case 1://east
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,1));							
+				break;	
+			case 2://south
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,-1));							
+				break;	
+			case 3://west
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,-1));							
+				break;	
+																
+			case 4://up
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,-1));							
+				break;	
+			case 5://down
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,-1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,1));
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,1));							
+				break;																					
+		}
+		
+		kLayer.m_kRenderPackage[i].m_kMeshData.m_kTexture[0].push_back(Vector2(0,1));							
+		kLayer.m_kRenderPackage[i].m_kMeshData.m_kTexture[0].push_back(Vector2(1,1));							
+		kLayer.m_kRenderPackage[i].m_kMeshData.m_kTexture[0].push_back(Vector2(1,0));							
+		kLayer.m_kRenderPackage[i].m_kMeshData.m_kTexture[0].push_back(Vector2(0,0));							
+		
+		
+		kLayer.m_kRenderPackage[i].m_kMeshData.m_iNrOfDataElements = 4;
+		kLayer.m_kRenderPackage[i].m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	}		
+	
+}
+
+bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
+{		
+	if(m_kMaterials.empty())
+		AddTexture("cp#skybox/rusted/rusted");
+
+	//push matrises
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPush();	
+
+	//load projection matrix
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixLoad(&kRenderState.m_kCameraProjectionMatrix);
+	
+	//reset modelview matrix and setup the newone
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+  	m_pkZShaderSystem->MatrixLoad(&kRenderState.m_kCameraRotation);		
+
+	vector<RenderPackage*> kRenderPackages;
+	
+	//add renderpackages
+	for(int i = 0;i<m_kMaterials.size();i++)
+		for(int j = 0;j<6;j++)
+			kRenderPackages.push_back(&m_kMaterials[i]->m_kRenderPackage[j]);
+	
+	
+	//render call to render engine
+	kRenderEngine.DoRender(kRenderPackages,kRenderState);
+	
+			
+	//pop matrises
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPop();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPop();			
+	
+	return true;
+}
+
+
+
 
 // ---------DepthMap renderer
 
@@ -1343,6 +1505,11 @@ bool InterfaceRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 }
 
 //---- create functions
+
+Plugin* Create_SkyRender()
+{
+	return (Plugin*)new SkyRender();
+};
 
 
 
