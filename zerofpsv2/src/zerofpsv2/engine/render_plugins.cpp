@@ -148,8 +148,13 @@ bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 {		
 	if(m_kMaterials.empty())
 	{
-		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR);
+// 		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR);
 // 		AddTexture("cp#skybox/winter/winter",SQUARE_HDR);
+//  		AddTexture("cp#skybox/sahara/sahara",SQUARE_HDR);
+//  		AddTexture("cp#skybox/thunder/thunder",SQUARE_HDR);
+ 		AddTexture("cp#skybox/storm/storm",SQUARE_HDR);
+// 	  		AddTexture("cp#skybox/redsky/redsky",SQUARE_HDR);
+	
 	}
 
 	//push matrises
@@ -170,7 +175,7 @@ bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 	
 	//add renderpackages
 	for(int i = 0;i<m_kMaterials.size();i++)
-		for(int j = 0;j<6;j++)
+		for(int j = 0;j<5;j++)
 			kRenderPackages.push_back(&m_kMaterials[i]->m_kRenderPackage[j]);
 	
 	
