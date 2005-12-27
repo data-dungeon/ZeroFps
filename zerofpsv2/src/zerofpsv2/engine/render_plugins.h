@@ -251,7 +251,7 @@ class ENGINE_API ExposureCalculator : public PostRenderPlugin
 		ExposureCalculator();
 		~ExposureCalculator();
 		
-		bool Call(const RenderState& kRenderState);
+		bool Call(RenderState& kRenderState);
 
 		
 };
@@ -278,7 +278,7 @@ class ENGINE_API BloomPostPlugin : public PostRenderPlugin
 		BloomPostPlugin();
 		~BloomPostPlugin();
 		
-		bool Call(const RenderState& kRenderState);
+		bool Call(RenderState& kRenderState);
 
 		
 };

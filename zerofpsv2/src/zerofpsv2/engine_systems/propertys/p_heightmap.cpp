@@ -797,12 +797,16 @@ void P_Heightmap::PurgeUnusedMaterials()
 
 void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial)
 {
-	if(strMaterial.substr(strMaterial.length()-3) != "zlm")
+	if(!strMaterial.empty())
 	{
-		cerr<<"WARNING: invalide material "<<strMaterial<<endl;
-		return;
+		if(strMaterial.length() < 4 || strMaterial.substr(strMaterial.length()-3) != "zlm")
+		{
+			cerr<<"WARNING: invalide material "<<strMaterial<<endl;
+			return;
+		}
 	}
-
+	
+	
 	signed char cTexture = GetMaterialID(strMaterial);
 
 	for(int i = 0;i<kSelectionData->size();i++)

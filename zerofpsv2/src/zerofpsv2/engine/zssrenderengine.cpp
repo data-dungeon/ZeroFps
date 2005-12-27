@@ -50,6 +50,7 @@ RenderState::RenderState()
 	m_fFogNear 		= 10;
 	m_fFogFar 		= 100;
 	m_bFogEnabled	= false;
+	m_fExposure		= 1.0;
 	
 	m_pkRoot			= NULL;
 }
@@ -374,6 +375,10 @@ void ZSSRenderEngine::SetupFramebuffer(const RenderState& kRenderState)
 	//last but not least setup fog and clear color
 	m_pkZShaderSystem->SetClearColor(kRenderState.m_kClearColor);
 	m_pkZShaderSystem->SetFog(kRenderState.m_kFogColor,kRenderState.m_fFogNear,kRenderState.m_fFogFar,kRenderState.m_bFogEnabled);
+	
+	//set exposure
+	m_pkZShaderSystem->SetExposure(kRenderState.m_fExposure);
+	
 	
 	m_pkZShaderSystem->ClearBuffer(kRenderState.m_iClearViewPort);
 }

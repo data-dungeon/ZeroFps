@@ -148,11 +148,11 @@ bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 {		
 	if(m_kMaterials.empty())
 	{
-// 		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR);
+ 		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR);
 // 		AddTexture("cp#skybox/winter/winter",SQUARE_HDR);
 //  		AddTexture("cp#skybox/sahara/sahara",SQUARE_HDR);
 //  		AddTexture("cp#skybox/thunder/thunder",SQUARE_HDR);
- 		AddTexture("cp#skybox/storm/storm",SQUARE_HDR);
+//  		AddTexture("cp#skybox/storm/storm",SQUARE_HDR);
 // 	  		AddTexture("cp#skybox/redsky/redsky",SQUARE_HDR);
 	
 	}
@@ -705,13 +705,14 @@ ExposureCalculator::~ExposureCalculator()
 	delete m_pkTex;
 }
 
-bool ExposureCalculator::Call(const RenderState& kRenderState)
+bool ExposureCalculator::Call(RenderState& kRenderState)
 {			
 	if(!m_pkZShaderSystem->UseHDR())
 		return true;
 		
 	m_fExposureFactor = GetExposureFactor(kRenderState);
-	m_pkZShaderSystem->SetExposure(m_fExposureFactor);
+// 	m_pkZShaderSystem->SetExposure(m_fExposureFactor);
+	kRenderState.m_fExposure = m_fExposureFactor;
 	
 	return true;
 }
@@ -727,9 +728,7 @@ float ExposureCalculator::GetExposureFactor(const RenderState& kRenderState)
 	float fx= float(kRenderState.m_kViewPortSize.x)/float(m_iFSSTextureWidth);
 	float fy= float(kRenderState.m_kViewPortSize.y)/float(m_iFSSTextureHeight);
 	
-	
 	Image* pkImage = m_pkTex->GetTextureImage(4);
-
 
 	color_rgba	kColor;	
 	float fTotal = 0;
@@ -1351,7 +1350,7 @@ BloomPostPlugin::~BloomPostPlugin()
 	delete m_pkBloomMaterial2;
 }
 
-bool BloomPostPlugin::Call(const RenderState& kRenderState)
+bool BloomPostPlugin::Call(RenderState& kRenderState)
 {
 	static float data[]= {	-1,-1,-1,
 									 1,-1,-1,

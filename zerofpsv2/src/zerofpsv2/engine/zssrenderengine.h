@@ -69,7 +69,7 @@ class ENGINE_API PostRenderPlugin : public Plugin
 		PostRenderPlugin(const string& strName,int iOrder);
 		const string& GetName()	{	return m_strName;	};
 		
-		virtual bool Call(const RenderState& kRenderState) = 0;
+		virtual bool Call(RenderState& kRenderState) = 0;
 		friend class RenderState;
 };
 
@@ -135,7 +135,7 @@ class ENGINE_API RenderState
 		float				m_fFogNear;
 		float				m_fFogFar;
 		bool				m_bFogEnabled;
-		
+		float				m_fExposure;			//HDR exposure
 				
 		int GetStateID() const												{	return m_iStateID;	};
 				
