@@ -386,8 +386,10 @@ ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap",-10)
 	m_pkEntityManager = 	static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
 	m_pkLight = 			static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));			
 		
-	
-	m_bEnabled = true;
+	m_fShadowArea 		= 50;
+	m_iShadowFBO 		= 0;
+	m_iShadowRBOcolor = 0;
+	m_bEnabled 			= true;
 	
 	m_kShadowRenderState.AddPlugin("DepthMapRender");
 		
@@ -431,10 +433,7 @@ ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap",-10)
 		m_pkZShaderSystem->SetShadowMapSize(m_iShadowTexWidth,m_iShadowTexHeight);
 		g_Logf("CAMERA: Using shadow texture size: %dx%d.\n", m_iShadowTexWidth, m_iShadowTexHeight);
 		//cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
-		
-		//are the shadowmap shuld cover
-		m_fShadowArea = 50;
-		
+				
 		m_kShadowmap.m_kTexture.CreateEmptyTexture(m_iShadowTexWidth,m_iShadowTexHeight,T_DEPTH|T_CLAMPTOBORDER|T_NOCOMPRESSION|T_NOMIPMAPPING);
 		m_kShadowmap.m_kTexture.SetBorderColor(Vector4(1,1,1,1));
  		
@@ -502,8 +501,11 @@ ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap",-10)
 
 ShadowmapPlugin::~ShadowmapPlugin()
 {
-
-
+	if(m_iShadowFBO != 0)
+		glDeleteFramebuffersEXT(1,&m_iShadowFBO);
+	
+	if(m_iShadowRBOcolor != 0)
+		glDeleteRenderbuffersEXT(1,&m_iShadowRBOcolor);
 }
 
 void ShadowmapPlugin::MakeShadowTexture(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState,const Vector3& kLightPos,const Vector3& kCenter)
@@ -655,7 +657,7 @@ bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 	//create shadow map	realtime or not
 	if(m_pkZeroFps->GetShadowMapRealtime())
 		MakeShadowTexture(kRenderEngine,kRenderState,kLightPos,kRenderState.m_kCameraPosition);
-	else if(m_kLastShadowPos.DistanceTo(kRenderState.m_kCameraPosition) > m_fShadowArea/8.0 || m_kLastShadowRot != pkLight->kRot)
+	else if(m_kLastShadowPos.DistanceTo(kRenderState.m_kCameraPosition) > m_fShadowArea/6.0 || m_kLastShadowRot != pkLight->kRot)
 	{
 		m_kLastShadowRot = pkLight->kRot;
 		m_kLastShadowPos = kRenderState.m_kCameraPosition;
