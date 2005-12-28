@@ -315,21 +315,60 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		}
 	}
 
-	if(m_pkInputHandle->VKIsDown("select") && !DelayCommand())
-	{	
-		Entity* pkObj = GetTargetObject();
-		if(pkObj)
-      {
-			int sel_object = m_iCurrentObject;
-
-			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));  
-
-			if(m_iCurrentObject == -1)
+	static bool bLastSelect = false;
+	if(m_pkInputHandle->VKIsDown("select"))
+	{		
+		if(!DelayCommand())
+		{			
+			//if holding selection button, create AABB selection
+			if(bLastSelect)
 			{
-				Select_Toggle(sel_object, false);  
-				OpenObjectMenu();
+				if(!m_bIsSelecting)
+				{
+					m_bIsSelecting = true;					
+				}
 			}
-      }
+			else
+			{		
+				Entity* pkObj = GetTargetObject();
+				if(pkObj)
+				{
+					int sel_object = m_iCurrentObject;
+		
+					Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));  
+		
+					if(m_iCurrentObject == -1)
+					{
+						Select_Toggle(sel_object, false);  
+						OpenObjectMenu();
+					}				
+				}
+			}
+		}
+		
+		
+		//selection box
+		if(!bLastSelect)
+		{
+			m_kSelBoxCornerMin = m_kObjectMarkerPos;
+		}
+		else
+		{
+			m_kSelBoxCornerMax = m_kObjectMarkerPos;		
+		}
+		
+		bLastSelect = true;			
+	}
+	else
+	{
+		bLastSelect = false;
+		
+		if(m_bIsSelecting)
+		{			
+			m_bIsSelecting = false;	
+			
+			AABBSelect(m_kSelBoxCornerMin,m_kSelBoxCornerMax,m_pkInputHandle->Pressed(KEY_LSHIFT));
+		}
 	}
 			
 	if(m_pkInputHandle->VKIsDown("togglehide"))	
@@ -347,8 +386,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 	// The followin handles to move or/and rotate a entity. If we have no entity we drop.
 	Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
-	if(!pkObj)
-		return;		
+
 
 	Vector3 kMove(0,0,0);
 	Vector3 kClick(0,0,0);
@@ -357,7 +395,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	{
 		kMove = m_kObjectMarkerPos;
 		
-		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) 
+		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP && pkObj) 
 		{
 			// In Ortho mode we keep the old coo for the axis that go into the screen.
 			Vector3 kAxisX, kAxisY, kAxisZ;
@@ -372,14 +410,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 				kMove.PEP(kAxisY) + 
 				pkObj->GetLocalPosV().PEP(kAxisZ);
 		}
-
-		kMove = m_pkActiveCamera->SnapToGrid(kMove);
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("setpos");
-		kNp.Write(m_iCurrentObject);
-		kNp.Write(kMove);
-		m_pkZeroFps->RouteEditCommand(&kNp);
+	
+		SendTranslateSelection(kMove,false);
 	}
 	else 
 	{
@@ -407,12 +439,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			}
 		}
 
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("move");
-		AddSelected(&kNp);
-		kNp.Write(kMove);
-		m_pkZeroFps->RouteEditCommand(&kNp);
+		SendTranslateSelection(kMove,true);
 	}
 
 	//handle rotation
@@ -435,8 +462,74 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 	if(kRot != Vector3::ZERO)
 	{
-		SendRotateEntity(m_iCurrentObject,kRot);	
+		SendRotateSelection(kRot);
 	}
+}
+
+void ZeroEd::SendTranslateSelection(const Vector3& kPosition,bool bRelative)
+{
+	NetPacket kNp;				
+	Vector3 kRelativePos;
+	
+	//no selected entitys, just return
+	if(m_SelectedEntitys.empty()) return;
+	
+	/*
+		this is  a relative position, we dont need to do anything to it
+	*/
+	if(bRelative)
+	{
+		kRelativePos = kPosition;
+	}
+	
+	/*
+		if this is not a relative position, we need to calculate the realtive position
+	*/	
+	else
+	{
+		Vector3 kCenter;
+		
+		//First find avrage center	
+		int iObjects = 0;
+		for(set<int>::iterator it = m_SelectedEntitys.begin();it != m_SelectedEntitys.end();it++)
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(*it))
+			{
+				if(pkEnt->GetRelativeOri()) continue;		
+			
+				iObjects++;
+			
+				if(it ==  m_SelectedEntitys.begin()) 
+					kCenter = pkEnt->GetLocalPosV();
+				else
+					kCenter += pkEnt->GetLocalPosV();
+			}
+		kCenter *= 1.0/iObjects;	
+	
+		//relative pos
+		kRelativePos = kPosition - kCenter;
+	}
+	
+
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("move");
+	AddSelected(&kNp);
+	kNp.Write(kRelativePos);
+	m_pkZeroFps->RouteEditCommand(&kNp);
+}
+
+void ZeroEd::SendRotateSelection(const Vector3& kRot)
+{
+	if(m_SelectedEntitys.empty()) return;
+			
+	static NetPacket kNp;				
+			
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("rot");
+	AddSelected(&kNp);
+	kNp.Write(kRot);
+	m_pkZeroFps->RouteEditCommand(&kNp);			
 }
 
 // Handles input for Edit Ambient Areas

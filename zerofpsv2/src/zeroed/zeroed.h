@@ -102,6 +102,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		};
 
 
+		// Materials
+		ZMaterial*	m_pkLine;
 
 		// zone and object edit
 		bool		m_bPlaceObjectsOnGround;
@@ -174,6 +176,11 @@ class ZeroEd :public Application , public ZGuiApp {
 		float		m_fArmLength;
 		bool		m_bGrabing;
 
+		//selection box
+		bool		m_bIsSelecting;
+		Vector3	m_kSelBoxCornerMin;
+		Vector3	m_kSelBoxCornerMax;
+
 		//graphs
 		DebugGraph m_kTestGraph;
 				
@@ -234,6 +241,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 
 		//picking
+		void AABBSelect(const Vector3& kP1,const Vector3& kP1,bool bAdd);
 		Vector3	Get3DMouseDir(bool bMouse);
 		Entity*	GetTargetObject();		
 		int		GetTargetTCS(Vector3* pkPos);		
@@ -286,9 +294,14 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendRotateEntity(int iEntityID,const Vector3& kRot);
 		void	SendAction(int iEntityID,const string& strAction);
 		
+		void	SendTranslateSelection(const Vector3& kPosition,bool bRelative);
+		void	SendRotateSelection(const Vector3& kRot);
+		
 		vector<HMSelectVertex> GetAllSelectedHMVertex();
 
 	public:
+
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState& kRenderState);
 
 		bool SetViewPort(const char* szVpName);
 
@@ -332,7 +345,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void AutoSetZoneSize(string strName);
 		void SoloToggleView();
 		bool StartUp();
-		bool ShutDown()	{ return true; }
+		bool ShutDown();
 		bool IsValid()		{ return true; }
 
       friend void GuiMsgTerrain( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );

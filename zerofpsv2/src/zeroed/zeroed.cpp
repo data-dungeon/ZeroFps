@@ -96,12 +96,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	return true;
 }
 
-bool ZeroEd::StartUp()		
-{ 
-	g_ZFObjSys.Log_Create("zeroed");
 
-	return true; 
-}
 
 ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
@@ -125,6 +120,11 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_CamSpeedScale			=  1.0;
 	m_bLockCreate				=	false;	
 
+	m_pkLine						=	NULL;
+
+	m_bIsSelecting				=	false;
+	m_kSelBoxCornerMin		=	Vector3(0,0,0);
+	m_kSelBoxCornerMax		=	Vector3(0,0,0);
 
 	// Register Variables
 	k_LoginName.Register(this, "mynajsloginname", "ostlins", "set defualt name used to login");
@@ -201,6 +201,28 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iAutoSnapZoneCorner = -1;
 } 
 
+bool ZeroEd::StartUp()		
+{ 
+	g_ZFObjSys.Log_Create("zeroed");
+
+	//line material
+	m_pkLine = new ZMaterial;
+ 	m_pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+ 	m_pkLine->GetPass(0)->m_iPolygonModeBack 	= LINE_POLYGON;
+	m_pkLine->GetPass(0)->m_iCullFace 			= CULL_FACE_NONE;		
+	m_pkLine->GetPass(0)->m_bLighting 			= false;
+	m_pkLine->GetPass(0)->m_bColorMaterial 	= true;
+	m_pkLine->GetPass(0)->m_bFog 					= false;
+	m_pkLine->GetPass(0)->m_fLineWidth			= 5;
+		
+	return true; 
+}
+
+bool ZeroEd::ShutDown()
+{
+	delete m_pkLine;
+
+}
 
 int ZeroEd::GetView(float x, float y)
 {
@@ -1095,6 +1117,26 @@ void ZeroEd::OnHud(void)
 	}
 }
 
+
+
+void ZeroEd::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState& kRenderState)
+{
+	static RenderPackage kSelectionBox;
+	
+	if(m_bIsSelecting)
+	{
+		kSelectionBox.m_pkMaterial = m_pkLine;
+		kSelectionBox.m_kMeshData.m_kVertises.clear();
+		kSelectionBox.m_kMeshData.m_kColors.clear();	
+		m_pkRender->AddAABB(kSelectionBox, m_kSelBoxCornerMin,m_kSelBoxCornerMax,Vector4(0,1,0,0.25));
+		
+		kSelectionBox.m_kMeshData.m_iNrOfDataElements = kSelectionBox.m_kMeshData.m_kVertises.size();		
+		kSelectionBox.m_kMeshData.m_ePolygonMode = QUADS_MODE;	
+			
+		kRenderPackages.push_back(&kSelectionBox);
+	}
+}
+
 bool ZeroEd::DelayCommand()
 {
 	if(m_pkZeroFps->GetEngineTime() < m_fDelayTime)
@@ -1106,48 +1148,94 @@ bool ZeroEd::DelayCommand()
 
 void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 {
-	Entity* pkActiveEntity = m_pkEntityManager->GetEntityByID( m_iCurrentObject );
-	if(pkActiveEntity == NULL)
-		return;
-
 	if(eEditCmd == FID_CLONE)
 	{
-		m_pkEntityManager->CloneEntity(m_iCurrentObject);	// Select_Toggle
+		NetPacket kNp;
+		
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("clone");
+		AddSelected(&kNp);
+		m_pkZeroFps->RouteEditCommand(&kNp);		
 	}
 
-	ZFVFile kFile;
-
-	if(eEditCmd == FID_CUT)
-	{
-		kFile.Open("copybuffer.dat",0,true);
-		pkActiveEntity->Save(&kFile);
-		kFile.Close();
-
-		SendDeleteSelected();
-	}
-
-	if(eEditCmd == FID_COPY)
-	{
-		kFile.Open("copybuffer.dat",0,true);
-		pkActiveEntity->Save(&kFile);
-		kFile.Close();
-	}
-	
-	if(eEditCmd == FID_PASTE)
-	{
-		if( kFile.Open("copybuffer.dat",0,false) ) 
-		{
-			Entity* pkObjNew = m_pkEntityManager->CreateEntityFromScriptInZone(
-				"data/script/objects/empty.lua", m_kObjectMarkerPos);
-
-			pkObjNew->Load(&kFile,false);
-			kFile.Close();
-	
-			pkObjNew->SetWorldPosV(m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2);
-		}
-	}
+// 	ZFVFile kFile;
+// 
+// 	if(eEditCmd == FID_CUT)
+// 	{
+// 		kFile.Open("copybuffer.dat",0,true);
+// 		pkActiveEntity->Save(&kFile);
+// 		kFile.Close();
+// 
+// 		SendDeleteSelected();
+// 	}
+// 
+// 	if(eEditCmd == FID_COPY)
+// 	{
+// 		kFile.Open("copybuffer.dat",0,true);
+// 		pkActiveEntity->Save(&kFile);
+// 		kFile.Close();
+// 	}
+// 	
+// 	if(eEditCmd == FID_PASTE)
+// 	{
+// 		if( kFile.Open("copybuffer.dat",0,false) ) 
+// 		{
+// 			Entity* pkObjNew = m_pkEntityManager->CreateEntityFromScriptInZone(
+// 				"data/script/objects/empty.lua", m_kObjectMarkerPos);
+// 
+// 			pkObjNew->Load(&kFile,false);
+// 			kFile.Close();
+// 	
+// 			pkObjNew->SetWorldPosV(m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2);
+// 		}
+// 	}
 }
 
+void ZeroEd::AABBSelect(const Vector3& kP1,const Vector3& kP2,bool bAdd)
+{
+	static Vector3 kMin;
+	static Vector3 kMax;
+
+	//find min and max
+	kMin.x = Min(kP1.x,kP2.x);
+	kMin.y = Min(kP1.y,kP2.y);
+	kMin.z = Min(kP1.z,kP2.z);
+	kMax.x = Max(kP1.x,kP2.x);
+	kMax.y = Max(kP1.y,kP2.y);
+	kMax.z = Max(kP1.z,kP2.z);
+
+
+	vector<Entity*>	kEntitys;
+	m_pkEntityManager->GetAllEntitys( &kEntitys);
+	
+	//clear selection
+	if(!bAdd)
+		m_SelectedEntitys.clear();
+	
+	static Vector3 kTempPos;
+	for(int i =0;i<kEntitys.size();i++)
+	{
+		if(kEntitys[i] == m_pkCameraObject[0])						continue;
+		if(kEntitys[i] == m_pkCameraObject[1])						continue;
+		if(kEntitys[i] == m_pkCameraObject[2])						continue;
+		if(kEntitys[i] == m_pkCameraObject[3])						continue;
+		if(kEntitys[i] == m_pkZoneMarkerEntity)					continue;
+		if(kEntitys[i]->IsZone())										continue;
+		if(kEntitys[i]->GetEntityID() <100000)						continue;
+		if(kEntitys[i]->GetName() == "A t_serverinfo.lua")		continue;
+		if(kEntitys[i]->IsHidden(true))								continue;			
+			
+			
+		kTempPos = kEntitys[i]->GetWorldPosV();	
+		
+		if(kTempPos.x < kMin.x || kTempPos.x > kMax.x) continue;
+		if(kTempPos.y < kMin.y || kTempPos.y > kMax.y) continue;
+		if(kTempPos.z < kMin.z || kTempPos.z > kMax.z) continue;
+		
+		m_SelectedEntitys.insert(kEntitys[i]->GetEntityID());
+	}
+}
 
 void ZeroEd::RunCommand(int cmdid, const ConCommandLine* kCommand)
 {
@@ -1625,7 +1713,6 @@ Entity*	ZeroEd::GetTargetObject()
 		if(kObjects[i] == m_pkZoneMarkerEntity)					continue;
 		if(kObjects[i]->IsZone())										continue;
 		if(kObjects[i]->GetEntityID() <100000)						continue;
-		if(kObjects[i]->GetName() == "StaticEntity")				continue;
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")		continue;
 		if(kObjects[i]->IsHidden(true))		continue;
 		

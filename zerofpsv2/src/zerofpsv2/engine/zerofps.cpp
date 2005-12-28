@@ -1541,34 +1541,67 @@ void ZSSZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 			m_pkEntityManager->CallFunction(pkObj, "Useit",&args);;
 	}
 
-
-	if( szCmd == string("setpos"))
+	if( szCmd == string("rot"))
 	{
-		pkNetPacket->Read(iEntId);
-		pkNetPacket->Read(kMove);
+		vector<int> kSelected;
+		Vector3 kRot;
 		
-		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
-		{	
-			if(pkObj->IsZone())
-				return;	
+		//get selection list
+		kSelected = GetSelected(pkNetPacket);
 		
-			pkObj->SetWorldPosV(kMove);
+		//read rotation
+		pkNetPacket->Read(kRot);
+	
+		//rotate
+		static Matrix4 kRotMatrix;
+		static Vector3 kCenter;		
+			
+		//find rotation center
+		int iObjects = 0;
+		for(int i = 0 ;i < kSelected.size();i++)
+		{
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(kSelected[i]))
+			{
+				if(pkEnt->GetRelativeOri()) continue;					
+				iObjects++;
+			
+				if(i == 0) 
+					kCenter = pkEnt->GetLocalPosV();
+				else
+					kCenter += pkEnt->GetLocalPosV();
+			}
+		}
+		kCenter *= 1.0/iObjects;
+						
+		//offset entitys
+		for(int i = 0 ;i < kSelected.size();i++)
+		{
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(kSelected[i]))
+			{							
+		 		if(pkEnt->IsZone() || pkEnt->GetRelativeOri()) continue;
+			
+				//get current rotation
+				kRotMatrix = pkEnt->GetLocalRotM();		
+				//translate difference from avrage center	
+				kRotMatrix.Translate(pkEnt->GetLocalPosV() - kCenter);			
+				//rotate 
+				kRotMatrix.Rotate(kRot);
+				//offset by center to get new position
+				kRotMatrix.Translate(kCenter);			
+				
+				//set new rotation and position
+				pkEnt->SetLocalRotM( kRotMatrix);
+				pkEnt->SetLocalPosV( kRotMatrix.GetPos());
+			}		
 		}
 	}
 
-	if( szCmd == string("rot"))
+	if( szCmd == string("clone"))
 	{
-		pkNetPacket->Read(iEntId);
-		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
-		if(!pkObj)
-			return;	
-
-		if(pkObj->IsZone())
-			return;	
-			
-			
-		pkObj->RotateLocalRotV(kMove);
+		vector<int> kSelected = GetSelected(pkNetPacket);
+		
+		for(int i=0; i<kSelected.size(); i++) 
+			m_pkEntityManager->CloneEntity(kSelected[i]);	
 	}
 
 	if( szCmd == string("del"))
