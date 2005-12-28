@@ -67,7 +67,7 @@ void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
 
 		if(eHDR != NO_HDR && m_pkZShaderSystem->SupportGLSLProgram())
 		{
- 			kMaterial.GetPass(0)->m_kVertexColor = 		Vector4(10,10,10,1);
+ 			kMaterial.GetPass(0)->m_kVertexColor = 		Vector4(8,8,8,1);
 			
 			if(eHDR == SQUARE_HDR)
 			{
