@@ -542,10 +542,6 @@ void Mad_Modell::Draw_All_RenderP()
 		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]), m_pkRawMesh);
 	
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
-// 		RenderPackage	m_kRP;
-// 		m_kRP = kBaseRp;	// Copy basic transform to new render package.
-
-
 
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
 		{

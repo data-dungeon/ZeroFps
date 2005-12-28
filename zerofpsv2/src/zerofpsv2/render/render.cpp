@@ -13,53 +13,13 @@ ZSSRender::ZSSRender()
 :	ZFSubSystem("ZSSRender")
 {
 	m_pkScreen = NULL;
-
-	// Set Our own local variables.
-	//m_iDetail					= 30;						//height meens greater detail att longer range	
-	//m_iFpsLock					= 60;
-	//m_iAutoLod					= 1;
-	m_iLodUpdate				= 0;	
-
-	//m_iMaxLandscapeLayers	= 4;
-	//m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
-	m_eLandscapePolygonMode = FILL;
-	//m_iDrawLandNormal       = 0;
 
 	m_kConsoleColor.Set(1,1,1);
 	m_bCapture					= false;
 
-	// The default graphics mode.
-	/*m_iWidth						= 800;
-	m_iHeight					= 600;
-	m_iDepth						= 16;
-	m_iFullScreen				= 0;*/
-	
 	// Register Our Own variables.
-	m_kiMaxLandscapeLayers.Register(this, "r_maxlayers", "4");
-	m_kiDrawLandscape.Register(this, "r_drawland", "1");
-	m_kiDrawLandNormal.Register(this, "r_terrnorm", "0");
 	
-	//RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers, CSYS_INT);
-	//RegisterVariable("r_drawland",		&m_iDrawLandscape, CSYS_INT);
-	//RegisterVariable("r_terrnorm",		&m_iDrawLandNormal, CSYS_BOOL);
-	// ********** RegisterVariable("r_terrfill",		&m_eLandscapePolygonMode, CSYS_INT);
-
-	m_kiDetail.Register(this, "r_landlod", "30");
-	m_kiAutoLod.Register(this, "r_autolod", "1");
-	m_kiFpsLock.Register(this, "r_fpslock", "60");
-	
-	//RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
-	//RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
-	//RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
-	
-
-	// Register Commands
-	//RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
-	//RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
-	//RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
-	//RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_BOOL);
-
 	m_kiWidth.Register(this, "r_width", "800");
 	m_kiHeight.Register(this, "r_height", "600");
 	m_kiDepth.Register(this, "r_depth", "16");
@@ -75,8 +35,6 @@ ZSSRender::ZSSRender()
 	Register_Cmd("ec_clear",	FID_ECCLEAR);
 	Register_Cmd("ec_std",		FID_ECSETSTD);
 
-//	SetFont("data/textures/text/devstr.bmp");
-// Setup_EditColors();
 }
 
 bool ZSSRender::StartUp()
@@ -2464,70 +2422,7 @@ void ZSSRender::RunCommand(int cmdid, const ConCommandLine* kCommand)
 			break;
 		}
 }
-// old way of drawing psystem
-/*
-void Render::DrawPSystem( PSystem *pkPSystem )
-{
-	glPushMatrix();
 
-   glDisableClientState (GL_NORMAL_ARRAY);
-
-	// bind material
-	if (pkPSystem->GetPSystemType()->m_kParticleBehaviour.m_pkMaterial)
-	{
-		ZMaterial* pkMaterial = (ZMaterial*)(pkPSystem->GetPSystemType()->m_kParticleBehaviour.m_pkMaterial->GetResourcePtr());			
-		m_pkZShaderSystem->BindMaterial(pkMaterial);
-	}
-
-	// PSystem uses color&alpha values
-	if ( pkPSystem->GetColors() )
-	{
-		glEnable(GL_COLOR_MATERIAL);
-
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer( 4, GL_FLOAT, 0, pkPSystem->GetColors() + pkPSystem->Start() * 16 );
-	}
-	else
-	{
-		glColor4f (255,255,255,255);
-		glDisableClientState (GL_COLOR_ARRAY);
-		glDisable (GL_COLOR_MATERIAL);
-	}
-
-	// Turn on the texture coordinate state
-	glEnable (GL_TEXTURE_2D);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 8 );
-
-	// Turn on the vertex array state
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, pkPSystem->GetVertices() + pkPSystem->Start() * 12);
-
-	// draw the stuff
-	glDrawElements(GL_QUADS, pkPSystem->Particles() * 4, 
-					   GL_UNSIGNED_INT, pkPSystem->GetIndices() );
-
-
-	// For debugging cullingbox (without rotation)
-	
-	Vector3 kScale = pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
-
-	Vector3 kPos = pkPSystem->GetPosition() + 
-						pkPSystem->GetRotation().VectorRotate(pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset);			
-
-	kScale *= 2.f;
-
-	glEnable (GL_CULL_FACE);
-	glDisable (GL_FOG);
-	glDisable (GL_LIGHTING);
-	glDepthMask(GL_FALSE);
-	DrawBox(kPos, pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset, 
-			  pkPSystem->GetRotation(), kScale, 1);
-	
-	//glPopAttrib();
-	glPopMatrix();
-}
-*/
 void ZSSRender::EditColor_Set(string strName, float r, float g, float b)
 {
 	for(unsigned int i=0; i<m_kEditColor.size(); i++) 
@@ -2557,156 +2452,5 @@ Vector3 ZSSRender::GetEditColor(string strName)
 }
 
 
-RENDER_API void RenderDLL_InitExtGL(void)
-{
-#ifdef _WIN32
-	//int res; 
-	//extgl_Initialize();
-//	cout << "extgl_Initialize: "<< res << endl;
-#endif
-}
-
-
-/*
-void Render::Dot(float x,float y,float z) 
-{
-	Vector3 kStart(x,y,z);
-	Vector3 kEnd = kStart + Vector3(0.05,0.05,0.05);
-	Line(kStart, kEnd);
-//	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
-}
-*/
-
-
-
-/*
-void Render::PrintChar(unsigned char cChar) 
-{
-	int texwidth=FONTWIDTH*16;	
-	int pos=int(cChar)*FONTWIDTH;		
-	float glu = float(1.0/texwidth);				//opengl texture cordinats is 0-1
-	float width=glu*FONTWIDTH;
-	
-	float y=(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
-	float x=float(pos%texwidth)*glu;//+width/2;
-	
-	glPushAttrib(GL_LIGHTING_BIT);
-	glDisable(GL_LIGHTING);
-	glAlphaFunc(GL_GREATER,0.1);
-	glEnable(GL_ALPHA_TEST);
- 	
- 	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
-//	RES ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-// RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
-
-	glPushMatrix();
-	glBegin(GL_QUADS);		
-//			glColor4f(1.0,1.0,1.0,1.0);  	  
-	glNormal3f(0,0,1);
- 	  
-	glTexCoord2f(x,y);				glVertex3f(-.5,-0.5,0);		 
-	glTexCoord2f(x+width,y);		glVertex3f(.5,-0.5,0);		
-	glTexCoord2f(x+width,y-width);glVertex3f(.5,0.5,0);    
-	glTexCoord2f(x,y-width);		glVertex3f(-0.5,0.5,0);    
-	glEnd();				
-	glPopMatrix();
-	
-	glDisable(GL_ALPHA_TEST);
-
-	glPopAttrib();
-}
-*/
-
-/*
-void Render::Print(Vector3 kPos,Vector3 kScale,char* aText) {
-	char paText[TEXT_MAX_LENGHT];
-	// VIM: Check for maxlen
-	strcpy(paText,aText);
-	
-	glPushMatrix();
-		
-		glTranslatef(kPos.x,kPos.y,kPos.z);	
-
-		//make billboard		
-		Matrix4 kModelMatrix;
-		glGetFloatv(GL_MODELVIEW_MATRIX, &kModelMatrix[0]);		
-		
-		kModelMatrix.data[0] = 1;
-		kModelMatrix.data[4] = 0;		
-		kModelMatrix.data[8] = 0;		
-		
-		kModelMatrix.data[1] = 0;		
-		kModelMatrix.data[5] = 1;		
-		kModelMatrix.data[9] = 0;				
-		
-		kModelMatrix.data[2] = 0;		
-		kModelMatrix.data[6] = 0;		
-		kModelMatrix.data[10] = 1;				
-				
-		glLoadMatrixf(&kModelMatrix[0]);		
-		//blub
-		
-		//scale
-		glScalef(kScale.x,kScale.y,kScale.z);
-		
-		//center text
-		int offset = strlen(paText)/2;		
-		glTranslatef(float(-offset),0,0);
-		
-		
-		int i=0;
-		while(paText[i]!='\0') {
-			PrintChar(paText[i]);
-			glTranslatef(1,0,0);
-		
-			i++;
-		}
-
-	glPopMatrix();
-}
-
-
-void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
-	char paText[TEXT_MAX_LENGHT];
-	// VIM: Check for maxlen
-	strcpy(paText,aText);
-	
-	glPushMatrix();
-		
-		glTranslatef(kPos.x,kPos.y,kPos.z);	
-		glRotatef(kHead.x, 1, 0, 0);
-		glRotatef(kHead.y, 0, 1, 0);	
-		glRotatef(kHead.z, 0, 0, 1);
-		glScalef(kScale.x,kScale.y,kScale.z);
-		
-		int i=0;
-		while(paText[i]!='\0') {
-			PrintChar(paText[i]);
-			glTranslatef(1,0,0);
-		
-			i++;
-		}
-
-	glPopMatrix();
-}
-*/
-
-
-/*
-void Render::SetClearColor(Vector4 kColor)
-{
-	//glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
-	cout<<"call to Render::SetClearColor is obsolete"<<endl;
-	m_pkZShaderSystem->SetClearColor(kColor);
-}
-*/
-
-/*
-void Render::SetFont(char* aFont) {
-	strcpy(aCurentFont,aFont);
-// RES	m_kConsoleText.SetRes(aFont);
-}
-*/
 
 

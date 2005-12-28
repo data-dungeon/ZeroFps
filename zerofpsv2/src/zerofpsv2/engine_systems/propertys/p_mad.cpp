@@ -106,29 +106,15 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 		return;		
 	
 	
-	
-	
-	// For now we rebuild all renderpackages every time we draw, cry for me fps.
-// 	m_kRenderPackage.clear();
-// 
-// 	// Set up a basic transform to be used in all renderpackages.
-// 	RenderPackage	m_kRP;
-// 	m_kRP.m_kModelMatrix.Identity();
-// 	m_kRP.m_kModelMatrix*= m_pkEntity->GetWorldRotM();		
-// 	m_kRP.m_kModelMatrix.Scale( m_fScale );
-// 	m_kRP.m_kModelMatrix.Translate(kPos);
-// 	m_kRP.m_kCenter = kPos;
-// 	m_kRP.m_fRadius = GetRadius();
-// // 	m_kRP.m_kAABBMin =  Vector3(-0.5,-0.5,-0.5);
-// // 	m_kRP.m_kAABBMax =  Vector3(0.5,0.5,0.5);
-// // 	m_kRP.m_bOcculusionTest = true;
-// 	m_kRP.m_pkLightProfile = &m_kLightProfile;
 
 	static Matrix4 kModelMatrix;
 	kModelMatrix.Identity();
 	kModelMatrix*= m_pkEntity->GetWorldRotM();		
 	kModelMatrix.Scale( m_fScale );
 	kModelMatrix.Translate(kPos);
+
+	//set render distance
+	fRenderDistance = kRenderState.m_kCameraPosition.DistanceTo(kPos) - GetRadius();
 
 	DoAnimationUpdate();
 	UpdateBones();					// And we build the bones also every frame.

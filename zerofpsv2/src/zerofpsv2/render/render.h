@@ -26,24 +26,7 @@ class HMSelectVertex;
 
 using namespace std;
 
-enum SkyBoxSides 
-{
-	SKYBOXSIDE_FORWARD,
-	SKYBOXSIDE_RIGHT,
-	SKYBOXSIDE_BACK,
-	SKYBOXSIDE_LEFT,
-	SKYBOXSIDE_UP,
-	SKYBOXSIDE_DOWN,
-	SKYBOXSIDE_MAX,
-};
 
-
-enum PolygonMode 
-{ 
-	LINE,			// Draw only edges of polygones.
-	FILL,			// Fill polygons. Normal mode.
-	FILLLINE,	// Fill and draw edges.
-};
 
 class EditColor
 {
@@ -75,27 +58,6 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		BasicConsole*		m_pkConsole;
 		ZShaderSystem*		m_pkZShaderSystem;
 		
-				
-		//heightmap stuff
-		int			m_iLodUpdate;				
-		/*
-		int			m_iMaxLandscapeLayers;
-		int			m_iDrawLandscape;
-		int			m_iDrawLandNormal;
-		*/
-
-		ConVar		m_kiMaxLandscapeLayers;
-		ConVar		m_kiDrawLandscape;
-		ConVar		m_kiDrawLandNormal;
-
-		/*
-		int			m_iDetail;				//	grid size of lod tiles for the terran
-		int			m_iFpsLock;
-		int			m_iAutoLod;
-		*/
-		ConVar		m_kiDetail;
-		ConVar		m_kiFpsLock;
-		ConVar		m_kiAutoLod;
 
 		
 		//screenshot stuff
@@ -104,7 +66,6 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 		//screen info
 		SDL_Surface* 	m_pkScreen;								//main sdl screen surface
-		//int				m_iWidth,m_iHeight,m_iDepth;
 
 		ConVar			m_kiWidth;
 		ConVar			m_kiHeight;
@@ -115,11 +76,10 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		int				m_iSDLVideoModeFlags;
 		
 		//console color
-		Vector3		m_kConsoleColor;
+		Vector3			m_kConsoleColor;
 
 		//colors...or something
 		vector<EditColor>	m_kEditColor;
-
 		
 						
 		void 	RunCommand(int cmdid, const ConCommandLine* kCommand);
@@ -129,8 +89,6 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
 
 	public:
-		PolygonMode m_eLandscapePolygonMode;
-
 		ZSSRender();	
 		bool StartUp();
 		bool ShutDown()	{ return true;	}
@@ -163,36 +121,15 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		void Print(const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont);
 		void PrintChar(char cChar,float fPos,float fScale = 1.0);
 		void Print(Vector3 kPos, const char* aText,float fScale = 1.0);
-		//void PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos, const char* aText,float fScale = 1.0,bool bCentered = false);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
 		//draw line
 		void Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor);
 		void Line(const Vector3& kPos1,const Vector3& kPos2);
 
-		// LandScape
-		void DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected);
-		void DrawNormals(HeightMap* kmap,Vector3 CamPos,int iFps);
-		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
-		void DrawAllHM(HeightMap* kmap,Vector3 CamPos,bool bBorders);
-		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders);
-		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
-		void DrawHMVertex(HeightMap* kMap);
-		void DrawBlocks(HeightMap* kmap);
-		void GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 );
 
-		// SkyBox
-		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
-		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);
-		
-		// Water
-		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue);
-		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
-
-		void GiveTexCor(float &iX,float &iY,int iNr);
 		
 		// primitives and such
-		void DrawCross(const Vector3& kPos,const Vector3& kHead,const Vector3& kScale,float fAlpha);//,int& iTexture1);//,int iTexture2);
 		void DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture, bool DepthWrite, bool bAlpha, bool bBlend);
 		void DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fSize,ZMaterial* pkMaterial);
 
@@ -228,26 +165,10 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 
 		void     EditColor_Set(string strName, float f, float g, float b);
-		Vector3	GetEditColor(string strName);
-		
-		//old stuff
-		//void SetClearColor(Vector4 kColor);
-		//void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
-
-		//void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
-		//void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
-		//void Dot(float x,float y,float z);
-		//void SetColor(Vector3 kColor);
-		/*
-		void PrintChar(unsigned char cChar);
-		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
-		void Print(Vector3 kPos,Vector3 kScale,char* aText);		
-		void SetFont(char* aFont);
-		*/
+		Vector3	GetEditColor(string strName);		
 		
 };
 
-RENDER_API void RenderDLL_InitExtGL(void);
 RENDER_API char* GetOpenGLErrorName(GLenum id );
 
 #endif

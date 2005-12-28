@@ -23,7 +23,7 @@ class ENGINE_SYSTEMS_API P_SkyBoxRender : public Property {
 		Vector3 m_kRotateSpd;
 		Vector3 m_kHead;
 		
-		int m_iTexture[SKYBOXSIDE_MAX];
+// 		int m_iTexture[SKYBOXSIDE_MAX];
 
 		bool	m_bModeSixSides;
 
