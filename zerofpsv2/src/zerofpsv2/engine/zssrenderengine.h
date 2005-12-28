@@ -145,6 +145,7 @@ class ENGINE_API RenderState
 		//plugin handling
 		bool AddPlugin(const string& strName);		
 		bool RemovePlugin(const string& strName);
+		Plugin* GetPlugin(const string& strName);
 		vector<string> GetPluginList();	
 
 		friend class ZSSRenderEngine;
@@ -234,14 +235,15 @@ class ENGINE_API RenderPackage
 	
 		ZMaterial*						m_pkMaterial;				//pointer to material, always needed
 		LightProfile*					m_pkLightProfile;			//pointer to lightprofile, if lighting is to be used
-		Matrix4							m_kModelMatrix;			
+		Matrix4							m_kModelMatrix;			//model orientation matrix
 		Vector3							m_kCenter;					//center of mesh, used for culling etc
 		float								m_fRadius;					//radius		
 		Vector3							m_kAABBMin;					//local aabb min
 		Vector3							m_kAABBMax;					//local aabb max		
 		bool								m_bOcculusionTest;		//shuld an occulusion test be done
 		RenderPackage*					m_pkOcculusionParent;	//if set, occulusion test will test occulusion on this package instead		
-		bool								m_bBlendSort;
+		bool								m_bBlendSort;				//blended sorting, is reversed ie closest object is rendered last
+		bool								m_bStatic;					//this mesh is static in the world ( wont move or animated ), used for static shadowmaps etc
 		
 		MeshData							m_kMeshData;
 		

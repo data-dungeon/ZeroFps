@@ -102,8 +102,8 @@ void P_Light::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Re
 	m_kRenderPackage.m_kModelMatrix.Identity();
   	m_kRenderPackage.m_kModelMatrix*= ble;
 	m_kRenderPackage.m_kModelMatrix.Scale(m_fFlareSize);	
-	m_kRenderPackage.m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());	
-	m_kRenderPackage.m_kCenter = m_pkEntity->GetWorldPosV();	
+	m_kRenderPackage.m_kModelMatrix.Translate(m_pkLightSource->kPos);	
+	m_kRenderPackage.m_kCenter = m_pkLightSource->kPos;	
 
 	//material
 	m_kRenderPackage.m_pkMaterial = (ZMaterial*)m_pkMaterial->GetResourcePtr();

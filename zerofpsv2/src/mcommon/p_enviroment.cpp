@@ -1,6 +1,7 @@
 #include "p_enviroment.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 #include "../zerofpsv2/basic/math.h"
+#include "../zerofpsv2/engine/render_plugins.h"
 
 const float MAX_VOL = 0.25f;
 
@@ -12,7 +13,8 @@ Property* Create_P_Enviroment()
 P_Enviroment::P_Enviroment() : Property("P_Enviroment")
 {
 	
-	m_iType=			PROPERTY_TYPE_RENDER;
+// 	m_iType=			PROPERTY_TYPE_RENDER;
+ 	m_iType=			PROPERTY_TYPE_NORMAL;
 	m_iSide=			PROPERTY_SIDE_CLIENT;
 		
 	m_iSortPlace=	-10;	
@@ -124,33 +126,33 @@ void P_Enviroment::Init()
 
 void P_Enviroment::Update()
 {
-	return;
+// 	return;
 
 	if(m_bEnabled)
 	{
-		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWFIRST)
-		{		
+// 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWFIRST)
+// 		{		
 			UpdateTime();
 			
 			
 			
-			DrawSky();
+// 			DrawSky();
 			UpdateEnviroment();
-			MakeThunder();
-		}
+// 			MakeThunder();
+// 		}
 
 		
-		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)		
-		{		
-			if(m_kCurrentEnvSetting.m_iRain != 0)
-			{
-				MakeRainSplashes();
-				DrawRainSplashes();
-			}
-		
-			if(m_kCurrentEnvSetting.m_bSunFlare)
-				DrawSun();
-		}
+// 		if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)		
+// 		{		
+// 			if(m_kCurrentEnvSetting.m_iRain != 0)
+// 			{
+// 				MakeRainSplashes();
+// 				DrawRainSplashes();
+// 			}
+// 		
+// 			if(m_kCurrentEnvSetting.m_bSunFlare)
+// 				DrawSun();
+// 		}
 	}
 }
 
@@ -253,9 +255,7 @@ void P_Enviroment::UpdateEnviroment()
 	static Vector4 kCurrentFogColor(0,0,0,0);
 	static float fCurrentStart = 0;
 	static float fCurrentStop = 0;
-	
-	
-	
+		
 	if(m_kCurrentEnvSetting.m_kSunDiffuseColor.x == -1)
 	{
 		kCurrentFogColor.Lerp(m_kCurrentEnvSetting.m_kFogColor[m_iPartOfDay],
@@ -270,12 +270,32 @@ void P_Enviroment::UpdateEnviroment()
 	//interpolate start/stop
 	fCurrentStart = fCurrentStart*(1-fIf) + m_kCurrentEnvSetting.m_fFogStart*fIf;
 	fCurrentStop =  fCurrentStop*(1-fIf) +  m_kCurrentEnvSetting.m_fFogStop*fIf;					
+				
+// 	m_pkZeroFps->GetCam()->SetClearColor(kCurrentFogColor);
+// 	m_pkZeroFps->GetCam()->SetFog(kCurrentFogColor,fCurrentStart,fCurrentStop,true);			
 	
+	//get camera
+	if(Camera* pkCam = m_pkZeroFps->GetRenderCamera("main"))
+	{
+		//FOG
+		pkCam->m_kRenderState.m_kClearColor = kCurrentFogColor;
+		pkCam->m_kRenderState.m_kFogColor = kCurrentFogColor;
+		pkCam->m_kRenderState.m_fFogNear = fCurrentStart;
+		pkCam->m_kRenderState.m_fFogFar = fCurrentStop;					
 		
-	
-	m_pkZeroFps->GetCam()->SetClearColor(kCurrentFogColor);
-	m_pkZeroFps->GetCam()->SetFog(kCurrentFogColor,fCurrentStart,fCurrentStop,true);			
-	
+		//skybox
+		static string strCurentSkybox;			
+		if(strCurentSkybox != m_kCurrentEnvSetting.m_strSky[0])
+		{
+			strCurentSkybox = m_kCurrentEnvSetting.m_strSky[0];		
+			
+			if(SkyRender* pkSky = (SkyRender*)pkCam->m_kRenderState.GetPlugin("SkyRender"))
+			{ 
+				pkSky->Clear();
+				pkSky->AddTexture(strCurentSkybox,SQUARE_HDR);
+			}
+		}
+	}		
 
 	//music
 	if(m_kCurrentEnvSetting.m_strMusic != m_strCurrentMusic)

@@ -141,6 +141,7 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 		kRP.m_kModelMatrix = kModelMatrix;
 		kRP.m_kCenter = kPos;
 		kRP.m_fRadius = GetRadius();
+		kRP.m_bStatic = m_bCastShadow;
 		
  		kRP.m_bOcculusionTest = true;			
 		kRP.m_pkLightProfile = &m_kLightProfile;	

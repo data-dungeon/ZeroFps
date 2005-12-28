@@ -155,6 +155,23 @@ bool RenderState::RemovePlugin(const string& strName)
 }
 
 
+Plugin* RenderState::GetPlugin(const string& strName)
+{
+	for(int i =0;i<m_kPreRenderPlugins.size();i++)
+		if(m_kPreRenderPlugins[i]->GetName() == strName)
+			return m_kPreRenderPlugins[i];
+
+	for(int i =0;i<m_kRenderPlugins.size();i++)
+		if(m_kRenderPlugins[i]->GetName() == strName)
+			return m_kRenderPlugins[i];
+
+	for(int i =0;i<m_kPostRenderPlugins.size();i++)
+		if(m_kPostRenderPlugins[i]->GetName() == strName)
+			return m_kPostRenderPlugins[i];
+
+	return NULL;
+}
+
 vector<string> RenderState::GetPluginList()
 {
 	vector<string> kTemp;
@@ -189,6 +206,8 @@ RenderPackage::RenderPackage()
 	m_bOcculusionTest		=	false;
 	m_bBlendSort			=	true;
 	m_pkOcculusionParent	=	NULL;
+	
+	m_bStatic				=	true;
 	
 	m_kModelMatrix.Identity();
 	

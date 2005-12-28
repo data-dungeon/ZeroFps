@@ -38,11 +38,11 @@ void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
 											"_down.tga"};	
 	
 	static string strNameshi[6] = {	"_north_hi.tga",
-											"_east_hi.tga",
-											"_south_hi.tga",
-											"_west_hi.tga",
-											"_up_hi.tga",
-											"_down_hi.tga"};	
+												"_east_hi.tga",
+												"_south_hi.tga",
+												"_west_hi.tga",
+												"_up_hi.tga",
+												"_down_hi.tga"};	
 	
 	
 	bool bBottom = m_kMaterials.empty();
@@ -223,7 +223,7 @@ DepthMapRenderer::~DepthMapRenderer()
 bool DepthMapRenderer::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
 {
 	//do this material cast shadows?
-	if(!kRenderPackage.m_pkMaterial->m_bCastShadow)
+	if(!kRenderPackage.m_pkMaterial->m_bCastShadow || (!kRenderPackage.m_bStatic && !m_pkZeroFps->GetShadowMapRealtime()) )
 		return true;
 
 	//do occulusion test
