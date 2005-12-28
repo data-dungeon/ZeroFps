@@ -713,6 +713,9 @@ void Mad_CoreMesh::Clear(void)
 
 Mad_RawMesh* Mad_CoreMesh::GetLODMesh(int iId)
 {
+	if(iId >= m_kLodMesh.size())
+		return &m_kLodMesh[m_kLodMesh.size()-1];
+
 	return &m_kLodMesh[iId];
 }
 

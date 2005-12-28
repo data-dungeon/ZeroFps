@@ -1579,7 +1579,7 @@ int	ZeroEd::GetTargetTCS(Vector3* pkPos)
 	return -1;
 }
 
-Entity*	ZeroEd::GetTargetObject2()
+Entity*	ZeroEd::GetTargetObject()
 {
 	Vector3 start;
 	Vector3 dir;
@@ -1636,7 +1636,7 @@ Entity*	ZeroEd::GetTargetObject2()
 		//if we have a mad do a per polygontest, otherwise just check distance
 		if(mp && mp->IsValid())
 		{
-			if(mp->TestLine(start,dir,true))
+			if(mp->TestLine(start,dir,false))
 			{	
 				cp = mp->GetLastColPos();
 				d = start.DistanceTo(cp);
@@ -1647,61 +1647,6 @@ Entity*	ZeroEd::GetTargetObject2()
 			d = (start - kObjects[i]->GetWorldPosV()).Length();
 		}
 
-		if(d < closest)
-		{
-			closest = d;
-			pkClosest = kObjects[i];
-		}
-	}
-	
-	return pkClosest;
-}
-
-Entity* ZeroEd::GetTargetObject()
-{
-	Vector3 start	= m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*2;
-	Vector3 dir		= Get3DMouseDir(true);
-//	dir.Set(0,1,0);
-
-	//start.Print();
-	//cout << " - "; 
-	//dir.Print();
-	//cout << endl; 
-
-	vector<Entity*> kObjects;
-	kObjects.clear();
-	
-	m_pkEntityManager->TestLine(&kObjects,start,dir);
-	
-	
-	float closest = 999999999;
-	Entity* pkClosest = NULL;	
-	for(unsigned int i=0;i<kObjects.size();i++)
-	{
-		//cout << "Check " << kObjects[i]->GetEntityID() << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
-
-		if(kObjects[i] == m_pkCameraObject[0])	continue;
-		if(kObjects[i] == m_pkCameraObject[1])	continue;
-		if(kObjects[i] == m_pkCameraObject[2])	continue;
-		if(kObjects[i] == m_pkCameraObject[3])	continue;
-
-		if(kObjects[i] == m_pkZoneMarkerEntity) continue;
-				
-		if(kObjects[i]->IsZone())
-			continue;
-		
-		if(kObjects[i]->GetEntityID() <100000)
-			continue;
-							
-		if(kObjects[i]->GetName() == "StaticEntity")
-			continue;
-		
-		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
-			continue;
-		
-		
-		float d = (start - kObjects[i]->GetWorldPosV()).Length();
-	
 		if(d < closest)
 		{
 			closest = d;

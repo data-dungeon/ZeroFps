@@ -839,7 +839,8 @@ bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 		return false;
 	}
 		
-	pkCore->PrepareMesh(	pkCoreMesh, pkCoreMesh->GetLODMesh(0)  );	
+	//get lodmesh 100 to make sure we test on the lowest poly mesh
+	pkCore->PrepareMesh(	pkCoreMesh, pkCoreMesh->GetLODMesh(100)  );	
 		
 	pkFaces =	pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
 	pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();

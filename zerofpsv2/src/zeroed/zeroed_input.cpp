@@ -272,7 +272,7 @@ void ZeroEd::Input_CreateObject(float fMouseX, float fMouseY)
 		kNp.Write(m_kObjectMarkerPos);
 		m_pkZeroFps->RouteEditCommand(&kNp);
 
-	   Entity* pkObj; 
+/*	   Entity* pkObj; 
 		pkObj = GetTargetObject();
 
       if(m_bPlaceObjectsOnGround)
@@ -280,15 +280,15 @@ void ZeroEd::Input_CreateObject(float fMouseX, float fMouseY)
 		   if(pkObj)
 		      if(pkObj->GetCurrentZone() != -1)
 				   PlaceObjectOnGround(pkObj->GetEntityID());
-      }		
+      }	*/	
 
 		if(!m_bLockCreate)
 		{
 			m_iEditMode = EDIT_OBJECTS;
 			Select_None();
-			if(pkObj)
-				if(pkObj->GetCurrentZone() != -1)
-					Select_Toggle(pkObj->GetEntityID(), false);  
+// 			if(pkObj)
+// 				if(pkObj->GetCurrentZone() != -1)
+// 					Select_Toggle(pkObj->GetEntityID(), false);  
 		}
 	}
 }
@@ -317,7 +317,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 	if(m_pkInputHandle->VKIsDown("select") && !DelayCommand())
 	{	
-		Entity* pkObj = GetTargetObject2();
+		Entity* pkObj = GetTargetObject();
 		if(pkObj)
       {
 			int sel_object = m_iCurrentObject;
