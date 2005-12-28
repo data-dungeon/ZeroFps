@@ -1903,24 +1903,6 @@ void ZShaderSystem::ClearBuffer(const int& iBuffer)
 	if(iBuffer & STENCIL_BUFFER)
 		glClear(GL_STENCIL_BUFFER_BIT);					
 
-
-
-// 	switch(iBuffer)
-// 	{
-// 		case COLOR_BUFFER:
-// 			glClear(GL_COLOR_BUFFER_BIT);					
-// 			break;
-// 		case DEPTH_BUFFER:
-// 			glDepthMask(GL_TRUE);
-// 			glClear(GL_DEPTH_BUFFER_BIT);					
-// 			break;
-// 		case ACCUM_BUFFER:
-// 			glClear(GL_ACCUM_BUFFER_BIT);						
-// 			break;
-// 		case STENCIL_BUFFER:			
-// 			glClear(GL_STENCIL_BUFFER_BIT);			
-// 			break;
-// 	}
 } 
 
 

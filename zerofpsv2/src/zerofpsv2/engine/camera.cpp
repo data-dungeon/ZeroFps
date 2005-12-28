@@ -935,19 +935,11 @@ Vector3 Camera::SnapToGrid(Vector3 kPos)
 
 void Camera::ClearViewPort(bool bColor)
 {
-/*	if(m_bSelected)
-		glClearColor(0.680, 0.631, 0.631,0.0);
-	else
-		glClearColor(0.631, 0.631, 0.631,0.0);
-*/
 	if(bColor)
 		m_pkZShaderSystem->ClearBuffer(COLOR_BUFFER);
 		
 	m_pkZShaderSystem->ClearBuffer(DEPTH_BUFFER);
 	
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 	DrawGrid();
 }
 

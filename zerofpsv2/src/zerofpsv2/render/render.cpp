@@ -142,15 +142,6 @@ void ZSSRender::Swap(void)
 	}
 
 	glLoadIdentity();	
-	
-/*
-	glScissor  (0, 0,	GetWidth(), GetHeight());		
-	glViewport (0, 0,	GetWidth(), GetHeight());		
-
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
-	
-*/	
-	//glClear(GL_DEPTH_BUFFER_BIT);	
 }
 
 
