@@ -113,8 +113,6 @@ public:
 
 	void UnloadAll();
 
-	//bool SetSoundVolume(float fVolume);
-	//float GetSoundVolume() { return m_fSoundVolume; }
 	void SetMusic(const string& strMusic);
 
 	int PlayAudio(string strName, Vector3 kPos=m_kPos, Vector3 kDir=Vector3(0,0,1), int flags=0, float fGain=1.0f);
@@ -171,7 +169,6 @@ private:
 
 	ConVar m_kfMainVolume; // 0-1
 	
-
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
 	

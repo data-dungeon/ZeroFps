@@ -228,18 +228,7 @@ ZSSAudioSystem::ZSSAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZSSAudioSystem"
 	m_strCurrentMusic	= "";
 	m_strNextMusic		= "";
 	m_bMusicChange 	= false;
-	//m_fMusicGain		= 1;
-	
-	//m_bEnableSound = true;
-	//m_bEnableMusic = true;
 
-	//RegisterVariable("a_enablesound",&m_bEnableSound,CSYS_BOOL);
-	//RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
-// 	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
-
-	//m_fMainVolume = 1.0f;
-	//RegisterVariable("a_mainvolume",&m_fMainVolume,CSYS_FLOAT);
-	//RegisterVariable("a_musicvolume",&m_fMusicGain,CSYS_FLOAT);
 	m_kfMainVolume.Register(this, "a_mainvolume", "1.0");
 	m_kfMusicGain.Register(this, "a_musicvolume", "1.0");
 
@@ -624,7 +613,8 @@ bool ZSSAudioSystem::StartUp()
 	if(!m_pkAudioDevice)
 	{
 		g_Logf("Error: ZSSAudioSystem could not open audio device.\n");
-		return false;
+		cerr<<"WARNING: error opening audio device"<<endl;
+		return true;
 	}	
 	
 	//create contect
@@ -632,16 +622,14 @@ bool ZSSAudioSystem::StartUp()
 	if(m_pkAudioContextID == NULL)
 	{
 		g_Logf("Error: ZSSAudioSystem could not create audio context.\n");
-	   	return false;
+		cerr<<"WARNING: error creating audio context"<<endl;
+	   return true;
 	}
 
 	//set context
 	alcMakeContextCurrent(m_pkAudioContextID);
 	
-	
-	//alut init is gay
-// 	alutInit (0, NULL); 
-	
+
 	
 	alGetError();
 	alListenerf(AL_GAIN, 1.0f);
@@ -763,8 +751,8 @@ void ZSSAudioSystem::RunCommand(int cmdid, const ConCommandLine* kCommand)
 ///////////////////////////////////////////////////////////////////////////////
 void ZSSAudioSystem::Update()
 {
-	//if(m_bEnableSound == false)
-	//	return;
+	if(!m_bIsValid)
+		return;
 	
 	//dvoid waz here and hacked a bit =D
 	//sätter ljudvolym till noll om applicationen är minimerad
