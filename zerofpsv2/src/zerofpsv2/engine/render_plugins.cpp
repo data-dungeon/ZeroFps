@@ -808,14 +808,7 @@ DebugRenderPlugin::~DebugRenderPlugin()
 
 
 bool DebugRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
-{	
-
-	//push matrises	
-	m_pkZShaderSystem->MatrixPush();
-	
-	//apply model matrix
-	m_pkZShaderSystem->MatrixMult(kRenderPackage.m_kModelMatrix);
-	
+{		
 	//bind material
 	m_pkZShaderSystem->BindMaterial(kRenderPackage.m_pkMaterial);
 	
@@ -899,6 +892,14 @@ bool DebugRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRend
 		kNormalColors.push_back(Vector4(1,0,0,1));
 		kNormalColors.push_back(Vector4(0,1,0,1));
 	}
+					
+					
+	//push matrises	
+	m_pkZShaderSystem->MatrixPush();
+	
+	//apply model matrix
+	m_pkZShaderSystem->MatrixMult(kRenderPackage.m_kModelMatrix);
+						
 						
 	//setup and draw normals
 	bool bUDGS = m_pkZShaderSystem->GetUseDefaultGLSLProgram();
