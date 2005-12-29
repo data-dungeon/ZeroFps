@@ -43,6 +43,10 @@ P_Mad::P_Mad() : Property("P_Mad")
 	
   	m_fLastAnimationUpdateTime = m_pkZeroFps->GetEngineTime();
 	m_iLastAnimationUpdateFrame = -1;
+	
+	//joint attachement
+	m_strAttachToJoint = "";
+	m_iAttachToEntityID = -1;
 
 	
 	//bounding box
@@ -108,8 +112,9 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 	
 
 	static Matrix4 kModelMatrix;
-	kModelMatrix.Identity();
-	kModelMatrix*= m_pkEntity->GetWorldRotM();		
+	
+	//apply rotation and transformation
+	kModelMatrix= m_pkEntity->GetWorldRotM();		
 	kModelMatrix.Scale( m_fScale );
 	kModelMatrix.Translate(kPos);
 
@@ -118,7 +123,7 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 
 	DoAnimationUpdate();
 	UpdateBones();					// And we build the bones also every frame.
-	Draw_All_RenderP( );		// Fill in renderpackages.			
+	Draw_All_RenderP( );			// Fill in renderpackages.			
 
 	// Add Render packages.
 	for(int i=0; i<m_kRenderPackage.size(); i++)
@@ -128,6 +133,8 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 		kRP.m_kCenter = kPos;
 		kRP.m_fRadius = GetRadius();
 		kRP.m_bStatic = m_bCastShadow;
+		kRP.m_strAttachToJointName = m_strAttachToJoint;
+		kRP.m_iAttachToEntityID = m_iAttachToEntityID;	
 		
  		kRP.m_bOcculusionTest = true;			
 		kRP.m_pkLightProfile = &m_kLightProfile;	

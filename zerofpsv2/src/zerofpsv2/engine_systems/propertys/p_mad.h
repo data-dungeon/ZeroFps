@@ -38,7 +38,6 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		Vector3	m_kOffset;
 		
 		LightProfile	m_kLightProfile;				//used for lighting
-		//RenderPackage	m_kRenderPackage;				// VimRp - Moved to mad_modell
 		
 		map< Camera*,ZOcculusionTest>	m_kOCTests;
 		bool		m_bHaveOCTested;
@@ -46,6 +45,10 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool		m_bOculled;
 		
 		bool		m_bDistanceCulled;
+		
+		//joint attachement
+		string	m_strAttachToJoint;
+		int		m_iAttachToEntityID;
 		
 		//bounding box
 		bool			m_bHaveAABB;
@@ -112,6 +115,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		//get joint position
 		Vector3 GetJointPosition(const string& strJointName);
 		Matrix4 GetJointRotation(const string& strJointName);
+
+		void AttachToJoint(int iEntityID,const string& strName)	{	m_iAttachToEntityID = iEntityID;m_strAttachToJoint=strName;};
 
 		//line test
 		bool TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly = false,bool bIgnoreY = false);

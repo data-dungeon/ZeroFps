@@ -24,6 +24,11 @@ P_LinkToJoint::P_LinkToJoint() : Property("P_LinkToJoint")
 P_LinkToJoint::~P_LinkToJoint()	
 {	
 	m_pkEntity->SetInterpolate(true);
+	
+	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	{
+		pkMad->AttachToJoint(-1,"");
+	}	
 }
 void P_LinkToJoint::Init()			
 {	
@@ -61,7 +66,13 @@ void P_LinkToJoint::Update()
 			m_pkEntity->SetInterpolate(false);
 				
 		}
-	}		
+	}
+		
+	
+	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	{
+		pkMad->AttachToJoint(m_iLinkEntityID,m_strToJoint);
+	}
 }
 
 

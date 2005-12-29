@@ -110,11 +110,6 @@ void Matrix4::Translate(float fX, float fY, float fZ)
 	kMatrix.RowCol[3][2] = fZ;			
 	
 	*this *= kMatrix;
-
-/*	*this *= Matrix4(	1		,0 	,0		,0		,
-							0		,1		,0		,0		,
-							0		,0		,1		,0		,
-							fX		,fY	,fZ	,1		);*/
 }
 
 void Matrix4::Translate(const Vector3& kTrans)

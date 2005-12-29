@@ -966,6 +966,29 @@ void DebugRenderPlugin::DoBoneTransformation(int iVertises,const DataPointer& kB
 	*pkNormals = &kNormals[0]; 
 }
 
+// --------AttachToJoint
+bool AttachToJoint::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
+{
+	if(kRenderPackage.m_iAttachToEntityID == -1)
+		return true;
+		
+		
+	if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID( kRenderPackage.m_iAttachToEntityID,"P_Mad"))
+	{
+		//find scale
+		static Vector3 kUnit(1,0,0);			
+		float fScale = kRenderPackage.m_kModelMatrix.VectorRotate(kUnit).Length();
+		
+		//apply rotation and set position
+		kRenderPackage.m_kModelMatrix = pkMad->GetJointRotation(kRenderPackage.m_strAttachToJointName);
+		kRenderPackage.m_kModelMatrix.Scale(fScale);
+		kRenderPackage.m_kCenter = pkMad->GetJointPosition(kRenderPackage.m_strAttachToJointName) + pkMad->GetEntity()->GetIWorldPosV();
+		kRenderPackage.m_kModelMatrix.SetPos(kRenderPackage.m_kCenter);		
+	}
+
+	
+	return true;
+}
 
 
 // ---------DefaultRenderPlugin
@@ -1539,12 +1562,15 @@ bool InterfaceRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 
 //---- create functions
 
+Plugin* Create_AttachToJointPlugin()
+{
+	return (Plugin*)new AttachToJoint();
+};
+
 Plugin* Create_SkyRender()
 {
 	return (Plugin*)new SkyRender();
 };
-
-
 
 Plugin* Create_DepthMapRendererPlugin()
 {

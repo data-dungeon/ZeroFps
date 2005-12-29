@@ -209,6 +209,9 @@ RenderPackage::RenderPackage()
 	
 	m_bStatic				=	true;
 	
+	m_iAttachToEntityID	=	-1;
+	m_strAttachToJointName=	"";
+	
 	m_kModelMatrix.Identity();
 	
 }
@@ -238,6 +241,7 @@ bool ZSSRenderEngine::StartUp()
 	m_kPluginFactory.RegisterPlugin("Shadowmap",Create_ShadowmapPlugin);
 	m_kPluginFactory.RegisterPlugin("DepthMapRender",Create_DepthMapRendererPlugin);
 	m_kPluginFactory.RegisterPlugin("SkyRender",Create_SkyRender);
+	m_kPluginFactory.RegisterPlugin("AttachToJoint",Create_AttachToJointPlugin);
 
 
 	return true;

@@ -245,7 +245,9 @@ class ENGINE_API RenderPackage
 		bool								m_bBlendSort;				//blended sorting, is reversed ie closest object is rendered last
 		bool								m_bStatic;					//this mesh is static in the world ( wont move or animated ), used for static shadowmaps etc
 		
-		MeshData							m_kMeshData;
+		MeshData							m_kMeshData;				//contains mesh infromation
+		int								m_iAttachToEntityID;		//entity id of parent model, -1 is no attachment
+		string							m_strAttachToJointName;	//joints name to attach to 
 		
 		//occulusion test map, one for each renderstate ID
 		map< int, ZOcculusionTest>	m_kOcculusionTest;	

@@ -189,6 +189,29 @@ class ENGINE_API DefaultRenderPlugin : public RenderPlugin
 };
 Plugin* Create_DefaultRenderPlugin();
 
+class ENGINE_API AttachToJoint : public RenderPlugin
+{
+	private:
+		ZShaderSystem*		m_pkZShaderSystem;
+		ZSSLight*			m_pkLight;
+		ZSSZeroFps*			m_pkZeroFps;
+		ZSSEntityManager*	m_pkEntityManager;
+	
+	
+	public:
+					
+		AttachToJoint() : RenderPlugin("AttachToJoint",-10)
+		{
+			m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
+			m_pkLight			= static_cast<ZSSLight*>(g_ZFObjSys.GetObjectPtr("ZSSLight"));
+			m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
+			m_pkEntityManager = static_cast<ZSSEntityManager*>(g_ZFObjSys.GetObjectPtr("ZSSEntityManager"));			
+		}
+	
+		bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState);
+};
+Plugin* Create_AttachToJointPlugin();
+
 
 
 class ENGINE_API DefaultPreRenderPlugin : public PreRenderPlugin
