@@ -299,6 +299,7 @@ bool ZFSystem::StartUp()
 				if(!it->second.pkObject->StartUp()) 
 				{
 					g_Logf("Fail\n");
+					cerr<<"ERROR: Subsystem "<<it->second.m_strName<<" failed StartUp"<<endl;
 					return false;
 				}			
 				
