@@ -167,9 +167,6 @@
 				RelativePath=".\glslprogram.cpp">
 			</File>
 			<File
-				RelativePath=".\landscape.cpp">
-			</File>
-			<File
 				RelativePath=".\light.cpp">
 			</File>
 			<File

@@ -222,6 +222,7 @@ bool ZeroEd::ShutDown()
 {
 	delete m_pkLine;
 
+	return true;
 }
 
 int ZeroEd::GetView(float x, float y)

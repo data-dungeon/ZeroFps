@@ -241,7 +241,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 
 		//picking
-		void AABBSelect(const Vector3& kP1,const Vector3& kP1,bool bAdd);
+		void AABBSelect(const Vector3& kP1,const Vector3& kP2,bool bAdd);
 		Vector3	Get3DMouseDir(bool bMouse);
 		Entity*	GetTargetObject();		
 		int		GetTargetTCS(Vector3* pkPos);		

@@ -79,21 +79,43 @@ bool RenderState::AddPlugin(const string& strName)
 		
 			if(dynamic_cast<PreRenderPlugin*>(pkPlugin))
 			{
+				//check if plugin already added
 				for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it!=m_kPreRenderPlugins.end();it++)
-					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
+					if((*it)->GetName() == static_cast<PreRenderPlugin*>(pkPlugin)->GetName())
+					{
+						cerr<<"WARNING: Plugin "<<(*it)->GetName()<<" already added"<<endl;
+						delete pkPlugin;
+						return false;
+					}
+
+				//insert plugin depending on order
+				for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it!=m_kPreRenderPlugins.end();it++)
+				{
+					cout<<"comparing"<<(*it)->GetName()<<endl;				
+					if((*it)->m_iOrder >=  ((PreRenderPlugin*)pkPlugin)->m_iOrder)
 					{
 						m_kPreRenderPlugins.insert(it,(PreRenderPlugin*)pkPlugin);
 						return true;
 					}
-				
+				}
 				m_kPreRenderPlugins.push_back((PreRenderPlugin*)pkPlugin);
 				return true;
 			}
 			
 			if(dynamic_cast<RenderPlugin*>(pkPlugin))
 			{
+				//check if plugin already added
 				for(vector<RenderPlugin*>::iterator it = m_kRenderPlugins.begin();it!=m_kRenderPlugins.end();it++)
-					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
+					if((*it)->GetName() == static_cast<RenderPlugin*>(pkPlugin)->GetName())
+					{
+						cerr<<"WARNING: Plugin "<<(*it)->GetName()<<" already added"<<endl;
+						delete pkPlugin;
+						return false;
+					}
+
+				//insert plugin depending on order
+				for(vector<RenderPlugin*>::iterator it = m_kRenderPlugins.begin();it!=m_kRenderPlugins.end();it++)
+					if((*it)->m_iOrder >=  ((RenderPlugin*)pkPlugin)->m_iOrder)
 					{
 						m_kRenderPlugins.insert(it,(RenderPlugin*)pkPlugin);
 						return true;
@@ -105,6 +127,16 @@ bool RenderState::AddPlugin(const string& strName)
 			
 			if(dynamic_cast<PostRenderPlugin*>(pkPlugin))
 			{
+				//check if plugin already added
+				for(vector<PostRenderPlugin*>::iterator it = m_kPostRenderPlugins.begin();it!=m_kPostRenderPlugins.end();it++)
+					if((*it)->GetName() == static_cast<PostRenderPlugin*>(pkPlugin)->GetName())
+					{
+						cerr<<"WARNING: Plugin "<<(*it)->GetName()<<" already added"<<endl;
+						delete pkPlugin;
+						return false;
+					}
+
+				//insert plugin depending on order
 				for(vector<PostRenderPlugin*>::iterator it = m_kPostRenderPlugins.begin();it!=m_kPostRenderPlugins.end();it++)
 					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
 					{

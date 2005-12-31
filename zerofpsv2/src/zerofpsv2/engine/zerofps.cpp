@@ -25,7 +25,7 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-ConVar		g_kiLogRenderPropertys;
+ConVar	g_kiLogRenderPropertys;
 
 static char Devformat_text[4096];	//
 
@@ -1288,7 +1288,7 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 					if(m_kRenderCamera[i]->m_kRenderState.AddPlugin(kCommand->m_kSplitCommand[2]))
 						m_pkConsole->Printf("plugin added");			
 					else
-						m_pkConsole->Printf("plugin not found");			
+						m_pkConsole->Printf("plugin not added, plugin not found or already added");			
 					
 					return;
 				}
