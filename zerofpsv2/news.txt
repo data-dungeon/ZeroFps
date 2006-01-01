@@ -1,6 +1,13 @@
 Mistlands - What's new
 ********************************************************************************
 
+0.5.x - (Mistlands milestone 5)
+* New completely redone plugin based rendering pipeline
+* GLSL shaders, bloom, HDR
+* Editor improvements
+* Heightmap system
+
+
 0.4.0 - (Mistlands milestone 4)
 -------------------------------
 * Added skill system
