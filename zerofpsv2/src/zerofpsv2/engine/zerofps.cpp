@@ -281,11 +281,12 @@ bool ZSSZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	g_ZFObjSys.HandleArgs(iNrOfArgs,paArgs);	//	handle arguments
 	
-	atexit(SDL_Quit);
-
-
+	//run subsystem startups
 	if(!g_ZFObjSys.StartUp())
+	{
+		cerr<<"ERROR: SubSystem startup failed, Will shut down"<<endl;
 		return false;
+	}
 
 	m_iState=ENGINE_STATE_NORMAL;									// init gamestate to normal		
 	m_pkApp->OnInit();										// call the applications oninit funktion
@@ -297,7 +298,8 @@ bool ZSSZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_fLockFrameTime  = GetEngineTime();
 
 	
-	GLeeInit();
+	
+	GLeeInit();	//behövs denna verkligen? HACK
 		
 	return true;
 }

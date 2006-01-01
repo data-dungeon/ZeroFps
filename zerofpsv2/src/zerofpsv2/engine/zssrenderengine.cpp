@@ -91,7 +91,6 @@ bool RenderState::AddPlugin(const string& strName)
 				//insert plugin depending on order
 				for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it!=m_kPreRenderPlugins.end();it++)
 				{
-					cout<<"comparing"<<(*it)->GetName()<<endl;				
 					if((*it)->m_iOrder >=  ((PreRenderPlugin*)pkPlugin)->m_iOrder)
 					{
 						m_kPreRenderPlugins.insert(it,(PreRenderPlugin*)pkPlugin);

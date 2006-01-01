@@ -45,40 +45,40 @@ bool ZSSRender::StartUp()
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("ZSSConsole"));
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
-	InitDisplay(m_kiWidth.GetInt(),m_kiHeight.GetInt(),m_kiDepth.GetInt());
-//	SetDisplay();
-
+	if(!InitDisplay())
+	{
+		cerr<<"ERROR: initializing display"<<endl;
+		return false;
+	}
+	
 	return true;
 }
 
-void ZSSRender::InitDisplay(int iWidth,int iHeight,int iDepth)
+bool ZSSRender::InitDisplay()
 {
-	// Anything sent from app overrides default and ini files.
-	if(iWidth || iHeight || iDepth) {
-		m_kiWidth.SetInt(iWidth)	;
-		m_kiHeight.SetInt(iHeight)	;
-		m_kiDepth.SetInt(iDepth)	;
-		}
-
 	//reinitialize opengl
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 
 	//setup sdl_gl_attributes, this has to be done before creating the sdl opengl window
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 8 );
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE		, 5 );
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE		, 5 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE		, 5 );
+	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE		, 16 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER	, 1 );
+	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE	, 8 );
 
-	SetDisplay();
+	//create sdl surface and setup opengl
+	if(!SetDisplay())
+		return false;
 
-
+	//initialize GLee
 	GLeeInit();
 
 
 	glMatrixMode(GL_MODELVIEW);
+	
+	return true;
 }
 
 void ZSSRender::ToggleFullScreen(void)
@@ -87,48 +87,53 @@ void ZSSRender::ToggleFullScreen(void)
 	SDL_WM_ToggleFullScreen(m_pkScreen);
 }
 
-void ZSSRender::SetDisplay(int iWidth,int iHeight,int iDepth, bool bFullscreen)
+void ZSSRender::SetDisplayMode(int iWidth,int iHeight,int iDepth, bool bFullscreen)
 {
 	m_kiWidth.SetInt(iWidth);
 	m_kiHeight.SetInt(iHeight);
 	m_kiDepth.SetInt(iDepth);
 	m_kiFullScreen.SetInt(bFullscreen);
-
-//	SetDisplay(); // comment out by zeb 9 nov 2004 - krashar
 }
 
 
-void ZSSRender::SetDisplay()
+bool ZSSRender::SetDisplay()
 {
 	m_pkTexMan->ClearAll();
 
 
 	m_iSDLVideoModeFlags = 0;
 
-	if(m_kiFullScreen.GetBool() == true)
+	if(m_kiFullScreen.GetBool())
 		m_iSDLVideoModeFlags = SDL_OPENGL|SDL_FULLSCREEN;
 	else
 		m_iSDLVideoModeFlags = SDL_OPENGL;
 
+	//free current videosurface if any
 	if(m_pkScreen)
 		SDL_FreeSurface(m_pkScreen);
 
 
-
-	printf("SDL_SetVideoMode(%i,%i,%i,%i)\n", m_kiWidth.GetInt(), m_kiHeight.GetInt(), m_kiDepth.GetInt(), m_iSDLVideoModeFlags);
+	cout<<"Trying videomode "<<m_kiWidth.GetInt()<<"x"<<m_kiHeight.GetInt()<<" "<<m_kiDepth.GetInt()<<" "<<m_iSDLVideoModeFlags<<endl;
 
 
 	if( (m_pkScreen= SDL_SetVideoMode(m_kiWidth.GetInt(),m_kiHeight.GetInt(),m_kiDepth.GetInt(), m_iSDLVideoModeFlags)) == NULL)
 	{
-		cout<<"ERROR: Creating sdl video surface"<<endl;
-		return;
+		cerr<<"ERROR: Creating sdl video surface"<<endl;
+		return false;
 	}
 
-	printf("SDL_SetVideoMode OK!\n");
+	cout<<"Videomode OK"<<endl;
 
+	//setup sdlquit
+	atexit(SDL_Quit);
+
+	//default viewport
 	glViewport(0, 0,m_kiWidth.GetInt(),m_kiHeight.GetInt());
 
+	//default light settings
 	m_pkLight->SetStartUpValues();
+	
+	return true;
 }
 
 void ZSSRender::Swap(void) 

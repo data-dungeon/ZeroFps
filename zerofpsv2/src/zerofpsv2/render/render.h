@@ -96,9 +96,9 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 
 
 		//display functions		
-		void InitDisplay(int iWidth,int iHeight,int iDepth);		
-		void SetDisplay(int iWidth,int iHeight,int iDepth,bool bFullScreen);
-		void SetDisplay();
+		bool InitDisplay();		
+		void SetDisplayMode(int iWidth,int iHeight,int iDepth,bool bFullScreen);
+		bool SetDisplay();
 		void Swap(void);			
 		void ToggleFullScreen(void);
 		void ScreenShot() 	{	m_bCapture = true;}

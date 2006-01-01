@@ -462,13 +462,13 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				bool fullscreen = g_kMistClient.IsButtonChecked("FullscreenCheckbox") ? 1 : 0;
 
 				if(g_kMistClient.IsButtonChecked("ScreenSize800x600Rb")) 
-					g_kMistClient.m_pkRender->SetDisplay(800,600,d,fullscreen);
+					g_kMistClient.m_pkRender->SetDisplayMode(800,600,d,fullscreen);
 				if(g_kMistClient.IsButtonChecked("ScreenSize1024x768Rb")) 
-					g_kMistClient.m_pkRender->SetDisplay(1024,768,d,fullscreen);
+					g_kMistClient.m_pkRender->SetDisplayMode(1024,768,d,fullscreen);
 				if(g_kMistClient.IsButtonChecked("ScreenSize1280x1024Rb")) 
-					g_kMistClient.m_pkRender->SetDisplay(1280,1024,d,fullscreen);
+					g_kMistClient.m_pkRender->SetDisplayMode(1280,1024,d,fullscreen);
 				if(g_kMistClient.IsButtonChecked("ScreenSize1600x1200Rb")) 
-					g_kMistClient.m_pkRender->SetDisplay(1600,1200,d,fullscreen);
+					g_kMistClient.m_pkRender->SetDisplayMode(1600,1200,d,fullscreen);
 
 				if(g_kMistClient.IsButtonChecked("ScaleGUICheckbox"))
 					g_kMistClient.m_pkGui->m_kiScaleMode.SetInt(0);

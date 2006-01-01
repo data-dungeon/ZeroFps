@@ -106,7 +106,7 @@ class ENGINE_API ShadowmapPlugin : public PreRenderPlugin
 		
 		RenderState	m_kShadowRenderState;
 		
-		int   GetMinSize(int iRes);
+		int   GetMaxSize(int iRes);
 		void  MakeShadowTexture(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState,const Vector3& kLightPos,const Vector3& kCenter);
 		
 	public:
@@ -292,6 +292,7 @@ class ENGINE_API BloomPostPlugin : public PostRenderPlugin
 		
 		ZMaterial*	m_pkBloomMaterial1;
 		ZMaterial*	m_pkBloomMaterial2;
+		ZMaterial*	m_pkBloomMaterial3;
 		
 		ResTexture	m_kBloomTexture;
 		ResTexture	m_kBloomTexture2;

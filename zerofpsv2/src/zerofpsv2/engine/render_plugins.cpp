@@ -421,8 +421,8 @@ ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap",-10)
 		}
 		else
 		{
-			int iMaxWidth = GetMinSize(m_pkRender->GetWidth());
-			int iMaxHeight = GetMinSize(m_pkRender->GetHeight());
+			int iMaxWidth = GetMaxSize(m_pkRender->GetWidth());
+			int iMaxHeight = GetMaxSize(m_pkRender->GetHeight());
 		
 			g_Logf("CAMERA: No FBO support, falling back to glCopyTexSubImage2D, max resulution %dx%d.\n",iMaxWidth,iMaxHeight);
 			//cout<<"CAMERA: No FBO support, falling back to glCopyTexSubImage2D, max resulution "<<iMaxWidth<<"x"<<iMaxHeight<<endl;
@@ -430,7 +430,6 @@ ShadowmapPlugin::ShadowmapPlugin() : PreRenderPlugin("Shadowmap",-10)
  			m_iShadowTexHeight = (int)Min(iQuality,iMaxHeight);;					
 		}
 			
-		m_pkZShaderSystem->SetShadowMapSize(m_iShadowTexWidth,m_iShadowTexHeight);
 		g_Logf("CAMERA: Using shadow texture size: %dx%d.\n", m_iShadowTexWidth, m_iShadowTexHeight);
 		//cout<<"CAMERA: Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 				
@@ -665,6 +664,9 @@ bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 		MakeShadowTexture(kRenderEngine,kRenderState,kLightPos,kRenderState.m_kCameraPosition);
 	}
 	
+	//set shadowmap width in shadersystem	
+	m_pkZShaderSystem->SetShadowMapSize(m_iShadowTexWidth,m_iShadowTexHeight);
+	
 	//set shadowmap parameter
 	kRenderEngine.SetParameter("shadowmap",&m_kShadowmap);
 	
@@ -672,18 +674,18 @@ bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 	return true;
 }
 
-int ShadowmapPlugin::GetMinSize(int iRes)
+int ShadowmapPlugin::GetMaxSize(int iRes)
 {
-	if(iRes <= 256 )
-		return 256;
-	else if(iRes <= 512)
-		return 512;
-	else if(iRes <= 1024)
-		return 1024;
-	else if(iRes <= 2048)
-		return 2048;
-		
-	return 256;
+	if(iRes >= 2048 )
+		return(2048);
+	else if(iRes >= 1024 )
+		return(1024);
+	else if(iRes >= 512 )
+		return(512);
+	else if(iRes >= 256 )
+		return(256);
+	
+	return 128;
 }
 
 // ---------- HDR EXPOSURE CALCULATOR PLUGIN
@@ -1349,19 +1351,26 @@ BloomPostPlugin::BloomPostPlugin() : PostRenderPlugin("Bloom",0)
 	m_pkBloomMaterial1->GetPass(0)->m_bLighting = false;
 	m_pkBloomMaterial1->GetPass(0)->m_bDepthTest = false;
 	
+	//BLOOM 
 	m_pkBloomMaterial2 = new ZMaterial;
 	m_pkBloomMaterial2->GetPass(0)->m_pkSLP->SetRes("#bloom2.frag.glsl");
 	m_pkBloomMaterial2->GetPass(0)->m_pkTUs[0]->SetRes("notex.bmp");
-	m_pkBloomMaterial2->GetPass(0)->m_pkTUs[1]->SetRes("notex.bmp");
 	m_pkBloomMaterial2->GetPass(0)->m_bLighting = false;
 	m_pkBloomMaterial2->GetPass(0)->m_bDepthTest = false;
 	
-		
+	
+	m_pkBloomMaterial3 = new ZMaterial;
+	m_pkBloomMaterial3->GetPass(0)->m_pkSLP->SetRes("#bloom3.frag.glsl");
+	m_pkBloomMaterial3->GetPass(0)->m_pkTUs[0]->SetRes("notex.bmp");
+	m_pkBloomMaterial3->GetPass(0)->m_pkTUs[1]->SetRes("notex.bmp");
+	m_pkBloomMaterial3->GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;
+	m_pkBloomMaterial3->GetPass(0)->m_bLighting = false;
+	m_pkBloomMaterial3->GetPass(0)->m_bDepthTest = false;
+	
   	m_iFSSTextureWidth = GetMinSize(m_pkRender->GetWidth());
  	m_iFSSTextureHeight = GetMinSize(m_pkRender->GetHeight());
 	m_kBloomTexture.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
 	m_kBloomTexture2.CreateEmptyTexture(m_iFSSTextureWidth,m_iFSSTextureHeight,T_RGBA|T_CLAMP|T_NOCOMPRESSION|T_NOMIPMAPPING);
-
 
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
 	m_pkZShaderSystem->MatrixPush();
@@ -1378,15 +1387,28 @@ BloomPostPlugin::~BloomPostPlugin()
 
 bool BloomPostPlugin::Call(RenderState& kRenderState)
 {
+	float fSize = 0.25;
+
 	static float data[]= {	-1,-1,-1,
 									 1,-1,-1,
 							 		 1, 1,-1,
 									-1, 1,-1};
 
+	static float smalldata[]= {	-1				,-1			,-1,
+											-1+2*fSize	,-1			,-1,
+							 				-1+2*fSize	,-1+2*fSize	,-1,
+											-1				,-1+2*fSize	,-1};
+
 	static float uvdata[]= {0,0,
 									1,0,
 							 		1,1,
 									0,1};
+									
+	static float smalluvdata[]= {	0,0,
+											1,0,
+							 				1,1,
+											0,1};
+									
 									
 	//calculate how to stretch the texture									
  	float xs = 	float(kRenderState.m_kViewPortSize.x) / float(m_iFSSTextureWidth);								
@@ -1396,6 +1418,16 @@ bool BloomPostPlugin::Call(RenderState& kRenderState)
  	uvdata[4] = xs;
  	uvdata[5] = ys;
  	uvdata[7] = ys;
+	
+ 	smalluvdata[2] = xs*fSize;
+ 	smalluvdata[4] = xs*fSize;
+ 	smalluvdata[5] = ys*fSize;
+ 	smalluvdata[7] = ys*fSize;	
+	
+	
+	
+	m_pkZShaderSystem->SetShadowMapSize( m_iFSSTextureWidth*xs*fSize,m_iFSSTextureHeight*ys*fSize);
+	
 	
 	//save screen surface to fss texture									
 	m_kBloomTexture.CopyFrameBuffer(kRenderState.m_kViewPortPos.x,kRenderState.m_kViewPortPos.y,kRenderState.m_kViewPortSize.x, kRenderState.m_kViewPortSize.y);
@@ -1415,7 +1447,7 @@ bool BloomPostPlugin::Call(RenderState& kRenderState)
 	
 	//setup vertex data
 	m_pkZShaderSystem->ResetPointers();
-	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,data);
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,smalldata);
 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,uvdata);
 	m_pkZShaderSystem->SetNrOfVertexs(4);
 	
@@ -1427,21 +1459,37 @@ bool BloomPostPlugin::Call(RenderState& kRenderState)
 	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);
   	
   	
-	//draw scree surface
+	//draw first pass X blurr
  	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
   	
   	
 	//save image, and do another draw	
 	m_kBloomTexture2.CopyFrameBuffer(	kRenderState.m_kViewPortPos.x,kRenderState.m_kViewPortPos.y,
-												kRenderState.m_kViewPortSize.x, kRenderState.m_kViewPortSize.y);
+													kRenderState.m_kViewPortSize.x*fSize, kRenderState.m_kViewPortSize.y*fSize);
 	
 	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial2);	
 	m_pkZShaderSystem->BindTexture(&m_kBloomTexture2);		
 	
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);
-	glActiveTextureARB(GL_TEXTURE0_ARB);
-	m_pkZShaderSystem->DrawArray(QUADS_MODE); 
+	//draw seccond pass Y blurr
+ 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,smalluvdata); 	
+ 	m_pkZShaderSystem->DrawArray(QUADS_MODE);  	
+	
+	m_kBloomTexture2.CopyFrameBuffer(	kRenderState.m_kViewPortPos.x,kRenderState.m_kViewPortPos.y,
+													kRenderState.m_kViewPortSize.x*fSize, kRenderState.m_kViewPortSize.y*fSize);
+	
+	m_pkZShaderSystem->BindMaterial(m_pkBloomMaterial3);	
+	m_pkZShaderSystem->BindTexture(&m_kBloomTexture2);		
+		
+ 	//bind original texture
+ 	glActiveTextureARB(GL_TEXTURE1_ARB);
+ 	m_pkZShaderSystem->BindTexture(&m_kBloomTexture);
+ 	glActiveTextureARB(GL_TEXTURE0_ARB);
+ 	
+ 	//draw final combining pass
+ 	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,data);	
+ 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,smalluvdata);
+ 	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,uvdata);	
+ 	m_pkZShaderSystem->DrawArray(QUADS_MODE); 
 	
 		
   	//reenable depth mask
