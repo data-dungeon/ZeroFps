@@ -1379,6 +1379,17 @@ BloomPostPlugin::BloomPostPlugin() : PostRenderPlugin("Bloom",0)
 	m_pkZShaderSystem->MatrixPop();
 }
 
+bool BloomPostPlugin::Validate(const RenderState& kRenderState)
+{
+	if(!m_pkZShaderSystem->SupportGLSLProgram())
+	{
+		cerr<<"WARNING: BloomPostPlugin requires glsl support"<<endl;
+		return false;
+	}
+	
+	return true;
+}
+
 BloomPostPlugin::~BloomPostPlugin()
 {
 	delete m_pkBloomMaterial1;

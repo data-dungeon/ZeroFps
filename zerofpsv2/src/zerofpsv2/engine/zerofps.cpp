@@ -1290,7 +1290,7 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 					if(m_kRenderCamera[i]->m_kRenderState.AddPlugin(kCommand->m_kSplitCommand[2]))
 						m_pkConsole->Printf("plugin added");			
 					else
-						m_pkConsole->Printf("plugin not added, plugin not found or already added");			
+						m_pkConsole->Printf("error while adding plugin, not added");			
 					
 					return;
 				}

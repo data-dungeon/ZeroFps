@@ -83,10 +83,18 @@ bool RenderState::AddPlugin(const string& strName)
 				for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it!=m_kPreRenderPlugins.end();it++)
 					if((*it)->GetName() == static_cast<PreRenderPlugin*>(pkPlugin)->GetName())
 					{
-						cerr<<"WARNING: Plugin "<<(*it)->GetName()<<" already added"<<endl;
+						cerr<<"WARNING: Plugin "<<((PreRenderPlugin*)pkPlugin)->GetName()<<" already added"<<endl;
 						delete pkPlugin;
 						return false;
 					}
+
+				//validate plugin
+				if(!((PreRenderPlugin*)pkPlugin)->Validate(*this))
+				{
+						cerr<<"WARNING: Plugin "<<((PreRenderPlugin*)pkPlugin)->GetName()<<" did not validate"<<endl;
+						delete pkPlugin;
+						return false;				
+				}
 
 				//add plugin
 				m_kPreRenderPlugins.push_back((PreRenderPlugin*)pkPlugin);
@@ -103,10 +111,18 @@ bool RenderState::AddPlugin(const string& strName)
 				for(vector<RenderPlugin*>::iterator it = m_kRenderPlugins.begin();it!=m_kRenderPlugins.end();it++)
 					if((*it)->GetName() == static_cast<RenderPlugin*>(pkPlugin)->GetName())
 					{
-						cerr<<"WARNING: Plugin "<<(*it)->GetName()<<" already added"<<endl;
+						cerr<<"WARNING: Plugin "<<((RenderPlugin*)pkPlugin)->GetName()<<" already added"<<endl;
 						delete pkPlugin;
 						return false;
 					}
+				
+				//validate plugin
+				if(!((RenderPlugin*)pkPlugin)->Validate(*this))
+				{
+						cerr<<"WARNING: Plugin "<<((RenderPlugin*)pkPlugin)->GetName()<<" did not validate"<<endl;
+						delete pkPlugin;
+						return false;				
+				}				
 				
 				//add plugin
 				m_kRenderPlugins.push_back((RenderPlugin*)pkPlugin);				
@@ -123,10 +139,18 @@ bool RenderState::AddPlugin(const string& strName)
 				for(vector<PostRenderPlugin*>::iterator it = m_kPostRenderPlugins.begin();it!=m_kPostRenderPlugins.end();it++)
 					if((*it)->GetName() == static_cast<PostRenderPlugin*>(pkPlugin)->GetName())
 					{
-						cerr<<"WARNING: Plugin "<<(*it)->GetName()<<" already added"<<endl;
+						cerr<<"WARNING: Plugin "<<((PostRenderPlugin*)pkPlugin)->GetName()<<" already added"<<endl;
 						delete pkPlugin;
 						return false;
 					}
+
+				//validate plugin
+				if(!((PostRenderPlugin*)pkPlugin)->Validate(*this))
+				{
+						cerr<<"WARNING: Plugin "<<((PostRenderPlugin*)pkPlugin)->GetName()<<" did not validate"<<endl;
+						delete pkPlugin;
+						return false;				
+				}
 
 				//add plugin			
 				m_kPostRenderPlugins.push_back((PostRenderPlugin*)pkPlugin);

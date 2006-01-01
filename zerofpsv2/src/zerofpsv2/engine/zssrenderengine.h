@@ -50,7 +50,9 @@ class ENGINE_API PreRenderPlugin : public Plugin
 		const string& GetName()	{	return m_strName;	};
 		int GetOrder()				{	return m_iOrder;	};
 		
-		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState) = 0;				
+		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState) = 0;
+		virtual bool Validate(const RenderState& kRenderState) {	return true;};
+				
 		friend class RenderState;
 };
 
@@ -72,6 +74,8 @@ class ENGINE_API PostRenderPlugin : public Plugin
 		int GetOrder()				{	return m_iOrder;	};
 		
 		virtual bool Call(RenderState& kRenderState) = 0;
+		virtual bool Validate(const RenderState& kRenderState) {	return true;};		
+		
 		friend class RenderState;
 };
 
@@ -96,6 +100,8 @@ class ENGINE_API RenderPlugin : public Plugin
 		int GetOrder()				{	return m_iOrder;	};
 		
 		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState) = 0;		
+		virtual bool Validate(const RenderState& kRenderState) {	return true;};
+		
 		friend class RenderState;
 };
 

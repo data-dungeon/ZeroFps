@@ -303,7 +303,7 @@ class ENGINE_API BloomPostPlugin : public PostRenderPlugin
 		~BloomPostPlugin();
 		
 		bool Call(RenderState& kRenderState);
-
+		bool Validate(const RenderState& kRenderState);
 		
 };
 Plugin* Create_BloomPostPlugin();
