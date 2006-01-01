@@ -88,16 +88,12 @@ bool RenderState::AddPlugin(const string& strName)
 						return false;
 					}
 
-				//insert plugin depending on order
-				for(vector<PreRenderPlugin*>::iterator it = m_kPreRenderPlugins.begin();it!=m_kPreRenderPlugins.end();it++)
-				{
-					if((*it)->m_iOrder >=  ((PreRenderPlugin*)pkPlugin)->m_iOrder)
-					{
-						m_kPreRenderPlugins.insert(it,(PreRenderPlugin*)pkPlugin);
-						return true;
-					}
-				}
+				//add plugin
 				m_kPreRenderPlugins.push_back((PreRenderPlugin*)pkPlugin);
+				
+				//sort
+				sort(m_kPreRenderPlugins.begin(),m_kPreRenderPlugins.end(),PreRenderSort);				
+				
 				return true;
 			}
 			
@@ -111,16 +107,13 @@ bool RenderState::AddPlugin(const string& strName)
 						delete pkPlugin;
 						return false;
 					}
-
-				//insert plugin depending on order
-				for(vector<RenderPlugin*>::iterator it = m_kRenderPlugins.begin();it!=m_kRenderPlugins.end();it++)
-					if((*it)->m_iOrder >=  ((RenderPlugin*)pkPlugin)->m_iOrder)
-					{
-						m_kRenderPlugins.insert(it,(RenderPlugin*)pkPlugin);
-						return true;
-					}				
 				
-				m_kRenderPlugins.push_back((RenderPlugin*)pkPlugin);
+				//add plugin
+				m_kRenderPlugins.push_back((RenderPlugin*)pkPlugin);				
+				
+				//sort
+				sort(m_kRenderPlugins.begin(),m_kRenderPlugins.end(),RenderSort);
+				
 				return true;
 			}
 			
@@ -135,15 +128,11 @@ bool RenderState::AddPlugin(const string& strName)
 						return false;
 					}
 
-				//insert plugin depending on order
-				for(vector<PostRenderPlugin*>::iterator it = m_kPostRenderPlugins.begin();it!=m_kPostRenderPlugins.end();it++)
-					if((*it)->m_iOrder >=  ((PostRenderPlugin*)pkPlugin)->m_iOrder)
-					{
-						m_kPostRenderPlugins.insert(it,(PostRenderPlugin*)pkPlugin);
-						return true;
-					}						
-			
+				//add plugin			
 				m_kPostRenderPlugins.push_back((PostRenderPlugin*)pkPlugin);
+				
+				//sort
+				sort(m_kPostRenderPlugins.begin(),m_kPostRenderPlugins.end(),PostRenderSort);
 				return true;
 			}
 			

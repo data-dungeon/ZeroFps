@@ -48,8 +48,9 @@ class ENGINE_API PreRenderPlugin : public Plugin
 	public:
 		PreRenderPlugin(const string& strName,int iOrder);
 		const string& GetName()	{	return m_strName;	};
+		int GetOrder()				{	return m_iOrder;	};
 		
-		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState) = 0;
+		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState) = 0;				
 		friend class RenderState;
 };
 
@@ -68,6 +69,7 @@ class ENGINE_API PostRenderPlugin : public Plugin
 	public:
 		PostRenderPlugin(const string& strName,int iOrder);
 		const string& GetName()	{	return m_strName;	};
+		int GetOrder()				{	return m_iOrder;	};
 		
 		virtual bool Call(RenderState& kRenderState) = 0;
 		friend class RenderState;
@@ -91,6 +93,7 @@ class ENGINE_API RenderPlugin : public Plugin
 	public:
 		RenderPlugin(const string& strName,int iOrder);
 		const string& GetName()	{	return m_strName;	};		
+		int GetOrder()				{	return m_iOrder;	};
 		
 		virtual bool Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState) = 0;		
 		friend class RenderState;
@@ -107,6 +110,16 @@ class ENGINE_API RenderState
 		vector<PreRenderPlugin*>	m_kPreRenderPlugins;
 		vector<RenderPlugin*>		m_kRenderPlugins;
 		vector<PostRenderPlugin*>	m_kPostRenderPlugins;
+		
+		struct PreRenderSortS : public binary_function<PreRenderPlugin*, PreRenderPlugin*, bool> 	{
+			bool operator()(PreRenderPlugin* x, PreRenderPlugin* y) { return x->GetOrder() < y->GetOrder(); };
+		} PreRenderSort;		
+		struct RenderSortS : public binary_function<RenderPlugin*, RenderPlugin*, bool> 	{
+			bool operator()(RenderPlugin* x, RenderPlugin* y) { return x->GetOrder() < y->GetOrder(); };
+		} RenderSort;		
+		struct PostRenderSortS : public binary_function<PostRenderPlugin*, PostRenderPlugin*, bool> 	{
+			bool operator()(PostRenderPlugin* x, PostRenderPlugin* y) { return x->GetOrder() < y->GetOrder(); };
+		} PostRenderSort;		
 		
 	public:
 	
