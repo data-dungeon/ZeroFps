@@ -397,88 +397,17 @@ void MistClient::RegisterPropertys()
 
 }
 
-void MistClient::RenderInterface(void)
+void MistClient::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState& kRenderState)
 {
 	//draw current target marker
 	if(m_iTargetID != -1)
-		DrawTargetMarker();
+		AddTargetMarkerRP(kRenderPackages);
 
-// 	//draw under cursor marker
-// 	if(m_iPickedEntityID != -1 && m_bGuiCapture)
-// 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-// 			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item"))
-// 			{
-// 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
-// 				{
-// 					if(pkItem->GetEntity()->GetParent()->IsZone())
-// 						DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
-// 				}
-// 				else
-// 				{			
-// 					DrawMouseOverMarker(pkEnt->GetWorldPosV(),pkEnt->GetRadius());
-// 				}
-// 			}
+}
 
-// 	static int iCurrentMarked = -1;
-// 	static float fOldScale =-1;
-// 	if(m_iPickedEntityID != iCurrentMarked && m_bGuiCapture)
-// 	{
-// 		if(m_pkMakerEntity == NULL)
-// 		{
-// 			m_pkMakerEntity = m_pkEntityManager->CreateEntity();
-// 			m_pkMakerEntity->SetParent(m_pkEntityManager->GetWorldEntity());
-// 			m_pkMakerEntity->AddProperty("P_Mad");
-// 			m_pkMakerEntity->SetInterpolate(false);
-// 		}
-// 	
-// 		if(iCurrentMarked != -1)
-// 		{
-// 			if(P_Mad* pkMad = (P_Mad*)m_pkMakerEntity->GetProperty("P_Mad"))
-// 			{
-// 				pkMad->SetVisible(false);
-// 			}
-//  			iCurrentMarked = -1;		
-// // 			if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID(iCurrentMarked,"P_Mad"))
-// // 			{
-// // 				pkMad->SetScale(fOldScale);
-// // 			}		
-// // 			iCurrentMarked = -1;
-// 		} 		
-//  		
-//  		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-//  		{
-// 			if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty") || pkEnt->GetProperty("P_Item"))
-// 			{			
-//  				if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_Mad"))
-//  				{						
-// 					if(P_Mad* pkMarkerMad = (P_Mad*)m_pkMakerEntity->GetProperty("P_Mad"))
-// 					{
-// 						cout<<"setting crap"<<endl;
-// 						iCurrentMarked = m_iPickedEntityID;
-// 						pkMarkerMad->SetVisible(true);
-// 						pkMarkerMad->SetBase(pkMad->m_kMadFile.c_str());
-// 						pkMarkerMad->SetScale(1.1);
-// 						pkMarkerMad->Set
-// 						m_pkMakerEntity->SetWorldPosV(pkEnt->GetWorldPosV());
-// 						m_pkMakerEntity->SetLocalRotM(pkEnt->GetLocalRotM());
-// 					}				
-// 				}
-// // 				if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_Mad"))
-// // 				{
-// // 					iCurrentMarked = m_iPickedEntityID;
-// // 					fOldScale = pkMad->m_fScale;
-// // 					pkMad->SetScale(fOldScale + 0.25);
-// // 				}
-// 			}
-// 		}
-// 	}
-							
+void MistClient::RenderInterface(void)
+{	
 	m_pkPointText->Draw();
-		
-/*	Vector3 kPos = m_pkCamera->GetPos() + Get3DMouseDir(true);
-	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
-	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
-	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));	*/		
 }
 
 void MistClient::OnIdle() 
@@ -805,7 +734,7 @@ void MistClient::DrawMouseOverMarker(const Vector3& kPos,float fSize)
 
 }
 
-void MistClient::DrawTargetMarker()
+void MistClient::AddTargetMarkerRP(vector<RenderPackage*>& kRenderPackages)
 {
 	static ZMaterial* pkEnemyMarker = NULL;
 	if(!pkEnemyMarker)
@@ -840,7 +769,28 @@ void MistClient::DrawTargetMarker()
 		pkFriendMarker->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
 		pkFriendMarker->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
 	}
+
+	static RenderPackage* pkRenderPackage1 = NULL;
+	static RenderPackage* pkRenderPackage2 = NULL;
 	
+	//setup renderpackage
+	if(!pkRenderPackage1)
+	{
+		pkRenderPackage1 = new RenderPackage;	
+		pkRenderPackage1->m_kMeshData.m_kVertises.push_back(Vector3(-0.5,0,-0.5));
+		pkRenderPackage1->m_kMeshData.m_kVertises.push_back(Vector3(-0.5,0,0.5));
+		pkRenderPackage1->m_kMeshData.m_kVertises.push_back(Vector3(0.5,0,0.5));
+		pkRenderPackage1->m_kMeshData.m_kVertises.push_back(Vector3(0.5,0,-0.5));		
+		pkRenderPackage1->m_kMeshData.m_kTexture[0].push_back(Vector2(0,0));
+		pkRenderPackage1->m_kMeshData.m_kTexture[0].push_back(Vector2(0,1));
+		pkRenderPackage1->m_kMeshData.m_kTexture[0].push_back(Vector2(1,1));
+		pkRenderPackage1->m_kMeshData.m_kTexture[0].push_back(Vector2(1,0));	
+		pkRenderPackage1->m_kMeshData.m_iNrOfDataElements = 4;
+		pkRenderPackage1->m_kMeshData.m_ePolygonMode = QUADS_MODE;
+		
+		pkRenderPackage2 = new RenderPackage;
+		*pkRenderPackage2 = *pkRenderPackage1;
+	}
 	
 	
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iTargetID))
@@ -856,40 +806,33 @@ void MistClient::DrawTargetMarker()
 					bFriend = true;	
 			}	
 		
-		
-			Vector3 kPos = pkEnt->GetIWorldPosV();
-		
-
+			//set material
 			if(bFriend)
-				m_pkZShaderSystem->BindMaterial(pkFriendMarker);
+			{
+				pkRenderPackage1->m_pkMaterial = pkFriendMarker;
+				pkRenderPackage2->m_pkMaterial = pkFriendMarker;
+			}
 			else
-				m_pkZShaderSystem->BindMaterial(pkEnemyMarker);
-			
-					
-			
-			m_pkZShaderSystem->ClearGeometry();
-			m_pkZShaderSystem->AddQuadV(	Vector3(-0.5,0,-0.5),Vector3(-0.5,0,0.5),
-													Vector3(0.5,0,0.5),	Vector3(0.5,0,-0.5));
-			m_pkZShaderSystem->AddQuadUV(	Vector2(0,0)	,	Vector2(0,1),
-													Vector2(1,1)	,	Vector2(1,0));	
-		
+			{
+				pkRenderPackage1->m_pkMaterial = pkEnemyMarker;
+				pkRenderPackage2->m_pkMaterial = pkEnemyMarker;
+			}
+
+			//transform
+			pkRenderPackage1->m_kModelMatrix.Identity();		
+ 			pkRenderPackage1->m_kModelMatrix.Rotate(Vector3(0,m_pkZeroFps->GetEngineTime()*10,0));			
+ 			pkRenderPackage1->m_kModelMatrix.Scale(pkCP->GetMarkerSize() + 0.25*sin(m_pkZeroFps->GetEngineTime()*2.0) );			
+			pkRenderPackage1->m_kModelMatrix.Translate(pkEnt->GetIWorldPosV() + Vector3(0,-pkCP->GetLegLength()+0.2,0));
 				
-			m_pkZShaderSystem->MatrixPush();
-			
-			m_pkZShaderSystem->MatrixTranslate(kPos + Vector3(0,-pkCP->GetLegLength()+0.2,0));
-			m_pkZShaderSystem->MatrixScale(pkCP->GetMarkerSize());
-			m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetEngineTime()*10,0));
-			
-			//draw pointer			
-			m_pkZShaderSystem->DrawGeometry(QUADS_MODE);											
-			
- 			m_pkZShaderSystem->MatrixRotate(Vector3(0,-m_pkZeroFps->GetEngineTime()*10 * 2,0));
- 			m_pkZShaderSystem->DrawGeometry(QUADS_MODE);											
-			
-			m_pkZShaderSystem->MatrixPop();
+			pkRenderPackage2->m_kModelMatrix.Identity();		
+ 			pkRenderPackage2->m_kModelMatrix.Rotate(Vector3(0,-m_pkZeroFps->GetEngineTime()*10,0));			
+ 			pkRenderPackage2->m_kModelMatrix.Scale(pkCP->GetMarkerSize() + 0.25*sin(m_pkZeroFps->GetEngineTime()*2.0+Math::PI));			
+			pkRenderPackage2->m_kModelMatrix.Translate(pkEnt->GetIWorldPosV() + Vector3(0,-pkCP->GetLegLength()+0.2,0));
+				
+			kRenderPackages.push_back(pkRenderPackage1);
+			kRenderPackages.push_back(pkRenderPackage2);
 		}
 	}
-
 }
 
 

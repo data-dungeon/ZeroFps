@@ -36,18 +36,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 				vector<Vector3>	m_kTangentData;	
 				vector<Vector3>	m_kBiTangentData;	
 				vector<Vector4>	m_kColorData;
-				ZVertexBuffer*		m_pkVBO;		
 				
-				HeightmapArrays()
-				{
-					m_pkVBO = NULL;
-				};
-				
-				~HeightmapArrays()
-				{
-					if(m_pkVBO)
-						delete m_pkVBO;
-				}
 		};
 		
 		

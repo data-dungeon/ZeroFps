@@ -207,6 +207,8 @@ class MistClient :public Application, public ZGuiApp {
 		void RegisterResources();
 	  
 		//draw
+		void AddTargetMarkerRP(vector<RenderPackage*>& kRenderPackages);
+		
 		void DrawCrossHair();
 		void DrawTargetMarker();
 		void DrawMouseOverMarker(const Vector3& kPos,float fSize);
@@ -230,6 +232,7 @@ class MistClient :public Application, public ZGuiApp {
 		void OnHud(void);
 		void OnSystem();
 		void RenderInterface(void);
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState& kRenderState);
 
 		void RunCommand(int cmdid, const ConCommandLine* kCommand);
 				

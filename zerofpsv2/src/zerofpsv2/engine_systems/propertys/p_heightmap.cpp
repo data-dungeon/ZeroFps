@@ -197,29 +197,18 @@ void P_Heightmap::DrawTexturedHeightmap()
 		
 		m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_kMaterials[i]->GetResourcePtr()) );	
 
-// 		if(m_kDataArrays[i]->m_pkVBO)
-// 		{
-// 			m_pkZShaderSystem->DrawVertexBuffer(m_kDataArrays[i]->m_pkVBO);		
-// 		}
-// 		else
-// 		{
+		m_pkZShaderSystem->ResetPointers();
+		m_pkZShaderSystem->SetPointer(COLOR_POINTER,&( (*pkDataArrays)[i]->m_kColorData[0]));
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&((*pkDataArrays)[i]->m_kTextureData[0]));
+		m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&((*pkDataArrays)[i]->m_kNormalData[0]));
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&((*pkDataArrays)[i]->m_kVertexData[0]));
+					
+		m_pkZShaderSystem->SetPointer(TANGENT_POINTER,&((*pkDataArrays)[i]->m_kTangentData[0]));
+		m_pkZShaderSystem->SetPointer(BITANGENT_POINTER,&((*pkDataArrays)[i]->m_kBiTangentData[0]));
 		
-			m_pkZShaderSystem->ResetPointers();
-			m_pkZShaderSystem->SetPointer(COLOR_POINTER,&( (*pkDataArrays)[i]->m_kColorData[0]));
-			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,&((*pkDataArrays)[i]->m_kTextureData[0]));
-			m_pkZShaderSystem->SetPointer(NORMAL_POINTER,&((*pkDataArrays)[i]->m_kNormalData[0]));
-			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&((*pkDataArrays)[i]->m_kVertexData[0]));
-			
-// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,&((*pkDataArrays)[i]->m_kTangentData[0]));
-// 			m_pkZShaderSystem->SetPointer(TEXTURE_POINTER2,&((*pkDataArrays)[i]->m_kBiTangentData[0]));
-			
-			m_pkZShaderSystem->SetPointer(TANGENT_POINTER,&((*pkDataArrays)[i]->m_kTangentData[0]));
-			m_pkZShaderSystem->SetPointer(BITANGENT_POINTER,&((*pkDataArrays)[i]->m_kBiTangentData[0]));
-			
-			m_pkZShaderSystem->SetNrOfVertexs((*pkDataArrays)[i]->m_kVertexData.size());
-			
-			m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);		
-// 		}
+		m_pkZShaderSystem->SetNrOfVertexs((*pkDataArrays)[i]->m_kVertexData.size());
+		
+		m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);		
 		
 		if(i == 0)
 			m_pkZShaderSystem->ForceBlending(BLEND_MATERIAL);
