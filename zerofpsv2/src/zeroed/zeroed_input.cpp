@@ -423,7 +423,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 				pkObj->GetLocalPosV().PEP(kAxisZ);
 		}
 	
-		SendTranslateSelection(kMove,false);
+		SendTranslateSelection(kMove,false,m_kEntitySnaping.GetBool());
 	}
 	else 
 	{
@@ -449,9 +449,26 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			{
 				kMove = m_pkActiveCamera->GetOrthoMove(kMove);
 			}
+		
+			if(!kMove.IsZero())
+			{
+				if(m_kEntitySnaping.GetBool())
+				{
+					if( kMove.x < 0) kMove.x = -1;
+					if( kMove.x > 0) kMove.x = 1;
+					if( kMove.y < 0) kMove.y = -1;
+					if( kMove.y > 0) kMove.y = 1;
+					if( kMove.z < 0) kMove.z = -1;
+					if( kMove.z > 0) kMove.z = 1;			
+					if(!DelayCommand())
+						SendTranslateSelection(kMove,true,true);		
+				}
+				else
+					SendTranslateSelection(kMove,true);		
+			}
 		}
 
-		SendTranslateSelection(kMove,true);
+
 	}
 
 	//handle rotation
@@ -478,10 +495,10 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	}
 }
 
-void ZeroEd::SendTranslateSelection(const Vector3& kPosition,bool bRelative)
+void ZeroEd::SendTranslateSelection(const Vector3& kPosition,bool bRelative,bool bSnap)
 {
 	NetPacket kNp;				
-	Vector3 kRelativePos;
+	Vector3 kRelativePos;	
 	
 	//no selected entitys, just return
 	if(m_SelectedEntitys.empty()) return;
@@ -527,6 +544,7 @@ void ZeroEd::SendTranslateSelection(const Vector3& kPosition,bool bRelative)
 	kNp.Write_Str("move");
 	AddSelected(&kNp);
 	kNp.Write(kRelativePos);
+	kNp.Write(bSnap);
 	m_pkZeroFps->RouteEditCommand(&kNp);
 }
 

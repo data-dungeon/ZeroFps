@@ -108,6 +108,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		// zone and object edit
 		bool		m_bPlaceObjectsOnGround;
+		ConVar	m_kEntitySnaping;
 		int		m_iAutoSnapZoneCorner; // -1 = dont use
 
 		// gui stuff
@@ -200,12 +201,10 @@ class ZeroEd :public Application , public ZGuiApp {
 		//network
 		vector<ZoneData>			m_kNetworkZones;
 								
-		ConVar m_kstrLoginName;
-		ConVar m_kstrLoginPW;
+		ConVar 	m_kstrLoginName;
+		ConVar 	m_kstrLoginPW;
 
-		ConVar		k_LoginName;
 		ConFunction g_kFuncJiddra;
-
 
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
@@ -297,7 +296,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendRotateEntity(int iEntityID,const Vector3& kRot);
 		void	SendAction(int iEntityID,const string& strAction);
 		
-		void	SendTranslateSelection(const Vector3& kPosition,bool bRelative);
+		void	SendTranslateSelection(const Vector3& kPosition,bool bRelative,bool bSnap=false);
 		void	SendRotateSelection(const Vector3& kRot);
 		
 		vector<HMSelectVertex> GetAllSelectedHMVertex();

@@ -1494,14 +1494,25 @@ void ZSSZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 
 	if( szCmd == string("move"))
 	{
+		bool bSnap;
 		vector<int> kSelected = GetSelected(pkNetPacket);
 		pkNetPacket->Read(kMove);
+		pkNetPacket->Read(bSnap);
 
 		for(int i=0; i<kSelected.size(); i++) 
 		{
 			iEntId = kSelected[i];
 			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
-				pkObj->SetWorldPosV(pkObj->GetWorldPosV() + kMove);
+			{
+				Vector3 kNewPos = pkObj->GetWorldPosV() + kMove;
+				if(bSnap)
+				{
+					kNewPos.x  = Math::Round2(kNewPos.x);
+					kNewPos.y  = Math::Round2(kNewPos.y);
+					kNewPos.z  = Math::Round2(kNewPos.z);				
+				}
+				pkObj->SetWorldPosV(kNewPos);
+			}
 		}
 	}
 

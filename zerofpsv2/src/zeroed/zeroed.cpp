@@ -120,7 +120,6 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_CamSpeedScale			=  1.0;
 	m_bLockCreate				=	false;	
 	m_fHeightmapBrightness	=	0.6;
-
 	m_pkLine						=	NULL;
 
 	m_bIsSelecting				=	false;
@@ -128,7 +127,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kSelBoxCornerMax		=	Vector3(0,0,0);
 
 	// Register Variables
-	k_LoginName.Register(this, "mynajsloginname", "ostlins", "set defualt name used to login");
+	m_kEntitySnaping.Register(this,"ap_entitysnaping","0");	
 	m_kstrLoginName.Register(this, "ap_loginname","madviewclient");
 	m_kstrLoginPW.Register(this, "ap_loginpw","topsecret");
 	m_kbPlaneMovement.Register(this, "ap_planemovement","1");
