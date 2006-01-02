@@ -1004,11 +1004,6 @@ void P_Mad::GenerateModelMatrix()
 void P_Mad::SetVisible(bool bVisible)
 {
 	m_bIsVisible = bVisible;
-	
-// 	if(m_bIsVisible)
-// 		m_iSortPlace = 9;
-// 	else
-// 		m_iSortPlace = 10;
 }
 
 
@@ -1020,6 +1015,9 @@ Vector3 P_Mad::GetJointPosition(const string& strJointName)
 	
 	if(Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr())
 	{
+		//update animation
+		DoAnimationUpdate();
+	
 		//update joint positions
 		UpdateBones();
 	
