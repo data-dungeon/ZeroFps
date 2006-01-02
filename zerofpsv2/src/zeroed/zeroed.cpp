@@ -2021,50 +2021,69 @@ string ZeroEd::GetZoneEnviroment()
 	return env;
 }
 
-bool ZeroEd::PlaceObjectOnGround(int iObjectID)
+bool ZeroEd::PlaceSelectionOnGround()
 {
-	Entity* pkObj = m_pkEntityManager->GetEntityByID(iObjectID);		
-	if(pkObj) 
-	{
-		ZoneData* pkData = m_pkEntityManager->GetZoneData(pkObj->GetCurrentZone());		
-		if(pkData == NULL || pkData->m_pkZone == NULL)
-			return false;
+	if(m_SelectedEntitys.empty()) return false;
 
-		if(P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->GetProperty("P_Heightmap"))
+	
+	//avrage center
+	Vector3 kCenter;
+	
+	//First find avrage center	
+	int iObjects = 0;
+	for(set<int>::iterator it = m_SelectedEntitys.begin();it != m_SelectedEntitys.end();it++)
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(*it))
 		{
-			Vector3 kPos = pkObj->GetWorldPosV();
-			kPos.y = pkHM->GetHeight(kPos.x,kPos.z);			
-			pkObj->SetWorldPosV(kPos);
-			return true;
-		}
-
-		if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))
-		{
-			if(pkMad->TestLine(pkObj->GetWorldPosV(),Vector3(0,-1,0)))
-			{
-				Vector3 kPos = pkMad->GetLastColPos();
-				
-				pkObj->SetWorldPosV(kPos);
-				return true;
-			}
-		}
+			if(pkEnt->GetRelativeOri()) continue;		
 		
-		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
-		if(pkMesh == NULL)
-			return false;
-
-		NaviMeshCell* pkCurrCell = pkMesh->GetCell(pkObj->GetLocalPosV());
-		if(pkCurrCell)
-		{
-			Vector3 pos = pkObj->GetLocalPosV(); pos.y = pkCurrCell->m_kVertex->y;
-			pkObj->SetLocalPosV(pos); 
-			m_iCurrentObject = -1;
+			iObjects++;
+		
+			if(it ==  m_SelectedEntitys.begin()) 
+				kCenter = pkEnt->GetLocalPosV();
+			else
+				kCenter += pkEnt->GetLocalPosV();
+				
 		}
+	kCenter *= 1.0/iObjects;	
 
+	
+	ZoneData* pkData = m_pkEntityManager->GetZone(kCenter);		
+	if(pkData == NULL || pkData->m_pkZone == NULL)
+		return false;
+
+	if(P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->GetProperty("P_Heightmap"))
+	{
+		Vector3 kPos = kCenter;
+		kPos.y = pkHM->GetHeight(kPos.x,kPos.z) ;
+						
+		SendTranslateSelection(kPos,false);
 		return true;
 	}
 
-	return false;
+	if(P_Mad* pkMad = (P_Mad*)pkData->m_pkZone->GetProperty("P_Mad"))
+	{
+		if(pkMad->TestLine(kCenter,Vector3(0,-1,0)))
+		{
+			Vector3 kPos = pkMad->GetLastColPos();
+			
+			SendTranslateSelection(kPos,false);
+			return true;
+		}
+	}
+	
+	;
+	if(P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh"))
+	{
+
+		NaviMeshCell* pkCurrCell = pkMesh->GetCell(kCenter);
+		if(pkCurrCell)
+		{
+			Vector3 kPos = kCenter; 
+			kPos.y = pkCurrCell->m_kVertex->y;
+			SendTranslateSelection(kPos,false);
+			return true;
+		}
+	}
 }
 
 void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)

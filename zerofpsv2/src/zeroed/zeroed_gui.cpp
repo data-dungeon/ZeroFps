@@ -309,7 +309,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			{
 				m_bPlaceObjectsOnGround = IsButtonChecked((char*)strWndClicked.c_str());
 				if(m_bPlaceObjectsOnGround)
-					PlaceObjectOnGround(m_iCurrentObject);
+					PlaceSelectionOnGround();
 			}
          else
 		   if(strWndClicked == "AddToScriptBn")
@@ -541,8 +541,9 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "Menu_PlaceOnGroup")
 			{
-				if(m_iCurrentObject)
-					PlaceObjectOnGround(m_iCurrentObject);
+				PlaceSelectionOnGround();
+// 				if(m_iCurrentObject)
+// 					PlaceObjectOnGround(m_iCurrentObject);
 			}
 		}
 

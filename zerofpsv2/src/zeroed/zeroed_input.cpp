@@ -311,6 +311,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("paste") && !DelayCommand())	EditRunCommand(FID_PASTE);
 	if(m_pkInputHandle->VKIsDown("clone") && !DelayCommand())	EditRunCommand(FID_CLONE);	
 	
+	if(m_pkInputHandle->VKIsDown("placeonground") && !DelayCommand())	PlaceSelectionOnGround();	
+	
+	
 	if(m_pkInputHandle->VKIsDown("scale") && !DelayCommand())	
 	{
 		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
