@@ -36,7 +36,7 @@ Property* Create_LinkToJoint();
 
 ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps") 
 {
-	m_kVersion.Set(0,4,4);
+	m_kVersion.Set(0,5,0);
 
 	// StartUp SDL
 	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)

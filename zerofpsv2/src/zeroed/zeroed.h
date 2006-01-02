@@ -99,6 +99,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			HMAP_STITCH,
 			HMAP_SMOOTH, 
 			HMAP_MAX,
+			HMAP_DRAWBRIGHTNESS,
 		};
 
 
@@ -194,7 +195,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		float 						m_fHMOutRadius;
 		float 						m_fHMStrength;
 		string						m_strHeightmapMaterial;
-
+		float							m_fHeightmapBrightness;
+		
 		//network
 		vector<ZoneData>			m_kNetworkZones;
 								
@@ -270,6 +272,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
 		void	HMModifyCommand(float fSize);
 		void  HMDrawTexture(const string& strMaterial);
+		void	HMDrawBrightness(float fBrightness);	
 		void  HMCommand(HMapEditMode eHMCmd, float fSample = 0);
 
 

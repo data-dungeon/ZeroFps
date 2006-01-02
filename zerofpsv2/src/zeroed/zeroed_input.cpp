@@ -59,6 +59,15 @@ void ZeroEd::Input_EditTerrain()
 	
 			break;
 			
+		case HMAP_DRAWBRIGHTNESS: 
+			if(m_pkInputHandle->VKIsDown("hmraise"))		
+				HMDrawBrightness( m_fHeightmapBrightness); 	
+			if(m_pkInputHandle->VKIsDown("hmlower"))		
+				HMDrawBrightness( 1); 	
+	
+	
+			break;			
+			
 		case HMAP_EDITVERTEX: 
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
 				HMModifyCommand(5); 

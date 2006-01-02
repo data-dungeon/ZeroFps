@@ -100,13 +100,14 @@ void ZeroEd::SetupGui_Terrain()
 {
 	// Add Terrain Commands.
 	ZGuiCombobox* pkEditMode = dynamic_cast<ZGuiCombobox*>(GetWnd("TerrEditMode"));
-	pkEditMode->AddItem("Paint",			0);	// HMAP_EDITVERTEX
+	pkEditMode->AddItem("Height",			0);	// HMAP_EDITVERTEX
 	pkEditMode->AddItem("Flatten",		1);	// HMAP_DRAWSMFLAT
 	pkEditMode->AddItem("Material",		2);	// HMAP_DRAWMASK
 	pkEditMode->AddItem("Visibility",	3);	// HMAP_DRAWVISIBLE
 	pkEditMode->AddItem("Smoothing",		4);	// HMAP_SMOOTH
 	pkEditMode->AddItem("Stitch",			5);	// HMAP_STITCH
-	pkEditMode->SetNumVisibleRows( 6 );
+	pkEditMode->AddItem("Brightness",	6);	// HMAP_DRAWMASK		
+	pkEditMode->SetNumVisibleRows( 7 );
 
 	//add terrain materials
 	
@@ -693,6 +694,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 		if(iListboxIndex == 3)		 m_iHMapEditMode = HMAP_DRAWVISIBLE;	
 		if(iListboxIndex == 4)		 m_iHMapEditMode = HMAP_SMOOTH;
 		if(iListboxIndex == 5)		 m_iHMapEditMode = HMAP_STITCH;
+		if(iListboxIndex == 6)		 m_iHMapEditMode = HMAP_DRAWBRIGHTNESS;	
 	}
 
 	if(strMainWndName == "TerrTexture")

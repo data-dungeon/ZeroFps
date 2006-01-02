@@ -116,9 +116,10 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bRemoteEditing			=	false;
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
-	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
+	m_iHMapEditMode			=  HMAP_DRAWBRIGHTNESS; 
 	m_CamSpeedScale			=  1.0;
 	m_bLockCreate				=	false;	
+	m_fHeightmapBrightness	=	0.6;
 
 	m_pkLine						=	NULL;
 
@@ -1047,6 +1048,27 @@ void ZeroEd::HMDrawTexture(const string& strMaterial)
 	}
 }
 
+void ZeroEd::HMDrawBrightness(float fBrightness)
+{
+ 	static vector<HMSelectionData> kSelVertex;
+
+	//loop all heightmaps
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+ 		kSelVertex.clear();
+	
+		if(P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(*itEntity,"P_Heightmap"))
+		{
+			//get selected vertexes 
+			hmrp->GetSelection(m_kDrawPos, m_fHMStrength, m_fHMInRadius,m_fHMOutRadius,&kSelVertex);			
+		
+			if(kSelVertex.size() > 0) 
+				hmrp->SetBrightness(&kSelVertex,fBrightness);
+		}		
+	}
+}
+
+
 void ZeroEd::HMModifyCommand(float fSize)
 {
  	static vector<HMSelectionData> kSelVertex;
@@ -1063,10 +1085,7 @@ void ZeroEd::HMModifyCommand(float fSize)
 		
 			if(kSelVertex.size() > 0) 
 			{
-// 				if(fSize == 0.0)
-// 					hmrp->Smooth(&kSelVertex);
-// 				else
-					hmrp->Modify(&kSelVertex, fSize * m_pkZeroFps->GetFrameTime());
+				hmrp->Modify(&kSelVertex, fSize * m_pkZeroFps->GetFrameTime());
 			}		
 		}		
 	}

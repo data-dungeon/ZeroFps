@@ -82,6 +82,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		vector<ZFResourceHandle*>		m_kMaterials;		
 		vector<float>						m_kHeightData;
 		vector<signed char>				m_kTextureIDs;
+		vector<unsigned char>			m_kBrightness;
 			
 		vector<vector<HeightmapArrays*> >	m_kLodLevels;
 		
@@ -112,6 +113,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void Smooth();
 		void Modify(vector<HMSelectionData>* kSelectionData,float fMod);
 		void SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial);
+		void SetBrightness(vector<HMSelectionData>* kSelectionData,float fBrightness);
 
 		void SetSize(int iWidth,int iHeight);
 		void SetMaxValue(float fMax);

@@ -277,11 +277,15 @@ void P_Enviroment::UpdateEnviroment()
 	//get camera
 	if(Camera* pkCam = m_pkZeroFps->GetRenderCamera("main"))
 	{
+		
+ 		pkCam->SetClearColor(kCurrentFogColor);
+	 	pkCam->SetFog(kCurrentFogColor,fCurrentStart,fCurrentStop,true);			
+		
 		//FOG
-		pkCam->m_kRenderState.m_kClearColor = kCurrentFogColor;
+/*		pkCam->m_kRenderState.m_kClearColor = kCurrentFogColor;
 		pkCam->m_kRenderState.m_kFogColor = kCurrentFogColor;
 		pkCam->m_kRenderState.m_fFogNear = fCurrentStart;
-		pkCam->m_kRenderState.m_fFogFar = fCurrentStop;					
+		pkCam->m_kRenderState.m_fFogFar = fCurrentStop;					*/
 		
 		//skybox
 		static string strCurentSkybox;			

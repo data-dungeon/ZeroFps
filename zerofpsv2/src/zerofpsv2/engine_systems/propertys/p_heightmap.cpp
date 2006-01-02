@@ -8,7 +8,7 @@ P_Heightmap::P_Heightmap() : Property("P_Heightmap")
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-	m_iVersion = 3;
+	m_iVersion = 4;
 	m_iSortPlace = 0;
 	m_bSortDistance = true;
 
@@ -22,7 +22,7 @@ P_Heightmap::P_Heightmap() : Property("P_Heightmap")
 
 	m_fScale = 2.0;
 	m_fMaxValue = 100;
-	m_iLod = 0;
+	m_iLod = 0; 	
 	
 	ZFResourceHandle* pkTempMat = new ZFResourceHandle;
 	pkTempMat->SetRes("heightmap/default.zlm");	
@@ -503,16 +503,18 @@ void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
 	static float fTexMod = 0.5;
 	static Vector4 kColor;	
 	
+	float fBrightness = (float(m_kBrightness[y*m_iRows + x]) / 255.0);
+	
 	if(iID == 0)
 	{
-		kColor.Set(1,1,1,1);
+		kColor.Set(fBrightness,fBrightness,fBrightness,1);
 	}
 	else
 	{
 		if(m_kTextureIDs[y*m_iRows + x] == iID)
-			kColor.Set(1,1,1,2);
+			kColor.Set(fBrightness,fBrightness,fBrightness,2);
 		else
-			kColor.Set(1,1,1,0);
+			kColor.Set(fBrightness,fBrightness,fBrightness,0);
 	}		
 
 	//color
@@ -644,6 +646,13 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
 	m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
 	
+	
+	m_kBrightness.clear();
+	for(int y = 0;y<m_iCols;y++)
+		for(int x = 0;x<m_iRows;x++)
+		{					
+			m_kBrightness.push_back(255);
+		}
 	
 	m_kTextureIDs.clear();
 	for(int y = 0;y<m_iCols;y++)
@@ -793,6 +802,17 @@ void P_Heightmap::PurgeUnusedMaterials()
 			iID = -1;
 		}
 	}	
+}
+
+void P_Heightmap::SetBrightness(vector<HMSelectionData>* kSelectionData,float fBrightness)
+{
+	unsigned char cBrightness = static_cast<unsigned char>(255.0*fBrightness);
+
+	for(int i = 0;i<kSelectionData->size();i++)
+		m_kBrightness[(*kSelectionData)[i].y * m_iRows + (*kSelectionData)[i].x] = cBrightness;	
+
+	ResetAllNetUpdateFlags();
+	m_bHaveRebuilt = false;
 }
 
 void P_Heightmap::SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial)
@@ -1017,6 +1037,7 @@ void P_Heightmap::Save(ZFIoInterface* pkPackage)
 	{
 		pkPackage->Write(m_kHeightData[i]);		
 		pkPackage->Write(m_kTextureIDs[i]);
+		pkPackage->Write(m_kBrightness[i]);
 	}
 
 	//save all materials
@@ -1120,6 +1141,7 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			signed char 	cTex;
 			m_kHeightData.clear();
 			m_kTextureIDs.clear();
+			m_kBrightness.clear();
 			
 			pkPackage->Read(iSize);	
 			for(int i = 0;i<iSize;i++)
@@ -1129,6 +1151,8 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			
 				pkPackage->Read(cTex);
 				m_kTextureIDs.push_back(cTex);					
+				
+				m_kBrightness.push_back(255);					
 			}
 		
 		
@@ -1156,8 +1180,68 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_bHaveRebuilt = false;
 			break;
 		}				
-	}
 	
+		case 4:
+		{
+			pkPackage->Read(m_iWidth);
+			pkPackage->Read(m_iHeight);
+			pkPackage->Read(m_fScale);
+			pkPackage->Read(m_fMaxValue);
+		
+			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
+		
+			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
+			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
+		
+			int 				iSize;
+			float 			fVal;
+			signed char 	cTex;
+			unsigned char 	cBrightness;
+			m_kHeightData.clear();
+			m_kTextureIDs.clear();
+			m_kBrightness.clear();
+
+			
+			pkPackage->Read(iSize);	
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read(fVal);
+				m_kHeightData.push_back(fVal);
+			
+				pkPackage->Read(cTex);
+				m_kTextureIDs.push_back(cTex);
+									
+				pkPackage->Read(cBrightness);
+				m_kBrightness.push_back(cBrightness);																		
+			}
+		
+		
+			//load all materials
+			
+			//remove all old materials
+			for(int i = 0;i<m_kMaterials.size();i++)
+				delete m_kMaterials[i];			
+			m_kMaterials.clear();
+			
+			
+			string strMaterialName;
+			pkPackage->Read(iSize);									
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read_Str(strMaterialName);
+					
+				ZFResourceHandle* pkTempMat = new ZFResourceHandle;
+				pkTempMat->SetRes(strMaterialName);	
+					
+				m_kMaterials.push_back(pkTempMat);
+			}				
+			
+		
+			m_bHaveRebuilt = false;
+			break;
+		}					
+	}
 }
 
 void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
@@ -1177,6 +1261,7 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 	{
 		pkNetPacket->Write(m_kHeightData[i]);
 		pkNetPacket->Write(m_kTextureIDs[i]);
+		pkNetPacket->Write(m_kBrightness[i]);		
 	}
 	
 // 	cout<<"size:"<<pkNetPacket->m_iLength<<endl;
@@ -1198,7 +1283,6 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 	pkNetPacket->Read(m_fScale);
 
 	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-	//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
 	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
 
 	m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
@@ -1206,9 +1290,11 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 
 	int 				iSize;
 	float 			fVal;
-	char 				cTex;
+	signed char 	cTex;
+	unsigned char	cBrightness;
 	m_kHeightData.clear();
 	m_kTextureIDs.clear();
+	m_kBrightness.clear();
 	
 	pkNetPacket->Read(iSize);	
 	for(int i = 0;i<iSize;i++)
@@ -1219,6 +1305,8 @@ void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 		pkNetPacket->Read(cTex);
 		m_kTextureIDs.push_back(cTex);
 		
+		pkNetPacket->Read(cBrightness);
+		m_kBrightness.push_back(cBrightness);	
 	}
 
 
