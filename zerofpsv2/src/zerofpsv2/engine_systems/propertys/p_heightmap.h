@@ -22,6 +22,13 @@ class ENGINE_SYSTEMS_API HMSelectionData
 		Vector3			m_kWorld;			// World coo of this hmap vertex.
 };
 
+class ENGINE_SYSTEMS_API Vegitation
+{
+	public:
+		ZMaterial*					m_kMaterial;
+		vector<RenderPackage>	m_kRenderPackages;
+};
+
 
 class ENGINE_SYSTEMS_API P_Heightmap : public Property 
 {
@@ -72,6 +79,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		vector<float>						m_kHeightData;
 		vector<signed char>				m_kTextureIDs;
 		vector<unsigned char>			m_kBrightness;
+
 			
 		vector<vector<HeightmapArrays*> >	m_kLodLevels;
 		
@@ -84,6 +92,8 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		
 		signed char GetMaterialID(const string& strMaterial);
 		void PurgeUnusedMaterials();
+		
+		void BuildVegitation();
 		
 	public:
 		P_Heightmap();

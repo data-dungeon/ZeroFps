@@ -1054,6 +1054,8 @@ Matrix4 P_Mad::GetJointRotation(const string& strJointName)
 	
 	if(Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr())
 	{
+		//update animation
+		DoAnimationUpdate();
 	
 		//update joint positions
 		UpdateBones();

@@ -107,6 +107,11 @@ void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,cons
 
 }
 
+void P_Heightmap::BuildVegitation()
+{
+
+}
+
 void P_Heightmap::Update()
 {
 // 	if(!( (m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_CASTSHADOW ||
