@@ -137,6 +137,12 @@ void P_Heightmap::BuildVegitation()
 		
 	for(int i = 0;i<m_kMaterials.size();i++)
 	{
+		if(!m_kMaterials[i]->IsValid())
+		{
+			cerr<<"bad material"<<endl;
+			continue;
+		}
+	
 		ZMaterial* pkMaterial = (ZMaterial*)m_kMaterials[i]->GetResourcePtr();
 				
 		string strMaterial = pkMaterial->GetParameterValue("vegitation-material");
