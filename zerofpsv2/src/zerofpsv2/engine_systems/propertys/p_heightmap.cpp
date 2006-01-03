@@ -8,7 +8,7 @@ P_Heightmap::P_Heightmap() : Property("P_Heightmap")
 	m_bNetwork = true;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-	m_iVersion = 4;
+	m_iVersion = 5;
 	m_iSortPlace = 0;
 	m_bSortDistance = true;
 
@@ -32,7 +32,7 @@ P_Heightmap::P_Heightmap() : Property("P_Heightmap")
 
 void P_Heightmap::Init()
 {
-	SetSize(4,4);
+	SetSize(4);
 }
 
 P_Heightmap::~P_Heightmap()
@@ -46,12 +46,15 @@ P_Heightmap::~P_Heightmap()
 		for(int j = 0;j<m_kLodLevels[i].size();j++)			
 			delete m_kLodLevels[i][j];
 
+	//clear vegitation
+	for(int i = 0;i<m_kVegitation.size();i++)
+		delete m_kVegitation[i];		
 }
 
 void P_Heightmap::SetMaxValue(float fMax)							
 {
 	m_fMaxValue = fMax;	
-	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fExtremeMax,m_iWidth/2.0));
+	m_pkEntity->SetLocalAABB(Vector3(-m_iSize/2.0,m_fExtremeMin,-m_iSize/2.0),Vector3(m_iSize/2.0,m_fExtremeMax,m_iSize/2.0));
 }
 
 void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
@@ -59,14 +62,14 @@ void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,cons
 	if(!m_bHaveRebuilt)
 		BuildTextureArrays();
 	
-	if(!kRenderState.m_kFrustum.CubeInFrustum(	m_pkEntity->GetWorldPosV() + Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iHeight/2.0),
-																m_pkEntity->GetWorldPosV() + Vector3(m_iWidth/2.0,m_fExtremeMax,m_iHeight/2.0)))
+	if(!kRenderState.m_kFrustum.CubeInFrustum(	m_pkEntity->GetWorldPosV() + Vector3(-m_iSize/2.0,m_fExtremeMin,-m_iSize/2.0),
+																m_pkEntity->GetWorldPosV() + Vector3(m_iSize/2.0,m_fExtremeMax,m_iSize/2.0)))
 		return;
 
 
 	
 	//calculate lod level
-	float fDistance =kRenderState.m_kCameraPosition.DistanceTo(m_pkEntity->GetWorldPosV()) - m_iWidth/2.0;		
+	float fDistance =kRenderState.m_kCameraPosition.DistanceTo(m_pkEntity->GetWorldPosV()) - m_iSize/2.0;		
 	
 	m_iLod = 3;
 	if(fDistance < m_pkZeroFps->GetViewDistance()*0.8)
@@ -78,6 +81,23 @@ void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,cons
 
 	if(m_iLod < 0) m_iLod = 0;
 	if(m_iLod >= m_kLodLevels.size()) m_iLod = m_kLodLevels.size()-1;	
+	
+	
+	
+	if(m_iLod <= 1 && m_pkZeroFps->GetVegetation()) 
+	{
+		float fDistance = m_pkZeroFps->GetVegetationDistance();
+	
+		for(int i = 0;i<m_kVegitation.size();i++)
+		{
+			for(int j = 0;j<m_kVegitation[i]->m_kRenderPackages.size();j++)
+			{
+				if(kRenderState.m_kCameraPosition.DistanceTo(m_kVegitation[i]->m_kRenderPackages[j]->m_kCenter) < fDistance)
+					kRenderPackages.push_back(m_kVegitation[i]->m_kRenderPackages[j]);
+			}
+		}
+	}
+	
 	
 	vector<HeightmapArrays*>& kDataArrays = m_kLodLevels[m_iLod];
 		
@@ -97,8 +117,7 @@ void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,cons
 	
 		m_kRenderPackages[i].m_kModelMatrix.Identity();
 		m_kRenderPackages[i].m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());
-		m_kRenderPackages[i].m_kModelMatrix*= m_pkEntity->GetWorldRotM();
-		m_kRenderPackages[i].m_kModelMatrix.Translate(-Vector3(m_iWidth/2.0,0,m_iHeight/2.0));	
+		m_kRenderPackages[i].m_kModelMatrix.Translate(-Vector3(m_iSize/2.0,0,m_iSize/2.0));	
 		m_kRenderPackages[i].m_kCenter = m_pkEntity->GetWorldPosV();
 		
 		
@@ -109,6 +128,170 @@ void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,cons
 
 void P_Heightmap::BuildVegitation()
 {
+	Vector3 kEntPos = m_pkEntity->GetWorldPosV();	
+
+	//clear vegitation
+	for(int i = 0;i<m_kVegitation.size();i++)
+		delete m_kVegitation[i];		
+	m_kVegitation.clear();
+
+
+	for(int i = 0;i<m_kMaterials.size();i++)
+	{
+		ZMaterial* pkMaterial = (ZMaterial*)m_kMaterials[i]->GetResourcePtr();
+				
+		string strMaterial = pkMaterial->GetParameterValue("vegitation-material");
+		string strHeight = pkMaterial->GetParameterValue("vegitation-height");
+		string strAmount = pkMaterial->GetParameterValue("vegitation-amount");
+		
+		if(strMaterial != "none")
+		{		
+			float fHeight = 0.5;
+			float fAmount = 2;
+			
+			if(strHeight != "none")
+				fHeight = atof(strHeight.c_str());
+			if(strAmount != "none")
+				fAmount = atof(strAmount.c_str());
+		
+		
+		
+		
+			//create new vegitation
+			Vegitation* pkNewVeg = new Vegitation;		
+			m_kVegitation.push_back(pkNewVeg);								
+			
+			pkNewVeg->m_pkMaterial = new ZFResourceHandle;
+			pkNewVeg->m_pkMaterial->SetRes( strMaterial );						
+			
+			if(!pkNewVeg->m_pkMaterial->IsValid())
+			{
+				cerr<<"WARNING: vegitation material "<<strMaterial<<" not found"<<endl;
+				delete pkNewVeg;
+				continue;
+			}
+			
+			
+			int iPatchSize = 4;
+			int iPatches = m_iRows / iPatchSize;			
+			for(int pz = 0;pz<iPatches;pz++)
+			{
+				for(int px = 0;px<iPatches;px++)
+				{
+					RenderPackage* pkNewRP = new RenderPackage;
+								
+					float fAvrageY = 0;
+					int iexes = 0;
+								
+								
+					int iAmount = iPatchSize*iPatchSize*fAmount;
+					for(int n = 0;n<iAmount;n++)
+					{
+						float x = Math::Randomf(iPatchSize) + px*iPatchSize;
+						float z = Math::Randomf(iPatchSize) + pz*iPatchSize;
+						
+						int iX = x;
+						int iZ = z;
+						
+						if((m_kTextureIDs[iZ*m_iRows+iX]			==i)+
+							(m_kTextureIDs[iZ*m_iRows+iX+1] 		==i)+
+							(m_kTextureIDs[(iZ+1)*m_iRows+iX] 	==i)+
+							(m_kTextureIDs[(iZ+1)*m_iRows+iX+1]	==i) >= 3)
+						{
+							x = (x*m_fScale) - (m_iSize/2.0) + kEntPos.x;
+							z = (z*m_fScale) - (m_iSize/2.0) + kEntPos.z;					
+							float y = GetHeight(x,z);
+							
+							Vector3 kPos(x,y,z) ;
+							
+							//avrage Y pos calculation
+							if(iexes == 0)	
+								fAvrageY = y;
+							else
+								fAvrageY += y;
+								
+							iexes++;
+						
+
+							AddVegitable(*pkNewRP,kPos,fHeight);
+						}
+					}
+						
+					if(pkNewRP->m_kMeshData.m_kVertises.size() == 0)
+					{
+						delete pkNewRP;
+						continue;				
+					}
+						
+					pkNewVeg->m_kRenderPackages.push_back(pkNewRP);																
+						
+					pkNewRP->m_pkMaterial = (ZMaterial*)pkNewVeg->m_pkMaterial->GetResourcePtr();
+					pkNewRP->m_pkLightProfile = &m_kLightProfile;
+							
+					pkNewRP->m_kCenter = Vector3(	(px*iPatchSize+iPatchSize/2.0) * m_fScale+ (kEntPos.x - m_iSize/2.0),
+															fAvrageY / iexes,
+															(pz*iPatchSize+iPatchSize/2.0) * m_fScale+ (kEntPos.z - m_iSize/2.0));
+							
+					pkNewRP->m_kMeshData.m_iNrOfDataElements = pkNewRP->m_kMeshData.m_kVertises.size();
+					pkNewRP->m_kMeshData.m_ePolygonMode = QUADS_MODE;
+				}						
+			}
+		}
+	}
+}
+
+void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight)
+{
+	static Vector2 kUV1(0,1);
+	static Vector2 kUV2(1,1);
+	static Vector2 kUV3(1,0);
+	static Vector2 kUV4(0,0);
+
+	static Matrix3 kRotate;
+	kRotate.Identity();
+	kRotate.Rotate( 0,Math::Randomf(360),0);
+
+
+	kPos.y -= 0.2;
+
+	float w = 0.5+Math::Randomf(0.3);
+	float h = fHeight+Math::Randomf(fHeight*0.25)+0.2;
+
+	//cross vertises
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(-w,h,-w)));
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(w,h,w)));
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(w,0,w)));		
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(-w,0,-w)));		
+	
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(-w,h,w)));
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(w,h,-w)));
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(w,0,-w)));		
+	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(-w,0,w)));		
+
+	
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV1);
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV2);
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV3);
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV4);
+
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV1);
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV2);
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV3);
+	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV4);
+
+	for(int z=0;z<8;z++)
+		kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+
+
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
+	
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
 
 }
 
@@ -121,8 +304,8 @@ void P_Heightmap::Update()
 	if(!( m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_SHADOWED))
 		return;
 
-	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(	m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0),
-																				m_pkEntity->GetWorldPosV() + Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0)))
+	if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(	m_pkEntity->GetWorldPosV() - Vector3(m_iSize/2.0,m_fMaxValue,m_iSize/2.0),
+																				m_pkEntity->GetWorldPosV() + Vector3(m_iSize/2.0,m_fMaxValue,m_iSize/2.0)))
 		return;
 
 
@@ -134,8 +317,8 @@ void P_Heightmap::Update()
 		static Vector3 kPos;
 		kPos = m_pkEntity->GetWorldPosV();
 		//occulusion test
-		if(m_kOCTests[m_pkZeroFps->GetCam()].Visible(kPos-Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0),
-									kPos+Vector3(m_iWidth/2.0,m_fMaxValue,m_iHeight/2.0)))
+		if(m_kOCTests[m_pkZeroFps->GetCam()].Visible(kPos-Vector3(m_iSize/2.0,m_fMaxValue,m_iSize/2.0),
+									kPos+Vector3(m_iSize/2.0,m_fMaxValue,m_iSize/2.0)))
 		{
 			//update light					
 		 	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV(),GetEntity()->GetRadius());					
@@ -168,7 +351,7 @@ void P_Heightmap::DrawTexturedHeightmap()
 	//calculate lod level
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_CASTSHADOW)
 	{
-		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_iWidth/2.0;		
+		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_pkEntity->GetWorldPosV()) - m_iSize/2.0;		
 		//m_iLod = (fDistance/100) * 3;
 	
 		m_iLod = 3;
@@ -187,7 +370,7 @@ void P_Heightmap::DrawTexturedHeightmap()
 	m_pkZShaderSystem->MatrixPush();	
 	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV()  );
 	m_pkZShaderSystem->MatrixMult(m_pkEntity->GetWorldRotM());	
-	m_pkZShaderSystem->MatrixTranslate(- Vector3(m_iWidth/2.0,0,m_iHeight/2.0));
+	m_pkZShaderSystem->MatrixTranslate(- Vector3(m_iSize/2.0,0,m_iSize/2.0));
 
 	vector<HeightmapArrays*>* pkDataArrays = &m_kLodLevels[m_iLod];
 	
@@ -243,6 +426,10 @@ void P_Heightmap::BuildTextureArrays()
 {
 	m_bHaveRebuilt = true;
 
+	//create vegitation
+	BuildVegitation();
+
+
 	//make a new material with no blending
 	m_kBottom = *(ZMaterial*)(m_kMaterials[0]->GetResourcePtr());
 	m_kBottom.GetPass(0)->m_bBlend = false;			
@@ -255,7 +442,7 @@ void P_Heightmap::BuildTextureArrays()
 	FindExtremeValues(m_fExtremeMax,m_fExtremeMin);
 
 	//update AABB
-	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iWidth/2.0),Vector3(m_iWidth/2.0,m_fExtremeMax,m_iWidth/2.0));
+	m_pkEntity->SetLocalAABB(Vector3(-m_iSize/2.0,m_fExtremeMin,-m_iSize/2.0),Vector3(m_iSize/2.0,m_fExtremeMax,m_iSize/2.0));
 
 	//clear data arrays
 	for(int i = 0;i<m_kLodLevels.size();i++)
@@ -299,7 +486,7 @@ void P_Heightmap::BuildTextureArrays()
 // 			if(i == 0 && !m_pkZShaderSystem->SupportGLSLProgram())
 			if(i == 0 )
 			{
-				for(int y = 0;y<m_iCols-iStep;y+=iStep)
+				for(int y = 0;y<m_iRows-iStep;y+=iStep)
 				{	
 					for(int x = 0;x<m_iRows-iStep;x+=iStep)
 					{	
@@ -316,7 +503,7 @@ void P_Heightmap::BuildTextureArrays()
 			}
 			else
 			{
-				for(int y = 0;y<m_iCols-iStep;y+=iStep)
+				for(int y = 0;y<m_iRows-iStep;y+=iStep)
 				{	
 					for(int x = 0;x<m_iRows-iStep;x+=iStep)
 					{		
@@ -379,8 +566,8 @@ void P_Heightmap::BuildTextureArrays()
 		m_kRenderPackages[i].m_bBlendSort = false;
 		
 		//occulusion
-		m_kRenderPackages[i].m_kAABBMin = Vector3(-m_iWidth/2.0,m_fExtremeMin,-m_iHeight/2.0);
-		m_kRenderPackages[i].m_kAABBMax = Vector3(m_iWidth/2.0,m_fExtremeMax,m_iHeight/2.0);
+		m_kRenderPackages[i].m_kAABBMin = Vector3(-m_iSize/2.0,m_fExtremeMin,-m_iSize/2.0);
+		m_kRenderPackages[i].m_kAABBMax = Vector3(m_iSize/2.0,m_fExtremeMax,m_iSize/2.0);
 		m_kRenderPackages[i].m_bOcculusionTest = true;
 		
 		//set occulusion test parent to bottom material
@@ -444,7 +631,7 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int iID,bo
 	else
  	{
 		//botom right corner
-		if(iStep > 1 && x == m_iCols-iStep-1 && y == m_iRows-iStep-1)
+		if(iStep > 1 && x == m_iRows-iStep-1 && y == m_iRows-iStep-1)
 		{
 			for(int i = x;i<x+iStep;i++)
 			{		
@@ -470,7 +657,7 @@ void P_Heightmap::AddPolygon(HeightmapArrays* pkNewArrays,int x,int y,int iID,bo
 			}
 		}
 		//right edge
-		else if(iStep > 1 && x == m_iCols-iStep-1)
+		else if(iStep > 1 && x == m_iRows-iStep-1)
 		{
 			for(int i = y;i<y+iStep;i++)
 			{
@@ -529,7 +716,7 @@ void P_Heightmap::AddVertex(HeightmapArrays* pkNewArrays,int x,int y,int iID)
 
 Vector3 P_Heightmap::GenerateNormal(int x,int y)
 {
-	if(x == 0 || y == 0 || x == m_iRows-1 || y == m_iCols-1)
+	if(x == 0 || y == 0 || x == m_iRows-1 || y == m_iRows-1)
 		return Vector3(0,1,0);
 
 
@@ -550,7 +737,7 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 	static Vector3 kDir1,kDir2;
 	
 	
-	for(int y=0; y<m_iCols-1; y++) 
+	for(int y=0; y<m_iRows-1; y++) 
 	{
 		for(int x=0; x<m_iRows-1; x++) 
 		{
@@ -611,7 +798,7 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 	}
 		
 		
-	Vector3 kOffset(m_iWidth/2.0,0,m_iHeight/2.0);
+	Vector3 kOffset(m_iSize/2.0,0,m_iSize/2.0);
 	for(int i = 0;i<pkVertex->size();i++)
 	{
 		(*pkVertex)[i] -= kOffset;
@@ -630,33 +817,31 @@ float P_Heightmap::CalculateRadius()
 	}
 	
 	
-	return Vector3(m_iWidth/2.0,fMax,m_iHeight/2.0).Length();
+	return Vector3(m_iSize/2.0,fMax,m_iSize/2.0).Length();
 }
 
-void P_Heightmap::SetSize(int iWidth,int iHeight)
+void P_Heightmap::SetSize(int iSize)
 {
-	m_iWidth = iWidth;
-	m_iHeight = iHeight;		
-	m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
-	m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
+	m_iSize = iSize;
+	m_iRows = static_cast<int>( (m_iSize/m_fScale)+1 );
 	
 	
 	m_kBrightness.clear();
-	for(int y = 0;y<m_iCols;y++)
+	for(int y = 0;y<m_iRows;y++)
 		for(int x = 0;x<m_iRows;x++)
 		{					
 			m_kBrightness.push_back(255);
 		}
 	
 	m_kTextureIDs.clear();
-	for(int y = 0;y<m_iCols;y++)
+	for(int y = 0;y<m_iRows;y++)
 		for(int x = 0;x<m_iRows;x++)
 		{					
 			m_kTextureIDs.push_back(0);
 		}
 	
 	m_kHeightData.clear();
-	for(int y = 0;y<m_iCols;y++)
+	for(int y = 0;y<m_iRows;y++)
 		for(int x = 0;x<m_iRows;x++)
 		{					
  			m_kHeightData.push_back(0);
@@ -665,14 +850,14 @@ void P_Heightmap::SetSize(int iWidth,int iHeight)
 	m_bHaveRebuilt = false;
 	
 	
-	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());	
+	m_pkEntity->SetRadius(Vector3(m_iSize/2.0,0,m_iSize/2.0).Length());	
 	//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
-	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,m_fExtremeMin,-m_iWidth),Vector3(m_iWidth,m_fExtremeMax,m_iWidth));
+	m_pkEntity->SetLocalAABB(Vector3(-m_iSize,m_fExtremeMin,-m_iSize),Vector3(m_iSize,m_fExtremeMax,m_iSize));
 }
 
 void P_Heightmap::Smooth()
 {
-	for(int y = 1;y<m_iCols-1;y++)
+	for(int y = 1;y<m_iRows-1;y++)
 	{
 		for(int x = 1;x<m_iRows-1;x++)
 		{					
@@ -912,14 +1097,14 @@ void P_Heightmap::Stitch(vector<HMSelectionData>* pkSelectionData)
 
 bool  P_Heightmap::Inside(float x,float y)
 {
-	if(x <  m_pkEntity->GetWorldPosV().x - m_iWidth/2.0)
+	if(x <  m_pkEntity->GetWorldPosV().x - m_iSize/2.0)
 		return false;
-	if(x > m_pkEntity->GetWorldPosV().x + m_iWidth/2.0)
+	if(x > m_pkEntity->GetWorldPosV().x + m_iSize/2.0)
 		return false;
 
-	if(y <  m_pkEntity->GetWorldPosV().z - m_iHeight/2.0)
+	if(y <  m_pkEntity->GetWorldPosV().z - m_iSize/2.0)
 		return false;
-	if(y > m_pkEntity->GetWorldPosV().z + m_iHeight/2.0)
+	if(y > m_pkEntity->GetWorldPosV().z + m_iSize/2.0)
 		return false;
 		
 	return true;
@@ -930,8 +1115,8 @@ float P_Heightmap::GetHeight(float x,float y)
 	x-=m_pkEntity->GetWorldPosV().x;
 	y-=m_pkEntity->GetWorldPosV().z;
 
-  	x+=m_iWidth / 2.0;
-  	y+=m_iHeight / 2.0;
+  	x+=m_iSize / 2.0;
+  	y+=m_iSize / 2.0;
 
 	x /= m_fScale;
 	y /= m_fScale;
@@ -939,7 +1124,7 @@ float P_Heightmap::GetHeight(float x,float y)
 	int iX = int(x);
 	int iY = int(y);
 
-	if(iX < 0 || iX >= m_iRows || iY < 0 || iY >= m_iCols)
+	if(iX < 0 || iX >= m_iRows || iY < 0 || iY >= m_iRows)
 		return 0;
 
 	float fXD = x - float(iX);
@@ -972,7 +1157,7 @@ void P_Heightmap::GetSelection(const Vector3& kCenter, float fStrength, float fI
 	Vector3 kWorld,kDiff;
 
 
-	for(int z = 0 ; z < m_iCols; z++) 
+	for(int z = 0 ; z < m_iRows; z++) 
 	{
 		for(int x = 0 ; x < m_iRows ; x++) 
 		{	
@@ -983,7 +1168,7 @@ void P_Heightmap::GetSelection(const Vector3& kCenter, float fStrength, float fI
 			kSel.x = x;
 			kSel.y = z;
 			kWorld = Vector3(x * m_fScale, m_kHeightData[iVertexIndex] ,z * m_fScale);	//*m_fTileSize
-			kWorld += m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,0,m_iHeight/2.0);
+			kWorld += m_pkEntity->GetWorldPosV() - Vector3(m_iSize/2.0,0,m_iSize/2.0);
 	
 			kDiff = kWorld - kCenter;
 			kDiff.y = 0;
@@ -1019,8 +1204,7 @@ void P_Heightmap::GetSelection(const Vector3& kCenter, float fStrength, float fI
 
 void P_Heightmap::Save(ZFIoInterface* pkPackage)
 {
-	pkPackage->Write(m_iWidth);
-	pkPackage->Write(m_iHeight);
+	pkPackage->Write(m_iSize);
 	pkPackage->Write(m_fScale);
 	pkPackage->Write(m_fMaxValue);
 
@@ -1049,86 +1233,18 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	switch(iVersion)
 	{
-		case 1:
-		{
-			pkPackage->Read(m_iWidth);
-			pkPackage->Read(m_iHeight);
-			pkPackage->Read(m_fScale);
-			pkPackage->Read(m_fMaxValue);
-		
-			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
-			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
-		
-			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
-			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
-		
-			int 				iSize;
-			float 			fVal;
-			//unsigned char 	cTex;
-			m_kHeightData.clear();
-			m_kTextureIDs.clear();
-			
-			pkPackage->Read(iSize);	
-			for(int i = 0;i<iSize;i++)
-			{
-				pkPackage->Read(fVal);
-				m_kHeightData.push_back(fVal);
-			
-				m_kTextureIDs.push_back(0);	
-			}
-		
-			m_bHaveRebuilt = false;
-			break;
-		}
-		
-		case 2:
-		{
-			pkPackage->Read(m_iWidth);
-			pkPackage->Read(m_iHeight);
-			pkPackage->Read(m_fScale);
-			pkPackage->Read(m_fMaxValue);
-		
-			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
-			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
-		
-			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
-			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
-		
-			int 				iSize;
-			float 			fVal;
-			char 				cTex;
-			m_kHeightData.clear();
-			m_kTextureIDs.clear();
-			
-			pkPackage->Read(iSize);	
-			for(int i = 0;i<iSize;i++)
-			{
-				pkPackage->Read(fVal);
-				m_kHeightData.push_back(fVal);
-			
-				pkPackage->Read(cTex);
-				m_kTextureIDs.push_back(cTex);	
-			}
-		
-			m_bHaveRebuilt = false;
-			break;
-		}		
-		
 		case 3:
 		{
-			pkPackage->Read(m_iWidth);
-			pkPackage->Read(m_iHeight);
+			pkPackage->Read(m_iSize);
+			pkPackage->Read(m_iSize);
 			pkPackage->Read(m_fScale);
 			pkPackage->Read(m_fMaxValue);
 		
-			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
+			m_pkEntity->SetRadius(Vector3(m_iSize/2.0,0,m_iSize/2.0).Length());
 			//m_pkEntity->SetLocalAABB(GetEntity()->GetRadius());
-			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
+			m_pkEntity->SetLocalAABB(Vector3(-m_iSize,-m_fMaxValue,-m_iSize),Vector3(m_iSize,m_fMaxValue,m_iSize));
 		
-			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
-			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
+			m_iRows = static_cast<int>( (m_iSize/m_fScale)+1 );
 		
 			int 				iSize;
 			float 			fVal;
@@ -1177,16 +1293,15 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 	
 		case 4:
 		{
-			pkPackage->Read(m_iWidth);
-			pkPackage->Read(m_iHeight);
+			pkPackage->Read(m_iSize);
+			pkPackage->Read(m_iSize);
 			pkPackage->Read(m_fScale);
 			pkPackage->Read(m_fMaxValue);
 		
-			m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-			m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
+			m_pkEntity->SetRadius(Vector3(m_iSize/2.0,0,m_iSize/2.0).Length());
+			m_pkEntity->SetLocalAABB(Vector3(-m_iSize,-m_fMaxValue,-m_iSize),Vector3(m_iSize,m_fMaxValue,m_iSize));
 		
-			m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
-			m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
+			m_iRows = static_cast<int>( (m_iSize/m_fScale)+1 );
 		
 			int 				iSize;
 			float 			fVal;
@@ -1235,6 +1350,65 @@ void P_Heightmap::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_bHaveRebuilt = false;
 			break;
 		}					
+		
+		case 5:
+		{
+			pkPackage->Read(m_iSize);
+			pkPackage->Read(m_fScale);
+			pkPackage->Read(m_fMaxValue);
+		
+			m_pkEntity->SetRadius(Vector3(m_iSize/2.0,0,m_iSize/2.0).Length());
+			m_pkEntity->SetLocalAABB(Vector3(-m_iSize,-m_fMaxValue,-m_iSize),Vector3(m_iSize,m_fMaxValue,m_iSize));
+		
+			m_iRows = static_cast<int>( (m_iSize/m_fScale)+1 );
+		
+			int 				iSize;
+			float 			fVal;
+			signed char 	cTex;
+			unsigned char 	cBrightness;
+			m_kHeightData.clear();
+			m_kTextureIDs.clear();
+			m_kBrightness.clear();
+
+			
+			pkPackage->Read(iSize);	
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read(fVal);
+				m_kHeightData.push_back(fVal);
+			
+				pkPackage->Read(cTex);
+				m_kTextureIDs.push_back(cTex);
+									
+				pkPackage->Read(cBrightness);
+				m_kBrightness.push_back(cBrightness);																		
+			}
+		
+		
+			//load all materials
+			
+			//remove all old materials
+			for(int i = 0;i<m_kMaterials.size();i++)
+				delete m_kMaterials[i];			
+			m_kMaterials.clear();
+			
+			
+			string strMaterialName;
+			pkPackage->Read(iSize);									
+			for(int i = 0;i<iSize;i++)
+			{
+				pkPackage->Read_Str(strMaterialName);
+					
+				ZFResourceHandle* pkTempMat = new ZFResourceHandle;
+				pkTempMat->SetRes(strMaterialName);	
+					
+				m_kMaterials.push_back(pkTempMat);
+			}				
+			
+		
+			m_bHaveRebuilt = false;
+			break;
+		}							
 	}
 }
 
@@ -1242,8 +1416,7 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 {
 	int iStart = pkNetPacket->m_iPos;
 
-	pkNetPacket->Write(m_iWidth);
-	pkNetPacket->Write(m_iHeight);
+	pkNetPacket->Write(m_iSize);
 	pkNetPacket->Write(m_fScale);
 
 // 	cout<<"size:"<<pkNetPacket->m_iLength<<endl;
@@ -1272,15 +1445,13 @@ void P_Heightmap::PackTo( NetPacket* pkNetPacket,int iConnectionID)
 
 void P_Heightmap::PackFrom( NetPacket* pkNetPacket,int iConnectionID)
 {
-	pkNetPacket->Read(m_iWidth);
-	pkNetPacket->Read(m_iHeight);
+	pkNetPacket->Read(m_iSize);
 	pkNetPacket->Read(m_fScale);
 
-	m_pkEntity->SetRadius(Vector3(m_iWidth/2.0,0,m_iHeight/2.0).Length());
-	m_pkEntity->SetLocalAABB(Vector3(-m_iWidth,-m_fMaxValue,-m_iWidth),Vector3(m_iWidth,m_fMaxValue,m_iWidth));
+	m_pkEntity->SetRadius(Vector3(m_iSize/2.0,0,m_iSize/2.0).Length());
+	m_pkEntity->SetLocalAABB(Vector3(-m_iSize,-m_fMaxValue,-m_iSize),Vector3(m_iSize,m_fMaxValue,m_iSize));
 
-	m_iRows = static_cast<int>( (m_iWidth/m_fScale)+1 );
-	m_iCols = static_cast<int>( (m_iHeight/m_fScale)+1 );
+	m_iRows = static_cast<int>( (m_iSize/m_fScale)+1 );
 
 	int 				iSize;
 	float 			fVal;
@@ -1370,7 +1541,7 @@ void P_Heightmap::DrawHeightmap()
 	m_pkZShaderSystem->MatrixPush();
 	
 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()) );
-	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV() - Vector3(m_iWidth/2.0,0,m_iHeight/2.0)  );
+	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV() - Vector3(m_iSize/2.0,0,m_iSize/2.0)  );
 
 	if(m_pkVBO)
 	{

@@ -1019,7 +1019,7 @@ int ZMaterial::GetTranslateEnum(const string& strEnum)
 	}
 }
 
-void ZMaterial::LuaSetParameterValue(const string& strName,const string& strValue)
+void ZMaterial::SetParameterValue(const string& strName,const string& strValue)
 {
 	//check if already added
 	for(int i= 0;i<m_kMaterialParameters.size();i++)
@@ -1035,7 +1035,7 @@ void ZMaterial::LuaSetParameterValue(const string& strName,const string& strValu
 	m_kMaterialParameters.push_back(pair<string,string>(strName,strValue));		
 }
 
-string ZMaterial::LuaGetParameterValue(const string& strName)
+string ZMaterial::GetParameterValue(const string& strName)
 {
 	//check if already added
 	for(int i= 0;i<m_kMaterialParameters.size();i++)
@@ -1045,7 +1045,7 @@ string ZMaterial::LuaGetParameterValue(const string& strName)
 	}
 
 
-	cerr<<"Warning: material "<<m_strName<<" tried to get unknown material parameter "<<strName<<endl;
+	//cerr<<"Warning: material "<<m_strName<<" tried to get unknown material parameter "<<strName<<endl;
 
 	return "none";
 }
@@ -1229,7 +1229,7 @@ namespace SI_ZMATERIAL
 		g_pkScript->GetArgString(pkLua,0,strValueName);
 		g_pkScript->GetArgString(pkLua,1,strValue);
 
-		g_pkCurrentMaterial->LuaSetParameterValue(strValueName,strValue);
+		g_pkCurrentMaterial->SetParameterValue(strValueName,strValue);
 		return 0;		
 	}	
 	
@@ -1248,7 +1248,7 @@ namespace SI_ZMATERIAL
 		g_pkScript->GetArgString(pkLua,0,strValueName);
 
 		//get parameter value
-		string strValue = g_pkCurrentMaterial->LuaGetParameterValue(strValueName);
+		string strValue = g_pkCurrentMaterial->GetParameterValue(strValueName);
 
 		//return value
 		g_pkScript->AddReturnValue(pkLua, (char*)strValue.c_str(), strValue.size());

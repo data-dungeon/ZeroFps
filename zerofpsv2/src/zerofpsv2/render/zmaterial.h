@@ -154,8 +154,8 @@ class RENDER_API ZMaterial : public ZFResource
 		
 		//material loading stuff 
 		bool LuaMaterialEndPass(int iPass);
-		void LuaSetParameterValue(const string& strName,const string& strValue);
-		string LuaGetParameterValue(const string& strName);
+		void SetParameterValue(const string& strName,const string& strValue);
+		string GetParameterValue(const string& strName);
 		
 				
 	friend class ZShaderSystem;

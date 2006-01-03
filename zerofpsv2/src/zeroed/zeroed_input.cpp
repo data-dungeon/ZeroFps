@@ -213,7 +213,11 @@ void ZeroEd::Input_EditZone()
 				!pkData->m_pkZone->GetProperty("P_Mad"))
 			{			
 				P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
-				pkHM->SetSize(m_kZoneSize.x,m_kZoneSize.z);
+				
+				if(m_kZoneSize.x != m_kZoneSize.z)
+					cerr<<"WARNING: zone size "<<m_kZoneSize.x<<" "<<m_kZoneSize.z<<" is not a square , heightmap will not match"<<endl;
+				
+				pkHM->SetSize(m_kZoneSize.x);
 				pkHM->SetMaxValue(m_kZoneSize.y / 2.0);
 				
 				P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");

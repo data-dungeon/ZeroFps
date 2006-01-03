@@ -178,6 +178,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 
 		ConVar			m_kAxisIcon;
 		ConVar			m_kVegetation;
+		ConVar			m_kVegitationDistance;		
 		ConVar			m_kViewDistance;
 	
 
@@ -335,6 +336,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		int  GetShadowMapMode() const					{	return m_kiShadowMapMode.GetInt();			}
 		int  GetShadowMapQuality() const				{	return m_kiShadowMapQuality.GetInt();		}		
 		bool GetVegetation() const						{	return m_kVegetation.GetBool();				}
+		float GetVegetationDistance() const			{	return m_kVegitationDistance.GetFloat();	}
 		float GetViewDistance() const					{	return m_kViewDistance.GetFloat();			}
 		bool GetOcculusionCulling() const			{	return m_kbOcculusionCulling.GetBool();	}		
 					

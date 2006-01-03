@@ -25,8 +25,21 @@ class ENGINE_SYSTEMS_API HMSelectionData
 class ENGINE_SYSTEMS_API Vegitation
 {
 	public:
-		ZMaterial*					m_kMaterial;
-		vector<RenderPackage>	m_kRenderPackages;
+		ZFResourceHandle*			m_pkMaterial;
+		vector<RenderPackage*>	m_kRenderPackages;
+		
+		Vegitation()
+		{
+			m_pkMaterial = NULL;
+		};
+		
+		~Vegitation()
+		{
+			delete m_pkMaterial;
+			for(int i = 0;i<m_kRenderPackages.size();i++)
+				delete m_kRenderPackages[i];
+		};
+		
 };
 
 
@@ -35,8 +48,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 	private:
 		class HeightmapArrays
 		{
-			public:
-			
+			public:			
 				vector<Vector3>	m_kVertexData;
 				vector<Vector2>	m_kTextureData;
 				vector<Vector3>	m_kNormalData;	
@@ -62,11 +74,9 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		int					m_iLod;
 			
 		float				m_fScale;		
-		int				m_iWidth;
-		int				m_iHeight;
+		int				m_iSize;
 		float				m_fMaxValue;
 		int				m_iRows;
-		int				m_iCols;
 		bool				m_bHaveRebuilt;
 		
 		float				m_fExtremeMax;
@@ -80,6 +90,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		vector<signed char>				m_kTextureIDs;
 		vector<unsigned char>			m_kBrightness;
 
+		vector<Vegitation*>				m_kVegitation;
 			
 		vector<vector<HeightmapArrays*> >	m_kLodLevels;
 		
@@ -94,6 +105,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void PurgeUnusedMaterials();
 		
 		void BuildVegitation();
+		void AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight);
 		
 	public:
 		P_Heightmap();
@@ -114,7 +126,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void SetTexture(vector<HMSelectionData>* kSelectionData,const string& strMaterial);
 		void SetBrightness(vector<HMSelectionData>* kSelectionData,float fBrightness);
 
-		void SetSize(int iWidth,int iHeight);
+		void SetSize(int iSize);
 		void SetMaxValue(float fMax);
 		
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
