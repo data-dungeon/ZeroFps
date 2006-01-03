@@ -69,7 +69,7 @@ void P_Heightmap::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,cons
 
 	
 	//calculate lod level
-	float fDistance =kRenderState.m_kCameraPosition.DistanceTo(m_pkEntity->GetWorldPosV()) - m_iSize/2.0;		
+	float fDistance =kRenderState.m_kCameraPosition.DistanceTo(m_pkEntity->GetWorldPosV()) - m_pkEntity->GetRadius();		
 	
 	m_iLod = 3;
 	if(fDistance < m_pkZeroFps->GetViewDistance()*0.8)
@@ -134,8 +134,7 @@ void P_Heightmap::BuildVegitation()
 	for(int i = 0;i<m_kVegitation.size();i++)
 		delete m_kVegitation[i];		
 	m_kVegitation.clear();
-
-
+		
 	for(int i = 0;i<m_kMaterials.size();i++)
 	{
 		ZMaterial* pkMaterial = (ZMaterial*)m_kMaterials[i]->GetResourcePtr();
@@ -153,9 +152,7 @@ void P_Heightmap::BuildVegitation()
 				fHeight = atof(strHeight.c_str());
 			if(strAmount != "none")
 				fAmount = atof(strAmount.c_str());
-		
-		
-		
+						
 		
 			//create new vegitation
 			Vegitation* pkNewVeg = new Vegitation;		
@@ -226,11 +223,17 @@ void P_Heightmap::BuildVegitation()
 					pkNewVeg->m_kRenderPackages.push_back(pkNewRP);																
 						
 					pkNewRP->m_pkMaterial = (ZMaterial*)pkNewVeg->m_pkMaterial->GetResourcePtr();
-					pkNewRP->m_pkLightProfile = &m_kLightProfile;
+					
+					//create new light profile 
+					LightProfile* pkNewLightProfile = new LightProfile;
+					pkNewVeg->m_kLightProfiles.push_back(pkNewLightProfile);
+  					pkNewRP->m_pkLightProfile = pkNewLightProfile;
+							
 							
 					pkNewRP->m_kCenter = Vector3(	(px*iPatchSize+iPatchSize/2.0) * m_fScale+ (kEntPos.x - m_iSize/2.0),
 															fAvrageY / iexes,
 															(pz*iPatchSize+iPatchSize/2.0) * m_fScale+ (kEntPos.z - m_iSize/2.0));
+					pkNewRP->m_fRadius = Vector3(iPatchSize,iPatchSize,iPatchSize).Length();						
 							
 					pkNewRP->m_kMeshData.m_iNrOfDataElements = pkNewRP->m_kMeshData.m_kVertises.size();
 					pkNewRP->m_kMeshData.m_ePolygonMode = QUADS_MODE;

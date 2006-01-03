@@ -350,7 +350,7 @@ void DepthMapRenderer::DoBoneTransformation(const RenderPackage& kRenderPackage,
 		iNrOfVertises = kBoneIndexes.m_iElements;	
 		if(iNrOfVertises == 0)
 		{
-			cerr<<"ERROR: DefaultRenderPlugin::DoBoneTransformation, indexed mesh needs nr of elements in bone index list"<<endl;
+			cerr<<"ERROR: DepthMapRenderer::DoBoneTransformation, indexed mesh needs nr of elements in bone index list"<<endl;
 			return;				
 		}
 	}

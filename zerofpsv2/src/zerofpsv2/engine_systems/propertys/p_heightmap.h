@@ -26,6 +26,8 @@ class ENGINE_SYSTEMS_API Vegitation
 {
 	public:
 		ZFResourceHandle*			m_pkMaterial;
+		
+		vector<LightProfile*>	m_kLightProfiles;
 		vector<RenderPackage*>	m_kRenderPackages;
 		
 		Vegitation()
@@ -38,6 +40,9 @@ class ENGINE_SYSTEMS_API Vegitation
 			delete m_pkMaterial;
 			for(int i = 0;i<m_kRenderPackages.size();i++)
 				delete m_kRenderPackages[i];
+		
+			for(int i = 0;i<m_kLightProfiles.size();i++)
+				delete m_kLightProfiles[i];		
 		};
 		
 };
