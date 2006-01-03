@@ -26,6 +26,7 @@ public:
 	static float 	Round2(float val);
 	static float 	Randomf(float fInterval);
 	static int 		Randomi(int iInterval);
+	static void 	SetRandomSeed(unsigned int iSeed);   //if seed == 0 time is used
 	static float 	Clamp(float fValue,float fBotom,float fTop);	//clamp value whitin botom and top
 	static bool 	Equal_f(float a, float b);
 

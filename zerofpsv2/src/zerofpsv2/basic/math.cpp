@@ -101,6 +101,18 @@ int Math::Randomi(int iInterval)
 	return int(r * iInterval );
 }
 
+void Math::SetRandomSeed(unsigned int iSeed)
+{
+	if(iSeed == 0)
+	{
+		srand(time(0));
+	}
+	else
+	{
+		srand(iSeed);
+	}
+}
+
 
 bool Math::Equal_f(float a, float b)
 {

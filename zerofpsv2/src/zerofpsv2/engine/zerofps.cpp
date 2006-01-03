@@ -45,7 +45,7 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 	}	
 
 	//set randomseed
-	srand(time(0));
+	Math::SetRandomSeed(0);
 	
    int iScreenWidth=800, iScreenHeight=600;
 	m_bClientLoginState = true;

@@ -180,7 +180,9 @@ void P_Heightmap::BuildVegitation()
 					float fAvrageY = 0;
 					int iexes = 0;
 								
-								
+					//set random seed
+					Math::SetRandomSeed(px*pz +1 );
+					
 					int iAmount = iPatchSize*iPatchSize*fAmount;
 					for(int n = 0;n<iAmount;n++)
 					{
@@ -241,6 +243,9 @@ void P_Heightmap::BuildVegitation()
 			}
 		}
 	}
+	
+	//set random seed time
+	Math::SetRandomSeed(0);
 }
 
 void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight)
