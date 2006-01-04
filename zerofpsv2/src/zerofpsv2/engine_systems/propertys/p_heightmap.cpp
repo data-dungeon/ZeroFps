@@ -592,7 +592,7 @@ void P_Heightmap::BuildTextureArrays()
 		
 		//set occulusion test parent to bottom material
 		if(i != 0)
-			m_kRenderPackages[i].m_pkOcculusionParent = &(m_kRenderPackages[i]);	
+			m_kRenderPackages[i].m_pkOcculusionParent = &(m_kRenderPackages[0]);	
 	}
 	
 }

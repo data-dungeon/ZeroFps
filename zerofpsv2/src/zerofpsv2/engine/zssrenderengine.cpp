@@ -344,20 +344,20 @@ bool ZSSRenderEngine::Render(RenderState& kRenderState)
 bool ZSSRenderEngine::ValidateRenderState(const RenderState& kRenderState)
 {
 
-	if(kRenderState.m_kViewPortSize == Vector2(0,0)) return false;
+// 	if(kRenderState.m_kViewPortSize == Vector2(0,0)) return false;
 	
 	
-	if(kRenderState.m_kPreRenderPlugins.empty())
-	{
-		cerr<<"ERROR: no pre render plugins in render state"<<endl;
-		return false;
-	}
-	
-	if(kRenderState.m_kRenderPlugins.empty()) 
-	{
-		cerr<<"ERROR: no render plugins in render state"<<endl;		
-		return false;
-	}
+// 	if(kRenderState.m_kPreRenderPlugins.empty())
+// 	{
+// 		cerr<<"ERROR: no pre render plugins in render state"<<endl;
+// 		return false;
+// 	}
+// 	
+// 	if(kRenderState.m_kRenderPlugins.empty()) 
+// 	{
+// 		cerr<<"ERROR: no render plugins in render state"<<endl;		
+// 		return false;
+// 	}
 		
 	return true;
 }
@@ -399,6 +399,13 @@ bool ZSSRenderEngine::ValidateRenderPackages(const vector<RenderPackage*>& kRend
 				cerr<<"WARNING: missing vertex array"<<endl;
 				return false;		
 		}
+		
+		if(kRenderPackage.m_pkOcculusionParent)
+			if(kRenderPackage.m_pkOcculusionParent == &kRenderPackage)
+			{
+				cerr<<"WARNING: occulusion parent set to self"<<endl;
+				return false;
+			}
 	}
 		
 		
