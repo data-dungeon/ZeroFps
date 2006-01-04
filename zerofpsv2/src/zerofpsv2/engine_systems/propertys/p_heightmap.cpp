@@ -217,8 +217,13 @@ void P_Heightmap::BuildVegitation()
 								
 							iexes++;
 						
-
-							AddVegitable(*pkNewRP,kPos,fHeight);
+						
+							float fBrightness = 	float(m_kBrightness[iZ*m_iRows+iX] +
+														m_kBrightness[iZ*m_iRows+iX+1] +
+														m_kBrightness[(iZ+1)*m_iRows+iX] +
+														m_kBrightness[(iZ+1)*m_iRows+iX+1]) / 1020.0;
+							
+							AddVegitable(*pkNewRP,kPos,fHeight,fBrightness);
 						}
 					}
 						
@@ -254,7 +259,7 @@ void P_Heightmap::BuildVegitation()
 	Math::SetRandomSeed(0);
 }
 
-void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight)
+void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight,float fBrightness)
 {
 	static Vector2 kUV1(0,1);
 	static Vector2 kUV2(1,1);
@@ -264,12 +269,13 @@ void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float
 	static Matrix3 kRotate;
 	kRotate.Identity();
 	kRotate.Rotate( 0,Math::Randomf(360),0);
-
+	
 
 	kPos.y -= 0.2;
 
 	float w = 0.5+Math::Randomf(0.3);
 	float h = fHeight+Math::Randomf(fHeight*0.25)+0.2;
+	float fB = fBrightness;
 
 	//cross vertises
 	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(-w,h,-w)));
@@ -297,15 +303,15 @@ void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float
 		kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 
 
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,0.1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,0.1));
 	
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,1));
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
-	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(1,1,1,0.1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,0.1));
+	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,0.1));
 
 }
 

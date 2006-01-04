@@ -110,7 +110,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void PurgeUnusedMaterials();
 		
 		void BuildVegitation();
-		void AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight);
+		void AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight,float fBrightness);
 		
 	public:
 		P_Heightmap();
