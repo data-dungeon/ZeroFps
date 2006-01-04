@@ -45,12 +45,13 @@ class BASIC_API Vector3
 		bool Compare( const Vector3& v, const float e ) const;		///< True if this is == v within the range of +-e
 		bool operator==(const Vector3 &kOtherV3)	const;
 		bool operator!=(const Vector3 &kOtherV3)	const;
+		bool operator<(const Vector3 &kOtherV3)	const;
+		bool operator>(const Vector3 &kOtherV3)	const;		
 		bool IsZero(void) const; 												///< True if this = <0,0,0>
 		bool IsZero(const float e ) const; 									///< True if this is <0,0,0> within the range of +-e
 
 // Arithmetic 
-		Vector3 operator-() const;
-		
+		Vector3 operator-() const;		
 		Vector3 operator+(const Vector3 &kOtherV3)	const;
 		Vector3 operator-(const Vector3 &kOtherV3)	const;
 		Vector3& operator+=(const Vector3 &kOtherV3); 
@@ -64,6 +65,7 @@ class BASIC_API Vector3
 		Vector3& operator*=(const float &fOther);
 		Vector3& operator/=(const float fOther);
 		Vector3& operator/=(const float& s );						//??
+
 
 // Geometric
 		Vector3 Cross( const Vector3& v )	const;						///< Return cross product between this vector and another one.
@@ -149,6 +151,21 @@ inline bool Vector3::operator!=(const Vector3 &kOtherV3)	const
 {
 	return !Compare(kOtherV3);
 }
+
+inline bool Vector3::operator<(const Vector3 &kOtherV3)	const
+{
+	return (	x < kOtherV3.x &&
+				y < kOtherV3.y &&
+				z < kOtherV3.z);		
+}
+
+inline bool Vector3::operator>(const Vector3 &kOtherV3)	const
+{
+	return (	x > kOtherV3.x &&
+				y > kOtherV3.y &&
+				z > kOtherV3.z);		
+}
+
 
 inline bool Vector3::IsZero(void) const 
 {	

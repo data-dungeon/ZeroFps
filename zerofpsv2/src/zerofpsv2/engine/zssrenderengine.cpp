@@ -266,6 +266,7 @@ RenderPackage::RenderPackage()
 ZSSRenderEngine::ZSSRenderEngine() : ZFSubSystem("ZSSRenderEngine")
 {
 	m_pkZShaderSystem = NULL;
+	m_pkZeroFps			= NULL;
 	
 	m_kRenderEngineDebug.Register(this, "r_renderenginedebug","0");
 }
@@ -273,7 +274,7 @@ ZSSRenderEngine::ZSSRenderEngine() : ZFSubSystem("ZSSRenderEngine")
 bool ZSSRenderEngine::StartUp()
 {
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
-
+	m_pkZeroFps			= static_cast<ZSSZeroFps*>(g_ZFObjSys.GetObjectPtr("ZSSZeroFps"));
 
 	// REGISTER DEFAULT PLUGINS
 	m_kPluginFactory.RegisterPlugin("Render",Create_DefaultRenderPlugin);
@@ -496,4 +497,39 @@ void* ZSSRenderEngine::GetParameter(const string& strName)
 
 
 
+
+bool ZSSRenderEngine::OcculusionTest(RenderPackage& kRenderPackage, const RenderState& kRenderState)
+{
+	//do occulusion test
+	if(m_pkZeroFps->GetOcculusionCulling() && kRenderPackage.m_bOcculusionTest)
+	{
+		//test if camera is inside the object
+		if(!(	kRenderState.m_kCameraPosition > (kRenderPackage.m_kAABBMin + kRenderPackage.m_kCenter) &&
+				kRenderState.m_kCameraPosition < (kRenderPackage.m_kAABBMax + kRenderPackage.m_kCenter)) )
+ 		{	
+
+			//if we have an occulusion parent test parent
+			if(kRenderPackage.m_pkOcculusionParent)
+			{
+				if(!kRenderPackage.m_pkOcculusionParent->m_kOcculusionTest[kRenderState.GetStateID()].GetCurrentResult())
+				{	
+					return false;									
+				}			
+			}
+			
+			//else test this object
+			else if(!kRenderPackage.m_kOcculusionTest[kRenderState.GetStateID()].Visible(	kRenderPackage.m_kAABBMin + kRenderPackage.m_kCenter,
+																													kRenderPackage.m_kAABBMax + kRenderPackage.m_kCenter))
+			{
+				m_pkZeroFps->m_iOcculedObjects++;
+				return false;					
+			}
+			else
+				m_pkZeroFps->m_iNotOcculedObjects++;
+ 		}
+	}	
+
+
+	return true;
+}
 

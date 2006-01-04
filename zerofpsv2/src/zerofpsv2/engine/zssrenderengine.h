@@ -300,7 +300,7 @@ class ENGINE_API RenderPackage
 class ENGINE_API ZSSRenderEngine : public ZFSubSystem
 {
 	private:
-		
+		ZSSZeroFps*			m_pkZeroFps;				
 		ZShaderSystem*		m_pkZShaderSystem;			
 		ConVar				m_kRenderEngineDebug;
 			
@@ -328,7 +328,8 @@ class ENGINE_API ZSSRenderEngine : public ZFSubSystem
 		void* GetParameter(const string& strName);
 		
 		//help functions
-		void SetupView(RenderState& kRenderState);	
+		void SetupView(RenderState& kRenderState);
+		bool OcculusionTest(RenderPackage& kRenderPackage, const RenderState& kRenderState);
 		
 };
 

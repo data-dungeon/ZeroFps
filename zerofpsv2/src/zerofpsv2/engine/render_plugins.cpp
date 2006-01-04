@@ -227,27 +227,8 @@ bool DepthMapRenderer::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRende
 		return true;
 
 	//do occulusion test
-	if(m_pkZeroFps->GetOcculusionCulling() && kRenderPackage.m_bOcculusionTest)
-	{
-		//if we have an occulusion parent test parent
-		if(kRenderPackage.m_pkOcculusionParent)
-		{
-			if(!kRenderPackage.m_pkOcculusionParent->m_kOcculusionTest[kRenderState.GetStateID()].GetCurrentResult())
-			{	
-				return true;									
-			}			
-		}
-		
-		//else test this object
-		else if(!kRenderPackage.m_kOcculusionTest[kRenderState.GetStateID()].Visible(	kRenderPackage.m_kAABBMin + kRenderPackage.m_kCenter,
-																												kRenderPackage.m_kAABBMax + kRenderPackage.m_kCenter))
-		{
-			m_pkZeroFps->m_iOcculedObjects++;
-			return true;					
-		}
-		else
-			m_pkZeroFps->m_iNotOcculedObjects++;
-	}
+	if(!kRenderEngine.OcculusionTest(kRenderPackage,kRenderState))
+		return true;
 
 	
 	//push matrises	
@@ -1006,27 +987,9 @@ bool DefaultRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRe
 	}
 
 	//do occulusion test
-	if(m_pkZeroFps->GetOcculusionCulling() && kRenderPackage.m_bOcculusionTest)
-	{
-		//if we have an occulusion parent test parent
-		if(kRenderPackage.m_pkOcculusionParent)
-		{
-			if(!kRenderPackage.m_pkOcculusionParent->m_kOcculusionTest[kRenderState.GetStateID()].GetCurrentResult())
-			{	
-				return true;									
-			}			
-		}
-		
-		//else test this object
-		else if(!kRenderPackage.m_kOcculusionTest[kRenderState.GetStateID()].Visible(	kRenderPackage.m_kAABBMin + kRenderPackage.m_kCenter,
-																												kRenderPackage.m_kAABBMax + kRenderPackage.m_kCenter))
-		{
-			m_pkZeroFps->m_iOcculedObjects++;
-			return true;					
-		}
-		else
-			m_pkZeroFps->m_iNotOcculedObjects++;
-	}
+	if(!kRenderEngine.OcculusionTest(kRenderPackage,kRenderState))
+		return true;
+ 	
 
 	//setup shadowmaping
 	ShadowMap* pkShadowmap = (ShadowMap*)kRenderEngine.GetParameter("shadowmap");	
