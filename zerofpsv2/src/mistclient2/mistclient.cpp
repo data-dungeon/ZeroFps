@@ -2775,6 +2775,16 @@ void MistClient::OnSystemMessage(const string& strType,int iNrOfParam,const void
 		
 		UpdateServerListbox();
 	} 
+	
+	if(strType == "serverlist-requested")
+	{
+		m_kServerList.clear();
+		
+		AddRemoveServer("NO CONNECTION WITH MASTERSERVER","",true);		
+		AddRemoveServer("localhost","localhost:4242",true);		
+		
+		UpdateServerListbox();
+	}
 }
 
 void MistClient::SendSetDefaultAttack(const string& strSkill)

@@ -525,6 +525,7 @@ void ZSSNetWork::SendServerInfo(IPaddress kIp)
 	NetP.Write(m_iMaxNumberOfNodes);
 
 	SendRaw(&NetP);
+	
 }
 
 void ZSSNetWork::GotServerInfo(NetPacket* pkNetPacket)
@@ -613,11 +614,6 @@ void ZSSNetWork::MS_ServerDown()
 
 void ZSSNetWork::MS_RequestServers()
 {
-/*	IPaddress kTargetIP;
-	char szFinalTarget[256];
-	sprintf(szFinalTarget, "%s:%d", m_strMasterServer.c_str(), 4343);
-	StrToAddress(szFinalTarget,&kTargetIP); */		
-
 	NetPacket NetP;
 
 	NetP.Clear();
@@ -626,6 +622,12 @@ void ZSSNetWork::MS_RequestServers()
 	NetP.m_kData.m_kHeader.m_iOrder = 0;
 	NetP.Write((int) 2);
 	SendRaw(&NetP);
+	
+		
+	//clear serverlist and send message to application
+	m_kServers.clear();			
+	GetSystem().SendSystemMessage(string("Application"),string("serverlist-requested"),0,NULL);	
+	
 }
 
 void ZSSNetWork::MS_GotServers(NetPacket* pkNetPack)
