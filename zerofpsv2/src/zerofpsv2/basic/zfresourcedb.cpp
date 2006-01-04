@@ -435,13 +435,15 @@ void ZSSResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strRe
 	// Failed to create resource.
 	if(!pkRes) {
 		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", strResName.c_str());
-//		cout<<"Error: failed to create resource "<<strResName<<endl;
+		//cerr<<"Failed to create resource "<<strResName.c_str()<<endl;
+		//		cout<<"Error: failed to create resource "<<strResName<<endl;
 		return;
 		}
 
 	//Mad_Core* pkCore = new Mad_Core;
 	if(pkRes->Create(strResName.c_str()) == false) {
 		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", strResName.c_str());
+		//cerr<<"Failed to Load resource "<<strResName.c_str()<<endl;
 		return;
 		}
 

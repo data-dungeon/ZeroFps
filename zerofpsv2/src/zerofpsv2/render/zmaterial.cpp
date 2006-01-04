@@ -862,20 +862,28 @@ bool ZMaterial::LoadMaterial(string strName, bool bDontClear)
 	else
 		cerr<<"Warning: old resource path:"<<strName<<endl;
 	
+	bool bLoaded = false;
+	
 	if(strName.substr(strName.length()-4) == ".zmt")
 	{
 		//cout<<"loading ini material"<<endl;
-	 	return LoadIniMaterial(strName.c_str(),bDontClear);	
+	 	if(LoadIniMaterial(strName.c_str(),bDontClear))
+	 		bLoaded = true;
 	}
 	else if(strName.substr(strName.length()-4) == ".zlm")
 	{
 		//cout<<"loading lua material"<<endl;
-	 	return LoadLuaMaterial(strName,bDontClear);		
+	 	if(LoadLuaMaterial(strName,bDontClear))
+	 		bLoaded = true;
 	}
 	
-	cerr<<"Warning: material "<<strName<<" has invalid sufix, shuld be .zmt or .zlm"<<endl;
-	
-	return false;
+	if(bLoaded)
+		return true;
+	else
+	{
+ 		cerr<<"WARNING: Missing material "<<strName<<" using nomaterial.zmt"<<endl;
+ 		return LoadIniMaterial("data/material/nomaterial.zmt",bDontClear);	
+	}
 }
 
 int ZMaterial::CalculateSize()

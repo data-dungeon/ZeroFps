@@ -139,7 +139,7 @@ void P_Heightmap::BuildVegitation()
 	{
 		if(!m_kMaterials[i]->IsValid())
 		{
-			cerr<<"bad material"<<endl;
+			cerr<<"WARNING: BuildVegitation  , bad material "<<endl;
 			continue;
 		}
 	
@@ -576,6 +576,7 @@ void P_Heightmap::BuildTextureArrays()
 			m_kRenderPackages[i].m_pkMaterial = &m_kBottom;
 		else						
 			m_kRenderPackages[i].m_pkMaterial = (ZMaterial*)(m_kMaterials[i]->GetResourcePtr());
+
 
 		m_kRenderPackages[i].m_kMeshData.m_ePolygonMode = TRIANGLES_MODE;
 		
