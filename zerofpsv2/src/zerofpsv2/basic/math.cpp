@@ -3,6 +3,7 @@
 #include "zfassert.h"
 #include <cstdio>
 #include <cstdarg>
+#include <ctime>
 #include "math.h"
 #include "vector4.h"
 
