@@ -223,7 +223,15 @@ void P_Heightmap::BuildVegitation()
 														m_kBrightness[(iZ+1)*m_iRows+iX] +
 														m_kBrightness[(iZ+1)*m_iRows+iX+1]) / 1020.0;
 							
-							AddVegitable(*pkNewRP,kPos,fHeight,fBrightness);
+							static Vector3 kNormal;
+							kNormal = GenerateNormal(iX,iZ);						
+							kNormal += GenerateNormal(iX+1,iZ);						
+							kNormal += GenerateNormal(iX,iZ+1);						
+							kNormal += GenerateNormal(iX+1,iZ+1);						
+							kNormal *= 0.25;
+
+							
+							AddVegitable(*pkNewRP,kPos,kNormal,fHeight,fBrightness);
 						}
 					}
 						
@@ -259,7 +267,7 @@ void P_Heightmap::BuildVegitation()
 	Math::SetRandomSeed(0);
 }
 
-void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float fHeight,float fBrightness)
+void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,Vector3& kNormal,float fHeight,float fBrightness)
 {
 	static Vector2 kUV1(0,1);
 	static Vector2 kUV2(1,1);
@@ -300,7 +308,9 @@ void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,float
 	kRenderPackage.m_kMeshData.m_kTexture[0].push_back(kUV4);
 
 	for(int z=0;z<8;z++)
-		kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+		kRenderPackage.m_kMeshData.m_kNormals.push_back(kNormal);
+		
+// 		kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 
 
 	kRenderPackage.m_kMeshData.m_kColors.push_back(Vector4(fB,fB,fB,1));
