@@ -20,7 +20,7 @@ class MCOMMON_API RuleSystem : public ZFSubSystem
 		
 		void SendPointText(const string& strText,const Vector3& kPos,int iType);
 		
-		void CharacterHit(Entity* pkCharacter,int iAttacker);
+		void CharacterHit(Entity* pkCharacter,int iAttacker,int iHealth);
 		void CharacterMiss(Entity* pkCharacter,int iAttacker);
 		
 	public:

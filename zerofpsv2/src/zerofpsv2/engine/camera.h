@@ -149,8 +149,9 @@ class ENGINE_API Camera : public I_Camera
 		//HDR STUFF
 		float				m_fExposureFactor;
 		
-		//camera shake effect
+		//camera shake effect		
 		float 			m_fShakeAmount;									///< camera shake magnitude, 0 means no shake at all
+		Vector3			m_kCurrentShake;
 		
 		//shadow hack
 		ResTexture		m_kShadowTexture;

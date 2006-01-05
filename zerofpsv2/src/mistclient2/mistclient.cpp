@@ -1443,8 +1443,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		//when player character is hit, this is called
 		case MLNM_SC_PLAYERHIT:
 		{
+			int iDamage;
+			pkNetMessage->Read( iDamage);
+		
+			float fShakeamount = Min(iDamage*2,20);
+					
 			if(m_pkCamera)
-				m_pkCamera->SetShakeAmount(1);
+				m_pkCamera->SetShakeAmount(fShakeamount);
 				
 			break;
 		}

@@ -53,6 +53,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_bFogEnabled	=		false;
 	
 	m_fShakeAmount =		0;
+	m_kCurrentShake=		Vector3(0,0,0);
 	
 	m_iForceLighing=		LIGHT_MATERIAL;
 	
@@ -618,7 +619,22 @@ void Camera::SetupRenderState()
 	m_kRenderState.m_pkRoot = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 
 	//save render pos in camera
-	m_kRenderPos = m_kPos = m_kPos;
+	m_kRenderPos = m_kPos;
+	
+	
+	//shake stuff	
+	if(m_fShakeAmount > 0)
+	{
+		Vector3 kNew(	Math::Randomf(m_fShakeAmount)-m_fShakeAmount/2,
+							Math::Randomf(m_fShakeAmount)-m_fShakeAmount/2,
+							Math::Randomf(m_fShakeAmount)-m_fShakeAmount/2);
+		m_kCurrentShake = (m_kCurrentShake + kNew) * 0.5;
+		
+		m_kRenderState.m_kCameraRotation.Rotate(m_kCurrentShake);
+		
+		m_fShakeAmount -= m_pkZeroFps->GetFrameTime()*10;		
+	}
+	
 }
 
 void Camera::InitView()//int iWidth,int iHeight) 

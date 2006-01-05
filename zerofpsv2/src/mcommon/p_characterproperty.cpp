@@ -3526,6 +3526,29 @@ namespace SI_P_CharacterProperty
 		return 0;
 	}
 	
+	int HaveEqipedBaseTypeLua(lua_State* pkLua)
+	{
+		if(!g_pkScript->VerifyArg(pkLua,2))
+			return 0;		
+	
+		int iCharcterID;
+		string strTypeName;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);		
+		g_pkScript->GetArgString(pkLua, 1,strTypeName);
+		
+		int iRet = 0;
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			if(pkCP->HaveEqipedBaseType(strTypeName))
+				iRet = 1;		
+		}
+		
+		g_pkScript->AddReturnValue(pkLua, iRet);							
+		return 1;			
+	}
+	
 /**	\fn HaveItem( ??? )
 		\brief Unkown
 		\relates CharacterProperty
@@ -3660,6 +3683,7 @@ void Register_P_CharacterProperty(ZSSZeroFps* pkZeroFps)
 	//item handling
 	g_pkScript->ExposeFunction("PickupItem",		SI_P_CharacterProperty::PickupItemLua);
 	g_pkScript->ExposeFunction("HaveItem",			SI_P_CharacterProperty::HaveItemLua);
+	g_pkScript->ExposeFunction("HaveEqipedBaseType",			SI_P_CharacterProperty::HaveEqipedBaseTypeLua);	
 	g_pkScript->ExposeFunction("GetCharacterContainerID",		SI_P_CharacterProperty::GetCharacterContainerIDLua);
 
 	

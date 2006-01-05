@@ -69,13 +69,13 @@ void RuleSystem::Damage(int iAttacker,int iDefender,float fDamage)
 			pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
 			SendPointText(IntToString(int(-fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
 			
-			CharacterHit(pkDefender,iAttacker);			
+			CharacterHit(pkDefender,iAttacker,fDamage);			
 		}
 	}
 }
 
 
-void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker)
+void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker,int iHealth)
 {
 	vector<ScriptFuncArg> args(1);
 	args[0].m_kType.m_eType = tINT;
@@ -90,9 +90,10 @@ void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker)
 		if(pkCP->Getclient() != -1)
 		{	
 			int iD = pkCP->Getclient();
-			const void* pkID[1];
+			const void* pkID[2];
 			pkID[0] = &iD;
-			m_pkApplication->OnSystemMessage("PlayerHit",1,pkID);	
+			pkID[1] = &iHealth;
+			m_pkApplication->OnSystemMessage("PlayerHit",2,pkID);	
 		}
 	}
 }
@@ -201,7 +202,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 				SendPointText(IntToString(-iTotal),pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,0);			
 		
 			//tell defender its been hit
-			CharacterHit(pkDefender->GetEntity(),iAttacker);
+			CharacterHit(pkDefender->GetEntity(),iAttacker,iTotal);
 			
 			return true;
 		} 			

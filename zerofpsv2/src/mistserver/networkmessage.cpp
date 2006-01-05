@@ -242,7 +242,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				{
 					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
 					{
-						if(pkCP->IsDead())
+						if(pkCP->IsDead() || pkCP->IsIncap())
 						{
 							pkCP->MakeAlive();
 							pkCharacter->SetWorldPosV(GetPlayerStartPos());

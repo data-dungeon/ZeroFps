@@ -88,7 +88,7 @@ class MistServer :public Application , public ZGuiApp
 		void SendCharacterEquipment(int iCharacter,int iClientID);				
 		void SendCharacterList(int iClient);
 		void SendClientCharacterID(int iClientID);
-		void SendPlayerHit(int iClientID);
+		void SendPlayerHit(int iClientID,int iDamage);
 
 		//player creation
 		Vector3 GetPlayerStartPos();
