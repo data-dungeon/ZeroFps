@@ -6,6 +6,8 @@ Mistlands - What's new
 * GLSL shaders, bloom, HDR
 * Editor improvements
 * Heightmap system
+* Heightmap vegitation
+* Heihgtmap shadows
 
 
 0.4.0 - (Mistlands milestone 4)
