@@ -2785,7 +2785,7 @@ void MistClient::OnSystemMessage(const string& strType,int iNrOfParam,const void
 	{
 		m_kServerList.clear();
 		
-		AddRemoveServer("NO CONNECTION WITH MASTERSERVER","",true);		
+		AddRemoveServer("WAITING FOR MASTERSERVER RESPONS","",true);		
 		AddRemoveServer("localhost","localhost:4242",true);		
 		
 		UpdateServerListbox();
