@@ -495,7 +495,24 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 	if(kRot != Vector3::ZERO)
 	{
-		SendRotateSelection(kRot);
+		if(m_kEntitySnaping.GetBool())
+		{
+			if(!DelayCommand())
+			{
+				if(kRot.x > 0) kRot.x = 45;
+				if(kRot.x < 0) kRot.x = -45;
+				if(kRot.y > 0) kRot.y = 45;
+				if(kRot.y < 0) kRot.y = -45;
+				if(kRot.z > 0) kRot.z = 45;
+				if(kRot.z < 0) kRot.z = -45;
+			
+				SendRotateSelection(kRot);
+			}
+		}
+		else
+		{		
+			SendRotateSelection(kRot);
+		}
 	}
 }
 
