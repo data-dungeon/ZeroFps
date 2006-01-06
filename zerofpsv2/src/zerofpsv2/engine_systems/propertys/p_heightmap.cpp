@@ -283,7 +283,7 @@ void P_Heightmap::AddVegitable(RenderPackage& kRenderPackage,Vector3& kPos,Vecto
 
 	float w = 0.5+Math::Randomf(0.3);
 	float h = fHeight+Math::Randomf(fHeight*0.25)+0.2;
-	float fB = fBrightness;
+	float fB = fBrightness + (Math::Randomf(fBrightness/4.0) - fBrightness/4.0); //sett brightness and add some randomness
 
 	//cross vertises
 	kRenderPackage.m_kMeshData.m_kVertises.push_back(kPos + kRotate.VectorTransform(Vector3(-w,h,-w)));
