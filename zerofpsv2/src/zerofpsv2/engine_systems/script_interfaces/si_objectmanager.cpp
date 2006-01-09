@@ -399,10 +399,10 @@ int DistanceToLua(lua_State* pkLua)
 	{
 		double dDistance = pkObject1->GetWorldPosV().DistanceTo(pkObject2->GetWorldPosV());
 
-		cout << "mAgPk:" << pkObject2 << endl;
-		cout << "x1:" << pkObject1->GetWorldPosV().x << " z1:" << pkObject1->GetWorldPosV().z << endl;
-		cout << "x2:" << pkObject2->GetWorldPosV().x << " z2:" << pkObject2->GetWorldPosV().z << endl;
-		cout << "dist:" << dDistance << endl;
+// 		cout << "mAgPk:" << pkObject2 << endl;
+// 		cout << "x1:" << pkObject1->GetWorldPosV().x << " z1:" << pkObject1->GetWorldPosV().z << endl;
+// 		cout << "x2:" << pkObject2->GetWorldPosV().x << " z2:" << pkObject2->GetWorldPosV().z << endl;
+// 		cout << "dist:" << dDistance << endl;
 		g_pkScript->AddReturnValue(pkLua, dDistance);
 
 		return 1;

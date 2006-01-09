@@ -51,11 +51,11 @@ void RuleSystem::SendPointText(const string& strText,const Vector3& kPos,int iTy
 
 void RuleSystem::Damage(int iCharacter,float fDamage)
 {
-	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacter,"P_CharacterProperty"))
+	if(Entity* pkDefender = m_pkEntityManager->GetEntityByID( iCharacter))
 	{
-		pkCP->SetLastDamageFrom(-1);
-		pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
-		SendPointText(IntToString(int(-fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
+		CharacterHit(pkDefender,-1,fDamage);
+		
+		SendPointText(IntToString(int(-fDamage)),pkDefender->GetWorldPosV(),0);			
 	}
 }
 
@@ -63,49 +63,32 @@ void RuleSystem::Damage(int iAttacker,int iDefender,float fDamage)
 {
 	if(Entity* pkDefender = m_pkEntityManager->GetEntityByID(iDefender))
 	{
-		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkDefender->GetProperty("P_CharacterProperty"))
-		{
-			pkCP->SetLastDamageFrom(iAttacker);
-			pkCP->m_kCharacterStats.ChangeStat("Health",-fDamage);
-			SendPointText(IntToString(int(-fDamage)),pkCP->GetEntity()->GetWorldPosV(),0);
-			
-			CharacterHit(pkDefender,iAttacker,fDamage);			
-		}
+		CharacterHit(pkDefender,iAttacker,fDamage);			
 	}
 }
 
 
-void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker,int iHealth)
+void RuleSystem::CharacterHit(Entity* pkCharacter,int iAttacker,int iDamage)
 {
-	vector<ScriptFuncArg> args(1);
-	args[0].m_kType.m_eType = tINT;
-	args[0].m_pData = &iAttacker;			//owner character id
-			
-	m_pkEntityManager->CallFunction(pkCharacter,"Hit",&args);	
-	
-	
 	//send hit info to client
 	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty") )
-	{
-		if(pkCP->Getclient() != -1)
-		{	
-			int iD = pkCP->Getclient();
-			const void* pkID[2];
-			pkID[0] = &iD;
-			pkID[1] = &iHealth;
-			m_pkApplication->OnSystemMessage("PlayerHit",2,pkID);	
-		}
-	}
+		pkCP->OnHit(iAttacker,iDamage);
+	
+	
+	Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
+	if(iDamage<=0)
+		SendPointText("NoDmg",pkCharacter->GetWorldPosV()+kRandomPos,1);
+	else
+		SendPointText(IntToString(-iDamage),pkCharacter->GetWorldPosV()+kRandomPos,0);				
 }
 
 void RuleSystem::CharacterMiss(Entity* pkCharacter,int iAttacker)
 {
-	vector<ScriptFuncArg> args(1);
-	args[0].m_kType.m_eType = tINT;
-	args[0].m_pData = &iAttacker;			//owner character id
-			
-	m_pkEntityManager->CallFunction(pkCharacter,"Miss",&args);	
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty") )
+		pkCP->OnMiss(iAttacker);
 
+	Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
+	SendPointText("MISS",pkCharacter->GetWorldPosV()+kRandomPos,1);
 }
 
 float RuleSystem::Facing(Entity* pkCharacter,const Vector3& kPos)
@@ -141,7 +124,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		float fAttackerFacing = Facing(pkAttacker->GetEntity(),pkDefender->GetEntity()->GetWorldPosV());
 		
 		//backstab bonus
-		if(fDefenderFacing >50)
+		if(fDefenderFacing >60)
 		{
 			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
 			SendPointText("Backstab",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,2);
@@ -154,10 +137,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 	
 		
 		if(fRandA <= fRandD)
-		{
-			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
-			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
-			
+		{			
 			//tell defender its been missed
 			CharacterMiss(pkDefender->GetEntity(),iAttacker);
 			
@@ -217,18 +197,7 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 // 			cout<<"MAgic    : "<<iMagic<<endl;
 // 			cout<<"Poison   : "<<iPoison<<endl;
 // 			cout<<"TOTAL    : "<<iTotal<<endl;
-		
-			
-			//Damage(iAttacker,iDefender,iTotal);
-			pkDefender->SetLastDamageFrom(iAttacker);
-			pkStatsD->ChangeStat("Health",-iTotal);		
-
-			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
-			if(iTotal<=0)
-				SendPointText("NoDmg",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
-			else
-				SendPointText(IntToString(-iTotal),pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,0);			
-		
+				
 			//tell defender its been hit
 			CharacterHit(pkDefender->GetEntity(),iAttacker,iTotal);
 			

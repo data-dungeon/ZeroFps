@@ -257,6 +257,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void OnIncap();
 		void OnLevelUP();
 		
+		float Facing(Entity* pkCharacter,const Vector3& kPos);
+		void DoParryAnimation(int iAttacker);
+		
 	public:
 		Stats		m_kCharacterStats;
 		bool		m_iDMNoTarget;				
@@ -367,9 +370,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool GetCombatMode()												{	return m_bCombatMode;			}
 		void AddSkillToQueue(const string& strSkill,int iTargetID);
 		void SetDefaultAttackSkill(const string& strDA);
-		string GetDefaultAttackSkill()								{	return m_strDefaultAttackSkill;}
-		
+		string GetDefaultAttackSkill()								{	return m_strDefaultAttackSkill;}		
 		void SetLastDamageFrom(int iCharacterID)					{	m_iLastDamageFrom=iCharacterID;}
+		
+		void OnHit(int iAttacker,int iDamage);
+		void OnMiss(int iAttacker);
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);

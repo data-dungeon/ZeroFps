@@ -1431,6 +1431,102 @@ void P_CharacterProperty::SendPointText(const string& strText,const Vector3& kPo
 	g_ZFObjSys.SendSystemMessage("Application","PointText",5,apParam);	
 }
 
+void P_CharacterProperty::OnHit(int iAttacker,int iDamage)
+{
+	if(m_bDead)
+		return;
+	
+	//set last attacker
+	SetLastDamageFrom(iAttacker);
+	
+	//reduce health
+	m_kCharacterStats.ChangeStat("Health",-iDamage);
+
+	//message to client
+	if(m_iConID != -1)
+	{	
+		int iD = m_iConID;
+		const void* pkID[2];
+		pkID[0] = &iD;
+		pkID[1] = &iDamage;
+		m_pkApp->OnSystemMessage("PlayerHit",2,pkID);	
+	}		
+
+	//call script function
+	vector<ScriptFuncArg> args(1);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &iAttacker;			//owner character id			
+	m_pkEntityManager->CallFunction(m_pkEntity,"Hit",&args);	
+
+}
+
+float P_CharacterProperty::Facing(Entity* pkCharacter,const Vector3& kPos)
+{
+	//check rotation
+	Vector3 kOwnerDir = pkCharacter->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+	Vector3 kDir = kPos - pkCharacter->GetWorldPosV();		
+	
+	kOwnerDir.y = 0;
+	kDir.y = 0;
+	
+	kOwnerDir.Normalize();
+	kDir.Normalize();
+	
+	
+	return Math::RadToDeg(kOwnerDir.Angle(kDir));
+}
+
+void P_CharacterProperty::OnMiss(int iAttacker)
+{
+	if(m_bDead)
+		return;	
+		
+	DoParryAnimation(iAttacker);	
+	
+	//calls script fuction
+	vector<ScriptFuncArg> args(1);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &iAttacker;			//owner character id			
+	m_pkEntityManager->CallFunction(m_pkEntity,"Miss",&args);		
+}
+
+
+void P_CharacterProperty::DoParryAnimation(int iAttacker)
+{
+	if(iAttacker != -1)
+	{
+		if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
+		{
+			if(Entity* pkAttacker = m_pkEntityMan->GetEntityByID(iAttacker))
+			{		
+				float fFacing = Facing(m_pkEntity,pkAttacker->GetWorldPosV());							
+				bool bFront = fFacing <= 90;
+				bool bFace = fFacing <= 60;
+				bool bHaveShield = 			HaveEqipedBaseType("shield"); 
+				bool bHaveOnehandweapon = 	HaveEqipedBaseType("axe") || HaveEqipedBaseType("sword") || HaveEqipedBaseType("mace"); 
+				bool bHaveBow = 				HaveEqipedBaseType("bow"); 
+						
+				vector<int> kAnimations;
+				
+				if(bFace && bHaveShield) kAnimations.push_back(0);
+				if(bFace && bHaveOnehandweapon) kAnimations.push_back(1);
+				if(bFace && bHaveBow) kAnimations.push_back(3);
+												
+				if(!kAnimations.empty())
+				{
+					pkCC->Lock(0.5);			
+					int iAnimation = Math::Randomi(kAnimations.size());
+					switch(kAnimations[iAnimation])
+					{
+						case 0:	pkCC->DoAnimation("parry_shield");break;
+						case 1:	pkCC->DoAnimation("parry_weapon");break;
+						case 3:	pkCC->DoAnimation("parry_weapon");break;
+					}
+				}				
+			}		
+		}
+	}
+}
 
 void P_CharacterProperty::UpdateSkills()
 {
