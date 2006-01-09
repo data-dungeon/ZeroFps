@@ -2960,6 +2960,7 @@ void P_CharacterProperty::SendSkillTree()
 		kNp.Write_Str(m_kSkills[i]->GetParent());		
 		kNp.Write_Str(m_kSkills[i]->GetScreenName());					
 		kNp.Write_Str(m_kSkills[i]->GetIcon());						
+		kNp.Write(m_kSkills[i]->GetLevel());								
 	}
 	
 	//send package

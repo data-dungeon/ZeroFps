@@ -1469,12 +1469,13 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			int iSize;
 			pkNetMessage->Read(iSize);
 			
-			
+/*			
 			string strName;
 			string strParent;
 			string strScreenName;
 			string strIcon;
-			
+			int	 iLevel;
+			*/
 			ZGuiTreebox* pkTreeBox = (ZGuiTreebox*)g_kMistClient.GetWnd("SkillTree");	
 
 			if(!pkTreeBox)
@@ -1495,6 +1496,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read_Str(info.strParent);
 				pkNetMessage->Read_Str(info.strScreenName);
 				pkNetMessage->Read_Str(info.strIcon);
+				pkNetMessage->Read(info.iLevel);				
 
 				vkSkillInfo.push_back(info);
 			}
@@ -1509,19 +1511,21 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				//cout << "SKILL[" << i << "]: " << vkSkillInfo[i].strName<<" "<< vkSkillInfo[i]. strParent<<" "<<vkSkillInfo[i].strIcon<<endl;
 
 				SKILL_TREE_INFO info = vkSkillInfo[i];
-
 				int idex = icon_map[info.strIcon];
+			
+				//text
+				string strText = info.strScreenName + string("[")+IntToString(info.iLevel)+string("]"); 
 			
 				if(info.strParent.empty())
 				{
-					pkTreeBox->AddItem(pkTreeBox->Root(),(char*)info.strScreenName.c_str(),idex,idex,(char*)info.strName.c_str());					
+					pkTreeBox->AddItem(pkTreeBox->Root(),(char*)strText.c_str(),idex,idex,(char*)info.strName.c_str());					
 				}
 				else
 				{
-					if(!pkTreeBox->AddItem(info.strParent,(char*)info.strScreenName.c_str(),idex,idex,(char*)info.strName.c_str()))
+					if(!pkTreeBox->AddItem(info.strParent,(char*)strText.c_str(),idex,idex,(char*)info.strName.c_str()))
 					{
 						cout<<"Error adding treeitem "<<info.strName<< " parent "<<info.strParent<<endl;
-						pkTreeBox->AddItem(pkTreeBox->Root(),(char*)info.strScreenName.c_str(),idex,idex,(char*)info.strName.c_str());					
+						pkTreeBox->AddItem(pkTreeBox->Root(),(char*)strText.c_str(),idex,idex,(char*)info.strName.c_str());					
 					}
 				}
 

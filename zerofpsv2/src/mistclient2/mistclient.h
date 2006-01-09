@@ -17,10 +17,11 @@ typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, vo
 
 struct SKILL_TREE_INFO
 {
-	string strName;
-	string strParent;
-	string strScreenName;
-	string strIcon;
+	string 	strName;
+	string 	strParent;
+	string 	strScreenName;
+	string 	strIcon;
+	int		iLevel;
 };
 
 enum GUI_SCRIPT
