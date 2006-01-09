@@ -318,18 +318,19 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("placeonground") && !DelayCommand())	PlaceSelectionOnGround();	
 	
 	
-	if(m_pkInputHandle->VKIsDown("scale"))	
+	if(m_pkInputHandle->VKIsDown("scale") && m_pkInputHandle->VKIsDown("rotate"))	
 	{
-		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
-		P_Mad* pkMad = (P_Mad*)pkEnt->GetProperty("P_Mad");
-		if(pkMad)
+		for(set<int>::iterator it = m_SelectedEntitys.begin() ;it!=m_SelectedEntitys.end();it++)
 		{
-			float fScale = pkMad->GetScale();
-			float fDeltaScale = float(fMouseX / 100.0);
-			fScale += fDeltaScale;
-			if(fScale < 0) fScale = 0;			
-			pkMad->SetScale(fScale);
-		}
+			if(P_Mad* pkMad = (P_Mad*)m_pkEntityManager->GetPropertyFromEntityID( *it,"P_Mad"))
+			{
+				float fScale = pkMad->GetScale();
+				float fDeltaScale = float(fMouseX / 100.0);
+				fScale += fDeltaScale;
+				if(fScale < 0) fScale = 0;			
+				pkMad->SetScale(fScale);		
+			}
+		}		
 	}
 
 	static bool bLastSelect = false;
@@ -485,7 +486,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("rotz+"))			kRot.z =  100*m_pkZeroFps->GetFrameTime();			
 	if(m_pkInputHandle->VKIsDown("rotz-"))			kRot.z = -100*m_pkZeroFps->GetFrameTime();			
 
-	if(m_pkInputHandle->VKIsDown("rotate"))
+	if(m_pkInputHandle->VKIsDown("rotate") && !m_pkInputHandle->VKIsDown("scale"))
 	{
 		float fRot = float(-fMouseX / 5.0);
 		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)

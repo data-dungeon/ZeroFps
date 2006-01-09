@@ -53,6 +53,9 @@ class MCOMMON_API P_AI: public Property
 		float m_fAttackDistance;
 		float	m_fStrikeRange;
 		
+		Vector3	m_kGuardPos;
+		bool		m_bHaveGuardPos;
+		
 		//random walk
 		bool 	m_bWalk;
 		float m_fTime;

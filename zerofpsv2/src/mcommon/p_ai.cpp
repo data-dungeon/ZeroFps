@@ -45,6 +45,8 @@ P_AI::P_AI(): Property("P_AI")
 	m_iPrevState		= eAI_STATE_NONE;
 	m_bStateChanged	= false;
 
+	m_kGuardPos = Vector3(0,0,0);
+	m_bHaveGuardPos = false;
 
 	m_fSeeDistance = 		16;
 	m_fAttackDistance =	10;
@@ -402,6 +404,12 @@ bool P_AI::States(int iEvent, int iState)
 					if(iEnemy != -1)
 					{
 						//set look att state
+						if(!m_bHaveGuardPos)
+						{
+							m_kGuardPos = m_pkEntity->GetWorldPosV();
+							m_bHaveGuardPos = true;
+						}
+						
 						SetState(eAI_STATE_LOOKAT);
 						m_iTarget = iEnemy;
 						return false;
@@ -409,7 +417,21 @@ bool P_AI::States(int iEvent, int iState)
 				}
 					
 				m_pkCharacterProperty->SetCombatMode(false);					
-				m_pkCharacterControl->SetControl(eUP,false);
+				m_pkCharacterControl->SetControl(eUP,false);									
+					
+				if(m_bHaveGuardPos)
+				{
+					if(m_pkEntity->GetWorldPosV().DistanceTo(m_kGuardPos) < 0.5)
+					{
+						m_bHaveGuardPos = false;						
+					}
+					else
+					{
+						m_pkCharacterControl->RotateTowards(m_kGuardPos);
+						m_pkCharacterControl->SetControl(eUP,true);
+						m_pkCharacterControl->SetControl(eCRAWL,true);												
+					}
+				}
 					
 
 		State(eAI_STATE_DEAD)
