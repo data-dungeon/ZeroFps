@@ -29,6 +29,13 @@ void P_PSystem::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const 
 
 void P_PSystem::Update()
 {
+	//evil hax, needed to make psystems disapear on server
+	for (int i = 0; i < m_kPSystems.size(); i++)
+		if ( m_kPSystems[i].m_pkPSystem )
+			UpdatePS(i,NULL);
+		
+
+
 // 	for (int i = 0; i < m_kPSystems.size(); i++)
 // 	{
 // 		if ( m_kPSystems[i].m_pkPSystem )
