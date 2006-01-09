@@ -108,6 +108,23 @@ void RuleSystem::CharacterMiss(Entity* pkCharacter,int iAttacker)
 
 }
 
+float RuleSystem::Facing(Entity* pkCharacter,const Vector3& kPos)
+{
+	//check rotation
+	Vector3 kOwnerDir = pkCharacter->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+	Vector3 kDir = kPos - pkCharacter->GetWorldPosV();		
+	
+	kOwnerDir.y = 0;
+	kDir.y = 0;
+	
+	kOwnerDir.Normalize();
+	kDir.Normalize();
+	
+	
+	return Math::RadToDeg(kOwnerDir.Angle(kDir));
+
+}
+
 bool RuleSystem::Attack(int iAttacker,int iDefender)
 {
 	P_CharacterProperty* pkAttacker = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iAttacker,"P_CharacterProperty");
@@ -118,15 +135,26 @@ bool RuleSystem::Attack(int iAttacker,int iDefender)
 		Stats* pkStatsA = &pkAttacker->m_kCharacterStats;
 		Stats* pkStatsD = &pkDefender->m_kCharacterStats;
 	
-		float fRandA = Math::Randomf(pkStatsA->GetTotal("Attack")  );
+		float fDefense = pkStatsA->GetTotal("Attack");
+		
+		float fDefenderFacing = Facing(pkDefender->GetEntity(),pkAttacker->GetEntity()->GetWorldPosV());
+		float fAttackerFacing = Facing(pkAttacker->GetEntity(),pkDefender->GetEntity()->GetWorldPosV());
+		
+		//backstab bonus
+		if(fDefenderFacing >50)
+		{
+			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
+			SendPointText("Backstab",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,2);
+			//cout<<"character facing away, defense crippled"<<endl;
+			fDefense *= 0.5;
+		}
+	
+		float fRandA = Math::Randomf(fDefense  );
 		float fRandD = Math::Randomf(pkStatsD->GetTotal("Defense") );
 	
-//  		cout<<"ATTACK "<<pkStatsA->GetTotal("Attack")<< " VS "<<pkStatsD->GetTotal("Defense")<<endl;
-// 		cout<<"randomized "<<fRandA<< " VS "<<fRandD<<endl;
 		
 		if(fRandA <= fRandD)
 		{
-			//cout<<"MISS"<<endl;
 			Vector3 kRandomPos(Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25,Math::Randomf(0.5)-0.25);
 			SendPointText("MISS",pkDefender->GetEntity()->GetWorldPosV()+kRandomPos,1);
 			

@@ -23,6 +23,8 @@ class MCOMMON_API RuleSystem : public ZFSubSystem
 		void CharacterHit(Entity* pkCharacter,int iAttacker,int iHealth);
 		void CharacterMiss(Entity* pkCharacter,int iAttacker);
 		
+		float Facing(Entity* pkCharacter,const Vector3& kPos);
+		
 	public:
 		RuleSystem();
 		

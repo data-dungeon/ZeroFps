@@ -94,21 +94,24 @@ void PointText::Draw()
 
 			switch(m_kText[i].m_iType)
 			{
+				//red
 				case 0:			
 					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
 														fScale,m_kText[i].m_strText,m_pkRedMaterial,m_pkFont,true);
 					break;
-				
+				//green 
 				case 1:			
 					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
 														fScale,m_kText[i].m_strText,m_pkGreenMaterial,m_pkFont,true);
 					break;
 				
+				//blue
 				case 2:			
 					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
 														fScale,m_kText[i].m_strText,m_pkBlueMaterial,m_pkFont,true);
 					break;
 					
+				//yellow 
 				case 3:			
 					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
 														fScale,m_kText[i].m_strText,m_pkYellowMaterial,m_pkFont,true);

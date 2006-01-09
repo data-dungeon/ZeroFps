@@ -421,7 +421,8 @@ bool P_AI::States(int iEvent, int iState)
 					
 				if(m_bHaveGuardPos)
 				{
-					if(m_pkEntity->GetWorldPosV().DistanceTo(m_kGuardPos) < 0.5)
+					
+					if(m_pkEntity->GetWorldPosV().DistanceTo(Vector3(m_kGuardPos.x,m_pkEntity->GetWorldPosV().y,m_kGuardPos.z)) < 0.5)
 					{
 						m_bHaveGuardPos = false;						
 					}
