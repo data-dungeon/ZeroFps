@@ -109,6 +109,8 @@ void P_AI::DrawEditor()
 
 void P_AI::Update() 
 {
+
+
 	if(!m_pkEntity->InActiveZone())
 		return;
 
@@ -141,9 +143,18 @@ void P_AI::Update()
 		
 	}
 				
-	m_fStrikeRange = GetOffensiveRange();
+		
+	//AI distance
+	if(m_pkEntityManager->DistanceToTracker(m_pkEntity->GetWorldPosV()) > m_pkZeroFps->m_kAI_Distance.GetFloat())
+	{
+		m_pkCharacterControl->SetControl(eUP,false);
+		return;	
+	}
 	
+	
+	m_fStrikeRange = GetOffensiveRange();	
 	Process(EVENT_Update);
+	
 }
 
 

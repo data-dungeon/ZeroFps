@@ -1242,7 +1242,7 @@ void ZeroEd::AABBSelect(const Vector3& kP1,const Vector3& kP2,bool bAdd)
 		if(kEntitys[i] == m_pkZoneMarkerEntity)					continue;
 		if(kEntitys[i]->IsZone())										continue;
 		if(kEntitys[i]->GetEntityID() <100000)						continue;
-		if(kEntitys[i]->GetName() == "A t_serverinfo.lua")		continue;
+		if(kEntitys[i]->GetType() == "t_serverinfo.lua")		continue;
 		if(kEntitys[i]->IsHidden(true))								continue;			
 			
 			
@@ -1732,7 +1732,7 @@ Entity*	ZeroEd::GetTargetObject()
 		if(kObjects[i] == m_pkZoneMarkerEntity)					continue;
 		if(kObjects[i]->IsZone())										continue;
 		if(kObjects[i]->GetEntityID() <100000)						continue;
-		if(kObjects[i]->GetName() == "A t_serverinfo.lua")		continue;
+		if(kObjects[i]->GetType() == "t_serverinfo.lua")		continue;
 		if(kObjects[i]->IsHidden(true))		continue;
 		
 

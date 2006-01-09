@@ -318,7 +318,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("placeonground") && !DelayCommand())	PlaceSelectionOnGround();	
 	
 	
-	if(m_pkInputHandle->VKIsDown("scale") && !DelayCommand())	
+	if(m_pkInputHandle->VKIsDown("scale"))	
 	{
 		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
 		P_Mad* pkMad = (P_Mad*)pkEnt->GetProperty("P_Mad");
@@ -327,6 +327,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			float fScale = pkMad->GetScale();
 			float fDeltaScale = float(fMouseX / 100.0);
 			fScale += fDeltaScale;
+			if(fScale < 0) fScale = 0;			
 			pkMad->SetScale(fScale);
 		}
 	}

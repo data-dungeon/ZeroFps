@@ -107,6 +107,8 @@ ZSSZeroFps::ZSSZeroFps(void) : ZFSubSystem("ZSSZeroFps")
 
 	// Register Variables
 	m_kAI_ShowInfo.Register(this, "ai_showinfo", "0", "Display debug info for ai's." );
+	m_kAI_Distance.Register(this, "ai_distance", "25", "active ai distance" );
+	
 
 	m_kbTcsFullframe.Register(this,		"p_tcsfullframe", "0");
 	m_kbLockFps.Register(this,				"e_lockfps",		"0");

@@ -402,6 +402,7 @@ void MistClient::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const
 	//draw current target marker
 	if(m_iTargetID != -1)
 		AddTargetMarkerRP(kRenderPackages);
+	
 
 }
 
@@ -468,6 +469,7 @@ void MistClient::UpdateCursorImage()
 	static int iNormalTex = g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga");
 
 	bool bHaveSet = false;
+	string strCursorText = "";
 
  	if(m_iPickedEntityID != -1 && m_bGuiCapture)
  	{
@@ -484,6 +486,8 @@ void MistClient::UpdateCursorImage()
 													
 					bHaveSet = true;
 				}
+				
+				strCursorText = pkChar->GetName();
 			}	
  			else if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
  			{
@@ -491,21 +495,54 @@ void MistClient::UpdateCursorImage()
  				{
 					m_pkGui->SetCursorTexture(iItemTex);
 					bHaveSet = true;
+					strCursorText = pkItem->GetName();
 				}
  			}
  			else if(pkEnt->GetProperty("P_Ml"))
  			{
  				m_pkGui->SetCursorTexture(iUseTex);
  				bHaveSet = true;
+ 				strCursorText = pkEnt->GetName();
+ 				if(strCursorText == "A Entity")
+ 					strCursorText = "";
  			}
  		}
 	}
 	
-	if(!bHaveSet)
+	//cursor wnd
+	static ZGuiWnd* pkWnd = NULL;
+	static ZGuiLabel* pkLabel = NULL;
+	if(!pkWnd)
 	{
-		m_pkGui->SetCursorTexture(iNormalTex);	
+		pkWnd = CreateWnd( Wnd,(char*)"cursortextwnd",(char*)"",(char*)"",0,0, 100,20,0);
+		pkLabel = (ZGuiLabel*)CreateWnd( Label,(char*)"cursortextlbl",(char*)"bla",pkWnd,0,0, 50,20,0);
+		pkWnd->GetSkin()->m_unBorderSize = 1;
 	}
-
+	
+	
+	if(!bHaveSet)
+		m_pkGui->SetCursorTexture(iNormalTex);
+	
+	if(strCursorText.empty())
+	{
+		pkWnd->Hide();	
+	}		
+	else
+	{				 
+		int x,y;
+		x = m_pkGui->m_iMouseX;
+		y = m_pkGui->m_iMouseY;
+		 		 
+		pkLabel->SetText((char*)strCursorText.c_str(),true);
+		
+		Rect kWnd = pkLabel->GetScreenRect();				
+		pkWnd->Resize( kWnd.Width(),kWnd.Height());
+		x -= pkWnd->GetScreenRect().Width() / 2;
+		y -= pkWnd->GetScreenRect().Height() + 25;
+		pkWnd->SetPos( x,y,true,true);	
+	
+		pkWnd->Show();	
+	}
 }
 
 void MistClient::OnHud(void) 
@@ -712,27 +749,7 @@ void MistClient::DrawCrossHair()
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
-void MistClient::DrawMouseOverMarker(const Vector3& kPos,float fSize)
-{
-	static ZMaterial* pkMarker = NULL;
-	if(!pkMarker)
-	{
-		pkMarker = new ZMaterial;
-		pkMarker->GetPass(0)->m_pkTUs[0]->SetRes("enemymarker.tga");	
-		pkMarker->GetPass(0)->m_bLighting = 	false;
-		pkMarker->GetPass(0)->m_bFog = 			false;	
-		pkMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
-				
-		//blending is much nicer thou =)
-		pkMarker->GetPass(0)->m_bDepthMask = false;
-		pkMarker->GetPass(0)->m_bBlend = true;
-		pkMarker->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
-		pkMarker->GetPass(0)->m_iBlendDst = ONE_BLEND_DST;//ONE_MINUS_SRC_ALPHA_BLEND_DST;
-	}
 
-	m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),kPos,fSize*2.0,pkMarker);
-
-}
 
 void MistClient::AddTargetMarkerRP(vector<RenderPackage*>& kRenderPackages)
 {
@@ -928,70 +945,6 @@ void MistClient::Input()
 			SendAddSkillToSkillbar("skill-speed.lua",4);
 		}
 
-// 	if(m_pkInputHandle->Pressed(KEY_O))
-// 		if(!DelayCommand() )
-// 		{
-// 			for(int i =0;i<19;i++)
-// 				SendRemoveItemFromSkillbar(i);
-// 		}
-			
-			
-// 	//fireball test
-// 	if(m_pkInputHandle->Pressed(KEY_1))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-fireball.lua",m_iTargetID);
-// 
-// 	// speed	
-// 	if(m_pkInputHandle->Pressed(KEY_2))
-// 		if(!DelayCommand() )
-// //  			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-// 			SendAddSkillToQueue("skill-speed.lua",m_iTargetID);
-// 
-// 	// heal
-// 	if(m_pkInputHandle->Pressed(KEY_3))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-heal.lua",m_iTargetID);
-// // 			SendUseSkill("skill-heal.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-// 
-// 	// normal attack
-// 	if(m_pkInputHandle->Pressed(KEY_4))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-basic_attack.lua",m_iTargetID);		
-// 
-// 	// bow				
-// 	if(m_pkInputHandle->Pressed(KEY_5))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-bow.lua",m_iTargetID);		
-// 
-// 	// resurrect
-// 	if(m_pkInputHandle->Pressed(KEY_6))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-resurrect.lua",m_iTargetID);
-// // 			SendUseSkill("skill-resurrect.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
-// 
-// 	// bolt
-// 	if(m_pkInputHandle->Pressed(KEY_7))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-bolt.lua",m_iTargetID);
-// 
-// 	// light
-// 	if(m_pkInputHandle->Pressed(KEY_8))
-// 		if(!DelayCommand() )
-// 			SendAddSkillToQueue("skill-light.lua",m_iTargetID);
-
-
-/*	//list actions
-	if ( m_pkInputHandle->VKIsDown("look") )
-	{
-		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-		{
-			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
-			{						
-				m_pkActionDlg->SetEntity(m_iPickedEntityID);							
-				m_pkActionDlg->Open();
-			}
-		}
-	}		*/	
 			
 	//perform the first action in the action list or pickup
 	static float fUsePressed = -1;
@@ -2302,40 +2255,38 @@ bool MistClient::StartUp()
 Entity* MistClient::GetTargetObject()
 {
 	Vector3 start = m_pkCamera->GetPos();
-	Vector3 dir;
-	dir = Get3DMouseDir(m_bGuiCapture);
+	Vector3 dir = Get3DMouseDir(m_bGuiCapture);
 
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
 	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
-	
-//	cout<<"nr of targets: "<<kObjects.size()<<endl;
-	
+		
 	float closest = 999999999;
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		//objects that should not be clicked on (special cases)
 		if(kObjects[i]->GetEntityID() <100000)
-			continue;
-		
+			continue;		
 		if(kObjects[i]->IsZone())
 			continue;
 		if(kObjects[i]->GetName() == "ZoneObject")
-			continue;
-			
-						
-		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
-			continue;		
-	
-// 		if(kObjects[i]->GetType() == "Entity")
-// 			continue;		
-		
+			continue;									
+		if(kObjects[i]->GetType() == "t_serverinfo.lua")
+			continue;					
 		if(kObjects[i]->GetEntityID() == m_iCharacterID)		//dont pick self
 			continue;
+		if(Entity* pkParent = kObjects[i]->GetParent())			//object is not a free object
+			if(!pkParent->IsZone())
+				continue;
+		
+		
 		
 		//-------------
+		
+		if(kObjects[i]->GetWorldPosV().DistanceTo(m_pkCamera->GetPos()) > 20)
+			continue;
 		
  		if(kObjects[i]->GetProperty("P_Ml") || 
  			kObjects[i]->GetProperty("P_Item") || 
@@ -2358,6 +2309,8 @@ Entity* MistClient::GetTargetObject()
 		}	
 	}
 	
+// 	if(pkClosest)
+// 		cout<<"target:"<<pkClosest->GetType()<<endl;
 	
 	return pkClosest;
 }
@@ -2370,60 +2323,7 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 	m_pkInputHandle->MouseXY(x,y);		
 	
 	return m_pkCamera->Get3DCursorDir(x,y,bMouse);
-// 	Vector3 dir;
-// 	float x,y;		
-// 	
-// 	//screen propotions
-// 	float xp=4;
-// 	float yp=3;
-// 
-// 	Vector3 kViewSize, kViewCorner;
-// 	kViewSize = m_pkCamera->GetViewPortSize();
-// 	kViewCorner = m_pkCamera->GetViewPortCorner();
-// 	
-// 	if(bMouse)
-// 	{
-// 		// Zeb was here! Nu k? vi med operativsystemets egna snabba musmark?
-// 		// allts?m?te vi anv?da den position vi f? d?ifr?.
-// 		m_pkInputHandle->UnitMouseXY(x,y);
-// 		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-// 		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-// 		
-// 		
-// 		/*
-// 		int mx;		
-// 		int my;
-// 		
-// 		//m_pkInputHandle->SDLMouseXY(mx,my);
-// 		
-// 		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
-// 		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-// 		*/
-// 		
-// 		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
-// 		{
-// 			dir.Set(x*xp,-y*yp,-2.15);			//for 70 deg fov
-//  			//dir.Set(x*xp,-y*yp,-1.64);				//for 85 deg fov
-// 			dir.Normalize();
-// 		}
-// 		else
-// 		{
-// 			dir.Set(0,0,-1);
-// 			//dir.Normalize();
-// 			//return dir;
-// 		}
-// 	}
-// 	else
-// 	{
-// 		dir.Set(0,0,-1.5);
-// 		dir.Normalize();	
-// 	}
-// 	
-// 	Matrix4 rm = m_pkCamera->GetRotM();
-// 	rm.Transponse();
-// 	dir = rm.VectorTransform(dir);
-// 	
-// 	return dir;
+
 }
 
 

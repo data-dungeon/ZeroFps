@@ -71,13 +71,12 @@ P_Mad::P_Mad() : Property("P_Mad")
 // VimRp - A new evil function.
 void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
 {
+	m_bCulled = true;
+
 	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
-	
-	if(!m_bIsVisible)
-		return;
-	
+		
 	static Vector3 kPos;
 	kPos = m_pkEntity->GetIWorldPosV()+m_kOffset;
 	
@@ -109,6 +108,11 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 	if(!kRenderState.m_kFrustum.SphereInFrustum(kPos,GetRadius()))
 		return;		
 	
+	//mad was not culled
+	m_bCulled = false;
+	
+	if(!m_bIsVisible)
+		return;
 	
 
 	static Matrix4 kModelMatrix;
@@ -177,11 +181,11 @@ void P_Mad::Update()
 		else
 			m_iCollisionMeshID = 0;
 	
-		//update animations if no render is enabled
-		if(( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ))
-		{
-			DoAnimationUpdate();
-		}
+// 		//update animations if no render is enabled
+// 		if(( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() ))
+// 		{
+// 			DoAnimationUpdate();
+// 		}
 		
 		if(m_bIsVisible)
 		{			

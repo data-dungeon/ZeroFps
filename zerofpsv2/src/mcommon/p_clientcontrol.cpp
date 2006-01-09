@@ -187,7 +187,7 @@ void P_ClientControl::UpdateCharacter()
 
 void P_ClientControl::SetupServerinfoP()
 {
-	Entity* pkEnt = m_pkEntityManager->GetEntityByName("A t_serverinfo.lua");
+	Entity* pkEnt = m_pkEntityManager->GetEntityByType("t_serverinfo.lua");
 	
 	if(pkEnt)
 	{

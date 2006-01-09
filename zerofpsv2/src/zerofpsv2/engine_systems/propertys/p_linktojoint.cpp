@@ -6,7 +6,7 @@
 
 P_LinkToJoint::P_LinkToJoint() : Property("P_LinkToJoint")
 {	
-	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
 	m_iVersion = 2;
@@ -58,6 +58,10 @@ void P_LinkToJoint::Update()
 	{
 		if(P_Mad* pkMad = (P_Mad*)pkHost->GetProperty("P_Mad"))
 		{	
+			//dont do anything if mad is culled
+			if(pkMad->IsCulled())
+				return;
+		
 			kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint);				
 			kRot = pkMad->GetJointRotation(m_strToJoint);
 			
@@ -68,11 +72,11 @@ void P_LinkToJoint::Update()
 		}
 	}
 		
-	
-	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	if(P_Mad* pkLinkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
 	{
-		pkMad->AttachToJoint(m_iLinkEntityID,m_strToJoint);
-	}
+		pkLinkMad->AttachToJoint(m_iLinkEntityID,m_strToJoint);
+	}					
+
 }
 
 

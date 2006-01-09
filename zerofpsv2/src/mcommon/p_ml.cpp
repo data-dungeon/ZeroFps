@@ -12,75 +12,28 @@ P_Ml::P_Ml() : Property("P_Ml")
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 
 	m_bNetwork = true;	
-	m_iVersion = 3;
+	m_iVersion = 4;
 	
-	m_bShowText =	false;	
-	m_strText = "";
 
-
-
-	//setup material
-	m_pkTextMaterial = new ZMaterial;
-	m_pkTextMaterial->GetPass(0)->m_pkTUs[0]->SetRes("text/fetfont.tga");
-	m_pkTextMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
-	m_pkTextMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
-	m_pkTextMaterial->GetPass(0)->m_bLighting = 				false;		
-	m_pkTextMaterial->GetPass(0)->m_bColorMaterial = 		true;
-	m_pkTextMaterial->GetPass(0)->m_kVertexColor =			Vector3(0,1,0);
-	m_pkTextMaterial->GetPass(0)->m_bFog = 					true;		
-	m_pkTextMaterial->GetPass(0)->m_bAlphaTest =				true;		
-	m_pkTextMaterial->GetPass(0)->m_bDepthTest = 			true;
-
-	//seutp font
-	m_pkFont = new ZGuiFont("FontFan");
-	m_pkFont->Create("/data/textures/text/fetfont.fnt",-1);
-
-
-	m_kPropertyValues.push_back(PropertyValues("showtext",VALUETYPE_BOOL,(void*)&m_bShowText));
 
 }
 
 void P_Ml::Init()
 {
-	if(m_strText == "")
-		m_strText = m_pkEntity->GetName();
-
 }
 
 P_Ml::~P_Ml()
 {
-	delete m_pkTextMaterial;
-	delete m_pkFont;
 }
 
 
 void P_Ml::Update()
 {
-/*
-	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
-	{
-		if(m_bShowText)
-		{
-			//check if this is a character
-			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)GetEntity()->GetProperty("P_CharacterProperty"))
-			{
-				if(pkCP->GetIsPlayerCharacter())
-				{
-					string strText = pkCP->GetName()+string(" <")+pkCP->GetOwnedByPlayer()+string(">");
-				
-					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
-									Vector3(0,GetEntity()->GetRadius(),0),0.3,strText,m_pkTextMaterial,m_pkFont,true);							
-				}
-			}
-		}
-	}
-*/
 }
 
 
 void P_Ml::AddAction(const char* csAction)
 {
-	//cout<<"registering action:"<<csAction<<endl;
 	m_kActions.push_back(string(csAction));	
 	SetNetUpdateFlag(true);		
 }
@@ -88,8 +41,6 @@ void P_Ml::AddAction(const char* csAction)
 
 void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	pkNetPacket->Write(&m_bShowText,sizeof(m_bShowText));
-
 	int nr = m_kActions.size();	
 	pkNetPacket->Write(&nr,sizeof(nr));
 	
@@ -103,8 +54,6 @@ void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 
 void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	pkNetPacket->Read(&m_bShowText,sizeof(m_bShowText));
-
 	int nr;		
 	pkNetPacket->Read(&nr,sizeof(nr));
 	
@@ -119,8 +68,6 @@ void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 
 void P_Ml::Save(ZFIoInterface* pkPackage)
 {	
-	pkPackage->Write((void*)&m_bShowText,sizeof(m_bShowText),1);		
-	
 	int nr = m_kActions.size();
 	pkPackage->Write(nr);
 	for(int i = 0;i<nr;i++)
@@ -134,21 +81,24 @@ void P_Ml::Load(ZFIoInterface* pkPackage,int iVersion)
 		case 1:
 		{
 			int iDummy;			
+			bool bDummy;
 			pkPackage->Read((void*)&iDummy,sizeof(iDummy),1);		
 			pkPackage->Read((void*)&iDummy,sizeof(iDummy),1);	
-			pkPackage->Read((void*)&m_bShowText,sizeof(m_bShowText),1);		
+			pkPackage->Read((void*)&bDummy,sizeof(bDummy),1);		
 			break;
 		}
 			
 		case 2:
 		{
-			pkPackage->Read((void*)&m_bShowText,sizeof(m_bShowText),1);		
+			bool bDummy;
+			pkPackage->Read((void*)&bDummy,sizeof(bDummy),1);		
 			break;
 		}
 		
 		case 3:
 		{
-			pkPackage->Read((void*)&m_bShowText,sizeof(m_bShowText),1);		
+			bool bDummy;
+			pkPackage->Read((void*)&bDummy,sizeof(bDummy),1);		
 			
 			
 			int nr;
@@ -163,6 +113,21 @@ void P_Ml::Load(ZFIoInterface* pkPackage,int iVersion)
 				
 			break;
 		}		
+		case 4:
+		{
+			int nr;
+			pkPackage->Read(nr);
+			m_kActions.clear();
+			string temp;
+			for(int i = 0;i<nr;i++)
+			{
+				pkPackage->Read_Str(temp);
+				m_kActions.push_back(temp);
+			}
+				
+			break;
+		}		
+	
 	}
 }
 

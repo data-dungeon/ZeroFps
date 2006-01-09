@@ -361,7 +361,7 @@ void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState
 	
 	if(bCentered)
 	{
- 		fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+ 		fW = (float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight)) * fScale;
  		fXPos = -( float(strText.length())/1.5 ) * fW;
 	}	
 	
@@ -383,7 +383,7 @@ void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState
 		int iChar = int(strText[i]);				
 		if(iChar == 32)
 		{
-			fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+			fW = (float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight))*fScale;
 			fXPos += fW;
 			continue;
 		}
@@ -393,8 +393,8 @@ void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState
 		fUVW =  float(pkFont->m_aChars[iChar].iSizeX) * fXScale;
 		fUVH =  float(pkFont->m_aChars[iChar].iSizeY) * fYScale;
 	
-		fW	= float(pkFont->m_aChars[iChar].iSizeX) / float(pkFont->m_iRowHeight);
-		fH	= float(pkFont->m_aChars[iChar].iSizeY) / float(pkFont->m_iRowHeight);
+		fW	= (float(pkFont->m_aChars[iChar].iSizeX) / float(pkFont->m_iRowHeight))*fScale;
+		fH	= (float(pkFont->m_aChars[iChar].iSizeY) / float(pkFont->m_iRowHeight))*fScale;
  		
  		kMove = kPos + kXOffset * fXPos;
  		kWidth = kXOffset * fW;

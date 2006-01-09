@@ -285,7 +285,7 @@ class ENGINE_API ZSSZeroFps : public ZFSubSystem, public I_ZeroFps
 		ConVar	m_kbOcculusionCulling;
 		
 		ConVar	m_kAI_ShowInfo;
-		
+		ConVar	m_kAI_Distance;
 		
 		InputHandle*	m_pkInputHandle;
 		InputHandle*	m_pkGuiInputHandle;

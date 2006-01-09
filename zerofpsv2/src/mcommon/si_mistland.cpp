@@ -218,7 +218,7 @@ int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 	
 	if(!g_pkServerInfo)
 	{	
-		Entity* pkServerI = g_pkObjMan->GetEntityByName("A t_serverinfo.lua");
+		Entity* pkServerI = g_pkObjMan->GetEntityByType("t_serverinfo.lua");
 		if(pkServerI)
 			g_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
 		
@@ -251,7 +251,7 @@ int MistLandLua::StartPrivateSoundLua(lua_State* pkLua)
 
 	if(!g_pkServerInfo)
 	{	
-		Entity* pkServerI = g_pkObjMan->GetEntityByName("A t_serverinfo.lua");
+		Entity* pkServerI = g_pkObjMan->GetEntityByType("t_serverinfo.lua");
 		if(pkServerI)
 			g_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
 		

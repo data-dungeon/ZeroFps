@@ -93,6 +93,8 @@ class MCOMMON_API P_Item: public Property
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		string 	GetIcon() 				{ return m_strIcon; 				}
 		int 		GetType() 				{ return m_iType;					}

@@ -73,16 +73,11 @@ P_Item::P_Item(): Property("P_Item")
 
 P_Item::~P_Item()
 {
-// 	if(P_Container* pkContainer = (P_Container*)m_pkEntityManager->GetPropertyFromEntityID(m_iInContainerID,"P_Container"))
-// 	{
-// 		//cout<<"removing item from container"<<endl;
-// 		pkContainer->RemoveItem(m_pkEntity->GetEntityID());
-// 	}
+
 }
 
 void P_Item::Init()
 {
-
 
 }
 
@@ -429,8 +424,19 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;
 		}				
 	}
+	
+	SetNetUpdateFlag( true);
 }
 
+void P_Item::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
+{
+	pkNetPacket->Write_Str(m_strName);
+}
+
+void P_Item::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
+{
+	pkNetPacket->Read_Str(m_strName);
+}
 
 
 // SCRIPT INTERFACE FOR P_Item
@@ -506,81 +512,5 @@ void Register_P_Item(ZSSZeroFps* pkZeroFps)
 }
 
 
-
-
-
-
-
-
-
-
-/*
-vector<PropertyValues> P_Item::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(15);
-	
-		
-	kReturn[0].kValueName = "name";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = &m_strName;		
-
-	kReturn[1].kValueName = "sizex";
-	kReturn[1].iValueType = VALUETYPE_INT;
-	kReturn[1].pkValue    = &m_iSizeX;		
-
-	kReturn[2].kValueName = "sizey";
-	kReturn[2].iValueType = VALUETYPE_INT;
-	kReturn[2].pkValue    = &m_iSizeY;		
-
-	kReturn[3].kValueName = "icon";
-	kReturn[3].iValueType = VALUETYPE_STRING;
-	kReturn[3].pkValue    = &m_strIcon;			
-	
-	kReturn[4].kValueName = "stacksize";
-	kReturn[4].iValueType = VALUETYPE_INT;
-	kReturn[4].pkValue    = &m_iStackSize;		
-
-	kReturn[5].kValueName = "stackmax";
-	kReturn[5].iValueType = VALUETYPE_INT;
-	kReturn[5].pkValue    = &m_iStackMax;					
-	
-	kReturn[6].kValueName = "itemtype";
-	kReturn[6].iValueType = VALUETYPE_INT;
-	kReturn[6].pkValue    = &m_iType;			
-	
-	kReturn[7].kValueName = "buffname";
-	kReturn[7].iValueType = VALUETYPE_STRING;
-	kReturn[7].pkValue    = &m_strBuffName;	
-	
-	kReturn[8].kValueName = "info";
-	kReturn[8].iValueType = VALUETYPE_STRING;
-	kReturn[8].pkValue    = &m_strInfo;		
-
-	kReturn[9].kValueName = "image";
-	kReturn[9].iValueType = VALUETYPE_STRING;
-	kReturn[9].pkValue    = &m_strImage;		
-
-	kReturn[10].kValueName = "weight";
-	kReturn[10].iValueType = VALUETYPE_FLOAT;
-	kReturn[10].pkValue    = &m_fWeight;	
-	
-	kReturn[11].kValueName = "value";
-	kReturn[11].iValueType = VALUETYPE_INT;
-	kReturn[11].pkValue    = &m_iValue;			
-	
-	kReturn[12].kValueName = "basename";
-	kReturn[12].iValueType = VALUETYPE_STRING;
-	kReturn[12].pkValue    = &m_strBaseName;			
-				
-	kReturn[13].kValueName = "twohanded";
-	kReturn[13].iValueType = VALUETYPE_BOOL;
-	kReturn[13].pkValue    = &m_bTwoHanded;		
-	
-	kReturn[14].kValueName = "invdropaction";
-	kReturn[14].iValueType = VALUETYPE_BOOL;
-	kReturn[14].pkValue    = &m_bActionOnInventoryDrop;
-		
-	return kReturn;
-}*/
 
 

@@ -598,7 +598,7 @@ Entity* ZSSEntityManager::CreateEntityFromScript(const char* acName)
 	
 	//setup entity
 	pkReturnObj->m_strType	= &acName[pos];
-	pkReturnObj->m_strName	= string("A ") + &acName[pos];
+	// 	pkReturnObj->m_strName	= string("A ") + &acName[pos];	//we dont set name here anymore, to allow entity script to set the name itself
 	pkReturnObj->m_pScriptFileHandle->SetRes(acName);
 	
 	CallFunction(pkReturnObj, "FirstRun");
@@ -978,7 +978,7 @@ void ZSSEntityManager::PackToClients()
 	}
 	
 	// Refresh list of active Zones for each tracker with a client.
-	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	for(vector<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{		
 		if((*iT)->m_iConnectID != -1)
 		{
@@ -1068,7 +1068,7 @@ void ZSSEntityManager::PackToClients()
 		//send all tracked object first =)
 		Entity* pkReferensEnt = NULL;		
 		kObjects.clear();	
-		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
+		for(vector<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
 			if((*it)->m_iConnectID == (int) iClient)
 			{
@@ -1853,9 +1853,24 @@ int ZSSEntityManager::GetNumOfZones()
 	return m_kZones.size();
 }
 
-list<P_Track*>* ZSSEntityManager::GetTrackerList()
+vector<P_Track*>* ZSSEntityManager::GetTrackerList()
 {
 	return &m_kTrackedObjects;
+}
+
+float	ZSSEntityManager::DistanceToTracker(const Vector3& kPos)
+{
+	float fClosest = 999999999;
+
+	int iSize = m_kTrackedObjects.size();
+	for(int i = 0;i<iSize;i++)
+	{
+		float d = m_kTrackedObjects[i]->GetEntity()->GetWorldPosV().DistanceTo(kPos);
+		if(d < fClosest)
+			fClosest = d;
+	}
+	
+	return fClosest;
 }
 
 void ZSSEntityManager::AddTracker(P_Track* kObject)
@@ -1864,9 +1879,19 @@ void ZSSEntityManager::AddTracker(P_Track* kObject)
 	m_kTrackedObjects.push_back(kObject);
 }
 
-void ZSSEntityManager::RemoveTracker(P_Track* kObject)
+void ZSSEntityManager::RemoveTracker(P_Track* pkTracker)
 {
-	m_kTrackedObjects.remove(kObject);
+	//m_kTrackedObjects.remove(kObject);
+	for(vector<P_Track*>::iterator it = m_kTrackedObjects.begin();it != m_kTrackedObjects.end();it++)
+	{
+		if(*it == pkTracker)
+		{
+			m_kTrackedObjects.erase(it);			
+			return;
+		}	
+	}
+	
+	cerr<<"WARNING: tried to remove tracker, but was not found"<<endl;
 }
 
 int ZSSEntityManager::GetNrOfTrackedObjects()
@@ -2291,7 +2316,7 @@ bool ZSSEntityManager::SaveTrackers(string strSaveDir)
 	int iNrOfTrackers = m_kTrackedObjects.size();
 	kFile.Write(&iNrOfTrackers,sizeof(iNrOfTrackers),1);
 
-	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	for(vector<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{		
 		int iZone = GetZoneIndex((*iT)->GetEntity()->GetWorldPosV(),(*iT)->GetEntity()->m_iCurrentZone,(*iT)->m_bClosestZone);				
 		kFile.Write(&iZone, sizeof(iZone), 1);		
@@ -3078,7 +3103,7 @@ void ZSSEntityManager::UpdateTrackers()
 
 
 	// For each tracker.
-	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	for(vector<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{
 		pkTracker = *iT;
 	

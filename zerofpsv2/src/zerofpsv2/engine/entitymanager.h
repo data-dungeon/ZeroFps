@@ -141,7 +141,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		
 				
 		// Trackers
-		list<P_Track*>				m_kTrackedObjects;	
+		vector<P_Track*>			m_kTrackedObjects;	
 		ConVar						m_kiTrackerLOS;												//tracker line of sight
 		ConVar						m_kfZoneUnloadTime;
 		ConVar						m_kiMaxZoneIO;
@@ -334,9 +334,10 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		void 					AddTracker(P_Track* kObject);
 		void 					RemoveTracker(P_Track* kObject);
 		int 					GetNrOfTrackedObjects();
-		list<P_Track*>* 	GetTrackerList();
+		vector<P_Track*>* GetTrackerList();
 		void 					ClearTrackers();
 		vector<int>			GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
+		float					DistanceToTracker(const Vector3& kPos);
 		
 		bool CallFunction(Entity* pkEntity, const char* acFunction,vector<ScriptFuncArg>* pkParams = NULL);
 

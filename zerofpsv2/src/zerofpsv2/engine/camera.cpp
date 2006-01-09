@@ -1363,10 +1363,13 @@ void Camera::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled
 
 Vector3 Camera::Get3DCursorDir(float fMouseX,float fMouseY,bool bMouse)
 {
-	Vector3 dir;
+	static Vector3 dir;
+	static Vector3 kViewSize, kViewCorner;
+	static Matrix4 rm;
+	static Matrix4 pr;
 	float x,y;		
-
-	Vector3 kViewSize, kViewCorner;
+	
+	
 	kViewSize = GetViewPortSize();
 	kViewCorner = GetViewPortCorner();
 
@@ -1391,17 +1394,16 @@ Vector3 Camera::Get3DCursorDir(float fMouseX,float fMouseY,bool bMouse)
 		dir.Set(0,0,0);
 	}
 	
-	Matrix4 pr = GetProjectionMatrix();
+	pr = GetProjectionMatrix();
 	pr = pr.Inverse();	
 	dir = pr.VectorTransform(dir);
 	
 	
-	//cout<<dir.x<<" "<<dir.y<<endl;
-	
-	Matrix4 rm = GetRotM();
+	rm = GetRotM();
 	rm.Transponse();
 	dir = rm.VectorTransform(dir);
 
+	dir.Normalize();
 	
 	return dir;	
 }

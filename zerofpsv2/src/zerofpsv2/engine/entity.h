@@ -337,8 +337,8 @@ class ENGINE_API Entity
 
 		void			SetVel(const Vector3& kVel);
 		void			SetAcc(const Vector3& kAcc);		
-		void			SetName(string strName);
-		void			SetType(string strType);		
+		void			SetName(const string& strName);
+		void			SetType(const string& strName);
 		void			SetRadius(float fRadius);
 		
 		//AABB stuff

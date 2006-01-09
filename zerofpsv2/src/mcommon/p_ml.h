@@ -22,12 +22,6 @@ class MCOMMON_API P_Ml: public Property {
 		ZShaderSystem*		m_pkZShaderSystem;
 		
 		vector<string>		m_kActions;				///> Det skall finnas en 32x32 ikon med samma namn i mappen "data/textures/gui/actions"
-				
-		bool					m_bShowText;
-		string				m_strText;
-		
-		ZMaterial*			m_pkTextMaterial;
-		ZGuiFont*			m_pkFont;
 		
 	public:
 
@@ -40,13 +34,9 @@ class MCOMMON_API P_Ml: public Property {
 		void Init();
 		
 		void AddAction(const char* csAction);
-		
-		void SetText(string strText) 					{	m_strText = strText;	};
-		string GetText() 									{	return m_strText;		};
-				
+						
 		void Save(ZFIoInterface* pkPackage);
-		void Load(ZFIoInterface* pkPackage,int iVersion);
-		
+		void Load(ZFIoInterface* pkPackage,int iVersion);		
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 };

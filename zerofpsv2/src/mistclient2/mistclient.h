@@ -76,7 +76,6 @@ class MistClient :public Application, public ZGuiApp {
 		Camera*		m_pkCamera;						//main camera
 		bool			m_bFrontView;				
 		int			m_iCharacterID;				//current active character ID      
-		int			m_iPickedEntityID;			// Selected entity for use.								
 		bitset<6>	m_kCharacterControls;
 		bool			m_bDead;
 		bool			m_bCombatMode;
@@ -84,7 +83,12 @@ class MistClient :public Application, public ZGuiApp {
 
 		//game
 		vector<string>	m_kEmotes;					//emote list
+		
+		
+		//picking
 		int				m_iTargetID;
+		int				m_iPickedEntityID;			// Selected entity for use.										
+		
 		
 		Entity*		m_pkMakerEntity;
 		
@@ -210,8 +214,6 @@ class MistClient :public Application, public ZGuiApp {
 		void AddTargetMarkerRP(vector<RenderPackage*>& kRenderPackages);
 		
 		void DrawCrossHair();
-		void DrawTargetMarker();
-		void DrawMouseOverMarker(const Vector3& kPos,float fSize);
 		void DrawHUDEffect(int iHUDEffect);
 		void UpdateCursorImage();
 		

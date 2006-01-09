@@ -37,8 +37,6 @@ Entity::Entity()
 	m_kAcc		= 	Vector3::ZERO;
 	m_fRadius	= 	1;
 	
-// 	m_kAABBMin.Set(0,0,0);
-// 	m_kAABBMax.Set(0,0,0);
 	m_kLocalAABBMin.Set(0,0,0);
 	m_kLocalAABBMax.Set(0,0,0);	
 	
@@ -559,7 +557,7 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 	static P_Track* pkTracker;
 
 	//lets fins out wich clients has this entity
-	for(list<P_Track*>::iterator it = m_pkEntityManager->m_kTrackedObjects.begin();it!= m_pkEntityManager->m_kTrackedObjects.end();it++)
+	for(vector<P_Track*>::iterator it = m_pkEntityManager->m_kTrackedObjects.begin();it!= m_pkEntityManager->m_kTrackedObjects.end();it++)
 	{
 		pkTracker = *it;
 		
@@ -1404,7 +1402,7 @@ void Entity::SetRadius(float fRadius)
 	SetNetUpdateFlag(NETUPDATEFLAG_RADIUS,true);
 }
 
-void Entity::SetType(string strType)
+void Entity::SetType(const string& strType)
 {
 	if(m_strType == strType)
 		return;
@@ -1414,13 +1412,12 @@ void Entity::SetType(string strType)
 	SetNetUpdateFlag(NETUPDATEFLAG_TYPE,true);
 }
 
-void Entity::SetName(string strName)
+void Entity::SetName(const string& strName)
 {
 	if(strName == m_strName)
 		return;
 		
-	m_strName = strName;
-	
+	m_strName = strName;	
 	SetNetUpdateFlag(NETUPDATEFLAG_NAME,true);
 }
 
@@ -2408,6 +2405,42 @@ int GetObjectNameLua(lua_State* pkLua)
 	return 1;
 }
 
+/**	\fn SetObjectName( Entity , name)
+ 		\relates SIEntity
+		\param Entity Id of entity to get name of.
+		\param Name name of entity.
+*/
+int SetObjectNameLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1 && g_pkScript->GetNumArgs(pkLua) != 2)
+	{
+		cerr<<"WARNING: SetObjectNameLua - wrong number of parameters 1 or 2"<<endl;
+		return 0;
+	}
+
+	int iId = ObjectManagerLua::g_kScriptState.g_iCurrentObjectID;
+	string strName;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
+		g_pkScript->GetArgString(pkLua,1,strName);
+	}
+	else
+	{
+		g_pkScript->GetArgString(pkLua, 0, strName);
+	}
+	
+	//get object
+	if(Entity*	pkObj = g_pkObjMan->GetEntityByID(iId))
+		pkObj->SetName( strName);
+	
+	return 0;
+}
+
 /**	\fn SetEditIcon( Entity, iIcon )
  		\relates SIEntity
 		\param Entity Id of entity to get name of.
@@ -2871,6 +2904,7 @@ void Register_SIEntityProperty(ZSSZeroFps* pkZeroFps)
 	// Entity Values
 	g_pkScript->ExposeFunction("GetObjectType",		SI_Entity::GetObjectTypeLua);		
 	g_pkScript->ExposeFunction("GetObjectName",		SI_Entity::GetObjectNameLua);		
+	g_pkScript->ExposeFunction("SetObjectName",		SI_Entity::SetObjectNameLua);	
 	g_pkScript->ExposeFunction("SetEditIcon",			SI_Entity::SetEditIcon);
 
 	// Entity Variables

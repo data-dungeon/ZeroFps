@@ -303,7 +303,7 @@ void MistClient::OnSystem()
 		
 		if(!m_pkServerInfo)
 		{
-			Entity* pkServerI = m_pkEntityManager->GetEntityByName("A t_serverinfo.lua");
+			Entity* pkServerI = m_pkEntityManager->GetEntityByType("t_serverinfo.lua");
 			if(pkServerI)
 			{
 				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
@@ -1150,7 +1150,7 @@ Entity* MistClient::GetTargetObject()
 		if(kObjects[i]->GetName() == "ZoneObject")
 			continue;
 				
-		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
+		if(kObjects[i]->GetType() == "t_serverinfo.lua")
 			continue;		
 		
 		if(kObjects[i]->GetProperty("P_Ml")==NULL)
