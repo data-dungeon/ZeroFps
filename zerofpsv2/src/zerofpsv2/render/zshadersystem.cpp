@@ -781,7 +781,7 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 	}
 	
 
-	if(pkSettings->m_pkTUs[iTU]->IsValid() && pkSettings->m_pkTUs[iTU]->IsValid())
+	if(pkSettings->m_pkTUs[iTU]->IsValid() )
 	{		
 		glEnable(GL_TEXTURE_2D);
 		BindTexture((ResTexture*)pkSettings->m_pkTUs[iTU]->GetResourcePtr());

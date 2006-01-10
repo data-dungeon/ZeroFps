@@ -74,7 +74,7 @@ public:
 	bool SetRes(const string& strName);
 	string GetRes() 							{return m_strName;	}
 	void FreeRes();
- 	bool IsValid()								{return m_pkResource;}
+ 	bool IsValid()								{return m_pkResource && m_pkResource->IsValid() ;}
 
 	ZFResource*	GetResourcePtr() const	{return m_pkResource;}
 

@@ -6,8 +6,6 @@
 #include "assert.h"
 #include "concommand.h"
 
-#define	RES_EXPIRE_TIME	30.0
-
 int	g_iResourceHandleID;
 
 
@@ -164,8 +162,8 @@ ZSSResourceDB::ZSSResourceDB() : ZFSubSystem("ZSSResourceDB")
 	Register_Cmd("res_reload",		FID_RESRELOAD,			CSYS_FLAG_SRC_ALL);
 	Register_Cmd("res_reloadall",	FID_RESRELOADALL,		CSYS_FLAG_SRC_ALL);
 
-	
-
+		
+	m_kExpireTime.Register(this, "res_expiretime","30");
 }
 
 ZSSResourceDB::~ZSSResourceDB()
@@ -225,6 +223,7 @@ bool ZSSResourceDB::Refresh()
 	bool bHaveLoaded = false;
 	
 	float fTime = float(SDL_GetTicks()/1000.0);
+	float fExpireTime = m_kExpireTime.GetFloat();
 	
 	for(vector<ZFResourceInfo*>::iterator it = m_kResources.begin();it != m_kResources.end();it++)
 	{
@@ -249,8 +248,7 @@ bool ZSSResourceDB::Refresh()
 		//update timeout
 		if( (!m_bInstantExpire)  && (pkRes->m_fExpireTimer == 0) ) 
 		{
-			pkRes->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
-			//cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
+			pkRes->m_fExpireTimer = fTime + fExpireTime;
 		}
 		else 
 		{

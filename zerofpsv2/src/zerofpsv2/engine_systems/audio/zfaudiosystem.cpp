@@ -35,6 +35,8 @@ ZFSoundRes::ZFSoundRes()
 	m_uiBufferIndexName = 0;
 	m_szFileName = NULL;
 	m_uiSize = 0;
+	
+	m_bSynced = false;
 }
 
 ZFSoundRes::~ZFSoundRes()
@@ -1143,6 +1145,12 @@ bool ZSSAudioSystem::Play(ZFSoundInfo *pkSound)
 	if(pkSound->m_pkResource == NULL)
 	{
 		printf("ZSSAudioSystem::Play, Trying to play a sound without a resource!\n");
+		return false;
+	}
+
+	//check if theres a valid resource
+	if(!pkSound->m_pkResource->IsValid())
+	{		
 		return false;
 	}
 

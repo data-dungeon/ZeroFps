@@ -69,6 +69,8 @@ class BASIC_API ZSSResourceDB : public ZFSubSystem {
 			FID_RESRELOADALL,
 		};
 
+		ConVar	m_kExpireTime;
+
 		bool								m_bInstantExpire;		
 		int								m_iNextID;
 		vector<ZFResourceInfo*>		m_kResources;
