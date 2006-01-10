@@ -72,6 +72,7 @@ class MCOMMON_API P_AI: public Property
 		int FindClosestEnemy(float fMaxRange);
 		void UseOffensiveSkill();
 		float GetOffensiveRange();
+		string GetBestSkill(float fRange);
 		
 		bool ValidTarget(int iTarget);
 		

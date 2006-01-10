@@ -193,7 +193,6 @@ bool P_AI::States(int iEvent, int iState)
 		State(eAI_STATE_AVOIDING)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_AVOIDING");
-								
 				Vector3 kNormal;
 				if(CharacterCollision(&kNormal))
 				{
@@ -223,7 +222,6 @@ bool P_AI::States(int iEvent, int iState)
 		State(eAI_STATE_RANDOMWALK)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_RANDOMWALK");
-				
 			OnUpdate
 				if(m_bWalk)
 				{
@@ -299,17 +297,34 @@ bool P_AI::States(int iEvent, int iState)
 						return false;
 					}
 				}
+				
+				//check for other closer targets
+				if(m_pkZeroFps->GetEngineTime() > m_fFindTime + 1)
+				{
+					m_fFindTime = m_pkZeroFps->GetEngineTime();
+				
+					m_iTarget = FindClosestEnemy(m_fSeeDistance);
+				}
+												
+				
 
 		State(eAI_STATE_CHASE)
 			OnEnter
 				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_CHASE");
-				
+
 			OnUpdate
 				if(!ValidTarget(m_iTarget))
 				{
 					SetState( eAI_STATE_GUARD );
 					return false;
 				}		
+				
+				if(m_fStrikeRange == -1)
+				{
+					SetState( eAI_STATE_GUARD );
+					return false;				
+				}
+			
 			
 				if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
 				{
@@ -371,12 +386,18 @@ bool P_AI::States(int iEvent, int iState)
 					SetState(eAI_STATE_GUARD);
 					return false;
 				}
+
+				if(m_fStrikeRange == -1)
+				{
+					SetState( eAI_STATE_GUARD );
+					return false;				
+				}
 				
 				if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
 				{
 					float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
 				
-					if(fDistance > m_fStrikeRange && m_fStrikeRange != -1)
+					if(fDistance > m_fStrikeRange)
 					{
 						SetState(eAI_STATE_CHASE);
 						return false;
@@ -384,15 +405,21 @@ bool P_AI::States(int iEvent, int iState)
 							
 					m_pkCharacterProperty->SetCombatMode(true);
 					m_pkCharacterProperty->SetTarget(m_iTarget);
-					m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
-					m_pkCharacterControl->SetControl(eUP,false);
-									
-					//UseOffensiveSkill();
+					
+					//get best skill for current distance
+					string strSkill = GetBestSkill(fDistance);
+					if(!strSkill.empty())
+					{
+						m_pkCharacterProperty->SetDefaultAttackSkill( strSkill);					
+					
+						m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
+						m_pkCharacterControl->SetControl(eUP,false);									
+					}
 				}
 
 		State(eAI_STATE_GUARD)
 			OnEnter
-				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");
+				m_pkCharacterProperty->DebugSet("AiState", "eAI_STATE_GUARD");				
 
 			OnUpdate
 				//look for enemy
@@ -483,33 +510,55 @@ void P_AI::Touch(int iID)
 	}
 }
 
+string P_AI::GetBestSkill(float fRange)
+{
+	Skill* pkBestSkill = NULL;
+	float fBestRangeDiff = 999999;
+	
+	vector<Skill*>* pkSkills = m_pkCharacterProperty->GetSkillList();
+
+	int iSkills = pkSkills->size();
+	for(int i = 0;i< iSkills;i++)
+	{
+		if((*pkSkills)[i]->GetSkillType() == eOFFENSIVE)			//is an offesive skill
+			if((*pkSkills)[i]->CanUse())									//can use it now
+				if(fRange <= (*pkSkills)[i]->GetRange())				//its range is close enought
+				{
+					float diff = (*pkSkills)[i]->GetRange() - fRange;
+					
+					//its a better range difference then the privious one
+					if(diff < fBestRangeDiff)
+					{
+						fBestRangeDiff = diff;
+						pkBestSkill = (*pkSkills)[i];				
+					}
+				}
+	}	
+	
+	if(pkBestSkill)
+		return pkBestSkill->GetName();
+	else
+		return string("");
+}
+
 float P_AI::GetOffensiveRange()
 {
-	if(Skill* pkSkill = m_pkCharacterProperty->GetSkillPointer(m_pkCharacterProperty->GetDefaultAttackSkill()))
+	float fMaxRange = -1;
+
+	vector<Skill*>* pkSkills = m_pkCharacterProperty->GetSkillList();
+
+	int iSkills = pkSkills->size();
+	for(int i = 0;i< iSkills;i++)
 	{
-		return pkSkill->GetRange();
-	}
-	
-	return -1;
+		if((*pkSkills)[i]->GetSkillType() == eOFFENSIVE )
+			if((*pkSkills)[i]->CanUse())					
+				if((*pkSkills)[i]->GetRange() > fMaxRange)
+					fMaxRange = (*pkSkills)[i]->GetRange();
+	}	
+
+	return fMaxRange;
 }
 
-void P_AI::UseOffensiveSkill()
-{
-	vector<Skill*>* kSkills =m_pkCharacterProperty->GetSkillList();
-	
-	for(int i =0;i<kSkills->size();i++)
-	{
-		if((*kSkills)[i]->GetSkillType() == eOFFENSIVE)
-		{
-			if((*kSkills)[i]->GetTimeLeft() == 0)
-			{
-				(*kSkills)[i]->Use(m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
-				return;
-			}
-		}
-	}
-
-}
 
 bool P_AI::CharacterCollision(Vector3* pkNormal)
 {

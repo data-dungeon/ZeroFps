@@ -181,32 +181,90 @@ void Skill::SetLevel(int iLevel)
 	return;
 }
 
+bool Skill::CanUse()
+{
+	if(!m_pkScriptFileHandle->IsValid())
+	{
+		//cerr<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
+		return false;	
+	}
+
+	//check reload
+	if(m_fTimeLeft > 4)
+		return false;	
+
+	//check level
+	if(m_iLevel < 1)
+	{
+// 		cout<<"got to have at least level 1 of skill "<<GetName()<<" to use it"<<endl;
+		return false;
+	}
+
+	//get character property from owner
+	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty");
+	if(!pkCP)
+	{
+// 		cout<<"WARNING, CHARACTER is missing Character property"<<endl;
+		return false;
+	}
+			
+	//check baseitems
+	if(!m_kBaseTypes.empty())
+	{
+		bool bOk = false;
+		for(int i = 0;i<m_kBaseTypes.size();i++)
+		{
+			if(pkCP->HaveEqipedBaseType(m_kBaseTypes[i]))
+			{
+				bOk = true;
+				break;
+			}
+		}
+			
+		if(bOk == false)
+		{
+			//cout<<"ned one of the folowing items:"<<endl;
+			//for(int i = 0;i<m_kBaseTypes.size();i++)
+			//	cout<< m_kBaseTypes[i]<<endl;
+// 			cout<<"missing basetype"<<endl;
+			return false;		
+		}
+	}
+	
+	//use mana & stamina
+	if(pkCP->m_kCharacterStats.GetTotal("Mana") < m_fManaUsage)
+		return false;
+	
+	if(pkCP->m_kCharacterStats.GetTotal("Stamina") < m_fStaminaUsage)
+		return false;
+
+	return true;
+}
 
 int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
-{
+{		
 	if(!m_pkScriptFileHandle->IsValid())
 	{
 		cerr<<"WARNING: skill script "<<m_strSkillScript<<" not loaded"<<endl;
 		return -1;	
 	}
-	
+
 	//check reload
 	if(m_fTimeLeft != 0)
 		return 1;	
-	
+
 	//check level
 	if(m_iLevel < 1)
 	{
-		cout<<"got to have at least level 1 of a skill to use it"<<endl;
+ 		cout<<"got to have at least level 1 of skill "<<GetName()<<" to use it"<<endl;
 		return 2;	
 	}
 
 	//get character property from owner
 	P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iOwnerID,"P_CharacterProperty");
-
 	if(!pkCP)
 	{
-		cout<<"WARNING, CHARACTER is missing Character property"<<endl;
+ 		cout<<"WARNING, CHARACTER is missing Character property"<<endl;
 		return 7;
 	}
 			
@@ -228,7 +286,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 			//cout<<"ned one of the folowing items:"<<endl;
 			//for(int i = 0;i<m_kBaseTypes.size();i++)
 			//	cout<< m_kBaseTypes[i]<<endl;
-			
+ 			cout<<"missing basetype"<<endl;
 			return 7;			
 		}
 	}
@@ -237,13 +295,13 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	if(m_iTargetType == eCHARACTER_TARGET)
 	{
 		//get target character property
-		P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty");
+		P_CharacterProperty* pkTargetCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty");
 	
 		//does target have a character property?
-		if(!pkCP)
+		if(!pkTargetCP)
 			return 3;
 		else 			//yes character have a characterproperty, if this is an offensive skill, check that target is alive
-			if(m_iSkillType==eOFFENSIVE && pkCP->IsDead())
+			if(m_iSkillType==eOFFENSIVE && pkTargetCP->IsDead())
 				return 3;		
 			
 	 
@@ -583,7 +641,7 @@ P_CharacterProperty::P_CharacterProperty() : Property("P_CharacterProperty")
 	m_kRespawnPos			=	Vector3(0,0,0);
 	
 	m_fCombatTimer			=	0;
-	m_strDefaultAttackSkill = "skill-basic_attack.lua";
+	m_strDefaultAttackSkill = "";
 	m_iTarget				=	-1;
 	m_bCombatMode			=	false;
 	m_iLastDamageFrom		=	-1;
@@ -728,13 +786,16 @@ void P_CharacterProperty::SetupCharacterStats()
 
 void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
 {
-	if(m_kSkillQueue.size() > 0)
+// 	if(m_kSkillQueue.size() > 0)
+// 		return;
+	if(m_iTarget == -1)
 		return;
+
 
 	if(Skill* pkSkill = GetSkillPointer(strSkill))
 		if(pkSkill->IsReloaded())
-			m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
-
+			m_strNextSkill = strSkill;
+// 			m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
 }
 
 void P_CharacterProperty::UpdateSkillQueue()
@@ -746,19 +807,16 @@ void P_CharacterProperty::UpdateSkillQueue()
 		m_fCombatTimer = fTime;
 		
 		//no skills in queue
-		if(!m_kSkillQueue.empty())
+		if(!m_strNextSkill.empty())
 		{
 			//use skill and dont pop queue if skill is still reloading
-			int iRes = UseSkill(m_kSkillQueue.front().first,m_kSkillQueue.front().second,Vector3(0,0,0),Vector3(0,0,0));
+			int iRes = UseSkill(m_strNextSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
 			
 			//dont pop skill if skill not yet reloaded or another skill still being cast
 			if(iRes == 1 || iRes == 8)
 				return;
 			
-			//cout<<"returned:"<<iRes<<endl;
-			//cout<<"poping skill:"<<m_kSkillQueue.front().first<<endl;
-			m_kSkillQueue.pop();
-			//cout<<"queue size:"<<m_kSkillQueue.size()<<endl;	
+			m_strNextSkill = "";
 	
 			switch(iRes)
 			{
@@ -806,20 +864,60 @@ void P_CharacterProperty::UpdateSkillQueue()
 
 }
 
-void P_CharacterProperty::SetDefaultAttackSkill(const string& strDA)		
-{	
-	if(Skill* pkSkill = GetSkillPointer(strDA))
+void P_CharacterProperty::SetTarget(int iTargetID)
+{
+	//remove default skill if theres no target
+	if(iTargetID != m_iTarget)
 	{
-		if(pkSkill->GetSkillType() == eOFFENSIVE)
-		{
-			m_strDefaultAttackSkill=  strDA;			
-			SendSkillbar();
-		}
-		else
-			cout<<"that shill is not an offensive skill"<<endl;
+		SetDefaultAttackSkill("");		
+		m_strNextSkill = "";
+		m_iTarget = iTargetID;
+		SendSkillbar();
 	}
-	else
-		cout<<"character does not have that skill"<<endl;
+};
+
+void P_CharacterProperty::SetDefaultAttackSkill(const string& strDA)		
+{
+	if(m_iTarget == -1)
+		return;
+
+	if(strDA.empty())
+	{
+		if(!m_strDefaultAttackSkill.empty())
+		{
+			m_strDefaultAttackSkill = "";
+			SendSkillbar();		
+		}
+		return;
+	
+	}
+	else if(Skill* pkSkill = GetSkillPointer(strDA))
+	{
+		m_strDefaultAttackSkill = strDA;	
+		SendSkillbar();		
+	}
+	
+
+// 	if(strDA.empty())
+// 	{
+// 		if(!m_strDefaultAttackSkill.empty())
+// 		{
+// 			m_strDefaultAttackSkill = "";
+// 			SendSkillbar();		
+// 		}
+// 	}
+// 	else if(Skill* pkSkill = GetSkillPointer(strDA))
+// 	{
+// 		if(pkSkill->GetSkillType() == eOFFENSIVE)
+// 		{
+// 			m_strDefaultAttackSkill=  strDA;			
+// 			SendSkillbar();
+// 		}
+// 		else
+// 			cout<<"that shill is not an offensive skill"<<endl;
+// 	}
+// 	else
+// 		cout<<"character does not have that skill"<<endl;
 
 }
 
@@ -3560,10 +3658,8 @@ namespace SI_P_CharacterProperty
 */
 	int RemoveBuffLua(lua_State* pkLua)
 	{
-		cout << "1" << endl;
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
 			return 0;		
-		cout << "2" << endl;
 
 			
 		int iCharacterID;
@@ -3576,7 +3672,6 @@ namespace SI_P_CharacterProperty
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharacterID,"P_CharacterProperty"))
 		{
 			pkCP->RemoveBuff(strBuff);		
-			cout << "3" << endl;
 		}
 
 		return 0;			

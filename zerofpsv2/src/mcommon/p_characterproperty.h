@@ -80,6 +80,7 @@ class MCOMMON_API Skill
 		int Use(int iTargetID,const Vector3& kPos,const Vector3& kDir);
 		
 		bool IsReloaded();
+		bool CanUse();
 
 		//sets
 		void SetLevel(int iLevel);
@@ -182,7 +183,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//combat		
 		bool								m_bCombatMode;
 		int								m_iTarget;
-		queue<pair<string,int> >	m_kSkillQueue;
+		string							m_strNextSkill;		
 		string							m_strDefaultAttackSkill;
 		float								m_fCombatTimer;
 		int								m_iLastDamageFrom;			//what character did the last damage on me
@@ -365,7 +366,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool UseStamina(float fStamina);
 		
 		//combat
-		void SetTarget(int iTargetID)									{	m_iTarget = iTargetID;			};
+		void SetTarget(int iTargetID);
 		void SetCombatMode(bool bCombat)								{	m_bCombatMode = bCombat;		}
 		bool GetCombatMode()												{	return m_bCombatMode;			}
 		void AddSkillToQueue(const string& strSkill,int iTargetID);

@@ -101,17 +101,7 @@ void MistClient::OnInit()
 	//grab input
 	m_pkInput->ToggleGrab(true);
 
-	//setup referense sound distance
-	//m_pkAudioSys->SetReferensDistance(0.25);
-	
-	//m_pkZeroFps->SetSystemFps(30);
-	//m_pkZeroFps->SetNetworkFps(15);
-	//m_pkNetwork->SetNetSpeed(4000);	
 
-	//init mistland script intreface
-	//MistLandLua::Init(m_pkEntityManager,m_pkScript);
-
-	
 	//register emote names
 	RegisterEmotes();
 	
@@ -1018,79 +1008,20 @@ void MistClient::Input()
 				else
 				{
 					m_iTargetID = -1;
-					SendSetTarget(	m_iTargetID );
+					SendSetTarget(	m_iTargetID );										
 				}
-								
-				//send new target if it has changed
-// 				if(m_iTargetID != iOldTarget)
-// 					SendSetTarget(	m_iTargetID );
 			}
 			else
 			{
 				//remove current traget if nothing was picked
 				m_iTargetID = -1;			
+				SendSetTarget(	m_iTargetID );
 			}
 		}
 					
 		fUsePressed = -1;
 	}
-// 		if(!DelayCommand() &&  m_bGuiCapture)
-// 		{			
-// 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-// 			{					
-// 				//remove current target
-// 				int iOldTarget = m_iTargetID;
-// 				m_iTargetID = -1;
-// 
-// 				//if its an item , pick it up
-// 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
-// 				{
-// 					cout<<"trying pickup"<<endl;
-// 					RequestPickup(m_iPickedEntityID);
-// 				}
-// 				else 
-// 				// if not an item do first action
-// 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
-// 				{
-// 					vector<string>	kActions;
-// 					pkMl->GetActions(kActions);
-// 				
-// 					if(kActions.size() == 1)
-// 					{
-// 						cout<<"performing first action"<<endl;						
-// 						SendAction(m_iPickedEntityID,kActions[0]);
-// 					}
-// 					else if(kActions.size() > 1)
-// 					{
 
-
-
-// 					}
-// 
-// 				}
-// 				else
-// 				//is it a character?
-// 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
-// 				{
-// 					if(m_iPickedEntityID != m_iTargetID)
-// 					{
-// 						m_iTargetID = m_iPickedEntityID;
-// 						SendSetTarget(	m_iTargetID );
-// 					}
-// 				}
-// 				
-// 				
-// 				//send new target if it has changed
-// 				if(m_iTargetID != iOldTarget)
-// 					SendSetTarget(	m_iTargetID );
-// 			}
-// 			else
-// 			{
-// 				//remove current traget if nothing was picked
-// 				m_iTargetID = -1;			
-// 			}
-// 		}	
-// 	}	
 		
 	
 	//respawn knapp, i brist p?gui
@@ -1277,6 +1208,7 @@ void MistClient::OnSystem()
 	if(m_iCharacterID != -1)
  		m_pkSkillBar->Update(m_pkZeroFps->GetSystemUpdateFpsDelta());
 
+	
 }
 
 void MistClient::ShowLag()
@@ -2466,6 +2398,8 @@ void MistClient::SendCombatMode(bool bCombatMode)
 
 void MistClient::SendSetTarget(int iTargetID)
 {
+	cout<<"sent sett target "<<iTargetID<<endl;
+
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_SET_TARGET);
 	
