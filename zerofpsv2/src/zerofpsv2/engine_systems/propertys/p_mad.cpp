@@ -77,6 +77,9 @@ void P_Mad::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const Rend
 	if(!pkCore)
 		return;
 		
+	if(!pkCore->IsValid())
+		return;
+		
 	static Vector3 kPos;
 	kPos = m_pkEntity->GetIWorldPosV()+m_kOffset;
 	
@@ -169,6 +172,8 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 	
+	if(!pkCore->IsValid())
+		return;	
 	
 	//if no rendering is done, update animation in normal updates
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))

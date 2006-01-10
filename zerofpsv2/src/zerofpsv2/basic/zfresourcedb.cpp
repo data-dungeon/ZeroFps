@@ -223,7 +223,7 @@ bool ZSSResourceDB::ShutDown()
 bool ZSSResourceDB::IsValid()	{ return true; }
 
 /**	Register a new Resource and the function used to create it. */
-void ZSSResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
+void ZSSResourceDB::RegisterResource(const string& strName, ZFResource* (*Create)())
 {
 	ResourceCreateLink kResLink;
 	kResLink.m_strName = strName;
@@ -238,19 +238,31 @@ void ZSSResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
 bool ZSSResourceDB::Refresh()
 {
 	bool bWasUnloaded = false;
-
+	bool bHaveLoaded = false;
+	
 	float fTime = float(SDL_GetTicks()/1000.0);
-
-	ZFResourceInfo* pkRes;
 	
 	for(vector<ZFResourceInfo*>::iterator it = m_kResources.begin();it != m_kResources.end();it++)
 	{
-		pkRes = 	*it;
+		ZFResourceInfo* pkRes = 	*it;
+	
+		//check if created
+		if(!pkRes->m_bIsCreated)
+		{
+			if(!bHaveLoaded)
+			{
+				//cout<<"asyncronus loading of :"<<pkRes->m_strName<<endl;			
+				pkRes->m_pkResource->Create( pkRes->m_strName );
+				pkRes->m_bIsCreated = true;
+				bHaveLoaded = true;
+			}
+		}
+	
 	
 		//still in use
 		if(pkRes->m_iNumOfUsers != 0)	continue;
 		
-		
+		//update timeout
 		if( (!m_bInstantExpire)  && (pkRes->m_fExpireTimer == 0) ) 
 		{
 			pkRes->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
@@ -258,16 +270,11 @@ bool ZSSResourceDB::Refresh()
 		}
 		else 
 		{
+			//resource has expired
 			if(m_bInstantExpire || (pkRes->m_fExpireTimer < fTime) ) 
-			{
-				// Time to die.
-				// g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
-				//	cout << "Expires: '" << (*it)->m_strName << "'" << endl;
-				
+			{				
 				m_kResourceFactory[pkRes->m_pkResource->m_iTypeIndex].m_iActive --;
 				delete pkRes;
-												
-				//it = m_kResources.erase(it);							//krashar tydligen :(
 				
 				m_kResources.erase(it);
 				it = m_kResources.begin();
@@ -276,46 +283,7 @@ bool ZSSResourceDB::Refresh()
 			}
 		}			
 	}
-	
-	
-	
-	
-	
-	
-/*	
-	list<ZFResourceInfo*>::iterator it;
-
-	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
-	{
-		// If someone still using this res.
-		if((*it)->m_iNumOfUsers != 0)	continue;
-
-		// No one is using it. Check for expire time.
-		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) 
-		{
-			(*it)->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
-//			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
-		}
-		else 
-		{
-			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) 
-			{
-				// Time to die.
-				// g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
-				//	cout << "Expires: '" << (*it)->m_strName << "'" << endl;
-				
-				m_kResourceFactory[(*it)->m_pkResource->m_iTypeIndex].m_iActive --;
-				delete (*it);
-				it = m_kResources.erase(it);
-				bWasUnloaded = true;
-			}
-		}
-	}*/
-
-// 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
-// 	{
-// 		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
-// 	}
+					
 
 	return bWasUnloaded;
 }
@@ -330,12 +298,6 @@ ZFResourceInfo*	ZSSResourceDB::FindResource(const string& strResName)
 	for(unsigned int i = 0;i<m_kResources.size();i++)
 		if(m_kResources[i]->m_strName == strResName)
 			return m_kResources[i];
-
-// 	list<ZFResourceInfo*>::iterator it;
-// 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-// 		if(strResName == (*it)->m_strName)
-// 			return (*it);
-// 		}
 
 	return NULL;
 }
@@ -352,25 +314,6 @@ void ZSSResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
 {
 	pkResInfo->m_pkResource->Create(pkResInfo->m_strName);
 
-	// Remove Old Resource
-// 	delete pkResInfo->m_pkResource;
-// 	pkResInfo->m_pkResource = NULL;
-// 
-// 	// Create new resource.
-// 	ZFResource* pkRes = CreateResource(pkResInfo->m_strName);
-// 
-// 	// Failed to create resource.
-// 	if(!pkRes) {
-// 		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", pkResInfo->m_strName.c_str());
-// 		return;
-// 		}
-// 
-// 	if(pkRes->Create(pkResInfo->m_strName.c_str()) == false) {
-// 		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", pkResInfo->m_strName.c_str());
-// 		return;
-// 		}
-// 
-// 	 pkResInfo->m_pkResource = pkRes;
 }
 
 
@@ -411,55 +354,58 @@ void ZSSResourceDB::ReloadAllResorces(const string& strName)
 void ZSSResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strResName)
 {
 	
-	//check if resource is already loaded
-	ZFResourceInfo* pkResInfo = GetResourceData(strResName);
-		
-	// If Resource is loaded we inc ref and return handle to it.
-	if(pkResInfo) 
+	//check if resource is already loaded			
+	if(ZFResourceInfo* pkResInfo = GetResourceData(strResName)) 
 	{
+		// If Resource is loaded we inc ref and return handle to it.
+	
 		pkResInfo->m_iNumOfUsers++;
-
-		kResHandle.m_strName	= pkResInfo->m_strName;
-		kResHandle.m_iID		= pkResInfo->m_iID;
-		kResHandle.m_pkResource = pkResInfo->m_pkResource;
 		
+		//poit handle to resource
+		kResHandle.m_strName		= pkResInfo->m_strName;
+		kResHandle.m_iID			= pkResInfo->m_iID;
+		kResHandle.m_pkResource = pkResInfo->m_pkResource;		
 		return;
 	}
-
-	//resource was not loaded , lets create it
 	
 	
-	// Create Res Class
+	//create resource
 	ZFResource* pkRes = CreateResource(strResName);
 
 	// Failed to create resource.
-	if(!pkRes) {
+	if(!pkRes) 
+	{
 		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", strResName.c_str());
 		//cerr<<"Failed to create resource "<<strResName.c_str()<<endl;
-		//		cout<<"Error: failed to create resource "<<strResName<<endl;
 		return;
-		}
+	}
 
-	//Mad_Core* pkCore = new Mad_Core;
-	if(pkRes->Create(strResName.c_str()) == false) {
-		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", strResName.c_str());
-		//cerr<<"Failed to Load resource "<<strResName.c_str()<<endl;
-		return;
+	//if resource is synced, load it now
+	if(pkRes->m_bSynced)
+		if(!pkRes->Create(strResName.c_str())) 
+		{
+			g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", strResName.c_str());
+			//cerr<<"Failed to Load resource "<<strResName.c_str()<<endl;
+			//return; //warning, dont return, leakage
 		}
 
 	//g_ZFObjSys.Logf("resdb", "Resource %s loaded\n", strResName.c_str());
 
+	//create new resource info
 	ZFResourceInfo* kResInfo = new ZFResourceInfo;			// LEAK - MistServer, Nothing loaded.
 	kResInfo->m_iID			= m_iNextID++;
 	kResInfo->m_iNumOfUsers	= 1;
 	kResInfo->m_strName		= strResName;
 	kResInfo->m_pkResource	= pkRes;
+	kResInfo->m_bIsCreated	= pkRes->m_bSynced;
 
 	m_kResources.push_back(kResInfo);
 
+	//poit handle to resource
 	kResHandle.m_strName	= 		kResInfo->m_strName;
 	kResHandle.m_iID		= 		kResInfo->m_iID;
 	kResHandle.m_pkResource =	kResInfo->m_pkResource;
+	
 	return;
 }
 

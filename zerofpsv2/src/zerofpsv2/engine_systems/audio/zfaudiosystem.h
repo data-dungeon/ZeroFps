@@ -34,6 +34,7 @@ class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
 		~ZFSoundRes();
 		bool Create(const string& strName);	// overloaded
 		int CalculateSize();
+		bool IsValid()	const						{	return m_uiBufferIndexName != 0;	};
 		
 	private:
 

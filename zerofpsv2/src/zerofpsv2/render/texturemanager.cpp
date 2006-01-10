@@ -353,7 +353,7 @@ Image* TextureManager::LoadImage(const string& strFileName)
 	else
 	{
 		strFile = strFileName;
-		cerr<<"Warning: old resource path:"<<strFileName<<endl;
+// 		cerr<<"Warning: old resource path:"<<strFileName<<endl;
 	}
 
 

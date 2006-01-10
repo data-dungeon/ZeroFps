@@ -3,6 +3,7 @@
 ZFResource::ZFResource() 
 {
 	m_iSizeInBytes = 0;
+	m_bSynced = true;
 }
 
 ZFResource::~ZFResource() 

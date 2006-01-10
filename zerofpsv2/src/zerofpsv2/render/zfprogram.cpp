@@ -24,8 +24,8 @@ bool ZFProgram::Create(const string&  strFileName)
 	//setup data path
 	if(strName.find("data/vertexprograms/") == -1)
 		strName = "data/vertexprograms/"+strName;
-	else
-		cerr<<"Warning: old resource path:"<<strName<<endl;
+// 	else
+// 		cerr<<"Warning: old resource path:"<<strName<<endl;
 
 	return Load(strName);
 }

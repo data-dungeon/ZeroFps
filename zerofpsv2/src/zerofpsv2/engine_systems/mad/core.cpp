@@ -30,7 +30,10 @@ Mad_Core::Mad_Core()
 	m_fBoundRadius		= 0;
 	m_fSize				= 0;
 
+	m_bLoaded			= false;
 	m_bInterpolVertexFrames = false;
+	
+	//m_bSynced 			=false;	//enable asyncron loading of this resource
 }
 
 Mad_Core::~Mad_Core()
@@ -495,8 +498,8 @@ bool Mad_Core::Create(const string& strName)
 	//setup data path
 	if(MadFileName.find("data/mad/") == -1)
 		MadFileName = "data/mad/"+MadFileName;
- 	else
- 		cerr<<"Warning: old resource path:"<<MadFileName<<endl;
+//  	else
+//  		cerr<<"Warning: old resource path:"<<MadFileName<<endl;
 	
 	strcpy(Name,MadFileName.c_str());
 
@@ -537,6 +540,8 @@ bool Mad_Core::Create(const string& strName)
 	CalculateRadius();
 	
 	//PrintCoreInfo();
+	
+	m_bLoaded = true;
 	
 	return true;
 }

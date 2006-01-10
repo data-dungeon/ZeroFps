@@ -440,6 +440,8 @@ private:
 
 	int										iStartFrame;
 	int										iEndFrame;
+	
+	bool										m_bLoaded;
 
 public:
 	Mad_Header								kMadHeader;
@@ -486,6 +488,8 @@ public:
 	void LoadAnimation(const char* MadFileName); 
 	void LoadMesh(const char* MDFileName);
 	//bool LoadMad(const char* MadFileName);
+	
+	bool IsValid()	const								{	return m_bLoaded;	};			
 	bool Create(const string& strName);
 	int CalculateSize();
 

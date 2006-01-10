@@ -93,8 +93,12 @@ void Mad_Modell::PlayAnimation(const char* szName, float fStartTime)
 {
 	if(kMadHandle.IsValid() == false)
 		return;
+	
 	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
+		return;
+
+	if(!pkCore->IsValid())
 		return;
 
 	int iAnimNum = pkCore->GetAnimIndex(szName);
@@ -125,9 +129,14 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 
 	if(kMadHandle.IsValid() == false)
 		return;
+		
 	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
+	
+	if(!pkCore->IsValid())
+		return;
+		
 
 	if(m_kLastAnim.m_iAnimationIndex != MAD_NOANIMINDEX)
 	{
@@ -478,7 +487,12 @@ BoneTransform	kAnim2[MAX_BONES];
 
 void Mad_Modell::UpdateBones()
 {
+	if(!kMadHandle.IsValid())
+		return;
+
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
+	if(!pkCore->IsValid())
+		return;
 
 
 	// Refresh Skelleton Pose.

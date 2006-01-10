@@ -35,6 +35,7 @@ class RENDER_API ZFProgram : public ZFResource
 		ZFProgram();
 		~ZFProgram();
 		
+		bool IsValid()	const								{	return m_iId != NO_FPROGRAM;	};			
 		bool Create(const string&  strName);
 		int CalculateSize();
 

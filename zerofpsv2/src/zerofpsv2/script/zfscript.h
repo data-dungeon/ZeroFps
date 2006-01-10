@@ -90,6 +90,7 @@ class SCRIPT_API ZFScript : public ZFResource
 
 		ZFScript();
 		~ZFScript();
+		bool IsValid()		const							{	return m_pkLuaState != NULL;	};		
 		bool Create(const string& strName);	// overloaded
 		int CalculateSize();
 };

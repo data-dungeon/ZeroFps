@@ -17,31 +17,39 @@ of resource need to be registred in the ZFResourceDB.
 */
 class BASIC_API ZFResource
 {
-private:
-	int		m_iSizeInBytes;						// The size in bytes that this res takes. Does not include sub res.
-	int	m_iTypeIndex;								// Index of this resouce type in the resDB
-
-public:
-
-	ZFResource();
-	virtual ~ZFResource();
-
-	/**
-		Loads the Res. Returns false if loads fails.
-		*/
-	virtual bool Create(const string& strName) = 0;	
-
-	/**
-		Calc the num of bytes this res takes. This should not include the size of other Res that are used.
-		*/
-	virtual int  CalculateSize() = 0;			
-
-	/**
-		Returns the size in bytes of this res.
-		*/
-	int GetSize();									
-
-	friend class ZSSResourceDB;
+	private:
+		int		m_iSizeInBytes;						// The size in bytes that this res takes. Does not include sub res.
+		int		m_iTypeIndex;								// Index of this resouce type in the resDB
+	
+	protected:
+		bool		m_bSynced;
+	
+	public:
+	
+		ZFResource();
+		virtual ~ZFResource();
+		
+		/**
+			returns true if the resource is ready for use
+			*/		
+		virtual bool IsValid() const = 0;
+	
+		/**
+			Loads the Res. Returns false if loads fails.
+			*/
+		virtual bool Create(const string& strName) = 0;	
+	
+		/**
+			Calc the num of bytes this res takes. This should not include the size of other Res that are used.
+			*/
+		virtual int  CalculateSize() = 0;			
+	
+		/**
+			Returns the size in bytes of this res.
+			*/
+		int GetSize();									
+	
+		friend class ZSSResourceDB;
 };
 
 /**	\brief	A Handle to a Resource.

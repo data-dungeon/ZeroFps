@@ -26,28 +26,29 @@ public:
 */
 class ZFResourceInfo
 {
-private:
-	string	m_strName;				// Name of the resource.
-	int		m_iID;					
-	int		m_iNumOfUsers;			// Num of handles that use resource.
-	float		m_fExpireTimer;		// Time when res expires (if no users).
+	private:
+		string			m_strName;				// Name of the resource.
+		int				m_iID;					
+		int				m_iNumOfUsers;			// Num of handles that use resource.
+		float				m_fExpireTimer;		// Time when res expires (if no users).
+		bool				m_bIsCreated;			// if true then this resource has been created, otherwise its waiting for it
+		ZFResource*		m_pkResource;			// ptr to resource.
 	
-	ZFResource*		m_pkResource;	// ptr to resource.
-
-public:
-
-	ZFResourceInfo();
-	~ZFResourceInfo();
-
-	friend class ZSSResourceDB;
-
-	ZFResourceInfo& operator=(const ZFResourceInfo &kOther) {
-		m_strName		= kOther.m_strName;
-		m_iID			= kOther.m_iID;
-		m_iNumOfUsers	= kOther.m_iNumOfUsers;
-		m_fExpireTimer	= kOther.m_fExpireTimer;
-		m_pkResource	= kOther.m_pkResource;
-		return *this;
+	public:
+	
+		ZFResourceInfo();
+		~ZFResourceInfo();
+	
+		friend class ZSSResourceDB;
+	
+		ZFResourceInfo& operator=(const ZFResourceInfo &kOther) 
+		{
+			m_strName		= kOther.m_strName;
+			m_iID			= kOther.m_iID;
+			m_iNumOfUsers	= kOther.m_iNumOfUsers;
+			m_fExpireTimer	= kOther.m_fExpireTimer;
+			m_pkResource	= kOther.m_pkResource;
+			return *this;
 		}	
 };
 
@@ -98,7 +99,7 @@ class BASIC_API ZSSResourceDB : public ZFSubSystem {
 																							// ibland känner jag att jag måste, då går jag på toa
 
 		// Resource Types
-		void RegisterResource(string strName, ZFResource* (*Create)());
+		void RegisterResource(const string& strName, ZFResource* (*Create)());
 
 		// Accessing / Using.
 		bool IsResourceLoaded(string strResName);		

@@ -29,12 +29,9 @@ class RENDER_API GLSLProgram : public ZFResource
 	
 		ZShaderSystem*	m_pkShader;
 	
-		bool	SetupShaderPointer();
-		
-		GLenum LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType,int iLights);
-		
+		bool	SetupShaderPointer();		
+		GLenum LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType,int iLights);		
 		bool LoadDataFromFile(string* pkString,const string& strFile,int iLights);
-// 		char* GetLine(ZFVFile* pkFile);
 		
 	public:
 		GLenum	m_iProgramIDs[9];	
@@ -43,6 +40,7 @@ class RENDER_API GLSLProgram : public ZFResource
 		GLSLProgram();
 		~GLSLProgram();
 		
+		bool IsValid()	const								{	return m_iProgramIDs[0] != NO_GLSLPROGRAM;	};
 		bool Create(const string&  strName);
 		int CalculateSize();
 

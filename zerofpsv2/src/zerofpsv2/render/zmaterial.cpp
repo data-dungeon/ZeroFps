@@ -859,8 +859,8 @@ bool ZMaterial::LoadMaterial(string strName, bool bDontClear)
 
 	if(strName.find("data/material/") == -1)
 		strName ="data/material/" + strName;
-	else
-		cerr<<"Warning: old resource path:"<<strName<<endl;
+// 	else
+// 		cerr<<"Warning: old resource path:"<<strName<<endl;
 	
 	bool bLoaded = false;
 	

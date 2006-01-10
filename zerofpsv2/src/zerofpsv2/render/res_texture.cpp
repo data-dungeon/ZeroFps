@@ -8,13 +8,14 @@ ResTexture::ResTexture()
 	m_pkZShaderSystem		=	NULL;
 
 	m_iOpenGLID 			=	0;
-// 	m_pkImage 				=	NULL;		
 	m_strTextureName 		=	"";
 	m_iSizeInBytes 		=	0;			
 	m_iOptions				=	0;
 	
 	m_iWidth					=	0;
 	m_iHeight				=	0;
+	
+	m_bSynced				=	false;
 }
 
 ResTexture::ResTexture(const string& strName)

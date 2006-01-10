@@ -134,7 +134,7 @@ class RENDER_API ZMaterial : public ZFResource
 		~ZMaterial();
 		ZMaterial& operator=(const ZMaterial& kOther);
 
-
+		bool IsValid() const						{ return true;							}							
 		bool Create(const string& strName);	//	for resource system
 		int  CalculateSize();				
 	

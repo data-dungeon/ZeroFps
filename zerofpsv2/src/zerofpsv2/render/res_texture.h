@@ -64,6 +64,7 @@ class RENDER_API ResTexture : public ZFResource
 		ResTexture(const string& strName);
 		~ResTexture();
 	
+		bool IsValid()	const						{	return m_iOpenGLID != 0;	};
 		bool Create(const string& strName);
 		void Clear();		
 		int  CalculateSize();

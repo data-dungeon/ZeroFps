@@ -499,6 +499,12 @@ bool ZFScript::Create(const string& strName)
 		return false;
 	}
 	
+	if(m_pkLuaState != NULL)	
+	{
+ 		lua_close(m_pkLuaState);
+		m_pkLuaState = NULL;
+	}
+	
 	m_pkLuaState = lua_open();	
 	
 	m_szScriptName = new char[strName.size()+1];				
