@@ -788,8 +788,8 @@ void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
 {
 // 	if(m_kSkillQueue.size() > 0)
 // 		return;
-	if(m_iTarget == -1)
-		return;
+// 	if(m_iTarget == -1)
+// 		return;
 
 
 	if(Skill* pkSkill = GetSkillPointer(strSkill))
@@ -853,8 +853,13 @@ void P_CharacterProperty::UpdateSkillQueue()
 				if(m_iTarget != -1 && !m_strDefaultAttackSkill.empty())
 				{				
 					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iTarget,"P_CharacterProperty"))
-						if(pkCP->GetFaction() == GetFaction())
+					{
+						if(pkCP->IsDead())
+						{
+							SetDefaultAttackSkill("");
 							return;
+						}
+					}
 					
 					UseSkill(m_strDefaultAttackSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
 				}
@@ -2567,7 +2572,7 @@ void P_CharacterProperty::RemoveBuff(const string& strBuffName)
 
 		P_Buff* pkBuff = static_cast<P_Buff*>(kProps[i]);
 
-		if(pkBuff->GetEntity()->GetName() == strBuffName)
+		if(pkBuff->GetEntity()->GetType() == strBuffName)
 		{
 			cout<<"removing buffs by name: "<<pkBuff->GetEntity()->GetName()<<endl;
 			RemoveBuff(pkBuff);

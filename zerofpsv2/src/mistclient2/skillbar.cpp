@@ -117,7 +117,12 @@ void SkillBar::HandleCommand(int iButton,const string& strCommand)
 	else if(iButton == 1)
 	{
 		if(!m_kSkills[iSkill].m_strSkillName.empty())
-			g_kMistClient.SendSetDefaultAttack(m_kSkills[iSkill].m_strSkillName);
+		{
+			if(m_kSkills[iSkill].m_bDefaultAttack)			
+				g_kMistClient.SendSetDefaultAttack("");
+			else
+				g_kMistClient.SendSetDefaultAttack(m_kSkills[iSkill].m_strSkillName);
+		}
 	}
 	
 }
