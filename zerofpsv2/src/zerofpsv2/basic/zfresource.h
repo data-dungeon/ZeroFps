@@ -60,10 +60,7 @@ class BASIC_API ZFResourceHandle
 private:
 	ZSSResourceDB*	m_pkResDB;
 
-	int		m_iHandleID;
-	string	m_strName;
-	int		m_iID;
-	
+	string	m_strName;	
 	ZFResource*	m_pkResource;
 
 	bool GetResDB();
@@ -77,7 +74,7 @@ public:
 	bool SetRes(const string& strName);
 	string GetRes() 							{return m_strName;	}
 	void FreeRes();
-	bool IsValid()								{return m_iID != -1;	}
+ 	bool IsValid()								{return m_pkResource;}
 
 	ZFResource*	GetResourcePtr() const	{return m_pkResource;}
 

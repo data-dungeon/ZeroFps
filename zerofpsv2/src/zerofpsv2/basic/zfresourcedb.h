@@ -44,7 +44,7 @@ class ZFResourceInfo
 		ZFResourceInfo& operator=(const ZFResourceInfo &kOther) 
 		{
 			m_strName		= kOther.m_strName;
-			m_iID			= kOther.m_iID;
+			m_iID				= kOther.m_iID;
 			m_iNumOfUsers	= kOther.m_iNumOfUsers;
 			m_fExpireTimer	= kOther.m_fExpireTimer;
 			m_pkResource	= kOther.m_pkResource;

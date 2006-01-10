@@ -46,23 +46,12 @@ bool ZFResourceHandle::GetResDB()
 ZFResourceHandle::ZFResourceHandle()
 {
  	m_pkResDB = NULL;
-//  	static_cast<ZSSResourceDB*>(g_ZFObjSys.GetObjectPtr("ZSSResourceDB"));
-// 	if(!m_pkResDB)
-// 		cout<<"WARNING: resource handle could not find ZSSResourceDB"<<endl;
-
-	m_iHandleID = g_iResourceHandleID ++;
-	m_iID = -1;
 	m_pkResource = NULL;
 }
 
 ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
 {
-	m_pkResDB = NULL;//static_cast<ZSSResourceDB*>(g_ZFObjSys.GetObjectPtr("ZSSResourceDB"));
-// 	if(!m_pkResDB)
-// 		cout<<"WARNING: resource handle could not find ZSSResourceDB"<<endl;
-	
-	m_iHandleID = g_iResourceHandleID ++;
-	m_iID = -1;
+	m_pkResDB = NULL;	
 	m_pkResource = NULL;
 	
 	SetRes(kOther.m_strName);
@@ -70,7 +59,7 @@ ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
 
 ZFResourceHandle& ZFResourceHandle::operator=(const ZFResourceHandle& kOther)
 {
-	if(kOther.m_iID == -1)
+ 	if(!kOther.m_pkResource)
 		FreeRes();
 	else
 		SetRes(kOther.m_strName);
@@ -92,7 +81,7 @@ bool ZFResourceHandle::SetRes(const string& strName)
 
    m_pkResDB->GetResource(*this,strName);
 
-	if(m_iID == -1)
+	if(!m_pkResource)
 		return false;
 		
 	return true;
@@ -100,18 +89,13 @@ bool ZFResourceHandle::SetRes(const string& strName)
 
 void ZFResourceHandle::FreeRes()
 {
-	if(m_iID == -1)
+	if(!m_pkResource)
 		return;
 
 	if(!GetResDB())
 		return;
 		
 	m_pkResDB->FreeResource(*this);
-	
-	m_iID = -1;
-	m_strName = "";
-	m_pkResource = NULL;
-
 }
 
 
@@ -363,7 +347,7 @@ void ZSSResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strRe
 		
 		//poit handle to resource
 		kResHandle.m_strName		= pkResInfo->m_strName;
-		kResHandle.m_iID			= pkResInfo->m_iID;
+// 		kResHandle.m_iID			= pkResInfo->m_iID;
 		kResHandle.m_pkResource = pkResInfo->m_pkResource;		
 		return;
 	}
@@ -403,7 +387,7 @@ void ZSSResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strRe
 
 	//poit handle to resource
 	kResHandle.m_strName	= 		kResInfo->m_strName;
-	kResHandle.m_iID		= 		kResInfo->m_iID;
+// 	kResHandle.m_iID		= 		kResInfo->m_iID;
 	kResHandle.m_pkResource =	kResInfo->m_pkResource;
 	
 	return;
@@ -411,17 +395,19 @@ void ZSSResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strRe
 
 void ZSSResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 {
-	ZFResourceInfo* pkRes = GetResourceData(kResHandle.m_strName);
-	if(pkRes == NULL) 
+	if(ZFResourceInfo* pkRes = GetResourceData(kResHandle.m_strName))
+	{
+		pkRes->m_iNumOfUsers --;
+	}
+	else
 	{
 		g_ZFObjSys.Logf("resdb", "FreeResource on non valid handle.\n", kResHandle.m_strName.c_str());
-		return;
 	}
 
-	pkRes->m_iNumOfUsers --;
-
-	kResHandle.m_iID = -1;
+	//clear resource handle
+// 	kResHandle.m_iID = -1;
 	kResHandle.m_strName = "";
+ 	kResHandle.m_pkResource = NULL;
 }
 
 ZFResource* ZSSResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
