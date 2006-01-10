@@ -160,8 +160,8 @@ class RENDER_API ZSSRender : public ZFSubSystem {
 		void AddAABB(vector<Vector3>&	kVertexs,vector<Vector4>&	kColors, const Vector3& kMin,const Vector3& kMax, const Vector4& kColor);
 		void AddAABB(RenderPackage& pkRenderPackage, const Vector3& kMin,const Vector3& kMax, const Vector4& kColor);
 
-		void AddTextBillboard(RenderPackage& kRenderPackage,const RenderState& kRenderState,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered);
-		void AddText(RenderPackage& kRenderPackage,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered);
+		void AddTextBillboard(RenderPackage& kRenderPackage,const RenderState& kRenderState,const Vector3& kPos,float fScale,const string& strText,ZGuiFont* pkFont,bool bCentered);
+		void AddText(RenderPackage& kRenderPackage,const Vector3& kPos,float fScale,const string& strText,ZGuiFont* pkFont,bool bCentered);
 
 
 		void     EditColor_Set(string strName, float f, float g, float b);

@@ -200,9 +200,10 @@ class MCOMMON_API P_CharacterProperty: public Property
 		vector<string>	m_kSkillBar;
 		
 		//over head text
-		ZMaterial*	m_pkTextMaterial;
-		ZGuiFont*	m_pkFont;		
-		bool			m_bOverHeadText;			//shuld overhead text be drawn?
+		ZMaterial*		m_pkTextMaterial;
+		ZGuiFont*		m_pkFont;
+		RenderPackage	m_kRenderPackage;		
+		bool				m_bOverHeadText;			//shuld overhead text be drawn?
 		
 		
 		string		m_strName;					//character name		
@@ -289,6 +290,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		void Init();
 		void Update();
+		void GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState);
+		
 		void DrawEditor();
 
 				

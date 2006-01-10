@@ -1646,7 +1646,7 @@ void ZSSEntityManager::GetZonesDebugRenderPackages(vector<RenderPackage*>&	kPack
 				//print enviroment
 				if(m_kbDrawEnviroments.GetBool())
 					if(!((*pkZoneList)[i].m_strEnviroment.empty()))
-						m_pkRender->AddTextBillboard(*pkText,kRenderState,(*pkZoneList)[i].m_kPos,1,(*pkZoneList)[i].m_strEnviroment,pkMatText,m_pkFont,true);
+						m_pkRender->AddTextBillboard(*pkText,kRenderState,(*pkZoneList)[i].m_kPos,1,(*pkZoneList)[i].m_strEnviroment,m_pkFont,true);
 				
 				break;
 		

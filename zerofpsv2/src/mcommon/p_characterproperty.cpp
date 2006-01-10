@@ -57,6 +57,7 @@ Skill::~Skill()
 }
 
 
+
 void Skill::Update()
 {
 	if( (m_pkEntityManager->GetSimTime() < m_fLastUpdate) || m_fLastUpdate == -1)
@@ -1976,6 +1977,37 @@ P_CharacterProperty::~P_CharacterProperty()
 	delete m_pkFont;	
 }
 
+void P_CharacterProperty::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
+{
+	if(GetIsPlayerCharacter())
+	{
+		if(m_bOverHeadText)
+		{
+			float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(GetEntity()->GetWorldPosV());
+			if(fDistance < 20)
+			{
+				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string("> ") + m_strChatMsg;		
+				
+								
+				float fScale = 0.05 * fDistance;
+				
+				m_kRenderPackage.m_kMeshData.m_kVertises.clear();
+				m_kRenderPackage.m_kMeshData.m_kTexture[0].clear();
+				
+				m_pkRender->AddTextBillboard(m_kRenderPackage,kRenderState,GetEntity()->GetIWorldPosV()+
+								Vector3(0,1.0,0),fScale,strText,m_pkFont,true);
+			
+			
+				m_kRenderPackage.m_pkMaterial = m_pkTextMaterial;
+				m_kRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;			
+				m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kRenderPackage.m_kMeshData.m_kVertises.size();
+			
+			
+				kRenderPackages.push_back(&m_kRenderPackage);
+			}						
+		}
+	}	
+}
 
 void P_CharacterProperty::Update()
 {
@@ -1984,8 +2016,6 @@ void P_CharacterProperty::Update()
 		//SERVER
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 		{
-// 			cout<<"wtf:"<<m_pkEntity->GetCurrentZone()<<endl;
-		
 			//try to find items on load
 			if(m_bFirstUpdate)
 			{
@@ -2062,25 +2092,8 @@ void P_CharacterProperty::Update()
 	}
 	else if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
-		if(GetIsPlayerCharacter())
-		{
-			if(m_bOverHeadText)
-			{
-				string strText = GetName()+string(" <")+GetOwnedByPlayer()+string("> ") + m_strChatMsg;		
-				float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(GetEntity()->GetWorldPosV());
-				if(fDistance < 20)
-				{
-					float fScale = 0.05 * fDistance;
-					
-					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+
-									Vector3(0,1.0,0),fScale,strText,m_pkTextMaterial,m_pkFont,true);													
-				}
-			}
-		}	
-
 		if(m_pkZeroFps->m_bEditMode)
 			DrawEditor();
-
 	}		
 }
 

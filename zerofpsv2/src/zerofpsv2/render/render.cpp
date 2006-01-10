@@ -350,7 +350,7 @@ void ZSSRender::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kP
 	m_pkZShaderSystem->MatrixPop();
 }
 
-void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState& kRenderState,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
+void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState& kRenderState,const Vector3& kPos,float fScale,const string& strText,ZGuiFont* pkFont,bool bCentered)
 {
 	float fXScale = 1.0/pkFont->m_iTextureWidth;
 	float fYScale = 1.0/pkFont->m_iTextureHeight;
@@ -416,7 +416,7 @@ void ZSSRender::AddTextBillboard(RenderPackage& kRenderPackage,const RenderState
 }
 
 
-void ZSSRender::AddText(RenderPackage& kRenderPackage,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
+void ZSSRender::AddText(RenderPackage& kRenderPackage,const Vector3& kPos,float fScale,const string& strText,ZGuiFont* pkFont,bool bCentered)
 {
 	float fXScale = 1.0/pkFont->m_iTextureWidth;
 	float fYScale = 1.0/pkFont->m_iTextureHeight;
