@@ -94,7 +94,7 @@ bool PSystem::Update( const Vector3& kNewPosition,const Matrix4& kNewRotation ,c
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && !m_bInsideFrustum )
 		return false;
 
-		// if PSystem loops in infinity, make it have particles from start
+	// if PSystem loops in infinity, make it have particles from start
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && m_bFirstRun )
 	{
 		TimeoffSet();
@@ -102,19 +102,12 @@ bool PSystem::Update( const Vector3& kNewPosition,const Matrix4& kNewRotation ,c
 	}
 
 	// Get Frametime
-// 	m_fFrameTime = m_pkFps->GetFrameTime();// - m_fLastTime;//GetTicks() - m_fLastTime;
-	
-	m_fFrameTime = m_pkFps->GetEngineTime() - m_fLastTime;
-	m_fLastTime = m_pkFps->GetEngineTime();
-	
-	
-	// 	m_fLastTime =  SDL_GetTicks();// m_pkFps->m_pkObjectMan->GetSimTime();
+	//m_fFrameTime = m_pkFps->GetEngineTime() - m_fLastTime;
+//	m_fLastTime = m_pkFps->GetEngineTime();
+
 	// Update particlesystem lifetime
 	if ( m_fAge != -9999999 )
-	{
 		m_fAge -= m_fFrameTime;
-	}
- 	
 
 	// Update age life percent
 	m_fAgePercent = m_fAge / m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
@@ -150,7 +143,6 @@ bool PSystem::Update( const Vector3& kNewPosition,const Matrix4& kNewRotation ,c
 
 	// Update lifetime for particles
 	int i;
-	
 	for ( i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
 	{
 		// if particle is active
@@ -169,6 +161,8 @@ bool PSystem::Update( const Vector3& kNewPosition,const Matrix4& kNewRotation ,c
 				}
 				else
 					DisableParticle ( i );
+
+				//cout << m_kParticles[i].m_fAge << endl;
 			}
 		}
 	}

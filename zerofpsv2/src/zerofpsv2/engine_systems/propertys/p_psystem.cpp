@@ -33,45 +33,6 @@ void P_PSystem::Update()
 	for (int i = 0; i < m_kPSystems.size(); i++)
 		if ( m_kPSystems[i].m_pkPSystem )
 			UpdatePS(i,NULL);
-		
-
-
-// 	for (int i = 0; i < m_kPSystems.size(); i++)
-// 	{
-// 		if ( m_kPSystems[i].m_pkPSystem )
-// 		{
-// 			UpdatePS(i,NULL);
-// 		}		
-// 	}
-
-// 	for (int i = 0; i < m_kPSystems.size(); i++)
-// 	{
-// 		if ( m_kPSystems[i].m_pkPSystem )
-// 		{
-// 		
-// 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
-// 			{		
-// 				if( !m_pkZeroFps->GetRenderOn() || m_pkZeroFps->GetMinimized() )
-// 				{
-// 					UpdatePS(i);
-// 				}		
-// 				
-// 				return;
-// 			}
-// 
-// 			if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkZeroFps->GetCam()->GetCurrentRenderMode() == RENDER_NOSHADOWLAST)
-// 			{
-// 				if(UpdatePS(i))
-// 				{			
-// 					if(m_kPSystems[i].m_pkPSystem->m_bInsideFrustum)
-// 					{				
-// 						m_kPSystems[i].m_pkPSystem->m_pkLight->Update(&m_kPSystems[i].m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
-// 						m_kPSystems[i].m_pkPSystem->Draw();
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
 }
 
 bool P_PSystem::UpdatePS(int iPS,const RenderState*	pkRenderState)
@@ -88,6 +49,9 @@ bool P_PSystem::UpdatePS(int iPS,const RenderState*	pkRenderState)
 		pkMad->UpdateBones();
 		kJointPos = pkMad->GetJointPosition("root");
 	}
+
+	m_kPSystems[iPS].m_pkPSystem->m_fFrameTime = m_pkZeroFps->GetEngineTime() - m_kPSystems[iPS].m_pkPSystem->m_fLastTime;
+	m_kPSystems[iPS].m_pkPSystem->m_fLastTime = m_pkZeroFps->GetEngineTime();
 
 	if( m_kPSystems[iPS].m_pkPSystem->Update( m_pkEntity->GetIWorldPosV() + kJointPos, kMat,pkRenderState) )
 	{	
