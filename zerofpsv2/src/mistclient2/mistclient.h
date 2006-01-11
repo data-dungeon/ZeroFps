@@ -43,7 +43,7 @@ enum HUD_EFFECTS
 
 
 const int MAX_NUM_BUFF_ICONS = 32;
-
+const int MAX_TARGET_DISTANCE = 25;
 
 /**	\brief	Da MistClient
 		\ingroup MistClient
@@ -198,7 +198,6 @@ class MistClient :public Application, public ZGuiApp {
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ToggleEmoteList(bool bOpen);
-		//void ResizeChatDlg(bool bBigger);      	
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetGuiCapture(bool bSet, bool bMoveCursorToCenter=true);
@@ -212,8 +211,7 @@ class MistClient :public Application, public ZGuiApp {
 		void RegisterResources();
 	  
 		//draw
-		void AddTargetMarkerRP(vector<RenderPackage*>& kRenderPackages);
-		
+		void AddTargetMarkerRP(vector<RenderPackage*>& kRenderPackages);		
 		void DrawCrossHair();
 		void DrawHUDEffect(int iHUDEffect);
 		void UpdateCursorImage();
@@ -222,6 +220,8 @@ class MistClient :public Application, public ZGuiApp {
 		Entity* GetTargetObject();
 		Vector3 Get3DMouseDir(bool bMouse);
 		
+		//game
+		int GetClosestEnemy();
 				
 	public:
 		//application virtuals

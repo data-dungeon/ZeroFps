@@ -882,6 +882,13 @@ void MistClient::Input()
 	if(m_pkInputHandle->VKIsDown("togglecombatmode") && !DelayCommand())
 		SendCombatMode(!m_bCombatMode);
 			
+	//target closest
+	if(m_pkInputHandle->VKIsDown("target_closest") && !DelayCommand())
+	{
+		m_iTargetID = GetClosestEnemy();
+		SendSetTarget(m_iTargetID);
+	}
+			
 	//toggle inventory
 	if(m_pkInputHandle->VKIsDown("inventory") && !DelayCommand())
 	{			
@@ -2188,6 +2195,46 @@ bool MistClient::StartUp()
    return true;
 }
 
+int MistClient::GetClosestEnemy()
+{
+	P_CharacterProperty* pkCharacter = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID( m_iCharacterID,"P_CharacterProperty");
+	if(!pkCharacter)
+		return -1;
+
+// 	int iMyFaction = pkCharacter->GetFaction();
+	Vector3 kRefPos = pkCharacter->GetEntity()->GetWorldPosV();
+	int iClosestEntity = -1;
+	float fClosestDistance = MAX_TARGET_DISTANCE;
+
+
+	vector<Entity*> kEntitys;
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys( &kEntitys);
+	
+	int iEntitys = kEntitys.size();
+	for(int i = 0;i<iEntitys;i++)
+	{
+		int iID = kEntitys[i]->GetEntityID();
+		if(pkCharacter->IsEnemy(iID))
+		{	
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)kEntitys[i]->GetProperty("P_CharacterProperty"))
+			{		
+				if(!pkCP->IsDead())
+				{		
+					float d = kEntitys[i]->GetWorldPosV().DistanceTo(kRefPos);
+			
+					if(d < fClosestDistance)
+					{
+						iClosestEntity = iID;
+						fClosestDistance = d;
+					}
+				}
+			}
+		}
+	}
+	
+	return iClosestEntity;
+}
+
 Entity* MistClient::GetTargetObject()
 {
 	Vector3 start = m_pkCamera->GetPos();
@@ -2221,7 +2268,7 @@ Entity* MistClient::GetTargetObject()
 		
 		//-------------
 		
-		if(kObjects[i]->GetWorldPosV().DistanceTo(m_pkCamera->GetPos()) > 20)
+		if(kObjects[i]->GetWorldPosV().DistanceTo(m_pkCamera->GetPos()) > MAX_TARGET_DISTANCE)
 			continue;
 		
  		if(kObjects[i]->GetProperty("P_Ml") || 
