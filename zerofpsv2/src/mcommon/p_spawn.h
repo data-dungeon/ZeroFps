@@ -17,11 +17,7 @@ using namespace std;
 */
 class MCOMMON_API P_Spawn: public Property 
 {
-	private:			
-// 		ZSSZeroFps* 		m_pkFps;
-// 		ZSSEntityManager* m_pkEntityManager;
-// 		Render*			m_pkRender;
-		
+	private:				
 		string			m_strEntityScript;
 		float				m_fSpawnDelay;
 		

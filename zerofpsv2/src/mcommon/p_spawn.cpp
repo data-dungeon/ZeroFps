@@ -23,27 +23,20 @@ P_Spawn::P_Spawn(): Property("P_Spawn")
 
 void P_Spawn::Update()
 {
-// 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
-// 	{
-// 		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.5,1,Vector3(0.5,1,0.5),true);	
-// 	}
-
-// 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
-// 	{
-		if(m_pkEntityManager->GetSimTime() > m_fStartTime + m_fSpawnDelay)
+	if(m_pkEntityManager->GetSimTime() > m_fStartTime + m_fSpawnDelay)
+	{
+		//cout<<"spawning "<<m_strEntityScript<<endl;
+	
+		//create spawn
+		if(!m_pkEntityManager->CreateEntityFromScriptInZone(m_strEntityScript.c_str(),m_pkEntity->GetWorldPosV(),m_pkEntity->GetCurrentZone()))
 		{
-			//cout<<"spawning "<<m_strEntityScript<<endl;
-		
-			//create spawn
-			if(!m_pkEntityManager->CreateEntityFromScriptInZone(m_strEntityScript.c_str(),m_pkEntity->GetWorldPosV(),m_pkEntity->GetCurrentZone()))
-			{
-				cout<<"WARNING: could not spawn entity "<<m_strEntityScript<<endl;
-			}
-			
-			//remove self
-			m_pkEntityManager->Delete(m_pkEntity);
+			cout<<"WARNING: could not spawn entity "<<m_strEntityScript<<endl;
 		}
-// 	}
+		
+		//remove self
+		m_pkEntityManager->Delete(m_pkEntity);
+	}
+
 }
 
 
