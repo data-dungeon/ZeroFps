@@ -6,6 +6,7 @@
 #include <ctime>
 #include "math.h"
 #include "vector4.h"
+#include "plane.h"
 
 using namespace std;
 
@@ -298,3 +299,37 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 	delete tan1;
 	delete tan2;
 }
+
+bool Math::TestLineVSPolygon(const Vector3* kPolygon,const Vector3& kPos1,const Vector3& kPos2,Vector3& kResult)
+{
+	static Plane P;
+	static Vector3 kColPos;
+	
+	P.Set(kPolygon[0],kPolygon[1],kPolygon[2]);
+
+	if(P.LineTest(kPos1,kPos2,&kColPos))
+	{
+		//   first way to do it :D
+		static Vector3 vert0p;
+		static Vector3 vert1p;
+		static Vector3 vert2p;
+	
+		vert0p = kPolygon[0] - kColPos;
+		vert1p = kPolygon[1] - kColPos;
+		float d = vert0p.Cross(vert1p).Dot(P.m_kNormal);
+		if (d < 0) return false;
+		vert2p = kPolygon[2] - kColPos;
+		d = vert1p.Cross(vert2p).Dot(P.m_kNormal);
+		if (d < 0) return false;
+		d = vert2p.Cross(vert0p).Dot(P.m_kNormal);
+		if (d < 0) return false;
+		
+		kResult = kColPos;
+		return true;		
+	}
+	
+	return false;
+}
+
+
+

@@ -134,6 +134,7 @@ class ENGINE_SYSTEMS_API P_Heightmap : public Property
 		void SetSize(int iSize);
 		void SetMaxValue(float fMax);
 		
+		bool TestLine(const Vector3& kStart,const Vector3& kStop, Vector3& kResult);
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		float CalculateRadius();
 		float GetHeight(float x,float y);	//world

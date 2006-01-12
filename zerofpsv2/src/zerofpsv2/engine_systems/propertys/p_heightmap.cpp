@@ -473,6 +473,7 @@ void P_Heightmap::BuildTextureArrays()
 
 	//update AABB
 	m_pkEntity->SetLocalAABB(Vector3(-m_iSize/2.0,m_fExtremeMin,-m_iSize/2.0),Vector3(m_iSize/2.0,m_fExtremeMax,m_iSize/2.0));
+	m_pkEntity->SetRadius( Vector3(m_iSize/2.0,Max(fabs(m_fExtremeMax),fabs(m_fExtremeMin)),m_iSize/2.0).Length());
 
 	//clear data arrays
 	for(int i = 0;i<m_kLodLevels.size();i++)
@@ -759,6 +760,68 @@ Vector3 P_Heightmap::GenerateNormal(int x,int y)
 	return V2.Cross(V1);
 }
 
+bool P_Heightmap::TestLine(const Vector3& kStart,const Vector3& kStop, Vector3& kResult)
+{
+	//FIRST do a sphere test VS line
+	Vector3 	kDir 	=	kStop - kStart;	kDir.Normalize();		
+	Vector3  c = m_pkEntity->GetWorldPosV() - kStart;	
+	Vector3  k = kDir.Proj(c);			
+	float cdis=c.Length();
+	float kdis=k.Length();
+	float Distance = float( sqrt((cdis*cdis)-(kdis*kdis)) );
+		
+	if(Distance > m_pkEntity->GetRadius())		
+ 		return false;
+
+	//continue with polygon tests
+	static Vector3 V[3];	
+	float fDistance = 99999999;
+	Vector3 kTest;	
+	Vector3 kOffset = m_pkEntity->GetWorldPosV() - Vector3(m_iSize/2.0,0,m_iSize/2.0);
+
+	for(int y=0; y<m_iRows-1; y++) 
+	{
+		for(int x=0; x<m_iRows-1; x++) 
+		{
+			//top polygon
+			V[0] = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale)  				+ kOffset;
+			V[1] = Vector3((float)x*m_fScale, 			m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale) 	+ kOffset;
+			V[2] = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale) 				+ kOffset;						
+			
+			if(Math::TestLineVSPolygon(V,kStart,kStop,kTest))
+			{
+				float d = kStart.DistanceTo(kTest);
+				if(d < fDistance)
+				{
+					fDistance = d;
+					kResult = kTest;			
+				}
+			}
+			
+			//botom polygon
+			V[0] = Vector3((float)(x+1)*m_fScale, 		m_kHeightData[y*m_iRows+x+1], 		(float)y*m_fScale) 				+ kOffset; 
+			V[1] = Vector3((float)x*m_fScale , 			m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale) 	+ kOffset;
+			V[2] = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y+1)*m_iRows+(x+1)], (float)(y + 1.0f)*m_fScale)  	+ kOffset;			
+			
+			if(Math::TestLineVSPolygon(V,kStart,kStop,kTest))
+			{
+				float d = kStart.DistanceTo(kTest);
+				if(d < fDistance)
+				{
+					fDistance = d;
+					kResult = kTest;			
+				}
+			}			
+		}	
+	}
+	
+	if(fDistance != 99999999)
+		return true;
+	else
+		return false;
+		
+}
+
 void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal)
 {
 	int iIndex = 0;
@@ -781,7 +844,7 @@ void P_Heightmap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex
 		
 			//top polygon
 			V1 = Vector3((float)x*m_fScale, 			m_kHeightData[y*m_iRows+x], 			(float)y*m_fScale);
-			V2 = Vector3((float)x*m_fScale, 	m_kHeightData[(y+1)*m_iRows+x], 				(float)(y + 1.0f)*m_fScale);
+			V2 = Vector3((float)x*m_fScale, 			m_kHeightData[(y+1)*m_iRows+x], 		(float)(y + 1.0f)*m_fScale);
 			V3 = Vector3((float)(x + 1)*m_fScale, 	m_kHeightData[(y)*m_iRows+(x+1)], 	(float)y*m_fScale);
 			
 			pkVertex->push_back( V1 );			

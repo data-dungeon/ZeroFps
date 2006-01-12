@@ -809,33 +809,19 @@ void ZeroEd::OnIdle()
 	// FULHACK Tm Vim
 	m_pkEntityManager->OwnerShip_Take( m_pkEntityManager->GetEntityByID( m_pkZeroFps->GetClientObjectID() ) );
 
-
-	//m_pkFps->SetCamera(m_pkActiveCamera);		
-	//m_pkFps->GetCam()->ClearViewPort();	
-
 	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}
 
 
-
- 	//m_pkFps->UpdateCamera(); 		
-
-	//for(unsigned int iPath = 0; iPath < kPath.size(); iPath++)
-	//	pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
-   
-	//if(m_pkServerInfoP)
-	//{
-	//	m_pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
-	//	m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
-	//}
 	if(m_pkActiveCamera)
 		m_pkAudioSys->SetListnerPosition(m_pkActiveCamera->GetPos(),m_pkActiveCamera->GetRotM());
 	
 	
 	if(m_iEditMode == EDIT_HMAP) 
 	{
+		SetPointer();
 	
 		m_SelectedEntitys.clear();
 		m_iCurrentObject = -1;
@@ -850,25 +836,14 @@ void ZeroEd::OnIdle()
 				
 				for(int i = 0;i<kZones.size();i++)
 					m_SelectedEntitys.insert(kZones[i]->GetEntityID());
-			}	
-		
-		SetPointer();
-		//DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
+			}			
 	}
 
 	if(m_iEditMode == EDIT_ZONES )
 	{
 		UpdateZoneMarkerPos();		
-		//DrawZoneMarker(m_kZoneMarkerPos);		
-
 	}
 	
-	if(m_iEditMode == EDIT_OBJECTS || m_iEditMode == EDIT_AMBIENTSOUNDS)
-	{	
-		//UpdateObjectMakerPos();
-		//DrawCrossMarker(m_kObjectMarkerPos);		
-	}
-
 	if(IsWndVisible("PreviewWnd"))
 	{
 		UpdatePreviewObject();
@@ -991,39 +966,41 @@ void ZeroEd::SetPointer()
 	Vector3 start	= m_pkActiveCamera->GetPos();// + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 
-	m_kDrawPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fZoneMarkerDistance;;	
+	m_kDrawPos.Set(0,0,0);
+
+// 	m_kDrawPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fZoneMarkerDistance;;	
 //  	return;
 
 // 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
 // 	if(!pkEntity)	return;
 	
-	P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Heightmap");
-	if(!hmrp)	
-		return;
-
-
-/*	Vector3 start	= m_pkFps->GetCam()->GetPos();
-	Vector3 dir		= Get3DMouseDir(true);*/
+	vector<Entity*> kEntitys;	
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kEntitys);
 	Vector3 end    = start + dir * 1000;
-
-	if(dir.y >= 0) return;
-
-	// Find Level 0 for the selected zone in u.
-	//float fLevelZero = kZData->m_pkZone->GetWorldPosV().y;
-	//float fDiff = start.y - fLevelZero;
-	//m_kDrawPos = start + dir * (fDiff);
-	Plane kP;
-	kP.m_kNormal.Set(0,1,0);
-	kP.m_fD = - hmrp->GetEntity()->GetWorldPosV().y;
-
-	Vector3 kIsect;
-
-	if(kP.LineTest(start,end, &kIsect))
+	
+	int iSize = kEntitys.size();
+	for(int i = 0;i<iSize;i++)
 	{
-		m_kDrawPos = kIsect;
-		m_kDrawPos.y = hmrp->GetHeight(m_kDrawPos.x,m_kDrawPos.z);
+		if(P_Heightmap* pkHM = (P_Heightmap*)kEntitys[i]->GetProperty("P_Heightmap"))
+		{
+			if(pkHM->TestLine(start,end,m_kDrawPos))
+				return;		
+		}
 	}
-
+	
+// 	P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Heightmap");
+// 	if(!hmrp)	
+// 		return;
+// 
+// 	for(int i = 0 ;i< m_SelectedEntitys;i++)
+// 	{
+// 		P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Heightmap");
+// 	
+// 	
+// 	}
+// 
+// 	Vector3 end    = start + dir * 1000;
+// 	hmrp->TestLine( start,end,m_kDrawPos);
 }
 
 

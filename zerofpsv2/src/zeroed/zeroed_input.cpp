@@ -99,22 +99,6 @@ void ZeroEd::Input_EditTerrain()
 				HMCommand(HMAP_STITCH);  
 			break;
 
-
-// 		case HMAP_DRAWMASK:
-// 			if(m_pkInputHandle->VKIsDown("hmraise"))	
-// 			{
-// 				for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-// 				{
-// 					Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
-// 					if(!pkEntity)			continue;
-// 					P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-// 					if(hmrp == NULL)		continue;
-// 					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-// 					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
-// 				}
-// 			}
-// 			break;
-
 		case HMAP_DRAWVISIBLE:
 			if(m_pkInputHandle->VKIsDown("hmraise"))		
 				HMDrawTexture(""); 	
@@ -122,47 +106,11 @@ void ZeroEd::Input_EditTerrain()
 				HMDrawTexture("heightmap/default.zlm");			
 
 			
-			/*for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-			{
-				Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
-				if(!pkEntity)			continue;
-				P_HMRP2* hmrp = static_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-				if(hmrp == NULL)		continue;
-				Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-
-				if(m_pkInputHandle->VKIsDown("hmraise"))		
-					hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);
-				if(m_pkInputHandle->VKIsDown("hmlower"))		
-					hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
-			}*/
-			
 			break;
 	}
 
-	/*
-	if(m_pkInputHandle->Pressed(KEY_1)) m_iHMapEditMode = HMAP_DRAWMASK;			
 	
-	if(m_pkInputHandle->Pressed(KEY_2) && !DelayCommand() && m_cDrawTexture < 250)
-	{
-		m_cDrawTexture++;			
-		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
-	}
-	
-	if(m_pkInputHandle->Pressed(KEY_3) && !DelayCommand() && m_cDrawTexture > -1)
-	{
-		m_cDrawTexture--;			
-		cout<<"texure:"<<(int)m_cDrawTexture<<endl;
-	}
-
-	if(m_pkInputHandle->Pressed(KEY_4)) m_iHMapEditMode = HMAP_EDITVERTEX;		
-	if(m_pkInputHandle->Pressed(KEY_5)) m_iHMapEditMode = HMAP_DRAWSMFLAT;			
-	if(m_pkInputHandle->Pressed(KEY_6)) m_iHMapEditMode = HMAP_STITCH;			
-	if(m_pkInputHandle->Pressed(KEY_7)) m_iHMapEditMode = HMAP_DRAWMASK;			
-	if(m_pkInputHandle->Pressed(KEY_8)) m_iHMapEditMode = HMAP_DRAWVISIBLE;			
-	*/
-
 	// Print Mode as devpage - temporary fix.
-// 	m_pkZeroFps->DevPrintf("hmap","  m_cDrawTexture: %d", m_cDrawTexture);
 	char* szMode = "Unknown";
 	switch(m_iHMapEditMode)
 	{
