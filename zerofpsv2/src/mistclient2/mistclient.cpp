@@ -918,8 +918,7 @@ void MistClient::Input()
 		bool bOpen = !IsWndVisible("ChatDlgMainWnd");
 		SetText("SayTextbox", "");
 		ToogleChatWnd(bOpen);
-	}
-			
+	}			
 
 	//update picked object	
 	if(Entity* pkPickedEnt = GetTargetObject())	
@@ -932,16 +931,21 @@ void MistClient::Input()
 		if(!DelayCommand() )
 			SendSit();
 
-	if(m_pkInputHandle->Pressed(KEY_P))
-		if(!DelayCommand() )
-		{
-			SendAddSkillToSkillbar("skill-camp.lua",0);
-			SendAddSkillToSkillbar("skill-basic_attack.lua",1);
-			SendAddSkillToSkillbar("skill-bow.lua",2);
-			SendAddSkillToSkillbar("skill-heal.lua",3);
-			SendAddSkillToSkillbar("skill-speed.lua",4);
+	//loot dead corps
+	if(m_pkInputHandle->VKIsDown( "loot") && !DelayCommand())
+	{
+		if(m_pkInventoryDlg->IsVisible())
+			m_pkInventoryDlg->Close(); 
+			
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_CharacterProperty"))
+		{	
+			if(pkCP->IsDead())			
+			{
+				SendRequestContainer( pkCP->m_iInventory);
+			}
 		}
-
+	}
+			
 			
 	//perform the first action in the action list or pickup
 	static float fUsePressed = -1;
@@ -973,12 +977,10 @@ void MistClient::Input()
 			{
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_CharacterProperty"))
 				{					
-					cout<<"starting automatic attacking"<<endl;			
-					bAutoAttack = true;
-					
+					bAutoAttack = true;					
 					SendUseSkill( m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,true);
 				}
-			}
+			}			
 		}		
 	}
 	else
@@ -1012,27 +1014,14 @@ void MistClient::Input()
 				{
 					if(bAutoAttack)
 					{				
- 						cout<<"stoping auto attack"<<endl;
- 						bAutoAttack = false;
- 						SendUseSkill( "",-1,false);
- 					}
+						bAutoAttack = false;
+						SendUseSkill( "",-1,false);
+					}
 					else
 					{
-						cout<<"singel attack"<<endl;		
- 						SendUseSkill(m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,false);							
+						SendUseSkill(m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,false);							
 					}		
 				}
-				else
-				{
-// 					m_iTargetID = -1;
-// 					SendSetTarget(	m_iTargetID );										
-				}
-			}
-			else
-			{
-				//remove current traget if nothing was picked
-// 				m_iTargetID = -1;			
-// 				SendSetTarget(	m_iTargetID );
 			}
 		}
 					
@@ -1075,22 +1064,15 @@ void MistClient::Input()
 				{
 					if(bSecondaryAutoAttack)
 					{				
- 						cout<<"stoping auto attack"<<endl;
  						bSecondaryAutoAttack = false;
  						SendUseSkill("",-1,false);													 					
  					}
 					else
 					{
-						cout<<"singel secondary attack"<<endl;		
 						SendUseSkill(m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID,false);													 					
-// 						SendAddSkillToQueue(m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID);
-// 						SendSetTarget(	m_iPickedEntityID );					
-// 						SendSetDefaultAttack( m_pkSkillBar->GetPrimarySkill());							
-							
 					}		
 				}
-			}					
-					
+			}										
 			fSecondaryPressed = -1;
 		}	
 	}

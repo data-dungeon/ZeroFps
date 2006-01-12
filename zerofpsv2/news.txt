@@ -8,7 +8,7 @@ Mistlands - What's new
 * Heightmap system
 * Heightmap vegitation
 * Heihgtmap shadows
-
+* New combat system
 
 0.4.0 - (Mistlands milestone 4)
 -------------------------------
