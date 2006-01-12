@@ -200,31 +200,7 @@ void ZeroEd::Input_EditZone()
 	
 	if(m_pkInputHandle->VKIsDown("createhmapzone") && !DelayCommand())
 	{
-		//add zone
-		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
-
-		//find marked zone
-		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
-
-		//add heightmap if possible 
- 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone)) 		
- 		{
-			if(!pkData->m_pkZone->GetProperty("P_Heightmap") &&
-				!pkData->m_pkZone->GetProperty("P_Mad"))
-			{			
-				P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
-				
-				if(m_kZoneSize.x != m_kZoneSize.z)
-					cerr<<"WARNING: zone size "<<m_kZoneSize.x<<" "<<m_kZoneSize.z<<" is not a square , heightmap will not match"<<endl;
-				
-				pkHM->SetSize(m_kZoneSize.x);
-				pkHM->SetMaxValue(m_kZoneSize.y / 2.0);
-				
-				P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");
-				pp->SetTestType(E_HMAP);
-				pp->SetStatic(true);			
-			}
-		}
+		CreateHmapZone(m_kZoneMarkerPos,m_kZoneSize);
 	} 			
 	
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())

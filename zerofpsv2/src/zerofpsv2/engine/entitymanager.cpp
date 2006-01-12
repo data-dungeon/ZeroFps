@@ -3082,7 +3082,7 @@ void ZSSEntityManager::UpdateTrackers()
 {
 	static Vector3 kTrackerPos;
 	static int iZoneIndex;	
-	static vector<ZoneData*>	kFloodZones;
+	static queue<ZoneData*>		kFloodZones;
 	static set<int>				kNewActiveZones;
 	static P_Track*				pkTracker;
 	
@@ -3090,6 +3090,8 @@ void ZSSEntityManager::UpdateTrackers()
 	static int iZoneLinks;
 	static ZoneData* pkZone;
 	static ZoneData* pkOtherZone;
+	
+	float fTrackerLos = float(m_kiTrackerLOS.GetInt());
 	
 	// Set All Zones as untracked
 	iZones = m_kZones.size();
@@ -3106,7 +3108,7 @@ void ZSSEntityManager::UpdateTrackers()
 	for(vector<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{
 		pkTracker = *iT;
-	
+		
 		// Find Active Zone.
 		kNewActiveZones.clear();
 		
@@ -3140,43 +3142,47 @@ void ZSSEntityManager::UpdateTrackers()
 			pkStartZone->m_bActive = true;
 		}
 		else
-		{			
-			//add the first zone to flood zones (search will start from here)
-			kFloodZones.push_back(pkStartZone);						
+		{	
+			
+			kFloodZones.push(pkStartZone);						
+			
+			int iTests = 0;
 			
 			// Flood Zones in rage to active.
 			while(!kFloodZones.empty()) 
 			{
-				pkZone = kFloodZones.back();
-				kFloodZones.pop_back();
+				pkZone = kFloodZones.front();
+				kFloodZones.pop();
 	
 				kNewActiveZones.insert(pkZone->m_iZoneID);
 	
 				pkZone->m_bTracked = true;
 				int iRange = pkZone->m_iRange + 1;
 	
-				if(kTrackerPos.DistanceTo(pkZone->m_kPos) <= float(m_kiTrackerLOS.GetInt()))
+				if(kTrackerPos.DistanceTo(pkZone->m_kPos) <= fTrackerLos)
 				{
+					iTests++;
 					pkZone->m_bActive = true;
 				
 					iZoneLinks = pkZone->m_iZoneLinks.size();
 					for(unsigned int i=0; i<iZoneLinks; i++) 
 					{
-						pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
+						pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]);
 	
 						//if zone has already been checked continue whit the next one
-						if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ï¿½drade till <= frï¿½ <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lï¿½ger till samma zon flera gï¿½ger)
+						if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ï¿½drade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lï¿½ger till samma zon flera gï¿½ger)
 						
 						//set new range 
-						pkOtherZone->m_iRange = iRange;
-											
+						pkOtherZone->m_iRange = iRange;											
 						
 						//add zone to flooded zones list
-						kFloodZones.push_back(pkOtherZone);
+ 						kFloodZones.push(pkOtherZone);
 					}				
 				}
 			}
 		}
+		
+		
 		
 					
 		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones

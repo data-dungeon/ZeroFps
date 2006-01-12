@@ -1445,17 +1445,31 @@ void ZeroEd::RunCommand(int cmdid, const ConCommandLine* kCommand)
 			break;
 
 		case FID_TEST_JIDDRA:
-			m_pkConsole->Printf("Long Text: ");
-			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
-			m_pkConsole->Printf("\n");
-			m_pkConsole->Printf("Long Text with no spaces: ");
-			m_pkConsole->Printf("Thisisanotherpointlesstextbutwithoutanyspacesthistimesoitisnotaseasytoreadunlessyouareapersonthatareusedtoreadbookwithoutspacesandifitissothenyouareinsane.");
-			m_pkConsole->Printf("\n\n");
-			m_pkConsole->Printf("Text with three rows.");
-			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)");
-			m_pkConsole->Printf("\n\n\n");
-			m_pkConsole->Printf("Mult rows with newline at the end.");
-			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");
+			for(int z = 0;z< 500;z+=m_kZoneSize.z)
+			{
+				for(int x = 0;x< 500;x+=m_kZoneSize.x)
+				{
+					for(int y = 0;y< 20;y+=m_kZoneSize.y)
+					{
+					
+						Vector3 kPos(x,y,z);
+			
+ 						CreateHmapZone(kPos,m_kZoneSize);		
+ 					}	
+ 				}
+			}
+		
+// 			m_pkConsole->Printf("Long Text: ");
+// 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
+// 			m_pkConsole->Printf("\n");
+// 			m_pkConsole->Printf("Long Text with no spaces: ");
+// 			m_pkConsole->Printf("Thisisanotherpointlesstextbutwithoutanyspacesthistimesoitisnotaseasytoreadunlessyouareapersonthatareusedtoreadbookwithoutspacesandifitissothenyouareinsane.");
+// 			m_pkConsole->Printf("\n\n");
+// 			m_pkConsole->Printf("Text with three rows.");
+// 			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)");
+// 			m_pkConsole->Printf("\n\n\n");
+// 			m_pkConsole->Printf("Mult rows with newline at the end.");
+// 			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");
 			break;
 
 		case FID_CAMLINK:
@@ -1836,6 +1850,40 @@ void ZeroEd::DrawCrossMarker(Vector3 kPos)
 	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0),kColor);
 	m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0),kColor);	
 	m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1),kColor);	
+}
+
+
+void	ZeroEd::CreateHmapZone(const Vector3& kPos,const Vector3& kSize)
+{
+	//add zone
+	SendAddZone(kPos,kSize,Vector3(0,0,0),string(""));
+
+	//find marked zone
+	int iZoneID = GetZoneID(kPos);
+
+	//add heightmap if possible 
+	if(ZoneData* pkData = GetZoneData(iZoneID)) 		
+	{
+		if(!pkData->m_pkZone->GetProperty("P_Heightmap") &&
+			!pkData->m_pkZone->GetProperty("P_Mad"))
+		{			
+			P_Heightmap* pkHM = (P_Heightmap*)pkData->m_pkZone->AddProperty("P_Heightmap");
+			
+			if(kSize.x != kSize.z)
+				cerr<<"WARNING: zone size "<<m_kZoneSize.x<<" "<<m_kZoneSize.z<<" is not a square , heightmap will not match"<<endl;
+			
+			pkHM->SetSize(kSize.x);
+			pkHM->SetMaxValue(kSize.y / 2.0);
+			
+			P_Tcs* pp = (P_Tcs*)pkData->m_pkZone->AddProxyProperty("P_Tcs");
+			pp->SetTestType(E_HMAP);
+			pp->SetStatic(true);			
+		}
+		else
+			cerr<<"warning: zone already has a hmap or a model"<<endl;	
+	}
+	else
+		cerr<<"warning: zone not found after creation"<<endl;
 }
 
 void ZeroEd::UpdateModelMarker(Vector3 kPos,bool bEnabled)
@@ -2230,7 +2278,7 @@ int ZeroEd::GetZoneID(const Vector3& kPos)
 	}
 	else
 	{
-		return m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,m_iCurrentMarkedZone,false);		
+		return m_pkEntityManager->GetZoneIndex(kPos,m_iCurrentMarkedZone,false);		
 	}
 }
 
