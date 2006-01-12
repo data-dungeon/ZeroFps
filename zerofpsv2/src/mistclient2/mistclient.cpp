@@ -977,8 +977,11 @@ void MistClient::Input()
 			{
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_CharacterProperty"))
 				{					
-					bAutoAttack = true;					
-					SendUseSkill( m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,true);
+					if(!pkCP->IsDead())
+					{
+						bAutoAttack = true;					
+						SendUseSkill( m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,true);
+					}
 				}
 			}			
 		}		
@@ -987,7 +990,13 @@ void MistClient::Input()
 	{
 		if(fUsePressed != -1)
 		{
-			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			//stop auto attack
+			if(bAutoAttack)
+			{				
+				bAutoAttack = false;
+				SendUseSkill( "",-1,false);
+			}		
+			else if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
@@ -1012,15 +1021,8 @@ void MistClient::Input()
 				//is it a character?
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 				{
-					if(bAutoAttack)
-					{				
-						bAutoAttack = false;
-						SendUseSkill( "",-1,false);
-					}
-					else
-					{
+					if(!pkCP->IsDead())
 						SendUseSkill(m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,false);							
-					}		
 				}
 			}
 		}
@@ -1036,7 +1038,7 @@ void MistClient::Input()
 	static bool bSecondaryAutoAttack = false;
 	if(m_pkInputHandle->VKIsDown("secondary") && m_bGuiCapture && !m_pkActionDlg->IsOpen())
 	{
-// 		not pressed before
+		//	not pressed before
 		if(fSecondaryPressed == -1)
 		{
 			fSecondaryPressed = m_pkZeroFps->GetEngineTime();				
@@ -1047,8 +1049,11 @@ void MistClient::Input()
 			{
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_CharacterProperty"))
 				{	
-					bSecondaryAutoAttack = true;					
-					SendUseSkill( m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID,true);								
+					if(!pkCP->IsDead())
+					{
+						bSecondaryAutoAttack = true;					
+						SendUseSkill( m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID,true);								
+					}
 				}
 			}
 		}					
@@ -1057,20 +1062,18 @@ void MistClient::Input()
 	{
 		if(fSecondaryPressed != -1)
 		{
-			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			//stop auto attack
+			if(bSecondaryAutoAttack)
+			{				
+				bSecondaryAutoAttack = false;
+				SendUseSkill( "",-1,false);
+			}else if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
  				//is it a character?
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 				{
-					if(bSecondaryAutoAttack)
-					{				
- 						bSecondaryAutoAttack = false;
- 						SendUseSkill("",-1,false);													 					
- 					}
-					else
-					{
+					if(!pkCP->IsDead())
 						SendUseSkill(m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID,false);													 					
-					}		
 				}
 			}										
 			fSecondaryPressed = -1;
@@ -1085,7 +1088,7 @@ void MistClient::Input()
 		SendRespawnRequest();
 	
 	//check buttons
-	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward") || (!m_bGuiCapture && m_pkInputHandle->VKIsDown("use") ); 
+	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward"); 
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
 	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
 	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
