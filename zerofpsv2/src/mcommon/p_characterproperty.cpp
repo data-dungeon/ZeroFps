@@ -613,6 +613,8 @@ P_CharacterProperty::P_CharacterProperty() : Property("P_CharacterProperty")
 	m_iCurrentCharacterState = eIDLE_STANDING;
 
 	
+	m_bAutomaticSkill		=	false;
+	
 	m_iConID					=	-1;
 	m_strName 				=	"NoName";
 	m_strOwnedByPlayer 	=	"NoPlayer";
@@ -642,7 +644,7 @@ P_CharacterProperty::P_CharacterProperty() : Property("P_CharacterProperty")
 	m_kRespawnPos			=	Vector3(0,0,0);
 	
 	m_fCombatTimer			=	0;
-	m_strDefaultAttackSkill = "";
+// 	m_strDefaultAttackSkill = "";
 	m_iTarget				=	-1;
 	m_bCombatMode			=	false;
 	m_iLastDamageFrom		=	-1;
@@ -785,18 +787,12 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("Defense"			,0,0);
 }
 
-void P_CharacterProperty::AddSkillToQueue(const string& strSkill,int iTargetID)
+void P_CharacterProperty::UseSkill(const string& strSkill,int iTargetID,bool bAutomatic)
 {
-// 	if(m_kSkillQueue.size() > 0)
-// 		return;
-// 	if(m_iTarget == -1)
-// 		return;
+	m_bAutomaticSkill = bAutomatic;
+	m_iTarget = iTargetID;
+	m_strNextSkill = strSkill;
 
-
-	if(Skill* pkSkill = GetSkillPointer(strSkill))
-		if(pkSkill->IsReloaded())
-			m_strNextSkill = strSkill;
-// 			m_kSkillQueue.push(pair<string,int>(strSkill,iTargetID));
 }
 
 void P_CharacterProperty::UpdateSkillQueue()
@@ -817,7 +813,8 @@ void P_CharacterProperty::UpdateSkillQueue()
 			if(iRes == 1 || iRes == 8)
 				return;
 			
-			m_strNextSkill = "";
+			if(!m_bAutomaticSkill)
+				m_strNextSkill = "";
 	
 			switch(iRes)
 			{
@@ -846,86 +843,10 @@ void P_CharacterProperty::UpdateSkillQueue()
 										
 			}	
 		}
-		else
-		{
-			//if in combat mode , attack with default attack
-			if(m_bCombatMode)
-			{			
-				if(m_iTarget != -1 && !m_strDefaultAttackSkill.empty())
-				{				
-					if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iTarget,"P_CharacterProperty"))
-					{
-						if(pkCP->IsDead())
-						{
-							SetDefaultAttackSkill("");
-							return;
-						}
-					}
-					
-					UseSkill(m_strDefaultAttackSkill,m_iTarget,Vector3(0,0,0),Vector3(0,0,0));
-				}
-			}
-		}
 	}
 
 }
 
-void P_CharacterProperty::SetTarget(int iTargetID)
-{
-	//remove default skill if theres no target
-	if(iTargetID != m_iTarget)
-	{
-		SetDefaultAttackSkill("");		
-		m_strNextSkill = "";
-		m_iTarget = iTargetID;
-		SendSkillbar();
-	}
-};
-
-void P_CharacterProperty::SetDefaultAttackSkill(const string& strDA)		
-{
-	if(m_iTarget == -1)
-		return;
-
-	if(strDA.empty())
-	{
-		if(!m_strDefaultAttackSkill.empty())
-		{
-			m_strDefaultAttackSkill = "";
-			SendSkillbar();		
-		}
-		return;
-	
-	}
-	else if(Skill* pkSkill = GetSkillPointer(strDA))
-	{
-		m_strDefaultAttackSkill = strDA;	
-		SendSkillbar();		
-	}
-	
-
-// 	if(strDA.empty())
-// 	{
-// 		if(!m_strDefaultAttackSkill.empty())
-// 		{
-// 			m_strDefaultAttackSkill = "";
-// 			SendSkillbar();		
-// 		}
-// 	}
-// 	else if(Skill* pkSkill = GetSkillPointer(strDA))
-// 	{
-// 		if(pkSkill->GetSkillType() == eOFFENSIVE)
-// 		{
-// 			m_strDefaultAttackSkill=  strDA;			
-// 			SendSkillbar();
-// 		}
-// 		else
-// 			cout<<"that shill is not an offensive skill"<<endl;
-// 	}
-// 	else
-// 		cout<<"character does not have that skill"<<endl;
-
-}
 
 void P_CharacterProperty::UpdateStats()
 {
@@ -2619,7 +2540,8 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_iRespawnZone);	
 	pkPackage->Write(m_kRespawnPos);	
 	
-	pkPackage->Write_Str(m_strDefaultAttackSkill);
+	string test;
+	pkPackage->Write_Str(test);
 	
 	m_kCharacterStats.Save(pkPackage);
 	
@@ -2646,6 +2568,8 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 
 void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 {
+	string temp;
+
 	switch(iVersion)
 	{
 		
@@ -2736,7 +2660,7 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_fMarkerSize); 
 			pkPackage->Read(m_bDead); 
 		
-			pkPackage->Read_Str(m_strDefaultAttackSkill);
+			pkPackage->Read_Str(temp);
 			
 			m_kCharacterStats.Load(pkPackage);
 			
@@ -2781,7 +2705,7 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_iRespawnZone);	
 			pkPackage->Read(m_kRespawnPos);				
 			
-			pkPackage->Read_Str(m_strDefaultAttackSkill);
+			pkPackage->Read_Str(temp);
 			
 			m_kCharacterStats.Load(pkPackage);
 			
@@ -2826,7 +2750,7 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read(m_iRespawnZone);	
 			pkPackage->Read(m_kRespawnPos);				
 			
-			pkPackage->Read_Str(m_strDefaultAttackSkill);
+			pkPackage->Read_Str(temp);
 			
 			m_kCharacterStats.Load(pkPackage);
 			
@@ -3093,7 +3017,7 @@ void P_CharacterProperty::SendSkillbar(const string& strSkill)
 	kNp.Write((char) MLNM_SC_SKILLBAR);	
  	
 	//default attack skill
-	kNp.Write_Str(m_strDefaultAttackSkill);	
+// 	kNp.Write_Str(m_strDefaultAttackSkill);	
 	
 
  	int iSize = m_kSkillBar.size();
@@ -3114,6 +3038,7 @@ void P_CharacterProperty::SendSkillbar(const string& strSkill)
 			kNp.Write(pkSkill->GetTimeLeft());
 			kNp.Write(pkSkill->GetReloadTime());
 			kNp.Write((char)pkSkill->GetSkillType());
+			kNp.Write((char)pkSkill->GetTargetType());
 		}
  		else
  		{
@@ -3444,28 +3369,28 @@ namespace SI_P_CharacterProperty
 		\brief Unkown
 		\relates CharacterProperty
 */
-	//set default attack skill on character
-	int SetDefaultAttackSkillLua(lua_State* pkLua)
-	{
-		if(g_pkScript->GetNumArgs(pkLua) != 2)
-		{
-			cout<<"WARNING: SetDefaultAttackSkill - wrong number of arguments"<<endl;
-			return 0;		
-		}
-					
-		int iCharcterID;
-		string strSkill;
-		
-		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
-		g_pkScript->GetArgString(pkLua, 1,strSkill);
-		
-		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
-		{
-			pkCP->SetDefaultAttackSkill(strSkill);
-		}
-	
-		return 0;				
-	}	
+// 	//set default attack skill on character
+// 	int SetDefaultAttackSkillLua(lua_State* pkLua)
+// 	{
+// 		if(g_pkScript->GetNumArgs(pkLua) != 2)
+// 		{
+// 			cout<<"WARNING: SetDefaultAttackSkill - wrong number of arguments"<<endl;
+// 			return 0;		
+// 		}
+// 					
+// 		int iCharcterID;
+// 		string strSkill;
+// 		
+// 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+// 		g_pkScript->GetArgString(pkLua, 1,strSkill);
+// 		
+// 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+// 		{
+// 			pkCP->SetDefaultAttackSkill(strSkill);
+// 		}
+// 	
+// 		return 0;				
+// 	}	
 
 /**	\fn GiveXp( EntityID, iXp )
 		\brief Sets the faction that the character will be a member of.
@@ -3929,7 +3854,7 @@ void Register_P_CharacterProperty(ZSSZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("IsNeutral",		SI_P_CharacterProperty::IsNeutralLua);
 	
 	//combat
-	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
+// 	g_pkScript->ExposeFunction("SetDefaultAttackSkill",	SI_P_CharacterProperty::SetDefaultAttackSkillLua);
 	g_pkScript->ExposeFunction("SetCombatMode",				SI_P_CharacterProperty::SetCombatModeLua);
 	g_pkScript->ExposeFunction("GiveXp",						SI_P_CharacterProperty::GiveXpLua);
 

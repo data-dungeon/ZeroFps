@@ -84,7 +84,7 @@ class MistClient :public Application, public ZGuiApp {
 
 		//game
 		vector<string>	m_kEmotes;					//emote list
-		
+		string			m_strCurrentPrimarySkill;
 		
 		//picking
 		int				m_iTargetID;
@@ -159,13 +159,13 @@ class MistClient :public Application, public ZGuiApp {
 		void SendRequestSkillInfo(const string& strSkil);
 		void SendRequestSkillTree();
 		void SendUseItem(int iItemID);
-		void SendSetDefaultAttack(const string& strSkill);		
-		void SendAddSkillToQueue(const string& strSkill,int iTargetID);		
+// 		void SendSetDefaultAttack(const string& strSkill);		
+		void SendUseSkill(const string& strSkill,int iTargetID,bool bAutomatic);		
 		void SendAddStatPoint(int iStat);
 		void SendAddSkillToSkillbar(const string& strSkill,int iPos);
 		void SendRemoveItemFromSkillbar(int iPos);
 		void SendSit();
-		void SendSetTarget(int iTargetID);
+// 		void SendSetTarget(int iTargetID);
 		void SendCombatMode(bool bCombatMode);
 		void SendAction(int iEntityID,const string& strAction);
 		void SendRequestContainer(int iContainerID);		

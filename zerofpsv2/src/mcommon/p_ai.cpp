@@ -369,7 +369,6 @@ bool P_AI::States(int iEvent, int iState)
 					
 					//chase
 					m_pkCharacterProperty->SetCombatMode(true);
-					m_pkCharacterProperty->SetTarget(m_iTarget);
 					
 					m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
 					m_pkCharacterControl->SetControl(eUP,true);
@@ -404,13 +403,14 @@ bool P_AI::States(int iEvent, int iState)
 					}
 							
 					m_pkCharacterProperty->SetCombatMode(true);
-					m_pkCharacterProperty->SetTarget(m_iTarget);
+					//m_pkCharacterProperty->SetTarget(m_iTarget);
 					
 					//get best skill for current distance
 					string strSkill = GetBestSkill(fDistance);
 					if(!strSkill.empty())
 					{
-						m_pkCharacterProperty->SetDefaultAttackSkill( strSkill);					
+						//m_pkCharacterProperty->SetDefaultAttackSkill( strSkill);					
+						m_pkCharacterProperty->UseSkill(strSkill,m_iTarget,true);					
 					
 						m_pkCharacterControl->RotateTowards(pkEnemy->GetWorldPosV());
 						m_pkCharacterControl->SetControl(eUP,false);									

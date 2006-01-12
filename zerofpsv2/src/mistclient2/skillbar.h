@@ -21,7 +21,7 @@ class SkillInfo
 		float		m_fReloadTimeTotal;
 		
 		int		m_iSkillType;
-		bool		m_bDefaultAttack;
+		int		m_iTargetType;
 
 		ZGuiButton*	m_pkButton;	
 };
@@ -33,11 +33,11 @@ class SkillNetInfo
 		string	m_strSkillName;
 		string	m_strSkillScreenName;
 		string	m_strSkillIcon;
-		bool		m_bDefaultAttack;
 
 		float		m_fReloadTimeLeft;
 		float		m_fReloadTimeTotal;
 		char		m_cSkillType;
+		char		m_cTargetType;
 };
 
 
@@ -45,8 +45,12 @@ class SkillBar
 {
 	private:
 		vector<SkillInfo>	m_kSkills;
-		ZGuiLabel* 			m_pkCurrentDefaultAttack;
-
+		ZGuiLabel* 			m_pkCurrentPrimarySkill;
+		ZGuiLabel* 			m_pkCurrentSecondarySkill;
+	
+		string 				m_strPrimarySkill;
+		string 				m_strSecondarySkill;
+		
 	public:
 		SkillBar();
 		
@@ -55,6 +59,9 @@ class SkillBar
 		void UpdateList(vector<SkillNetInfo> kSkillInfo);
 		
 		void HandleCommand(int iButton,const string& strCommand);
+		
+		string GetPrimarySkill()	{	return m_strPrimarySkill;		};
+		string GetSecondarySkill()	{	return m_strSecondarySkill;	};
 };
 
 

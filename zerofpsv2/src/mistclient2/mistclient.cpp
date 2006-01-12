@@ -876,18 +876,18 @@ void MistClient::Input()
 	if(m_pkInputHandle->VKIsDown("togglegui") && !DelayCommand())
 		SetGuiCapture(!m_bGuiCapture);
 	
-	SetGuiCapture(!m_pkInputHandle->Pressed(MOUSERIGHT));
+	SetGuiCapture(!m_pkInputHandle->VKIsDown("look"));
 		
 	//toggle combat mode
 	if(m_pkInputHandle->VKIsDown("togglecombatmode") && !DelayCommand())
 		SendCombatMode(!m_bCombatMode);
 			
 	//target closest
-	if(m_pkInputHandle->VKIsDown("target_closest") && !DelayCommand())
-	{
-		m_iTargetID = GetClosestEnemy();
-		SendSetTarget(m_iTargetID);
-	}
+// 	if(m_pkInputHandle->VKIsDown("target_closest") && !DelayCommand())
+// 	{
+// 		m_iTargetID = GetClosestEnemy();
+// 		SendSetTarget(m_iTargetID);
+// 	}
 			
 	//toggle inventory
 	if(m_pkInputHandle->VKIsDown("inventory") && !DelayCommand())
@@ -945,13 +945,15 @@ void MistClient::Input()
 			
 	//perform the first action in the action list or pickup
 	static float fUsePressed = -1;
+	static bool bAutoAttack = false;
 	if( m_pkInputHandle->VKIsDown("use") && m_bGuiCapture && !m_pkActionDlg->IsOpen())
 	{	
+		//not pressed before
 		if(fUsePressed == -1)
 		{
-			fUsePressed = m_pkZeroFps->GetEngineTime() + 0.2;
+			fUsePressed = m_pkZeroFps->GetEngineTime();				
 		}
-		else if(m_pkZeroFps->GetEngineTime() > fUsePressed)
+		else if(m_pkZeroFps->GetEngineTime() - fUsePressed > 0.2)
 		{
 			//bring up action meny if thers any actions
 			if(P_Ml* pkMl = (P_Ml*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_Ml"))
@@ -966,7 +968,18 @@ void MistClient::Input()
 					m_pkActionDlg->Open();
 				}
 			}
-		}
+			
+			if(!bAutoAttack)
+			{
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_CharacterProperty"))
+				{					
+					cout<<"starting automatic attacking"<<endl;			
+					bAutoAttack = true;
+					
+					SendUseSkill( m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,true);
+				}
+			}
+		}		
 	}
 	else
 	{
@@ -974,10 +987,6 @@ void MistClient::Input()
 		{
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
-				//remove current target
-// 				int iOldTarget = m_iTargetID;
-// 				m_iTargetID = -1;
-
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
 				{
@@ -1001,33 +1010,91 @@ void MistClient::Input()
 				//is it a character?
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 				{
-					if(m_iPickedEntityID != m_iTargetID)
+					if(bAutoAttack)
+					{				
+ 						cout<<"stoping auto attack"<<endl;
+ 						bAutoAttack = false;
+ 						SendUseSkill( "",-1,false);
+ 					}
+					else
 					{
-						m_iTargetID = m_iPickedEntityID;
-						SendSetTarget(	m_iTargetID );
-					}else
-					{
-						//if character is dead loot it
-						if(pkCP->IsDead())
-							SendRequestContainer(pkCP->m_iInventory);
-					}
+						cout<<"singel attack"<<endl;		
+ 						SendUseSkill(m_pkSkillBar->GetPrimarySkill(),m_iPickedEntityID,false);							
+					}		
 				}
 				else
 				{
-					m_iTargetID = -1;
-					SendSetTarget(	m_iTargetID );										
+// 					m_iTargetID = -1;
+// 					SendSetTarget(	m_iTargetID );										
 				}
 			}
 			else
 			{
 				//remove current traget if nothing was picked
-				m_iTargetID = -1;			
-				SendSetTarget(	m_iTargetID );
+// 				m_iTargetID = -1;			
+// 				SendSetTarget(	m_iTargetID );
 			}
 		}
 					
 		fUsePressed = -1;
 	}
+
+	/*
+		seccondary attack button
+	
+	*/
+	static float fSecondaryPressed = -1;
+	static bool bSecondaryAutoAttack = false;
+	if(m_pkInputHandle->VKIsDown("secondary") && m_bGuiCapture && !m_pkActionDlg->IsOpen())
+	{
+// 		not pressed before
+		if(fSecondaryPressed == -1)
+		{
+			fSecondaryPressed = m_pkZeroFps->GetEngineTime();				
+		}
+		else if(m_pkZeroFps->GetEngineTime() - fSecondaryPressed > 0.2)
+		{
+			if(!bAutoAttack)
+			{
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iPickedEntityID,"P_CharacterProperty"))
+				{	
+					bSecondaryAutoAttack = true;					
+					SendUseSkill( m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID,true);								
+				}
+			}
+		}					
+	}
+	else
+	{
+		if(fSecondaryPressed != -1)
+		{
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			{					
+ 				//is it a character?
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+				{
+					if(bSecondaryAutoAttack)
+					{				
+ 						cout<<"stoping auto attack"<<endl;
+ 						bSecondaryAutoAttack = false;
+ 						SendUseSkill("",-1,false);													 					
+ 					}
+					else
+					{
+						cout<<"singel secondary attack"<<endl;		
+						SendUseSkill(m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID,false);													 					
+// 						SendAddSkillToQueue(m_pkSkillBar->GetSecondarySkill(),m_iPickedEntityID);
+// 						SendSetTarget(	m_iPickedEntityID );					
+// 						SendSetDefaultAttack( m_pkSkillBar->GetPrimarySkill());							
+							
+					}		
+				}
+			}					
+					
+			fSecondaryPressed = -1;
+		}	
+	}
+	
 
 		
 	
@@ -1497,10 +1564,6 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		{
 			vector<SkillNetInfo>	kSkillList;
 			SkillNetInfo temp;
-			string strDefaultAttack;
-			
-			//read default attack
-			pkNetMessage->Read_Str(strDefaultAttack);	
 
 			while(true)
 			{
@@ -1513,16 +1576,12 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read_Str(temp.m_strSkillName);								
 				if(!temp.m_strSkillName.empty())
 				{
-					if(temp.m_strSkillName == strDefaultAttack)
-						temp.m_bDefaultAttack = true;
-					else
-						temp.m_bDefaultAttack = false;
-
 					pkNetMessage->Read_Str(temp.m_strSkillScreenName);
 					pkNetMessage->Read_Str(temp.m_strSkillIcon);
 					pkNetMessage->Read(temp.m_fReloadTimeLeft);				
 					pkNetMessage->Read(temp.m_fReloadTimeTotal);				
-					pkNetMessage->Read(temp.m_cSkillType);				
+					pkNetMessage->Read(temp.m_cSkillType);	
+					pkNetMessage->Read(temp.m_cTargetType);																	
 				}
 				
 				kSkillList.push_back(temp);
@@ -2392,13 +2451,14 @@ void MistClient::SendSit()
 
 }
 
-void MistClient::SendAddSkillToQueue(const string& strSkill,int iTargetID)
+void MistClient::SendUseSkill(const string& strSkill,int iTargetID,bool bAutomatic)
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_ADDSKILLTOQUEUE);
 	
 	kNp.Write_Str(strSkill);
 	kNp.Write(iTargetID);
+	kNp.Write(bAutomatic);
 	
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);		
@@ -2443,18 +2503,16 @@ void MistClient::SendCombatMode(bool bCombatMode)
 	SendAppMessage(&kNp);	
 }
 
-void MistClient::SendSetTarget(int iTargetID)
-{
-	cout<<"sent sett target "<<iTargetID<<endl;
-
-	NetPacket kNp;			
-	kNp.Write((char) MLNM_CS_SET_TARGET);
-	
-	kNp.Write(iTargetID);
-	
-	kNp.TargetSetClient(0);
-	SendAppMessage(&kNp);	
-}
+// void MistClient::SendSetTarget(int iTargetID)
+// {
+// 	NetPacket kNp;			
+// 	kNp.Write((char) MLNM_CS_SET_TARGET);
+// 	
+// 	kNp.Write(iTargetID);
+// 	
+// 	kNp.TargetSetClient(0);
+// 	SendAppMessage(&kNp);	
+// }
 
 void MistClient::SendUseItem(int iItemID)
 {
@@ -2677,18 +2735,18 @@ void MistClient::OnSystemMessage(const string& strType,int iNrOfParam,const void
 	}
 }
 
-void MistClient::SendSetDefaultAttack(const string& strSkill)
-{
-	NetPacket kNp;	
-	kNp.Clear();
-	kNp.Write((char) MLNM_CS_SETDEFAULTATTACK);
-
-	kNp.Write_Str(strSkill);
-	
-	kNp.TargetSetClient(0);
-	SendAppMessage(&kNp);	
-
-}
+// void MistClient::SendSetDefaultAttack(const string& strSkill)
+// {
+// 	NetPacket kNp;	
+// 	kNp.Clear();
+// 	kNp.Write((char) MLNM_CS_SETDEFAULTATTACK);
+// 
+// 	kNp.Write_Str(strSkill);
+// 	
+// 	kNp.TargetSetClient(0);
+// 	SendAppMessage(&kNp);	
+// 
+// }
 
 string MistClient::GetSkillTreeSkill()
 {

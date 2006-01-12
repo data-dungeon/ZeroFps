@@ -18,10 +18,15 @@ void SkillBar::Init()
 		return;
 
 	//currect default action marker
-	m_pkCurrentDefaultAttack = (ZGuiLabel*) g_kMistClient.CreateWnd(Label, "DefaultAttackLabel", "SkillBar", "", 96 + 0*32, 0, 32, 32, 0);
-	m_pkCurrentDefaultAttack->Hide();
-	m_pkCurrentDefaultAttack->SetSkin(new ZGuiSkin());
-	m_pkCurrentDefaultAttack->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("defaultskill.tga");	
+	m_pkCurrentPrimarySkill = (ZGuiLabel*) g_kMistClient.CreateWnd(Label, "PrimarySkillMarker", "SkillBar", "", 96 + 0*32, 0, 32, 32, 0);
+	m_pkCurrentPrimarySkill->Hide();
+	m_pkCurrentPrimarySkill->SetSkin(new ZGuiSkin());
+	m_pkCurrentPrimarySkill->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("defaultskill.tga");	
+	
+	m_pkCurrentSecondarySkill = (ZGuiLabel*) g_kMistClient.CreateWnd(Label, "SecondarySkillMarker", "SkillBar", "", 96 + 0*32, 0, 32, 32, 0);
+	m_pkCurrentSecondarySkill->Hide();
+	m_pkCurrentSecondarySkill->SetSkin(new ZGuiSkin());
+	m_pkCurrentSecondarySkill->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("secondaryskill.tga");	
 
 	if(ZGuiWnd* pkWnd = g_kMistClient.GetWnd("SkillBar"))
 		pkWnd->m_bAcceptRightClicks = true;
@@ -73,7 +78,7 @@ void SkillBar::UpdateList(vector<SkillNetInfo> kSkillInfo)
 		m_kSkills[iPos].m_fReloadTimeLeft = 	kSkillInfo[i].m_fReloadTimeLeft;
 		m_kSkills[iPos].m_fReloadTimeTotal = 	kSkillInfo[i].m_fReloadTimeTotal;
 		m_kSkills[iPos].m_iSkillType = 			kSkillInfo[i].m_cSkillType;
-		m_kSkills[iPos].m_bDefaultAttack = 		kSkillInfo[i].m_bDefaultAttack;
+		m_kSkills[iPos].m_iTargetType = 			kSkillInfo[i].m_cTargetType;
 
 
 
@@ -111,25 +116,59 @@ void SkillBar::HandleCommand(int iButton,const string& strCommand)
 
 	if(iButton == 0)
 	{
-		if(!m_kSkills[iSkill].m_strSkillName.empty())
-			g_kMistClient.SendAddSkillToQueue(m_kSkills[iSkill].m_strSkillName,g_kMistClient.GetCurrentTargetID());
+		if(m_kSkills[iSkill].m_iTargetType == eSELF)
+		{
+// 			g_kMistClient.SendAddSkillToQueue(m_kSkills[iSkill].m_strSkillName,-1);
+			g_kMistClient.SendUseSkill(m_kSkills[iSkill].m_strSkillName,-1,false);
+		
+		}
+		else
+		{
+			
+	// 		g_kMistClient.SendSetDefaultAttack(m_kSkills[iSkill].m_strSkillName);
+			m_strPrimarySkill = m_kSkills[iSkill].m_strSkillName;
+	// 		m_strPrimarySkill = m_kSkills[iSkill].m_strSkillName;
+	//  		
+// 			for(int i = 0;i<m_kSkills.size();i++)
+// 				m_kSkills[i].m_bDefaultAttack = false;
+// 			
+// 			m_kSkills[iSkill].m_bDefaultAttack = true;
+		}	
+	
+		
+// 		if(!m_kSkills[iSkill].m_strSkillName.empty())
+// 			g_kMistClient.SendAddSkillToQueue(m_kSkills[iSkill].m_strSkillName,g_kMistClient.GetCurrentTargetID());
 	}
 	else if(iButton == 1)
 	{
-		if(!m_kSkills[iSkill].m_strSkillName.empty())
+		if(m_kSkills[iSkill].m_iTargetType == eSELF)
 		{
-			if(m_kSkills[iSkill].m_bDefaultAttack)			
-				g_kMistClient.SendSetDefaultAttack("");
-			else
-				g_kMistClient.SendSetDefaultAttack(m_kSkills[iSkill].m_strSkillName);
+// 			g_kMistClient.SendAddSkillToQueue(m_kSkills[iSkill].m_strSkillName,-1);
+			g_kMistClient.SendUseSkill(m_kSkills[iSkill].m_strSkillName,-1,false);
 		}
+		else
+		{	
+			m_strSecondarySkill = m_kSkills[iSkill].m_strSkillName;	
+		}
+	
+// 		m_strPrimarySkill  = m_kSkills[iSkill].m_strSkillName;
+// 		m_kSkills[iSkill].m_bDefaultAttack = true;
+	
+// 		if(!m_kSkills[iSkill].m_strSkillName.empty())
+// 		{
+// 			if(m_kSkills[iSkill].m_bDefaultAttack)			
+// 				g_kMistClient.SendSetDefaultAttack("");
+// 			else
+// 				g_kMistClient.SendSetDefaultAttack(m_kSkills[iSkill].m_strSkillName);
+// 		}
 	}
 	
 }
 
 void SkillBar::Update(float fTimeDiff)
 {
-	bool bHaveSetDefaultAttack = false;
+	bool bHaveSetPrimarySkill = false;
+	bool bHaveSetSecondarySkill = false;
 
 	ZGuiSkin* pkSkin;
 	bool bCombatMode = g_kMistClient.GetCombatMode();
@@ -139,15 +178,26 @@ void SkillBar::Update(float fTimeDiff)
 		if(!m_kSkills[i].m_strSkillName.empty())
 		{
 			//default attack marker
-			if(m_kSkills[i].m_bDefaultAttack)
+// 			if(m_kSkills[i].m_bDefaultAttack)
+			if(m_strPrimarySkill == m_kSkills[i].m_strSkillName)
 			{			
-				bHaveSetDefaultAttack = true;
+				bHaveSetPrimarySkill = true;
 				
 				Rect temp = m_kSkills[i].m_pkButton->GetWndRect();				
- 				m_pkCurrentDefaultAttack->SetPos(temp.Left, 0, false, true); 
- 				m_pkCurrentDefaultAttack->SetZValue(99);
-				m_pkCurrentDefaultAttack->Show();
+ 				m_pkCurrentPrimarySkill->SetPos(temp.Left, 0, false, true); 
+ 				m_pkCurrentPrimarySkill->SetZValue(99);
+				m_pkCurrentPrimarySkill->Show();
 			}		
+		
+			if(m_strSecondarySkill == m_kSkills[i].m_strSkillName)
+			{			
+				bHaveSetSecondarySkill = true;
+				
+				Rect temp = m_kSkills[i].m_pkButton->GetWndRect();				
+ 				m_pkCurrentSecondarySkill->SetPos(temp.Left, 0, false, true); 
+ 				m_pkCurrentSecondarySkill->SetZValue(99);
+				m_pkCurrentSecondarySkill->Show();
+			}				
 		
 			//still reloading
 			if( m_kSkills[i].m_fReloadTimeLeft > 0)
@@ -226,8 +276,12 @@ void SkillBar::Update(float fTimeDiff)
 	
 	
 	//if no default attack was set, hide marker
-	if(!bHaveSetDefaultAttack)
-	   m_pkCurrentDefaultAttack->Hide();
+	if(!bHaveSetPrimarySkill)
+	   m_pkCurrentPrimarySkill->Hide();
+
+	if(!bHaveSetSecondarySkill)
+	   m_pkCurrentSecondarySkill->Hide();
+
 }
 
 		

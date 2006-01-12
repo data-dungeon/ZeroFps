@@ -121,17 +121,17 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}				
 		
-		case MLNM_CS_SETDEFAULTATTACK:
-		{
-			string strSkill;
-			PkNetMessage->Read_Str(strSkill);
-			
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
-					pkCP->SetDefaultAttackSkill(strSkill);
-
-			break;
-		}
+// 		case MLNM_CS_SETDEFAULTATTACK:
+// 		{
+// 			string strSkill;
+// 			PkNetMessage->Read_Str(strSkill);
+// 			
+// 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+// 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+// 					pkCP->SetDefaultAttackSkill(strSkill);
+// 
+// 			break;
+// 		}
 
 		case MLNM_CS_ADDSTATPOINT:
 		{
@@ -191,14 +191,17 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{		
 			string strSkill;
 			int iTargetID;
+			bool bAutomatic;
+			
 			PkNetMessage->Read_Str(strSkill);
 			PkNetMessage->Read(iTargetID);
+			PkNetMessage->Read(bAutomatic);
 			
 			cout<<"got add skill to queue "<<strSkill<<"  target "<<iTargetID<<endl;
 			
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
-					pkCP->AddSkillToQueue(strSkill,iTargetID);
+					pkCP->UseSkill(strSkill,iTargetID,bAutomatic);
 					
 			break;
 		}		
@@ -215,17 +218,17 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}				
 		
-		case MLNM_CS_SET_TARGET:
-		{		
-			int iTarget;
-			PkNetMessage->Read(iTarget);
-			
-			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
-				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
-					pkCP->SetTarget(iTarget);
-					
-			break;
-		}
+// 		case MLNM_CS_SET_TARGET:
+// 		{		
+// 			int iTarget;
+// 			PkNetMessage->Read(iTarget);
+// 			
+// 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+// 				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(pkData->m_iCharacterID,"P_CharacterProperty"))
+// 					pkCP->SetTarget(iTarget);
+// 					
+// 			break;
+// 		}
 				
 		case MLNM_CS_RESPAWN_IN_TOWN:
 		{

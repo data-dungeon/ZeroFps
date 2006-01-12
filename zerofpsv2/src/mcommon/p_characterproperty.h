@@ -100,6 +100,7 @@ class MCOMMON_API Skill
 		float  GetStaminaUsage()						{	return m_fStaminaUsage;						};
 		float  GetManaUsage()							{	return m_fManaUsage;							};
 		float  GetCastTime()								{	return m_fCastTime;							};
+		int	 GetTargetType()							{	return m_iTargetType;						};
 };
 
 
@@ -184,7 +185,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool								m_bCombatMode;
 		int								m_iTarget;
 		string							m_strNextSkill;		
-		string							m_strDefaultAttackSkill;
+		bool								m_bAutomaticSkill;
 		float								m_fCombatTimer;
 		int								m_iLastDamageFrom;			//what character did the last damage on me
 		
@@ -369,12 +370,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool UseStamina(float fStamina);
 		
 		//combat
-		void SetTarget(int iTargetID);
 		void SetCombatMode(bool bCombat)								{	m_bCombatMode = bCombat;		}
 		bool GetCombatMode()												{	return m_bCombatMode;			}
-		void AddSkillToQueue(const string& strSkill,int iTargetID);
-		void SetDefaultAttackSkill(const string& strDA);
-		string GetDefaultAttackSkill()								{	return m_strDefaultAttackSkill;}		
+		void UseSkill(const string& strSkill,int iTargetID,bool bAutomatic);
 		void SetLastDamageFrom(int iCharacterID)					{	m_iLastDamageFrom=iCharacterID;}
 		
 		void OnHit(int iAttacker,int iDamage);
