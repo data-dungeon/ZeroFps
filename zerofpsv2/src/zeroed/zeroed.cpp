@@ -448,6 +448,9 @@ void ZeroEd::Init()
 	float fNearFog = 1000;
 	float fFarFog = 1001; 
 	Vector4 kFogColor(0.5,0.5,0.5,0.5);
+//  	float fNearFog = 20;
+//  	float fFarFog = 90;  	
+//  	Vector3 kFogColor(0.7,0.65,0.53);
 	
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),iFov,1.333,0.1,250);	
 	m_pkCamera[0]->SetName("persp");
@@ -495,7 +498,7 @@ void ZeroEd::Init()
 	
 	// Setup the Edit Sun that are used for simple lightning in the editor.
 	LightSource* pkSun = m_pkLight->GetSunPointer();
- 	pkSun->kRot = Vector3(2,2,1);
+ 	pkSun->kRot = Vector3(-2,2,0);
 	
 	//enable sun as default
   	ToogleLight();
@@ -882,7 +885,7 @@ void ZeroEd::OnIdle()
  		m_pkLight->GetSunPointer()->kRot = kRot;
  	}
  	else
- 		m_pkLight->GetSunPointer()->kRot.Set(2,4,1);
+ 		m_pkLight->GetSunPointer()->kRot.Set(-2,2,0);
 }
 
 

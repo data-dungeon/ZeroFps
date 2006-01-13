@@ -2451,15 +2451,15 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 		return false;		
 	}
 	
-	//try to find parent
-	if(!strParentSkill.empty())
-	{
-		if(!GetSkillPointer(strParentSkill))
-		{
-			cerr<<"WARNING: parent skill "<<strParentSkill<<" not found when adding skill "<<strSkillScript<<endl;
-//			return false;
-		}
-	}
+// 	//try to find parent
+// 	if(!strParentSkill.empty())
+// 	{
+// 		if(!GetSkillPointer(strParentSkill))
+// 		{
+// // 			cerr<<"WARNING: parent skill "<<strParentSkill<<" not found when adding skill "<<strSkillScript<<endl;
+// //			return false;
+// 		}
+// 	}				
 	
 	
 	//create new skill

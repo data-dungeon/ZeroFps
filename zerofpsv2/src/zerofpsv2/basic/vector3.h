@@ -31,12 +31,14 @@ class BASIC_API Vector3
 // Constructors
 		Vector3() {	};											
 		Vector3(float fX,float fY,float fZ) : x(fX), y(fY), z(fZ) { };
+		Vector3(const Vector4& kOtherV4);
 
 // Access 
 		float& operator[] (const int i);
 
 // Assignment 
 		Vector3& operator=(const Vector3 &kOtherV3);
+		Vector3& operator=(const Vector4 &kOtherV4);
 		void Set(float fXIn, float fYIn, float fZIn);
 		void Zero();
 
@@ -116,6 +118,22 @@ inline Vector3& Vector3::operator=(const Vector3 &kOtherV3)
 	z = kOtherV3.z;
 	return *this;
 }	
+
+inline Vector3& Vector3::operator=(const Vector4 &kOtherV4) 
+{
+	x = kOtherV4.x;
+	y = kOtherV4.y;
+	z = kOtherV4.z;
+	return *this;
+}	
+
+inline Vector3::Vector3(const Vector4& kOtherV4)
+{
+	x = kOtherV4.x;
+	y = kOtherV4.y;
+	z = kOtherV4.z;
+}
+
 
 inline void Vector3::Set(float fXIn, float fYIn, float fZIn)
 {

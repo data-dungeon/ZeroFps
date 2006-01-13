@@ -277,7 +277,6 @@ void P_Enviroment::UpdateEnviroment()
 	//get camera
 	if(Camera* pkCam = m_pkZeroFps->GetRenderCamera("main"))
 	{
-		
  		pkCam->SetClearColor(kCurrentFogColor);
 	 	pkCam->SetFog(kCurrentFogColor,fCurrentStart,fCurrentStop,true);			
 		
@@ -296,7 +295,10 @@ void P_Enviroment::UpdateEnviroment()
 			if(SkyRender* pkSky = (SkyRender*)pkCam->m_kRenderState.GetPlugin("SkyRender"))
 			{ 
 				pkSky->Clear();
-				pkSky->AddTexture(strCurentSkybox,SQUARE_HDR);
+				Vector4 kColor = m_kCurrentEnvSetting.m_kSunDiffuseColor + m_kCurrentEnvSetting.m_kSunAmbientColor;	
+				float fBrightness = 	kColor.Length();						
+				pkSky->AddTexture(strCurentSkybox,LINEAR_HDR,Vector3(fBrightness,fBrightness,fBrightness));				
+				pkSky->AddTexture("cp#skybox/foglayer/foglayer",NO_HDR,m_kCurrentEnvSetting.m_kFogColor[0],true);				
 			}
 		}
 	}		

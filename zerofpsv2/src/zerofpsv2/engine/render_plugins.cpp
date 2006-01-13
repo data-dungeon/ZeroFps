@@ -28,7 +28,7 @@ void SkyRender::Clear()
 	m_kMaterials.clear();	
 }
 
-void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
+void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR,const Vector3& kColor,bool bOnlySides)
 {
 	static string strNames[6] = {	"_north.tga",
 											"_east.tga",
@@ -50,11 +50,14 @@ void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
 	
 	
 	SkyLayer& kLayer = *m_kMaterials[m_kMaterials.size()-1];
+	
+	kLayer.m_bSidesOnly = bOnlySides;
+
 
 	for(int i = 0;i<6;i++)
 	{	
 		ZMaterial& kMaterial = kLayer.m_kMaterials[i];
-	
+
 		
 		//setup material	
 		kMaterial.GetPass(0)->m_iTUTexCords[1] = 		CORDS_FROM_ARRAY_0;	
@@ -65,11 +68,16 @@ void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
 		kMaterial.GetPass(0)->m_bFog = 					false;		
 		kMaterial.GetPass(0)->m_bDepthTest = 			false;		
 
+		kMaterial.GetPass(0)->m_kVertexColor = 		Vector4(kColor.x,kColor.y,kColor.z,1);
+
 		if(eHDR != NO_HDR && m_pkZShaderSystem->SupportGLSLProgram())
 		{
- 			kMaterial.GetPass(0)->m_kVertexColor = 		Vector4(8,8,8,1);
 			
-			if(eHDR == SQUARE_HDR)
+			if(eHDR == LINEAR_HDR)
+			{
+				kMaterial.GetPass(0)->m_pkSLP->SetRes("#hdrsky_linear.frag.glsl");								
+			}
+			else if(eHDR == SQUARE_HDR)
 			{
 		 		kMaterial.GetPass(0)->m_pkSLP->SetRes("#hdrsky_square.frag.glsl");								
 			}
@@ -116,13 +124,12 @@ void SkyRender::AddTexture(const string& strName,SKY_HDR eHDR)
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,1));
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,1));
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,-1,-1));							
-				break;	
-																
+				break;																	
 			case 4://up
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,1));
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,1));
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(-1,1,-1));
-				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,-1));							
+				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,1,-1));											
 				break;	
 			case 5://down
 				kLayer.m_kRenderPackage[i].m_kMeshData.m_kVertises.push_back(Vector3(1,-1,-1));
@@ -148,12 +155,9 @@ bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 {		
 	if(m_kMaterials.empty())
 	{
- 		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR);
-// 		AddTexture("cp#skybox/winter/winter",SQUARE_HDR);
-//  		AddTexture("cp#skybox/sahara/sahara",SQUARE_HDR);
-//  		AddTexture("cp#skybox/thunder/thunder",SQUARE_HDR);
-//  		AddTexture("cp#skybox/storm/storm",SQUARE_HDR);
-// 	  		AddTexture("cp#skybox/redsky/redsky",SQUARE_HDR);
+ 		AddTexture("cp#skybox/rusted/rusted",SQUARE_HDR,Vector3(4,4,4));
+//   		AddTexture("cp#skybox/sahara/sahara",LINEAR_HDR,Vector3(8,8,8)); 		
+// 		AddTexture("cp#skybox/foglayer/foglayer",NO_HDR,Vector3(0.7,0.65,0.54),true);
 	
 	}
 
@@ -176,8 +180,10 @@ bool SkyRender::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 	//add renderpackages
 	for(int i = 0;i<m_kMaterials.size();i++)
 		for(int j = 0;j<5;j++)
+		{
+			if(j == 4 && m_kMaterials[i]->m_bSidesOnly) continue;			
 			kRenderPackages.push_back(&m_kMaterials[i]->m_kRenderPackage[j]);
-	
+		}
 	
 	//render call to render engine
 	kRenderEngine.DoRender(kRenderPackages,kRenderState);
@@ -633,10 +639,15 @@ bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 	LightSource* pkLight = m_pkLight->GetSunPointer();		
 	Vector3 kLightPos = (kRenderState.m_kCameraPosition + (pkLight->kRot.Unit() * 100));
 
+	static int iLastFrame = 0;
 	
 	//create shadow map	realtime or not
-	if(m_pkZeroFps->GetShadowMapRealtime())
+	if(m_pkZeroFps->GetShadowMapRealtime() && m_pkZeroFps->GetCurrentFrame() - iLastFrame > 2 )
+	{
+		iLastFrame = m_pkZeroFps->GetCurrentFrame();
+		
 		MakeShadowTexture(kRenderEngine,kRenderState,kLightPos,kRenderState.m_kCameraPosition);
+	}
 	else if(m_kLastShadowPos.DistanceTo(kRenderState.m_kCameraPosition) > m_fShadowArea/6.0 || m_kLastShadowRot != pkLight->kRot)
 	{
 		m_kLastShadowRot = pkLight->kRot;

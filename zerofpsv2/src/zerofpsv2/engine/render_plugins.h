@@ -13,6 +13,8 @@ class ENGINE_API SkyLayer
 		RenderPackage	m_kRenderPackage[6];
 		ZMaterial		m_kMaterials[6];
 		Vector3			m_kRotation;
+		
+		bool				m_bSidesOnly;
 };
 
 enum SKY_HDR
@@ -20,6 +22,7 @@ enum SKY_HDR
 	NO_HDR		=0,
 	SQUARE_HDR	=1,
 	EXTERNAL_HDR=2,
+	LINEAR_HDR	=3,
 };
 
 class ENGINE_API SkyRender : public PreRenderPlugin
@@ -38,7 +41,7 @@ class ENGINE_API SkyRender : public PreRenderPlugin
 		~SkyRender();
 		
 		void Clear();
-		void AddTexture(const string& strName,SKY_HDR eHDR = NO_HDR);
+		void AddTexture(const string& strName,SKY_HDR eHDR = NO_HDR,const Vector3& kColor = Vector3::ZERO,bool bOnlySides = false);
 		bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState);
 };
 Plugin* Create_SkyRender();
