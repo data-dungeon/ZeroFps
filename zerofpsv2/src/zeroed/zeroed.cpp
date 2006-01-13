@@ -821,22 +821,27 @@ void ZeroEd::OnIdle()
 	
 	if(m_iEditMode == EDIT_HMAP) 
 	{
-		SetPointer();
-	
-		m_SelectedEntitys.clear();
-		m_iCurrentObject = -1;
-		ZoneData* pkZone= m_pkEntityManager->GetZone(m_kDrawPos);
-		if(pkZone)
-			if(pkZone->m_pkZone)
-			{
-				vector<Entity*> kZones;
-				pkZone->m_pkZone->GetZoneNeighbours(&kZones);
-				
-				m_iCurrentObject = pkZone->m_pkZone->GetEntityID(); 
-				
-				for(int i = 0;i<kZones.size();i++)
-					m_SelectedEntitys.insert(kZones[i]->GetEntityID());
-			}			
+		if(SetPointer())
+		{	
+			m_SelectedEntitys.clear();
+			m_iCurrentObject = -1;
+			ZoneData* pkZone= m_pkEntityManager->GetZone(m_kDrawPos);
+			if(pkZone)
+				if(pkZone->m_pkZone)
+				{
+					vector<Entity*> kZones;
+					pkZone->m_pkZone->GetZoneNeighbours(&kZones);
+					
+					m_iCurrentObject = pkZone->m_pkZone->GetEntityID(); 
+					
+					for(int i = 0;i<kZones.size();i++)
+						m_SelectedEntitys.insert(kZones[i]->GetEntityID());
+				}			
+		}
+		else
+		{
+			m_SelectedEntitys.clear();
+		}
 	}
 
 	if(m_iEditMode == EDIT_ZONES )
@@ -960,19 +965,13 @@ void ZeroEd::RenderInterface(void)
 		m_pkEntityManager->DrawZones(&m_kNetworkZones);
 }
 
-void ZeroEd::SetPointer()
+bool ZeroEd::SetPointer()
 {
-
 	Vector3 start	= m_pkActiveCamera->GetPos();// + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 
 	m_kDrawPos.Set(0,0,0);
 
-// 	m_kDrawPos = m_pkActiveCamera->GetPos() + Get3DMouseDir(true)*m_fZoneMarkerDistance;;	
-//  	return;
-
-// 	Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
-// 	if(!pkEntity)	return;
 	
 	vector<Entity*> kEntitys;	
 	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kEntitys);
@@ -984,23 +983,14 @@ void ZeroEd::SetPointer()
 		if(P_Heightmap* pkHM = (P_Heightmap*)kEntitys[i]->GetProperty("P_Heightmap"))
 		{
 			if(pkHM->TestLine(start,end,m_kDrawPos))
-				return;		
+			{				
+				return true;		
+			}
 		}
 	}
 	
-// 	P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Heightmap");
-// 	if(!hmrp)	
-// 		return;
-// 
-// 	for(int i = 0 ;i< m_SelectedEntitys;i++)
-// 	{
-// 		P_Heightmap* hmrp = (P_Heightmap*)m_pkEntityManager->GetPropertyFromEntityID(m_iCurrentObject,"P_Heightmap");
-// 	
-// 	
-// 	}
-// 
-// 	Vector3 end    = start + dir * 1000;
-// 	hmrp->TestLine( start,end,m_kDrawPos);
+	
+	return false;
 }
 
 

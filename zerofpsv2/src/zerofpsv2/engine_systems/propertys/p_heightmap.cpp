@@ -1121,9 +1121,14 @@ void P_Heightmap::SmoothSelection(vector<HMSelectionData>* kSelectionData)
 	{
 		float x 			= (*kSelectionData)[i].m_kWorld.x; 
 		float z 			= (*kSelectionData)[i].m_kWorld.z;
-		float fVal 		= (*kSelectionData)[i].m_fValue;	
+		float fVal 		= (*kSelectionData)[i].m_fValue;			
 		float y 			= 0;
 		int iSamples 	= 0;
+		
+		//failsafe		
+		if(fVal < 0 || fVal > 1.0)
+			fVal = 1.0;
+		
 	
 		//collect all samples
 		for(int j = 0;j<	kSelectionData->size();j++)

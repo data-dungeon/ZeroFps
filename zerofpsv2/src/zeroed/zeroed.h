@@ -268,7 +268,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		//heightmap
 		void	CreateHmapZone(const Vector3& kPos,const Vector3& kSize);
-		void	SetPointer();
+		bool	SetPointer();
 		void	DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
 		void	HMModifyCommand(float fSize);
 		void  HMDrawTexture(const string& strMaterial);

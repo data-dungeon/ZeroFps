@@ -704,7 +704,10 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	char temp[128];
 	pkNetPacket->Read_Str(temp);
 	SetBase(temp);
-	pkNetPacket->Read(m_fScale);
+	
+	float fScale;
+	pkNetPacket->Read(fScale);
+	SetScale(fScale);
 
 	pkNetPacket->Read(m_bCanBeInvisible);
 

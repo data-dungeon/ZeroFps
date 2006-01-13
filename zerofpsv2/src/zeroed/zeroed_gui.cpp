@@ -137,7 +137,7 @@ void ZeroEd::SetupGui_Terrain()
 	((ZGuiSlider*)GetWnd("TerrOuterSlider"))->SetPos((int)m_fHMOutRadius, true);
 
 	((ZGuiSlider*)GetWnd("TerrStrSlider"))->AddBuddyWindow( GetWnd("TerrStrBox") );
-	((ZGuiSlider*)GetWnd("TerrStrSlider"))->SetRange(0,100);
+	((ZGuiSlider*)GetWnd("TerrStrSlider"))->SetRange(0,400);
 	((ZGuiSlider*)GetWnd("TerrStrSlider"))->SetPos((int)100, true);
 }
 
