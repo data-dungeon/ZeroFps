@@ -219,8 +219,8 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 
 	}
 	
-	delete tan1;
-	delete tan2;
+	delete[] tan1;
+	delete[] tan2;
 }
 
 void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,const Vector2* akTexCoord,const int* aiFaces,vector<Vector3>& kTangents,vector<Vector3>& kBiTangents,int iFaces)

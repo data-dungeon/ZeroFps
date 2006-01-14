@@ -99,32 +99,70 @@ void P_WaterRender::GenerateMesh()
 	m_kRenderPackage.m_kMeshData.m_kVertises.clear();
 	m_kRenderPackage.m_kMeshData.m_kNormals.clear();
 	m_kRenderPackage.m_kMeshData.m_kTexture[0].clear();
+	m_kRenderPackage.m_kMeshData.m_kTangents.clear();
+	m_kRenderPackage.m_kMeshData.m_kBiTangents.clear();
 
 	for(int x = int(-m_kSize.x);x< m_kSize.x;x+=m_iStep)
 	{	
 		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
 		{
+// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z));
+// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z));
+// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z+m_iStep));
+// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));
+// 		
+// 			static float tw = 0.1;
+// 		
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw,z*tw));
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw));
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw+tw));
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw,z*tw+tw));
+// 		
+// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z));
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));			
 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z));
+			
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z));
+			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));						
 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z+m_iStep));
-			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));
 		
-			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1,z*0.1));
-			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1+0.1,z*0.1));
-			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1+0.1,z*0.1+0.1));
-			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*0.1,z*0.1+0.1));
+			static float tw = 0.1;
+		
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw,z*tw));
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw,z*tw+tw));						
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw+tw,z*tw));
+			
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw+tw,z*tw));	
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw,z*tw+tw));						
+			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw+tw,z*tw+tw));
+			
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw));
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw+tw));
+// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw,z*tw+tw));
 		
 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
-
+			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
+			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));		
 		}
 	}	
 
 
+	Math::GenerateTangents(	&(m_kRenderPackage.m_kMeshData.m_kVertises[0]),
+									&(m_kRenderPackage.m_kMeshData.m_kNormals[0]),
+									&(m_kRenderPackage.m_kMeshData.m_kTexture[0][0]),
+									m_kRenderPackage.m_kMeshData.m_kTangents,
+									m_kRenderPackage.m_kMeshData.m_kBiTangents,
+									m_kRenderPackage.m_kMeshData.m_kVertises.size());
+
 	m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kRenderPackage.m_kMeshData.m_kVertises.size();
-	m_kRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	m_kRenderPackage.m_kMeshData.m_ePolygonMode = TRIANGLES_MODE;
 	
 	
 	
