@@ -296,8 +296,8 @@ void	Math::GenerateTangents(const Vector3* akVertises,const Vector3* akNormals,c
 		kBiTangents.push_back(n.Cross(kTangent3)*inv );
 	}
 	
-	delete tan1;
-	delete tan2;
+	delete[] tan1;
+	delete[] tan2;
 }
 
 bool Math::TestLineVSPolygon(const Vector3* kPolygon,const Vector3& kPos1,const Vector3& kPos2,Vector3& kResult)

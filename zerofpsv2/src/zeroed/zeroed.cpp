@@ -709,7 +709,7 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject))
 		{
       	Vector3 kPos = pkEnt->GetWorldPosV();
-			sprintf(szInfoText, "Enity selected ID:[%d] Name:[%s] Pos:%f,%f,%f", pkEnt->GetEntityID(), pkEnt->GetName().c_str(),kPos.x,kPos.y,kPos.z);
+			sprintf(szInfoText, "Enity selected ID:[%d] Type:[%s] Name:[%s] Pos:%f,%f,%f", pkEnt->GetEntityID(),pkEnt->GetType().c_str(), pkEnt->GetName().c_str(),kPos.x,kPos.y,kPos.z);
 		}
 	}
    else

@@ -49,6 +49,7 @@ void P_WaterRender::SetMaterial(const string& strMaterial)
 
 void P_WaterRender::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)
 {
+
 	static Vector3 kPos;
 	static Vector3 kMin;
 	static Vector3 kMax;
@@ -88,6 +89,7 @@ void P_WaterRender::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,co
 
 void P_WaterRender::GenerateMesh()
 {
+	
 	m_bHaveMesh = true;
 
 	m_kRenderPackage.m_pkLightProfile = &m_kLightProfile;	
@@ -106,22 +108,6 @@ void P_WaterRender::GenerateMesh()
 	{	
 		for(int z = int(-m_kSize.z);z< m_kSize.z;z+=m_iStep)
 		{
-// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z));
-// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z));
-// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z+m_iStep));
-// 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));
-// 		
-// 			static float tw = 0.1;
-// 		
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw,z*tw));
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw));
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw+tw));
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw,z*tw+tw));
-// 		
-// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
-// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
-// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
-// 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z));
 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x			,m_kSize.y	,z+m_iStep));			
 			m_kRenderPackage.m_kMeshData.m_kVertises.push_back(Vector3(x+m_iStep	,m_kSize.y	,z));
@@ -140,9 +126,6 @@ void P_WaterRender::GenerateMesh()
 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw,z*tw+tw));						
 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(x*tw+tw,z*tw+tw));
 			
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw));
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw-tw,z*tw+tw));
-// 			m_kRenderPackage.m_kMeshData.m_kTexture[0].push_back(Vector2(-x*tw,z*tw+tw));
 		
 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
 			m_kRenderPackage.m_kMeshData.m_kNormals.push_back(Vector3(0,1,0));
@@ -160,6 +143,13 @@ void P_WaterRender::GenerateMesh()
 									m_kRenderPackage.m_kMeshData.m_kTangents,
 									m_kRenderPackage.m_kMeshData.m_kBiTangents,
 									m_kRenderPackage.m_kMeshData.m_kVertises.size());
+
+// 	for(int i = 0;i<m_kRenderPackage.m_kMeshData.m_kVertises.size();i++)
+// 	{
+// 		m_kRenderPackage.m_kMeshData.m_kTangents.push_back(Vector3(1,0,0));
+// 		m_kRenderPackage.m_kMeshData.m_kBiTangents.push_back(Vector3(0,0,1));
+// 	}
+
 
 	m_kRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kRenderPackage.m_kMeshData.m_kVertises.size();
 	m_kRenderPackage.m_kMeshData.m_ePolygonMode = TRIANGLES_MODE;
@@ -194,8 +184,6 @@ void P_WaterRender::Update()
 	if(m_pkZeroFps->GetCam()->GetCurrentRenderMode() != RENDER_SHADOWED)
 		return;
 		
-
-
 	static Vector3 kPos;
 	static Vector3 kMin;
 	static Vector3 kMax;
