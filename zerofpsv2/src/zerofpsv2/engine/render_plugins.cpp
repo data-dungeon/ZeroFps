@@ -639,13 +639,10 @@ bool ShadowmapPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderSt
 	LightSource* pkLight = m_pkLight->GetSunPointer();		
 	Vector3 kLightPos = (kRenderState.m_kCameraPosition + (pkLight->kRot.Unit() * 100));
 
-	static int iLastFrame = 0;
 	
 	//create shadow map	realtime or not
-	if(m_pkZeroFps->GetShadowMapRealtime() && m_pkZeroFps->GetCurrentFrame() - iLastFrame > 2 )
+	if(m_pkZeroFps->GetShadowMapRealtime())
 	{
-		iLastFrame = m_pkZeroFps->GetCurrentFrame();
-		
 		MakeShadowTexture(kRenderEngine,kRenderState,kLightPos,kRenderState.m_kCameraPosition);
 	}
 	else if(m_kLastShadowPos.DistanceTo(kRenderState.m_kCameraPosition) > m_fShadowArea/6.0 || m_kLastShadowRot != pkLight->kRot)
@@ -989,6 +986,7 @@ bool AttachToJoint::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPa
 
 bool DefaultRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderPackage& kRenderPackage, const RenderState& kRenderState)
 {
+
 	//HACK
 	if(kRenderPackage.m_pkProperty)
 	{

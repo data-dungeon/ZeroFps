@@ -223,6 +223,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		GLenum			m_iCurrentGLSLProgramID;				
 		bool				m_bForceDisableGLSL;
 
+		vector<GLuint>	m_kVertexAttribs;
+
 		ConVar			m_kbUseGLSL;
 		ConVar			m_kbUseHDR;
 		ConVar			m_kbSpecMap;

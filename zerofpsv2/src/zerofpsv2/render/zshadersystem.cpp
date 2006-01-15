@@ -1149,7 +1149,7 @@ void ZShaderSystem::DrawArray()
 		SetupGLSLProgram(m_pkCurrentMaterial->GetPass(0) );
 		
 		//update glsl program parameter information if theres any glslprogram bound
-		if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
+// 		if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
 			UpdateGLSLProgramParameters(0);
 		
 			
@@ -1179,7 +1179,7 @@ void ZShaderSystem::DrawArray()
 			SetupGLSLProgram(m_pkCurrentMaterial->GetPass(i));
 			
 			//update glsl program parameter information if theres any glslprogram bound
-			if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
+// 			if(m_iCurrentGLSLProgramID != NO_GLSLPROGRAM)
 				UpdateGLSLProgramParameters(i);
 			
 			
@@ -1695,27 +1695,38 @@ int ZShaderSystem::GetStencilBits()
 
 void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 {	
+	//purge old vertex attribs	
+	int iSize = m_kVertexAttribs.size();
+	for(int i = 0;i<iSize;i++)
+		glDisableVertexAttribArrayARB(m_kVertexAttribs[i]);
+	m_kVertexAttribs.clear();	
+
+	if(m_iCurrentGLSLProgramID == NO_GLSLPROGRAM)
+		return;
+
 	ZMaterialSettings* pkSettings = m_pkCurrentMaterial->GetPass(iPass);
 
 	//attribute for tangent lists
 	GLuint iTangentArray = glGetAttribLocationARB(m_iCurrentGLSLProgramID,"g_kTangent");	
 	if(m_bTangentPointer)
 	{
+		m_kVertexAttribs.push_back(iTangentArray);
 		glEnableVertexAttribArrayARB(iTangentArray);
 		glVertexAttribPointerARB(iTangentArray,3,GL_FLOAT,GL_FALSE,0,m_pkTangentPointer);
 	}
-	else
-		glDisableVertexAttribArrayARB(iTangentArray);
+// 	else
+// 		glDisableVertexAttribArrayARB(iTangentArray);
 	
 	//attribute for bitangent lists
 	GLuint iBiTangentArray= glGetAttribLocationARB(m_iCurrentGLSLProgramID,"g_kBiTangent");
 	if(m_bBiTangentPointer)
 	{
+		m_kVertexAttribs.push_back(iBiTangentArray);
 		glEnableVertexAttribArrayARB(iBiTangentArray);
 		glVertexAttribPointerARB(iBiTangentArray,3,GL_FLOAT,GL_FALSE,0,m_pkBiTangentPointer);
 	}
-	else
-		glDisableVertexAttribArrayARB(iBiTangentArray);	
+// 	else
+// 		glDisableVertexAttribArrayARB(iBiTangentArray);	
 	
 
 

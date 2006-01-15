@@ -144,7 +144,7 @@ void P_WaterRender::GenerateMesh()
 									m_kRenderPackage.m_kMeshData.m_kBiTangents,
 									m_kRenderPackage.m_kMeshData.m_kVertises.size());
 
-// 	for(int i = 0;i<m_kRenderPackage.m_kMeshData.m_kVertises.size();i++)
+// 	for(int i = 0;i<m_kRenderPackage.m_kMeshData.m_kVertises.size()*2	;i++)
 // 	{
 // 		m_kRenderPackage.m_kMeshData.m_kTangents.push_back(Vector3(1,0,0));
 // 		m_kRenderPackage.m_kMeshData.m_kBiTangents.push_back(Vector3(0,0,1));

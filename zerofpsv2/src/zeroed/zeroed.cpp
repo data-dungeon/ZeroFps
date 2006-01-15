@@ -973,27 +973,40 @@ bool ZeroEd::SetPointer()
 	Vector3 start	= m_pkActiveCamera->GetPos();// + Get3DMouseDir(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
 
-	m_kDrawPos.Set(0,0,0);
+	
 
 	
 	vector<Entity*> kEntitys;	
 	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kEntitys);
 	Vector3 end    = start + dir * 1000;
 	
+	
+	float fDistance = 999999999; 
+	m_kDrawPos.Set(0,0,0);
+	Vector3 kTemp;
+	
+	
 	int iSize = kEntitys.size();
 	for(int i = 0;i<iSize;i++)
 	{
 		if(P_Heightmap* pkHM = (P_Heightmap*)kEntitys[i]->GetProperty("P_Heightmap"))
 		{
-			if(pkHM->TestLine(start,end,m_kDrawPos))
+			if(pkHM->TestLine(start,end,kTemp))
 			{				
-				return true;		
+				float d = start.DistanceTo( kTemp);
+				if(d < fDistance)
+				{
+					fDistance = d;
+					m_kDrawPos = kTemp;
+				}
 			}
 		}
 	}
 	
-	
-	return false;
+	if(fDistance == 999999999)
+		return false;
+			
+	return true;
 }
 
 
@@ -2018,6 +2031,10 @@ void ZeroEd::ToogleLight()
   			pkLight->kDiffuse=Vector4(0.7,0.7,0.7,0);
   			pkLight->kAmbient=Vector4(0.6,0.6,0.6,0);
 	  		pkLight->kSpecular=Vector4(0.7,0.7,0.7,0);
+//   			pkLight->kDiffuse=Vector4(0.2,0.2,0.2,0);
+//   			pkLight->kAmbient=Vector4(0.2,0.2,0.2,0);
+// 	  		pkLight->kSpecular=Vector4(1,1,1,0);
+	  	
 	  	}
 	}
 }
