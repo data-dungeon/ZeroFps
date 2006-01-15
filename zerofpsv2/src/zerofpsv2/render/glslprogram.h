@@ -32,7 +32,8 @@ class RENDER_API GLSLProgram : public ZFResource
 		bool	SetupShaderPointer();		
 		GLenum LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType,int iLights);		
 		bool LoadDataFromFile(string* pkString,const string& strFile,int iLights);
-		
+		string GetInfoLog(GLenum iProgram);
+
 	public:
 		GLenum	m_iProgramIDs[9];	
 		

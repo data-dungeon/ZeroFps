@@ -27,6 +27,19 @@ int GLSLProgram::CalculateSize()
 	return 2;
 }
 
+string GLSLProgram::GetInfoLog(GLenum iProgram)
+{
+	static char log[1024];
+	int iLogSize = 0;
+	glGetInfoLogARB(iProgram,1024,&iLogSize,log);
+
+	if(iLogSize != 0)
+		return string(log);
+
+	return string("");
+}
+
+
 bool GLSLProgram::Load(string  strFile)
 {
 	if(!SetupShaderPointer())
@@ -91,13 +104,14 @@ bool GLSLProgram::Load(string  strFile)
 		}
 	
 		// Link The Program Object
+		cerr << "GLSL Link '" << strFile << "': ";
 		glLinkProgramARB(m_iProgramIDs[i]);
 		
 		GLint iRet;
 		glGetObjectParameterivARB(m_iProgramIDs[i],GL_OBJECT_LINK_STATUS_ARB,&iRet);
 		if(iRet == GL_FALSE)
 		{	
-			cerr<<"ERROR: While linking GLSL program: "<<strFile<<endl;		
+			cerr << "Error" << endl;
 				
 			//get log
 			static char log[1024];
@@ -110,7 +124,14 @@ bool GLSLProgram::Load(string  strFile)
 			glDeleteObjectARB(m_iProgramIDs[i]);
 			m_iProgramIDs[i] = NO_GLSLPROGRAM;	
 		}
-		
+		else
+		{
+			cout << "Ok" << endl;
+			string strLog = GetInfoLog( m_iProgramIDs[i]  );
+			if(!strLog.empty())
+				cout << "   InfoLog:" << strLog << endl;
+		}
+	
 		
 		//remove shader objects
 		if(iVSID != NO_GLSLPROGRAM)
@@ -153,13 +174,14 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
  	glShaderSourceARB(iShaderID, 1, (const char**)&pkData, NULL);
 	
 	//compile shader
+	cerr << "GLSL Compile '" << strFile << "': ";
 	glCompileShaderARB(iShaderID);	
 	
 	GLint iRet;
 	glGetObjectParameterivARB(iShaderID,GL_OBJECT_COMPILE_STATUS_ARB,&iRet);
 	if(iRet == GL_FALSE)
 	{	
-		cerr<<"ERROR: While compiling shader "<<strFile<<endl;			
+		cerr << "Error" << endl;
 		
 		//get log
 		static char log[1024];
@@ -167,11 +189,18 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
 		glGetInfoLogARB(iShaderID,1024,&iLogSize,log);
 		
 		if(iLogSize != 0)
-			cerr<<log<<endl;
+			cerr << " InfoLog: " << log << endl;
  	
 		glDeleteObjectARB(iShaderID);
 		return NO_GLSLPROGRAM; 	
  	}
+	else
+	{
+		cout << "Ok" << endl;
+		string strLog = GetInfoLog( iShaderID );
+		if(!strLog.empty())
+			cout << "   InfoLog:" << strLog << endl;
+	}
 			
 	return iShaderID;
 }
