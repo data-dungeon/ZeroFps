@@ -1701,6 +1701,8 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 		glDisableVertexAttribArrayARB(m_kVertexAttribs[i]);
 	m_kVertexAttribs.clear();	
 
+
+	//IF theres no bound glslprogram skip rest
 	if(m_iCurrentGLSLProgramID == NO_GLSLPROGRAM)
 		return;
 
@@ -1714,8 +1716,6 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 		glEnableVertexAttribArrayARB(iTangentArray);
 		glVertexAttribPointerARB(iTangentArray,3,GL_FLOAT,GL_FALSE,0,m_pkTangentPointer);
 	}
-// 	else
-// 		glDisableVertexAttribArrayARB(iTangentArray);
 	
 	//attribute for bitangent lists
 	GLuint iBiTangentArray= glGetAttribLocationARB(m_iCurrentGLSLProgramID,"g_kBiTangent");
@@ -1725,8 +1725,6 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 		glEnableVertexAttribArrayARB(iBiTangentArray);
 		glVertexAttribPointerARB(iBiTangentArray,3,GL_FLOAT,GL_FALSE,0,m_pkBiTangentPointer);
 	}
-// 	else
-// 		glDisableVertexAttribArrayARB(iBiTangentArray);	
 	
 
 
@@ -1739,11 +1737,6 @@ void ZShaderSystem::UpdateGLSLProgramParameters(int iPass)
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture2") , 2);
 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kTexture3") , 3);
 
-	//have textures?	
-// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture0") , pkSettings->m_kTUs[0]->IsValid());
-// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture1") , pkSettings->m_kTUs[1]->IsValid());
-// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture2") , pkSettings->m_kTUs[2]->IsValid());
-// 	glUniform1iARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_bHaveTexture3") , pkSettings->m_kTUs[3]->IsValid());
 	
 	//eye position
  	glUniform3fvARB(glGetUniformLocationARB(m_iCurrentGLSLProgramID,"g_kEyePosition") ,1, &m_kEyePosition.x);
