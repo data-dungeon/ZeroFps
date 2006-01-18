@@ -10,6 +10,8 @@
 	#define _DONT_MAIN
 #endif
 
+#include <sstream>
+
 #include "../mcommon/si_mistland.h"
 
 #include "zeroed.h"
@@ -678,7 +680,7 @@ void ZeroEd::DrawSelectedEntity()
 
 void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 {
-   char szInfoText[100];
+	ostringstream	kInfoText;
 
 	if(!bMultiSelect && m_iCurrentObject != iId)		
 		Select_None();
@@ -709,14 +711,19 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject))
 		{
       	Vector3 kPos = pkEnt->GetWorldPosV();
-			sprintf(szInfoText, "Enity selected ID:[%d] Type:[%s] Name:[%s] Pos:%f,%f,%f", pkEnt->GetEntityID(),pkEnt->GetType().c_str(), pkEnt->GetName().c_str(),kPos.x,kPos.y,kPos.z);
+			kInfoText << "ID:[" << pkEnt->GetEntityID();
+			kInfoText << "] Type:[" << pkEnt->GetType().c_str();
+			kInfoText << "] Name:[" << pkEnt->GetName().c_str();
+			kInfoText << "] Pos:" << kPos.x << ", " << kPos.y << "," << kPos.z;
 		}
 	}
    else
-      sprintf(szInfoText, "");
+		kInfoText.clear();
 
-   SetText("ZeroEdInfoLabel", szInfoText, true);
-   
+	string strInfo = kInfoText.str();
+
+   SetText("ZeroEdInfoLabel", const_cast<char *>( strInfo.c_str() ), true);
+
    UpdatePropertyList(m_iCurrentObject);
 }
 
