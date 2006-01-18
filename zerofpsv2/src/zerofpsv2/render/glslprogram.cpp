@@ -104,7 +104,7 @@ bool GLSLProgram::Load(string  strFile)
 		}
 	
 		// Link The Program Object
-		cerr << "GLSL Link '" << strFile << "': ";
+		cout << "GLSL Link '" << strFile << "': ";
 		glLinkProgramARB(m_iProgramIDs[i]);
 		
 		GLint iRet;
@@ -174,7 +174,7 @@ GLenum GLSLProgram::LoadAndCompile(const string& strFile,eSHADERTYPE iShaderType
  	glShaderSourceARB(iShaderID, 1, (const char**)&pkData, NULL);
 	
 	//compile shader
-	cerr << "GLSL Compile '" << strFile << "': ";
+	cout << "GLSL Compile '" << strFile << "': ";
 	glCompileShaderARB(iShaderID);	
 	
 	GLint iRet;

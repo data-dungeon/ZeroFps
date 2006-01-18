@@ -1792,7 +1792,7 @@ void ZeroEd::DrawZoneMarker(Vector3 kPos)
 	kPos.y += kMarkerSize.y - int(kMarkerSize.y);
 	kPos.z += kMarkerSize.z - int(kMarkerSize.z);
 
-	m_pkRender->DrawAABB(kPos-kMarkerSize, kPos+kMarkerSize, m_pkRender->GetEditColor( "zonemarker" ));
+	m_pkRender->DrawAABB(kPos-kMarkerSize, kPos+kMarkerSize, m_pkRender->GetEditColor( "zonemarker" ),3);
 
 	if(m_iAutoSnapZoneCorner != -1)
 	{
