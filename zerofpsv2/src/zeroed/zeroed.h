@@ -33,6 +33,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_EDITSUN,
 
 			FID_RECREATE,
+			FID_REMOVEALL,
 			
 			FID_SETCAM,
 			FID_CAMLINK,

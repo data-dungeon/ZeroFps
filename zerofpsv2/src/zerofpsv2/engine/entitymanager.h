@@ -328,6 +328,7 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		void			SetMaxZoneIO(int iMaxIO)							{	m_kiMaxZoneIO.SetInt(iMaxIO);			};
 		
 		void			RecreateEntitys(const string& strType);
+		void 			RemoveAllEntitys(const string& strType);
 
 		
 		//trackers

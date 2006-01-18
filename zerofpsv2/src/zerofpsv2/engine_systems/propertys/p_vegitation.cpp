@@ -120,6 +120,38 @@ void P_Vegitation::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,con
 	//add renderpackage
 	kRenderPackages.push_back(&m_kRenderPackage);
 
+
+
+	//debug render package
+	if(m_pkZeroFps->GetDebugGraph())
+	{	
+		static ZMaterial* pkLine = NULL;
+		if(!pkLine)
+		{
+			pkLine = new ZMaterial;
+			pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+			pkLine->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
+			pkLine->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
+			pkLine->GetPass(0)->m_bLighting = false;
+			pkLine->GetPass(0)->m_bColorMaterial = true;
+			pkLine->GetPass(0)->m_bUseShader = false;
+		}					
+		m_kDebugRenderPackage.m_pkMaterial = pkLine;	
+		
+		
+		m_kDebugRenderPackage.m_kMeshData.m_kVertises.clear();
+		m_kDebugRenderPackage.m_kMeshData.m_kColors.clear();	
+		m_pkRender->AddAABB(m_kDebugRenderPackage,m_kAABBMin,m_kAABBMax,Vector3(1,1,1));			
+		m_pkRender->AddAABB(m_kDebugRenderPackage,Vector3(-0.5,-0.5,-0.5),Vector3(0.5,0.5,0.5),Vector3(1,0.5,0.5));	
+		
+		m_kDebugRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kDebugRenderPackage.m_kMeshData.m_kVertises.size();
+		m_kDebugRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
+	
+		m_kDebugRenderPackage.m_kModelMatrix.Identity();
+		m_kDebugRenderPackage.m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());					
+
+		kRenderPackages.push_back(&m_kDebugRenderPackage);
+	}
 }
 
 void P_Vegitation::Random(vector<P_Heightmap*>* pkHMaps)

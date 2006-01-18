@@ -173,7 +173,8 @@ void P_WaterRender::GenerateMesh()
 	
 	m_kDebugRenderPackage.m_kMeshData.m_kVertises.clear();
 	m_kDebugRenderPackage.m_kMeshData.m_kColors.clear();	
-	m_pkRender->AddAABB(m_kDebugRenderPackage,-m_kSize,m_kSize,Vector3(1,1,1));
+	m_pkRender->AddAABB(m_kDebugRenderPackage,-m_kSize,m_kSize,Vector3(1,1,1));	
+	m_pkRender->AddAABB(m_kDebugRenderPackage,Vector3(-0.5,-0.5,-0.5),Vector3(0.5,0.5,0.5),Vector3(1,0.5,0.5));		
 	m_kDebugRenderPackage.m_kMeshData.m_iNrOfDataElements = m_kDebugRenderPackage.m_kMeshData.m_kVertises.size();
 	m_kDebugRenderPackage.m_kMeshData.m_ePolygonMode = QUADS_MODE;
 

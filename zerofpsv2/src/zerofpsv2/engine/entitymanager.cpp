@@ -3433,6 +3433,39 @@ void ZSSEntityManager::DeleteUnloadedZones(int iClient)
 	}	
 }
 
+void ZSSEntityManager::RemoveAllEntitys(const string& strType)
+{
+//loop trough all zones
+	for(int i = 0;i<m_kZones.size();i++)
+	{
+		//is this zone used?
+		if(m_kZones[i].m_iStatus != EZS_UNUSED)
+		{
+			//load zone if not loaded
+			if(m_kZones[i].m_iStatus == EZS_UNLOADED)
+				LoadZone(i);
+				
+			if(m_kZones[i].m_iStatus == EZS_CACHED)
+				m_kZones[i].m_iStatus = EZS_LOADED;
+				
+			//get all entitys in zone
+			vector<Entity*>	kEntitys;
+			m_kZones[i].m_pkZone->GetAllEntitys(&kEntitys,true);
+
+			//loop all entitys
+			for(int j = 0;j<kEntitys.size();j++)
+			{
+				//matching type
+				if(kEntitys[j]->GetType() == strType)
+				{
+					m_pkSystem->Printf( (string("Removeing entityID: ") + IntToString(kEntitys[j]->GetEntityID())).c_str() );
+					Delete(kEntitys[j]);						
+				}
+			}
+		}
+	}
+
+}
 
 void ZSSEntityManager::RecreateEntitys(const string& strType)
 {

@@ -138,6 +138,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
 	
 	// Register Commands
+	Register_Cmd("removeall",	FID_REMOVEALL);			
 	Register_Cmd("recreate",	FID_RECREATE);		
 	Register_Cmd("new",			FID_NEW);		
 	Register_Cmd("load",			FID_LOAD);		
@@ -1258,6 +1259,19 @@ void ZeroEd::RunCommand(int cmdid, const ConCommandLine* kCommand)
 
 	switch(cmdid) 
 	{
+		case FID_REMOVEALL:
+		{
+			if(kCommand->m_kSplitCommand.size() != 2)
+			{
+				m_pkConsole->Printf("removeall [entity-type]");
+				break;				
+			}			
+
+			m_pkEntityManager->RemoveAllEntitys(kCommand->m_kSplitCommand[1]);
+		
+			break;
+		}	
+	
 		case FID_RECREATE:
 		{
 			if(kCommand->m_kSplitCommand.size() <= 1)

@@ -59,6 +59,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		LightProfile		m_kLightProfile;				//used for lighting		
 		RenderPackage		m_kRenderPackage;
+		RenderPackage		m_kDebugRenderPackage;	
 		
 		bool					m_CheckedForHM;
 		
