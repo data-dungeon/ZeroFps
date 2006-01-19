@@ -176,6 +176,8 @@ class ENGINE_API ZSSEntityManager : public ZFSubSystem
 		bool LoadGlobalEntitys(string strSaveDir = "");
 		bool LoadTrackers(string strSaveDir = "");
 		void UnLoadZone(int iId);										//unload zone (saves and deletes)
+		bool CopyZone(const string& strSourceDir,const string& strTargetDir,int iID);
+		
 		
 		//system time 
 		void	UpdateSimTime();											//this is called every system update, to calculate the new sim time

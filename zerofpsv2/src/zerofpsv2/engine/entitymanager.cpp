@@ -13,6 +13,7 @@
 #include "../engine_systems/propertys/p_pfmesh.h"
 #include "../basic/zfbasicfs.h"
 
+#include <sstream>
 
 
 ZoneData::ZoneData()
@@ -2971,6 +2972,10 @@ bool ZSSEntityManager::LoadWorld(string strLoadDir)
 		return false;
 	}
 
+	m_pkZeroFps->m_pkConsole->Printf("Starting to load world %s",strLoadDir.c_str());
+	float fStartTime = m_pkZeroFps->GetRealTime();
+	
+
 	//check that the worldtempdirectory is clean
 	//first make sure it does exist
 	if(m_pkBasicFS->DirExist(m_kWorldDirectory.c_str()))
@@ -3029,12 +3034,8 @@ bool ZSSEntityManager::LoadWorld(string strLoadDir)
 		if(m_kZones[i].m_pkZone)
 			cout<<"WARNING: this zone is loaded, that shuld not be possible"<<endl;
 		else
-		{
-			//first load the zone from the savegame directory
-			LoadZone(i,strLoadDir);
-						
-			//now unload it again to save it
-			UnLoadZone(i);
+		{			
+			CopyZone(strLoadDir,m_kWorldDirectory,i);
 		}
 	}	
 	
@@ -3058,14 +3059,58 @@ bool ZSSEntityManager::LoadWorld(string strLoadDir)
 	}	
 		
 	//do a zone update
-//	UpdateZones();	
 	UpdateZoneSystem();
+	
+	
+	m_pkZeroFps->m_pkConsole->Printf("world loaded in %f sec",m_pkZeroFps->GetRealTime() - fStartTime);	
 	
 	return true;
 }
 
+bool ZSSEntityManager::CopyZone(const string& strSourceDir,const string& strTargetDir,int iID)
+{
+// 	//first load the zone from the savegame directory
+// 	LoadZone(iID,strSourceDir);
+// 				
+// 	//now unload it again to save it
+// 	UnLoadZone(iID);
+// 
+// 	return true;
 
-#include "inputhandle.h"
+
+	//setup filenames	
+	ostringstream	kSourceFilename;
+	kSourceFilename<<strSourceDir<<"/"<<iID<<".dynamic.zone";
+	ostringstream	kTargetFilename;
+	kTargetFilename<<strTargetDir<<"/"<<iID<<".dynamic.zone";
+	
+
+	ZFVFile kSourceFile;
+	ZFVFile kTargetFile;
+
+	if(!kSourceFile.Open(kSourceFilename.str(),0,false))
+		return false;
+		
+	if(!kTargetFile.Open(kTargetFilename.str(),0,true))
+		return false;
+
+	int iSize = kSourceFile.GetSize();
+	
+	//create buffer 
+	char* acDataBuffer = new char[iSize];
+
+	if(!kSourceFile.Read( acDataBuffer,iSize,1))
+		return false;
+	
+	if(!kTargetFile.Write( acDataBuffer,iSize,1))
+		return false;
+		
+				
+	return true;
+}
+
+
+// #include "inputhandle.h"
 void ZSSEntityManager::UpdateZoneSystem()
 {
 // 	if(m_pkZeroFps->m_pkApp->m_pkInputHandle->Pressed(KEY_P))
