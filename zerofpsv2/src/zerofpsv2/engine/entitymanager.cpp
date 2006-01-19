@@ -3100,12 +3100,18 @@ bool ZSSEntityManager::CopyZone(const string& strSourceDir,const string& strTarg
 	char* acDataBuffer = new char[iSize];
 
 	if(!kSourceFile.Read( acDataBuffer,iSize,1))
+	{
+		delete[] acDataBuffer;
 		return false;
+	}
 	
 	if(!kTargetFile.Write( acDataBuffer,iSize,1))
+	{
+		delete[] acDataBuffer;
 		return false;
-		
+	}	
 				
+	delete[] acDataBuffer;
 	return true;
 }
 
