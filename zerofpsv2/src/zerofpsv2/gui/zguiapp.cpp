@@ -41,8 +41,8 @@ ZGuiApp::~ZGuiApp()
 	}
 
 // OBS! denna resurs hinner inte laddas ur eftersom expire delayen ligger på 5 sek.
-//	if(m_pkScriptResHandle)
-//		delete m_pkScriptResHandle;
+	if(m_pkScriptResHandle)
+		delete m_pkScriptResHandle;
 
 /*	map<int, ZGuiWnd*>::iterator itWnds = m_kWindows.begin();
 	while(itWnds != m_kWindows.end())

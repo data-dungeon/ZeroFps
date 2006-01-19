@@ -1230,6 +1230,13 @@ DefaultPreRenderPlugin::DefaultPreRenderPlugin() : PreRenderPlugin("PreRender",0
 	m_pkDefaultFastShadowmapShader->SetRes("#fastshadowmap.frag.glsl");
 }
 
+DefaultPreRenderPlugin::~DefaultPreRenderPlugin()
+{
+	delete m_pkDefaultShader;
+	delete m_pkDefaultShaderPPL;
+	delete m_pkDefaultFastShadowmapShader;
+}
+
 bool DefaultPreRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)
 {		
 	//push matrises

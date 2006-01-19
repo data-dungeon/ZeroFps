@@ -253,6 +253,7 @@ class ENGINE_API DefaultPreRenderPlugin : public PreRenderPlugin
 		
 	public:
 		DefaultPreRenderPlugin();
+		~DefaultPreRenderPlugin();
 		
 		bool Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState);
 		

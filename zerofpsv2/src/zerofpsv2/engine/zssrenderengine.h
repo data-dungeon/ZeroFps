@@ -47,6 +47,8 @@ class ENGINE_API PreRenderPlugin : public Plugin
 		
 	public:
 		PreRenderPlugin(const string& strName,int iOrder);
+		virtual ~PreRenderPlugin()	{};
+		
 		const string& GetName()	{	return m_strName;	};
 		int GetOrder()				{	return m_iOrder;	};
 		
@@ -70,6 +72,8 @@ class ENGINE_API PostRenderPlugin : public Plugin
 		
 	public:
 		PostRenderPlugin(const string& strName,int iOrder);
+		virtual ~PostRenderPlugin()	{};
+		
 		const string& GetName()	{	return m_strName;	};
 		int GetOrder()				{	return m_iOrder;	};
 		
@@ -96,6 +100,8 @@ class ENGINE_API RenderPlugin : public Plugin
 		
 	public:
 		RenderPlugin(const string& strName,int iOrder);
+		virtual ~RenderPlugin()	{};
+		
 		const string& GetName()	{	return m_strName;	};		
 		int GetOrder()				{	return m_iOrder;	};
 		

@@ -1896,6 +1896,8 @@ P_CharacterProperty::~P_CharacterProperty()
 
 	delete m_pkTextMaterial;
 	delete m_pkFont;	
+	
+	RemoveAllSkills();
 }
 
 void P_CharacterProperty::GetRenderPackages(vector<RenderPackage*>&	kRenderPackages,const RenderState&	kRenderState)

@@ -11,10 +11,7 @@ using namespace ObjectManagerLua;
 
 P_Tcs::P_Tcs() : Property("P_Tcs")
 {
-	
 	m_iType=PROPERTY_TYPE_NORMAL;
-	//m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
-	//m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
 	m_iSide=PROPERTY_SIDE_SERVER;	
 	
 	m_bNetwork		= false;
@@ -27,6 +24,7 @@ P_Tcs::P_Tcs() : Property("P_Tcs")
 	m_bHaveUpdated = false;
 	
 	m_bHavePolygonData=	false;
+	m_bLocalStoredData=	false;
 	m_kBoxSize=				Vector3(1,1,1);
 	m_iTestType=			E_SPHERE;
 	m_fRadius=				0.5;	
@@ -106,6 +104,14 @@ P_Tcs::P_Tcs() : Property("P_Tcs")
 P_Tcs::~P_Tcs()
 {
 	Disable();
+	
+	
+	if(m_bLocalStoredData)
+	{
+		if(m_pkFaces)	delete m_pkFaces;
+		if(m_pkVertex)	delete m_pkVertex;
+		if(m_pkNormal)	delete m_pkNormal;
+	}	
 }
 
 
@@ -180,7 +186,6 @@ void P_Tcs::Update()
 void P_Tcs::SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals, float fRadius )
 {
 	m_bLocalStoredData	= true;
-	//m_bPolygonTest			= true;
 	m_bHavePolygonData	= true;
 
 	m_pkFaces	= new vector<Mad_Face>;
@@ -403,6 +408,15 @@ float P_Tcs::GetBoundingRadius()
 
 bool P_Tcs::SetupMeshData()
 {
+	//clear local stored vertex info, if any
+	if(m_bLocalStoredData)
+	{
+		if(m_pkFaces)	delete m_pkFaces;
+		if(m_pkVertex)	delete m_pkVertex;
+		if(m_pkNormal)	delete m_pkNormal;
+	}
+
+
 	// cout << "Setting up TCS Mesh: ";
 
 	
@@ -421,7 +435,8 @@ bool P_Tcs::SetupMeshData()
 			if(pkCoreMech != NULL)		
 			{
 				//cout<<"found mech"<<endl;
-				 
+				m_bLocalStoredData = false;
+				
 				m_pkMad = pkMP;
 				m_pkFaces = pkCoreMech->GetLODMesh(0)->GetFacesPointer();
 				m_pkVertex = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();

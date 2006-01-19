@@ -34,6 +34,13 @@ P_WaterRender::P_WaterRender() : Property("P_WaterRender")
 
 }
 
+
+P_WaterRender::~P_WaterRender()
+{
+	delete m_pkMaterial;
+}
+
+
 void P_WaterRender::Init()
 {
 	GetEntity()->SetLocalAABB(-m_kSize,m_kSize);

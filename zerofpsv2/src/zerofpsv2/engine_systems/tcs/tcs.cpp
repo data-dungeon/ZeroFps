@@ -11,12 +11,6 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fMaxVel = 		15.0;
 	m_fGravity =		9.84;
 	
-	//m_fSleepTime = 	1.0;
-	//m_iCollisionIterations	= 4;
-	//m_iContactIterations		= 4;
-	
-	//m_iHandleCollission =1;
-	//m_iDebugGraph = 		0;
 	
 	m_iNrOfCollissions = 0;
 	m_iNrOfTests = 		0;
@@ -25,19 +19,8 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_pkBodyCopy1 	=	NULL;
 	m_pkBodyCopy2	=	NULL;
 	
-	//RegisterVariable("p_tcshandle",		&m_iHandleCollission,CSYS_INT);
-	//RegisterVariable("p_tcsdebug",		&m_iDebugGraph,CSYS_INT);
-
 	m_kiHandleCollission.Register(this, "p_tcshandle", "1");
 	m_kiDebugGraph.Register(this, "p_tcsdebug", "0");
-
-	//RegisterVariable("p_tcssleeplinvel",&m_fSleepLinVel,CSYS_FLOAT);
-	//RegisterVariable("p_tcssleeprotvel",&m_fSleepRotVel,CSYS_FLOAT);
-	//RegisterVariable("p_tcsmaxvel",		&m_fMaxVel,CSYS_FLOAT);
-	
-	//RegisterVariable("p_tcssleeptime",	&m_fSleepTime,CSYS_FLOAT);
-	//RegisterVariable("p_tcscolit",		&m_iCollisionIterations,CSYS_INT);
-	//RegisterVariable("p_tcsconit",		&m_iContactIterations,CSYS_INT);
 	m_kfSleepTime.Register(this, "p_tcssleeptime", "1.0");
 	m_kiCollisionIterations.Register(this, "p_tcscolit", "4");
 	m_kiContactIterations.Register(this, "p_tcsconit", "4");
@@ -45,10 +28,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 
 Tcs::~Tcs()
 {
-	/*	 blir ju massa evil krasher h� s�..wtf f� la va lite minnes lekage s�l�ge =D
-	delete m_pkBodyCopy1;	
-	delete m_pkBodyCopy2;
-	*/
+
 }
 
 
@@ -65,7 +45,12 @@ bool Tcs::StartUp()
 }
 
 bool Tcs::ShutDown() 
-{ 
+{
+	//	 blir ju massa evil krasher h� s�..wtf f� la va lite minnes lekage s�l�ge =D
+	delete m_pkBodyCopy1;	
+	delete m_pkBodyCopy2;
+	
+
 	return true; 
 }
 bool Tcs::IsValid()

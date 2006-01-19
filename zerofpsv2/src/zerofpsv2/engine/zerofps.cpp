@@ -255,7 +255,12 @@ bool ZSSZeroFps::StartUp()
 	return true;
 }
 
-bool ZSSZeroFps::ShutDown()	{	return true;	}
+bool ZSSZeroFps::ShutDown()	
+{
+	delete m_pkConsoleCamera;
+	
+	return true;	
+}
 bool ZSSZeroFps::IsValid()		{	return true;	}
 	
 void ZSSZeroFps::SetApp() 

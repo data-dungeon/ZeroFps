@@ -43,6 +43,7 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 		void GenerateMesh();
 	public:
 		P_WaterRender();
+		~P_WaterRender();
 		void Init();
 
 		void SetMaterial(const string& strMaterial);
