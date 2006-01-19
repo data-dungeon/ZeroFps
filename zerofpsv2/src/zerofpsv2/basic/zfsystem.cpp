@@ -23,25 +23,41 @@ void ZFSystem::PrintVariables()
 {
 	BasicConsole*		m_pkCon;
 	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("ZSSConsole"));
-	string strValue;
 
+
+	string strLastSubSysName;
 	m_pkCon->Printf("### variable list ###");
-
-	/*for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
-		if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't print none valid data.
-		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't print functions.
-
-		strValue = GetVarValue(&m_kCmdDataList[i]);
-		m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
-	}*/
-
-	m_pkCon->Printf("### NEW: variable list ###");
 	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
 	{
 		ConCommand *pkConCommand = m_kConCommands[i];
 		if(!pkConCommand->IsCommand())
-			m_pkCon->Printf(" %s.%s = - ( %s )",pkConCommand->GetSubSystemName().c_str(),
-				pkConCommand->GetName().c_str(), pkConCommand->GetHelp().c_str());
+		{
+			string strSubSystem = pkConCommand->GetSubSystemName();
+			
+			//if no subsystem, print it as global
+			if(strSubSystem.empty()) strSubSystem = "GLOBAL";
+			
+			//only print subsystem name if its not the same as the last
+			if(strSubSystem != strLastSubSysName)
+			{
+				m_pkCon->Printf(" ");
+				m_pkCon->Printf("%s",strSubSystem.c_str());
+			}
+				
+			//do we want to print any help text?
+			if(!pkConCommand->GetHelp().empty())
+			{
+				m_pkCon->Printf("   %s - %s",
+					pkConCommand->GetName().c_str(),
+					pkConCommand->GetHelp().c_str());
+			}
+			else
+			{
+				m_pkCon->Printf("   %s",pkConCommand->GetName().c_str());						
+			}
+								
+			strLastSubSysName = strSubSystem;
+		}
 	}
 }
 
@@ -49,22 +65,41 @@ void ZFSystem::PrintCommands()
 {
 	BasicConsole*		m_pkCon;
 	m_pkCon = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("ZSSConsole"));
-	string strValue;
 
-	m_pkCon->Printf("### variable list ###");
-
-	/*for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
-		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION) {
-			strValue = GetVarValue(&m_kCmdDataList[i]);
-			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
-			}
-	}*/
+	m_pkCon->Printf("### Command list ###");
+	
+	string strLastSubSysName;
 	for(unsigned int i=0; i<m_kConCommands.size(); i++) 
 	{
 		ConCommand *pkConCommand = m_kConCommands[i];
 		if(pkConCommand->IsCommand())
-			m_pkCon->Printf(" %s.%s = - ( %s )",pkConCommand->GetSubSystemName().c_str(),
-				pkConCommand->GetName().c_str(), pkConCommand->GetHelp().c_str());
+		{		
+			string strSubSystem = pkConCommand->GetSubSystemName();
+			
+			//if no subsystem, print it as global
+			if(strSubSystem.empty()) strSubSystem = "GLOBAL";
+			
+			//only print subsystem name if its not the same as the last
+			if(strSubSystem != strLastSubSysName)
+			{
+				m_pkCon->Printf(" ");
+				m_pkCon->Printf("%s",strSubSystem.c_str());
+			}
+				
+			//do we want to print any help text?
+			if(!pkConCommand->GetHelp().empty())
+			{
+				m_pkCon->Printf("   %s - %s",
+					pkConCommand->GetName().c_str(),
+					pkConCommand->GetHelp().c_str());
+			}
+			else
+			{
+				m_pkCon->Printf("   %s",pkConCommand->GetName().c_str());						
+			}
+								
+			strLastSubSysName = strSubSystem;
+		}	
 	}
 }
 
@@ -138,11 +173,11 @@ ZFSystem::ZFSystem()
 	g_Logf("Starting ZeroFps Object System\n");
 #endif
 
-	m_pkCmdSystem = new ZSSCmdSystem;
-	
-	m_bProfileEnabled =	false;
-	m_bLogEnabled	=		false;
+	m_pkCmdSystem = new ZSSCmdSystem;	
 	m_iTotalTime = 		0;	
+		
+	m_kLogEnabled.Register(NULL,		"e_log",			"0");
+	m_kProfileEnabled.Register(NULL,	"e_profile",	"0");
 }
 
 ZFSystem::~ZFSystem()
@@ -876,9 +911,9 @@ void ZFSystem::Log(const char* szMessage)
 
 void ZFSystem::Log(const char* szName, const char* szMessage)
 {
-	if(!m_bLogEnabled)
+	if(!m_kLogEnabled.GetBool())
 		return;
-
+	
 	ZFLogFile* pkLog = Log_Find( szName );
 	if(!pkLog)
 		return;
@@ -890,7 +925,7 @@ char g_LogFormatTxt2[4096];
 
 void ZFSystem::Logf(const char* szName, const char* szMessageFmt,...)
 {
-	if(!m_bLogEnabled)
+	if(!m_kLogEnabled.GetBool())
 		return;
 
 
@@ -1064,7 +1099,7 @@ void CmdArgument::Set(const char* szCmdArgs)
 
 void ZFSystem::DontUseStartProfileTimer(const char* czName)
 {
-	if(!m_bProfileEnabled)
+	if(!m_kProfileEnabled.GetBool())
 		return;
 
 	m_kTimers[czName].m_iStartime = SDL_GetTicks();
@@ -1072,7 +1107,7 @@ void ZFSystem::DontUseStartProfileTimer(const char* czName)
 
 void ZFSystem::DontUseStopProfileTimer(const char* czName)
 {
-	if(!m_bProfileEnabled)
+	if(!m_kProfileEnabled.GetBool())
 		return;
 		
 		
@@ -1091,8 +1126,9 @@ void ZFSystem::DontUseStopProfileTimer(const char* czName)
 
 void ZFSystem::ClearProfileTimers() 
 {
-	if(!m_bProfileEnabled)
+	if(!m_kProfileEnabled.GetBool())
 		return;
+
 
 	m_kTimers.clear();
 	m_iTotalTime = SDL_GetTicks(); 
@@ -1100,7 +1136,7 @@ void ZFSystem::ClearProfileTimers()
 
 void ZFSystem::GetProfileTimers(vector<TimerInfo >* pkTimers)
 {
-	if(!m_bProfileEnabled)
+	if(!m_kProfileEnabled.GetBool())
 		return;
 
 	TimerInfo kTemp;

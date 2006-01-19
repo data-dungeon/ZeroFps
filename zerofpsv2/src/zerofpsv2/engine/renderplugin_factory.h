@@ -11,6 +11,7 @@ class ENGINE_API Plugin
 {
 	
 	public:
+		virtual ~Plugin() {};
 		virtual void ImPlugin() {};
 };
 

@@ -46,7 +46,8 @@ void BasicConsole::PrintOneRow(const char* aText)
 		}
 	}
 	
-	m_kText[0]=new char[TEXT_MAX_LENGHT];
+	m_kText[0]=new char[m_iMaxWidth+2];
+	
 	strcpy(m_kText[0],aText);
 }
 

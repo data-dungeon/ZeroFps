@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define TEXT_MAX_LENGHT 256
+// #define TEXT_MAX_LENGHT 256
 
 /**	\brief	A base class to create objects that you can print text to.
 		\ingroup Basic

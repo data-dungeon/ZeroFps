@@ -106,10 +106,10 @@ private:
 	ZSSCmdSystem*				m_pkCmdSystem;
 
 	//want to log
-	bool						m_bLogEnabled;
+	ConVar						m_kLogEnabled;
 	
 	//profileing
-	bool								m_bProfileEnabled;
+	ConVar							m_kProfileEnabled;	
 	map<string,ProfileTimer>	m_kTimers;
 	int								m_iTotalTime;
 	
@@ -160,12 +160,8 @@ public:
 	void DontUseStopProfileTimer(const char* czName);
 	void ClearProfileTimers();
 	void GetProfileTimers(vector<TimerInfo >* pkTimers);
-	int GetTotalTime();					/*{	return SDL_GetTicks() - m_iTotalTime;	};*/
-	
-	bool* GetLogEnabledPointer()		{	return &m_bLogEnabled;						};
-	bool  GetLogEnabled()				{	return m_bLogEnabled;						};	
-	bool* GetProfileEnabledPointer()	{	return &m_bProfileEnabled;					};
-	bool  GetProfileEnabled()			{	return m_bProfileEnabled;					};
+	int GetTotalTime();					/*{	return SDL_GetTicks() - m_iTotalTime;	};*/	
+	bool  GetProfileEnabled()			{	return m_kProfileEnabled.GetBool();		};
 	
 	//program arguments
 	int GetNumberOfArguments()			{	return m_kRawArguments.size();			};

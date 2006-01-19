@@ -292,5 +292,3 @@ void ConVar::SetBoolVector(vector<bool> kValue)
 }
 
 
-ConVar g_kSlyna("Slyna", "69");
-

@@ -26,7 +26,9 @@ bool ZSSConsole::StartUp()
 	GetSystem().Log_Create("console"); 
 
 
-	m_iBufferSize			= 100;
+	m_iMaxWidth				= 95;
+
+	m_iBufferSize			= 1024;
 	m_kText.resize(m_iBufferSize);
    m_bShift					=	false;
 	strcpy(m_aCommand,"");
@@ -333,7 +335,7 @@ void ZSSConsole::Update(void)
 		{
 	
 		float fCurrTime = m_pkEngine->GetEngineTime();
-		const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.1f;
+		const float REPEAT_DELAY = 0.25f, REPEAT_RATE = 0.05f;
 		
 		if(s_bKeyrepeatActivated == false)
 		{

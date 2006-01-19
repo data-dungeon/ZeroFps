@@ -225,6 +225,10 @@ bool ZeroEd::ShutDown()
 {
 	delete m_pkLine;
 
+
+	for(int i = 0;i<4;i++)
+		delete m_pkCamera[i];
+
 	return true;
 }
 
