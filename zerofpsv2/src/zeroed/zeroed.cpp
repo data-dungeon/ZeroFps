@@ -128,6 +128,9 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kSelBoxCornerMin		=	Vector3(0,0,0);
 	m_kSelBoxCornerMax		=	Vector3(0,0,0);
 
+	for(int i = 0;i<4;i++)
+		m_pkCamera[i] = NULL;
+
 	// Register Variables
 	m_kEntitySnaping.Register(this,"ap_entitysnaping","0");	
 	m_kstrLoginName.Register(this, "ap_loginname","madviewclient");

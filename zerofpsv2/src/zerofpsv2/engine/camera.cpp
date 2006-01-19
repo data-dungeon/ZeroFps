@@ -235,26 +235,26 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 Camera::~Camera()
 {
-	if(m_pkDefaultShadowmapShaderPPL)
-		delete m_pkDefaultShadowmapShaderPPL;			
-	if(m_pkDefaultShadowmapShader)
-		delete m_pkDefaultShadowmapShader;		
-	if(m_pkDefaultFastShadowmapShader)
-		delete m_pkDefaultFastShadowmapShader;
-
-				
-	if(m_pkFSSMaterial)
-		delete m_pkFSSMaterial;
-	if(m_pkBloomMaterial1)
-		delete m_pkBloomMaterial1;
-	if(m_pkBloomMaterial2)
-		delete m_pkBloomMaterial2;
-		
-	if(m_iShadowFBO != 0)
-		glDeleteFramebuffersEXT(1,&m_iShadowFBO);
-	
-	if(m_iShadowRBOcolor != 0)
-		glDeleteRenderbuffersEXT(1,&m_iShadowRBOcolor);
+// 	if(m_pkDefaultShadowmapShaderPPL)
+// 		delete m_pkDefaultShadowmapShaderPPL;			
+// 	if(m_pkDefaultShadowmapShader)
+// 		delete m_pkDefaultShadowmapShader;		
+// 	if(m_pkDefaultFastShadowmapShader)
+// 		delete m_pkDefaultFastShadowmapShader;
+// 
+// 				
+// 	if(m_pkFSSMaterial)
+// 		delete m_pkFSSMaterial;
+// 	if(m_pkBloomMaterial1)
+// 		delete m_pkBloomMaterial1;
+// 	if(m_pkBloomMaterial2)
+// 		delete m_pkBloomMaterial2;
+// 		
+// 	if(m_iShadowFBO != 0)
+// 		glDeleteFramebuffersEXT(1,&m_iShadowFBO);
+// 	
+// 	if(m_iShadowRBOcolor != 0)
+// 		glDeleteRenderbuffersEXT(1,&m_iShadowRBOcolor);
 
 }
 
