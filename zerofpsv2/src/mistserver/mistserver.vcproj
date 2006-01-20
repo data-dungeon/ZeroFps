@@ -103,7 +103,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="mcommon.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\mistserver.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

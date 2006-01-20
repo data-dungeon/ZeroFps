@@ -8,7 +8,7 @@
 using namespace std;
 
 template <class data_type>
-class BASIC_API AutoList
+class AutoList
 {
 	private:
 		static list<data_type*>	m_kObjects;

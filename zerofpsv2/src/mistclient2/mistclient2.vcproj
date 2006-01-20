@@ -90,7 +90,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="engine.lib opengl32.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="engine.lib opengl32.lib mcommon.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\mistclient2.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib"
