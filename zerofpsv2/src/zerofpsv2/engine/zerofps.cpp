@@ -1253,18 +1253,21 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 	
 		case FID_CAMERALIST:
 		{
-			for(int i = 0;i<m_kRenderCamera.size();i++)
+			int i = 0;
+			for(Camera::m_kIterator it =Camera::Begin();it != Camera::End();it++)
 			{
-				//print camera name
-				m_pkConsole->Printf("%d : %s",i,m_kRenderCamera[i]->GetName().c_str());
+				Camera& kCamera = *(*it);
 				
-				//print camera plugin list
-				vector<string> kPlugins = m_kRenderCamera[i]->m_kRenderState.GetPluginList();
- 				for(int j = 0;j<kPlugins.size();j++)
- 					m_pkConsole->Printf("  Plugin: %d : %s",j,kPlugins[j].c_str() );					
-			}
+				//print camera name
+				m_pkConsole->Printf("%d : %s",i,kCamera.GetName().c_str());			
 			
-			m_pkConsole->Printf("Number of cameras %d",m_kRenderCamera.size());						
+				//print camera plugin list
+				vector<string> kPlugins = kCamera.m_kRenderState.GetPluginList();
+ 				for(int j = 0;j<kPlugins.size();j++)
+ 					m_pkConsole->Printf("  Plugin: %d : %s",j,kPlugins[j].c_str() );			
+ 					
+ 				i++;
+			}				
 			
 			break;
 		}
@@ -1291,11 +1294,14 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 				break;
 			}
 		
-			for(int i = 0;i<m_kRenderCamera.size();i++)
+
+			for(Camera::m_kIterator it =Camera::Begin();it != Camera::End();it++)
 			{
-				if(m_kRenderCamera[i]->GetName() == kCommand->m_kSplitCommand[1])
+				Camera& kCamera = *(*it);
+								
+				if(kCamera.GetName() == kCommand->m_kSplitCommand[1])
 				{
-					if(m_kRenderCamera[i]->m_kRenderState.AddPlugin(kCommand->m_kSplitCommand[2]))
+					if(kCamera.m_kRenderState.AddPlugin(kCommand->m_kSplitCommand[2]))
 						m_pkConsole->Printf("plugin added");			
 					else
 						m_pkConsole->Printf("error while adding plugin, not added");			
@@ -1316,11 +1322,13 @@ void ZSSZeroFps::RunCommand(int cmdid, const ConCommandLine* kCommand)
 				break;
 			}
 		
-			for(int i = 0;i<m_kRenderCamera.size();i++)
+			for(Camera::m_kIterator it =Camera::Begin();it != Camera::End();it++)
 			{
-				if(m_kRenderCamera[i]->GetName() == kCommand->m_kSplitCommand[1])
+				Camera& kCamera = *(*it);
+								
+				if(kCamera.GetName() == kCommand->m_kSplitCommand[1])
 				{
-					if(m_kRenderCamera[i]->m_kRenderState.RemovePlugin(kCommand->m_kSplitCommand[2]))
+					if(kCamera.m_kRenderState.RemovePlugin(kCommand->m_kSplitCommand[2]))
 						m_pkConsole->Printf("plugin removed");			
 					else
 						m_pkConsole->Printf("plugin not found");			

@@ -15,6 +15,8 @@
 
 #include "i_camera.h"
 
+#include "../basic/autolist.h"
+
 class ZSSRender;
 class P_Camera;
 
@@ -31,7 +33,7 @@ enum ENGINE_API RENDERMODE
 /** \brief	A Camera (ViewPoint) in ZeroFPS
 	 \ingroup Engine
 */
-class ENGINE_API Camera : public I_Camera
+class ENGINE_API Camera : public I_Camera , public AutoList<Camera>
 {
 	public:
 		enum CamMode 
