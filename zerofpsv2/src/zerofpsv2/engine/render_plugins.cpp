@@ -1235,8 +1235,6 @@ DefaultPreRenderPlugin::~DefaultPreRenderPlugin()
 	delete m_pkDefaultShader;
 	delete m_pkDefaultShaderPPL;
 	delete m_pkDefaultFastShadowmapShader;
-	
-	cout<<"unloading prerenderplugin"<<endl;
 }
 
 bool DefaultPreRenderPlugin::Call(ZSSRenderEngine& kRenderEngine,RenderState& kRenderState)

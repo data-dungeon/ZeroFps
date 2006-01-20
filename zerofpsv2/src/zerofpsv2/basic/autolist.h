@@ -38,14 +38,12 @@ list<data_type*> AutoList<data_type>::m_kObjects;
 template <class data_type>
 inline AutoList<data_type>::AutoList()
 {
-	cout<<"adding new object to autolist"<<endl;
 	m_kObjects.push_back(static_cast<data_type*>(this));	
 }
 
 template <class data_type>
 inline AutoList<data_type>::~AutoList()
 {
-	cout<<"removeing object from autolist"<<endl;
 	m_kObjects.remove(static_cast<data_type*>(this));	
 }
 
